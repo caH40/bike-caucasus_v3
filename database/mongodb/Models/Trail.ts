@@ -1,6 +1,7 @@
 import mongoose, { Schema, model, models } from 'mongoose';
+import { ICard } from '../../../types/models.interface';
 
-const trailSchema = new Schema({
+const trailSchema = new Schema<ICard>({
   nameRoute: { type: String, required: true },
   state: String,
   bikeType: String,
@@ -22,4 +23,4 @@ const trailSchema = new Schema({
   dateEdit: Number,
 });
 
-export const Card = models.Card || model('Card', trailSchema);
+export const Card = models.Card || model<ICard>('Card', trailSchema);
