@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
+import { roboto, montserrat_Alternates } from '../libs/fonts';
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://bike-caucasus.ru`),
@@ -20,7 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${roboto.className} ${montserrat_Alternates.className}`}>
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,0 +1,77 @@
+.card {
+  position: relative;
+  flex: 0 0 308px;
+  height: 419px;
+  background-color: rgb(255, 255, 255, 0.1);
+  border-radius: 7px;
+  box-shadow: 1px 1px 5px rgb(0, 0, 0);
+  color: #f1f1f1;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+.mtb {
+  background-color: rgba(93, 32, 32, 0.6);
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 8px 8px 10px rgb(0, 0, 0);
+  transition: all 0.5s;
+}
+.title {
+  font-family: var(--font-montserrat_Alternates);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 25px;
+  letter-spacing: -0.5px;
+  margin: 15px 15px 0px 15px;
+}
+.title_sub {
+  font-size: 16px;
+  margin: 0px 15px 15px 15px;
+  color: rgba(225, 254, 255, 0.45);
+}
+.names {
+  font-weight: 500;
+  margin-left: 5px;
+}
+.names_data {
+  color: rgba(225, 254, 255, 0.45);
+  margin-left: 5px;
+}
+.text {
+  font-family: var(--font-montserrat_Alternates);
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  margin: 15px;
+}
+.description {
+  margin-bottom: 5px;
+}
+.img {
+  object-fit: cover;
+  object-position: center;
+  min-height: 184px;
+}
+.box__kudos {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 70px;
+  top: 333px;
+  right: 15px;
+  text-align: center;
+  padding: 3px;
+  border: solid 1px #f1f1f1;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.kudos__text {
+  font-family: var(--font-montserrat_Alternates);
+  font-size: 12px;
+  color: rgba(225, 254, 255, 0.45);
+}
