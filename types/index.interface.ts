@@ -11,3 +11,13 @@ export interface PropsBoxInputAuth {
   link?: string; // путь на страницу
   disabled?: boolean;
 }
+
+/**
+ * Данные пользователя, возвращаемые после регистрации
+ */
+export interface IUserData {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+}

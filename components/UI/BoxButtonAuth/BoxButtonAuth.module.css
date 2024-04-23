@@ -19,6 +19,9 @@
   margin: 22px 0px 2px 0px;
   transition: all 0.3s;
 }
+.button:disabled {
+  background-color: gray;
+}
 .button:hover {
   background-color: var(--link-auth-color-hover);
   transition: all 0.3s;

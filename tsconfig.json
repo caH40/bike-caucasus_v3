@@ -20,7 +20,9 @@
     "paths": {
       // "@/*": ["./src/*"],
       "@/components/*": ["./components/*"],
-      "@/UI/*": ["./components/UI/*"]
+      "@/UI/*": ["./components/UI/*"],
+      "@/Models/*": ["./database/mongodb/Models/*"],
+      "@/types/*": ["./types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

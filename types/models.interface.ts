@@ -25,3 +25,25 @@ export interface ICard {
   date: number;
   dateEdit: number;
 }
+
+/**
+ * Интерфейс пользователя сайта
+ */
+export interface IUser {
+  _id: Types.ObjectId;
+  username: string;
+  password: string;
+  date: number;
+  email: string;
+  emailConfirm: boolean;
+  phone: string;
+  firstName: string;
+  patronymic: string;
+  lastName: string;
+  gender: string;
+  birthday: number;
+  city: string;
+  team: string;
+  role: string;
+  photoProfile: string;
+}

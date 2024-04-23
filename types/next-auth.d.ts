@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from 'next-auth';
+import { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   /**
@@ -8,12 +8,16 @@ declare module 'next-auth' {
     user: {
       /** The user's postal address. */
       role: string;
+      id: string;
     } & DefaultSession['user'];
   }
 }
 
-// declare module 'next-auth/jwt' {
-//   interface JWT {
-//     role?: string;
-//   }
-// }
+declare module 'next-auth/jwt' {
+  /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
+  interface JWT {
+    /** OpenID ID Token */
+    role: string;
+    id: string;
+  }
+}
