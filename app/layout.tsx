@@ -1,12 +1,12 @@
-import Header from '../components/Header/Header';
-import { roboto, montserrat_Alternates } from '../libs/fonts';
 import cn from 'classnames';
 
+import Header from '@/components/Header/Header';
+import Providers from '@/components/Providers';
+import { roboto, montserrat_Alternates } from '../libs/fonts';
 import './globals.css';
 
 // types
 import type { Metadata } from 'next';
-import Providers from '../components/Providers';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bike-caucasus.ru'),
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(roboto.className, montserrat_Alternates.className, 'body')}>
+      <body className={cn(roboto.className, montserrat_Alternates.variable, 'body')}>
         <Providers>
           <div className="container">
             <Header />

@@ -5,23 +5,22 @@
   display: block;
   width: 100%;
   text-align: center;
-  font-family: var(--font-montserrat_Alternates);
+  font-family: inherit;
   font-size: 15px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #050505;
-  background: #55b3ae;
-  border-radius: 10px;
-  border: none;
+  color: var(--link-auth-color);
+  background: var(--btn-auth-bg);
+  border-radius: 0.7rem;
   box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s;
   cursor: pointer;
   padding: 4px 10px 3px 10px;
   margin: 22px 0px 2px 0px;
+  transition: all 0.3s;
 }
 .button:hover {
-  background-color: #479692;
+  background-color: var(--link-auth-color-hover);
   transition: all 0.3s;
 }
 .button:active {
@@ -33,28 +32,27 @@
   display: flex;
   justify-content: space-between;
   padding: 0px 5px;
-  font-family: 'Roboto';
   font-size: 14px;
 }
 .link {
   font-family: inherit;
   font-style: inherit;
   font-weight: inherit;
-  font-size: inherit;
+  font-size: 0.9rem;
   text-decoration: underline;
-  color: #050505;
+  color: var(--link-auth-color);
   cursor: pointer;
 }
 .link:hover {
   text-decoration: none;
-  color: #479692;
+  color: var(--link-auth-color-hover);
 }
 .validation {
   height: 14px;
   font-size: 11px;
   line-height: 14px;
   letter-spacing: 0;
-  color: red;
+  color: var(--error-color);
   padding: 0px 5px;
   margin-bottom: 2px;
 }

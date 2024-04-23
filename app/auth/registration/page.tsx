@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 
-import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
-import BoxInputAuth from '../../../components/UI/BoxInputAuth/BoxInputAuth';
-import BoxButtonAuth from '../../../components/UI/BoxButtonAuth/BoxButtonAuth';
+import AuthBlock from '@/UI/AuthBlock/AuthBlock';
+import BoxInputAuth from '@/UI/BoxInputAuth/BoxInputAuth';
+import BoxButtonAuth from '@/UI/BoxButtonAuth/BoxButtonAuth';
 import {
   validateEmail,
   validatePassword,
@@ -47,7 +47,7 @@ export default function RegistrationPage() {
 
   return (
     <AuthBlock>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.block}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <h2 className={styles.title}>Регистрация аккаунта</h2>
         <BoxInputAuth
           id="username"
@@ -72,6 +72,7 @@ export default function RegistrationPage() {
           register={validatePassword(register)}
           label="Пароль"
           linkLabel="Забыли пароль?"
+          link="password-reset"
           validationText={errors.password ? errors.password.message : ''}
         />
         <BoxButtonAuth
