@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 const fetchTrails = async (): Promise<ICard[]> => {
+  let x = 10;
   await connectToMongo();
 
   const trailsDB: ICard[] = await CardModel.find(
@@ -22,7 +23,7 @@ const fetchTrails = async (): Promise<ICard[]> => {
       comments: false,
     }
   ).lean();
-
+  console.log(x);
   return trailsDB;
 };
 

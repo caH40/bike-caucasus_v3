@@ -1,0 +1,27 @@
+.background {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgb(112, 112, 112);
+  z-index: 100;
+}
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.block {
+  position: relative;
+  flex: 0 1 auto;
+  max-width: 360px;
+  color: black;
+  padding: 30px;
+  background: #f9a527;
+  border-radius: 0.7rem;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
+}

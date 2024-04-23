@@ -1,0 +1,60 @@
+.box__button {
+  margin-bottom: 12px;
+}
+.button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-montserrat_Alternates);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #050505;
+  background: #55b3ae;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s;
+  cursor: pointer;
+  padding: 4px 10px 3px 10px;
+  margin: 22px 0px 2px 0px;
+}
+.button:hover {
+  background-color: #479692;
+  transition: all 0.3s;
+}
+.button:active {
+  transform: translateY(-1px);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s;
+}
+.box__help {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 5px;
+  font-family: 'Roboto';
+  font-size: 14px;
+}
+.link {
+  font-family: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+  color: #050505;
+  cursor: pointer;
+}
+.link:hover {
+  text-decoration: none;
+  color: #479692;
+}
+.validation {
+  height: 14px;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0;
+  color: red;
+  padding: 0px 5px;
+  margin-bottom: 2px;
+}

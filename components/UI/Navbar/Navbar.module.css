@@ -1,0 +1,29 @@
+.nav {
+  flex: 1 1 100%;
+}
+.list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link {
+  font-family: var(--font-montserrat_Alternates);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: 0.08em;
+  border-bottom: solid transparent 2px;
+  transition: all 0.4s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link:hover {
+  border-bottom: solid #39a034 2px;
+  transition: all 0.4s;
+}
+.active {
+  color: #39a034;
+}

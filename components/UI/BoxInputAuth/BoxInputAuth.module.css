@@ -1,0 +1,50 @@
+.block {
+  margin-bottom: 5px;
+}
+.box__label {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 5px;
+  font-size: 14px;
+}
+.link {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  text-decoration: underline;
+  color: #050505;
+  cursor: pointer;
+}
+.link:hover {
+  text-decoration: none;
+  color: #479692;
+}
+.input {
+  width: 100%;
+  height: 27px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #050505;
+  border-radius: 0.7rem;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 1px;
+  color: #050505;
+  padding: 0px 10px;
+  margin-bottom: 4px;
+}
+.input:focus {
+  outline: solid 3px #55b3ae;
+  border: none;
+}
+.validation {
+  height: 14px;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0;
+  color: red;
+  padding: 0px 5px;
+}

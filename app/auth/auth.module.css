@@ -1,0 +1,24 @@
+.block {
+  /* font-family: 'Roboto'; */
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 22px;
+  color: #000000;
+}
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  transition: all 0.3s;
+}
+.answer {
+  text-align: left;
+  font-size: 16px;
+  letter-spacing: 0.07em;
+  line-height: 19px;
+}
+.bold {
+  font-weight: 700;
+}
