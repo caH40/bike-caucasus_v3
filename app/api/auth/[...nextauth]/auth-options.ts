@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 import { User } from '@/Models/User';
 import { IUser } from '@/types/models.interface';
+import { connectToMongo } from '../../../../database/mongodb/mongoose';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -15,13 +16,13 @@ export const authOptions: AuthOptions = {
       },
 
       async authorize(credentials, req) {
-        // console.log('В авторизации', credentials);
-
         // проверка на заполнение всех обязательных данных
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
         const { username, password } = credentials;
+
+        await connectToMongo();
         const userDB: IUser | null = await User.findOne({
           username: username.toLowerCase(),
         }).lean();
@@ -37,6 +38,7 @@ export const authOptions: AuthOptions = {
           name: userDB.username,
           email: userDB.email,
           role: userDB.role,
+          image: userDB.photoProfile,
         };
       },
     }),
@@ -56,21 +58,21 @@ export const authOptions: AuthOptions = {
       return token;
     },
 
-    async signIn({ user, account, profile, email, credentials }) {
-      // обработка ввода данных в формS авторизации?
-      // console.log('Обработчик callback signIn', user);
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   // console.log({ user, account, profile, email, credentials });
 
-      if (!user || (user.name?.length ?? 0) < 4) {
-        return false;
-      }
-      return true;
-    },
+    //   // обработка ввода данных в формS авторизации?
+    //   // console.log('Обработчик callback signIn', user);
+
+    //   return true;
+    // },
     async session({ session, token }) {
       if (session.user) {
         // console.log('Обработчик callback session', token);
 
         session.user.id = token.id;
         session.user.role = token.role;
+        session.user.image = token.picture;
       }
 
       return session;

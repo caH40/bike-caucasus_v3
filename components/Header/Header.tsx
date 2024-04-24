@@ -1,10 +1,9 @@
 import Image from 'next/image';
 
-import Navbar from '../UI/Navbar/Navbar';
-
-import styles from './Header.module.css';
+import Navbar from '@/UI/Navbar/Navbar';
 import UserAccount from '@/UI/UserAccount/UserAccount';
-import Login from '../UI/Login/Login';
+import Login from '@/UI/Login/Login';
+import styles from './Header.module.css';
 
 const Header = () => {
   return (

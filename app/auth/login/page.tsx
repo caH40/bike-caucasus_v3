@@ -10,6 +10,7 @@ import BoxButtonAuth from '@/UI/BoxButtonAuth/BoxButtonAuth';
 import { validatePassword, validateUsername } from '../../../utils/validatorService';
 import styles from '../auth.module.css';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type Inputs = {
   username: string;
@@ -20,6 +21,7 @@ type Inputs = {
 export default function LoginPage() {
   // данные валидации с сервера
   const [validationAll, setValidationAll] = useState('');
+  const router = useRouter();
 
   const {
     register,
@@ -29,9 +31,11 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<Inputs> = async (dataForm) => {
     const response = await signIn('credentials', { ...dataForm, redirect: false });
+
     if (!response?.ok) {
-      setValidationAll('Ошибка аутентификации');
+      setValidationAll('Неверный логин или пароль');
     } else {
+      router.back();
       setValidationAll('');
     }
   };

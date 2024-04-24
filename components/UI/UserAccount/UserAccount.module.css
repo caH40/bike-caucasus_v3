@@ -5,3 +5,6 @@
   object-position: center;
   cursor: pointer;
 }
+.btn {
+  background: none;
+}

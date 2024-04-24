@@ -1,7 +1,9 @@
-.box {
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
+.btn {
+  background: none;
+  margin: 0;
+  padding: 0;
+  width: 21px;
+  height: 28px;
 }
 .img {
   object-fit: fill;
