@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Navbar from '../UI/Navbar/Navbar';
 
 import styles from './Header.module.css';
-import Link from 'next/link';
+import UserAccount from '@/UI/UserAccount/UserAccount';
+import Login from '../UI/Login/Login';
 
 const Header = () => {
   return (
@@ -13,19 +14,15 @@ const Header = () => {
           <Image width={'199'} height={'51'} src="/images/icons/logo.svg" alt="Logo" />
         </div>
         <div className={styles.navbar}>
-          {/* <Adaptive sizeScreen="lg"> */}
           <Navbar />
-          <Link href="/api/auth/signin">Login</Link>
-          {/* <div className={styles.box__user}>
-                <UserAccount isAuth={isAuth} />
-              </div> */}
-          {/* <div className={styles.item__login}>
-                <Login isAuth={isAuth} />
-              </div> */}
-          {/* </Adaptive> */}
-          {/* <Adaptive sizeScreen="lg" visible={true}>
-              <NavbarMobile />
-            </Adaptive> */}
+
+          <div className={styles.box__auth}>
+            <div className={styles.box__user}>
+              <UserAccount />
+            </div>
+
+            <Login />
+          </div>
         </div>
       </div>
     </header>

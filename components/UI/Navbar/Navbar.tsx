@@ -19,13 +19,22 @@ const links = [
 
 const Navbar = () => {
   const pathname = usePathname();
+  const isActivePage = (href: string) => {
+    if (pathname === '/' && pathname === href) {
+      return true;
+    }
+    if (href !== '/') {
+      return pathname.startsWith(href);
+    }
+    return false;
+  };
 
   return (
     <nav className={styles.nav}>
       <ul className={styles.list}>
         {links.map((link) => (
           <li className={styles.item} key={link.id}>
-            <Link className={cx('link', { active: pathname === link.href })} href={link.href}>
+            <Link className={cx('link', { active: isActivePage(link.href) })} href={link.href}>
               {link.name}
             </Link>
           </li>

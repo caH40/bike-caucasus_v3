@@ -16,10 +16,14 @@
   align-items: center;
   gap: 0 44px;
 }
-.box__user {
-  width: 30px;
-  height: 30px;
+.box__auth {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0 25px;
 }
-.item__login {
-  margin-left: 25px;
+.box__user {
+  border-radius: 50%;
+  flex: 0 0 30px;
+  height: 30px;
 }
