@@ -35,10 +35,10 @@ export default function LoginPage() {
     const response = await signIn('credentials', { ...dataForm, redirect: false });
 
     if (!response?.ok) {
-      toast.error('Неверный логин или пароль', { className: 'toast-error' });
+      toast.error('Неверный логин или пароль');
       setValidationAll('Неверный логин или пароль');
     } else {
-      toast.success('Успешная аутентификация', { className: 'toast-success' });
+      toast.success('Успешная аутентификация');
       router.back();
 
       setValidationAll('');
