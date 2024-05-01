@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import AuthBlock from '@/UI/AuthBlock/AuthBlock';
-import BoxInputAuth from '@/UI/BoxInputAuth/BoxInputAuth';
-import BoxButtonAuth from '@/UI/BoxButtonAuth/BoxButtonAuth';
+import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
+import BoxInputAuth from '../../../components/UI/BoxInputAuth/BoxInputAuth';
+import BoxButtonAuth from '../../../components/UI/BoxButtonAuth/BoxButtonAuth';
 import {
   validateEmail,
   validatePassword,
   validateUsername,
-} from '../../../utils/validatorService';
+} from '../../../libs/utils/validatorService';
 
 import type { SubmitHandler } from 'react-hook-form';
 import styles from '../auth.module.css';

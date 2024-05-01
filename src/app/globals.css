@@ -10,6 +10,10 @@
   --btn-auth-bg: #55b3ae;
 
   --error-color: red;
+  --error: red;
+  --warning: #ffa500;
+  --info: blue;
+  --success: green;
 }
 
 * {
@@ -43,4 +47,27 @@ ul {
 }
 button {
   border: none;
+}
+
+/* стили для попапа уведомлений */
+.toast-error {
+  font-size: 1.1rem;
+  border: none;
+  color: var(--main-color);
+  background-color: var(--error);
+}
+.toast-warning {
+  font-size: 1.1rem;
+  border: none;
+  color: var(--main-color);
+  background-color: var(--warning);
+}
+.toast-info {
+  font-size: 1.1rem;
+  border: none;
+  color: var(--main-color);
+  background-color: var(--info);
+}
+.toast {
+  font-size: 1rem;
 }

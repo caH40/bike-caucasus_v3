@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 import { Card as CardModel } from '../../database/mongodb/Models/Trail';
 import { connectToMongo } from '../../database/mongodb/mongoose';
-import { ICard } from '../../types/models.interface';
+import { ICard } from '../../../types/models.interface';
 import Card from '../../components/Card/Card';
 
 export const metadata: Metadata = {

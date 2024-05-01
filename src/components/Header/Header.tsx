@@ -1,8 +1,9 @@
 import Image from 'next/image';
 
-import Navbar from '@/UI/Navbar/Navbar';
-import UserAccount from '@/UI/UserAccount/UserAccount';
-import Login from '@/UI/Login/Login';
+import Navbar from '../UI/Navbar/Navbar';
+import UserAccount from '../UI/UserAccount/UserAccount';
+import ButtonLogin from '../UI/ButtonLogin/ButtonLogin';
+
 import styles from './Header.module.css';
 
 const Header = () => {
@@ -10,7 +11,13 @@ const Header = () => {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div>
-          <Image width={'199'} height={'51'} src="/images/icons/logo.svg" alt="Logo" />
+          <Image
+            priority={true}
+            width={'199'}
+            height={'51'}
+            src="/images/icons/logo.svg"
+            alt="Logo"
+          />
         </div>
         <div className={styles.navbar}>
           <Navbar />
@@ -20,7 +27,7 @@ const Header = () => {
               <UserAccount />
             </div>
 
-            <Login />
+            <ButtonLogin />
           </div>
         </div>
       </div>

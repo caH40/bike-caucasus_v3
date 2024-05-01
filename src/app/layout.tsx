@@ -1,12 +1,13 @@
 import cn from 'classnames';
 
-import Header from '@/components/Header/Header';
-import Providers from '@/components/Providers';
+import Header from '../components/Header/Header';
+import Providers from '../components/Providers';
 import { roboto, montserrat_Alternates } from '../libs/fonts';
 import './globals.css';
 
 // types
 import type { Metadata } from 'next';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bike-caucasus.ru'),
@@ -30,6 +31,11 @@ export default function RootLayout({
             <Header />
             {children}
           </div>
+          <Toaster
+            expand={true}
+            richColors={true}
+            toastOptions={{ className: 'toast-success' }}
+          />
         </Providers>
       </body>
     </html>

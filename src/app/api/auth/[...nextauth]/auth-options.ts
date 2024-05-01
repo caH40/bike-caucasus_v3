@@ -2,8 +2,8 @@ import type { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 
-import { User } from '@/Models/User';
-import { IUser } from '@/types/models.interface';
+import { User } from '../../../../database/mongodb/Models/User';
+import { IUser } from '../../../../types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 
 export const authOptions: AuthOptions = {

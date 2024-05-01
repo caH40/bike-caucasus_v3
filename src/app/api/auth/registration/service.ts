@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { User } from '@/Models/User';
+import { User } from '../../../../database/mongodb/Models/User';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 
 type Params = {

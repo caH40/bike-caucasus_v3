@@ -3,9 +3,13 @@
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 
-import styles from './Login.module.css';
+import styles from './ButtonLogin.module.css';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
+/**
+ * Кнопка "иконка" логина/разлогина на сайт
+ */
 const Login = () => {
   const { status } = useSession();
   const router = useRouter();
@@ -13,9 +17,12 @@ const Login = () => {
 
   const getClick = () => {
     if (isAuthenticated) {
-      signOut();
+      signOut({ redirect: false });
+      toast('Вы вышли из системы', {
+        className: 'toast-success',
+      });
     } else {
-      router.push('/auth/login');
+      router.push('/auth/login', { scroll: false });
     }
   };
   return (

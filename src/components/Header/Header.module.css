@@ -17,13 +17,13 @@
   gap: 0 44px;
 }
 .box__auth {
-  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 0 25px;
+  gap: 0 20px;
 }
 .box__user {
   border-radius: 50%;
+  width: 30px;
   flex: 0 0 30px;
   height: 30px;
 }

@@ -1,16 +1,18 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 
-import AuthBlock from '@/UI/AuthBlock/AuthBlock';
-import BoxInputAuth from '@/UI/BoxInputAuth/BoxInputAuth';
-import BoxButtonAuth from '@/UI/BoxButtonAuth/BoxButtonAuth';
-import { validatePassword, validateUsername } from '../../../utils/validatorService';
+import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
+import BoxInputAuth from '../../../components/UI/BoxInputAuth/BoxInputAuth';
+import BoxButtonAuth from '../../../components/UI/BoxButtonAuth/BoxButtonAuth';
+import { validatePassword, validateUsername } from '../../../libs/utils/validatorService';
+
 import styles from '../auth.module.css';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 type Inputs = {
   username: string;
@@ -33,9 +35,12 @@ export default function LoginPage() {
     const response = await signIn('credentials', { ...dataForm, redirect: false });
 
     if (!response?.ok) {
+      toast.error('Неверный логин или пароль', { className: 'toast-error' });
       setValidationAll('Неверный логин или пароль');
     } else {
+      toast.success('Успешная аутентификация', { className: 'toast-success' });
       router.back();
+
       setValidationAll('');
     }
   };
