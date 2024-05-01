@@ -8,6 +8,7 @@ import './globals.css';
 // types
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
+import Footer from '@/components/Footer/Footer';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bike-caucasus.ru'),
@@ -29,8 +30,10 @@ export default function RootLayout({
         <Providers>
           <div className="container">
             <Header />
-            {children}
+            <main className="main">{children}</main>
+            <Footer />
           </div>
+
           <Toaster
             expand={true}
             richColors={true}
