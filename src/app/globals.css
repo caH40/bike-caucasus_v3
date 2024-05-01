@@ -23,11 +23,13 @@
 }
 html,
 body {
-  max-width: 100vw;
   overflow-x: hidden;
   font-size: 14px;
   color: var(--main-color);
   background: var(--main-bg-color);
+}
+.main {
+  min-height: calc(100vh - 80px);
 }
 a {
   color: inherit;
@@ -41,32 +43,15 @@ ul {
   padding-bottom: 5px;
 }
 .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   max-width: 1620px;
   margin: 0px auto;
   padding: 0px 10px;
 }
 button {
   border: none;
-}
-
-/* стили для попапа уведомлений */
-.toast-error {
-  font-size: 1.1rem;
-  border: none;
-  color: var(--main-color);
-  background-color: var(--error);
-}
-.toast-warning {
-  font-size: 1.1rem;
-  border: none;
-  color: var(--main-color);
-  background-color: var(--warning);
-}
-.toast-info {
-  font-size: 1.1rem;
-  border: none;
-  color: var(--main-color);
-  background-color: var(--info);
 }
 .toast {
   font-size: 1rem;
