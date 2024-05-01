@@ -18,9 +18,7 @@ const Login = () => {
   const getClick = () => {
     if (isAuthenticated) {
       signOut({ redirect: false });
-      toast('Вы вышли из системы', {
-        className: 'toast-success',
-      });
+      toast.success('Вы вышли из системы');
     } else {
       router.push('/auth/login', { scroll: false });
     }
