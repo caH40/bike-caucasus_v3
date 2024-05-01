@@ -14,6 +14,7 @@ import {
 
 import type { SubmitHandler } from 'react-hook-form';
 import styles from '../auth.module.css';
+import { useModalStore } from '@/store/modal';
 
 type Inputs = {
   username: string;
@@ -24,7 +25,7 @@ type Inputs = {
 export default function RegistrationPage() {
   const [validationAll, setValidationAll] = useState('');
   const [isCreatedUser, setIsCreatedUser] = useState(false);
-  const [email, setEmail] = useState<string | null>(null);
+  const setModal = useModalStore((state) => state.setModal);
 
   const {
     register,
@@ -42,62 +43,63 @@ export default function RegistrationPage() {
     });
     const data = await response.json();
     if (response.ok) {
-      setEmail(data.email);
       setIsCreatedUser(true);
+      setModal('Регистрация прошла успешно!', <Answer email={data.email} />);
     } else {
       setValidationAll(data.message);
     }
   };
 
-  return isCreatedUser ? (
-    <AuthBlock>
-      <div className={styles.answer}>
-        <h2 className={styles.answer__title}>Регистрация прошла успешно!</h2>
-        <p>
-          На Вашу почту <b>{email}</b> отправлено письмо для активации аккаунта. Ссылка активна
-          в течении 3 суток.
-        </p>
-      </div>
-    </AuthBlock>
-  ) : (
-    <AuthBlock>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className={styles.title}>Регистрация аккаунта</h2>
-        <BoxInputAuth
-          id="username"
-          autoComplete="username"
-          type="text"
-          register={validateUsername(register)}
-          label="Логин"
-          validationText={errors.username ? errors.username.message : ''}
-        />
-        <BoxInputAuth
-          id="email"
-          autoComplete="email"
-          type="text"
-          register={validateEmail(register)}
-          label="Email"
-          validationText={errors.email ? errors.email.message : ''}
-        />
-        <BoxInputAuth
-          id="password"
-          autoComplete="current-password"
-          type="password"
-          register={validatePassword(register)}
-          label="Пароль"
-          linkLabel="Забыли пароль?"
-          link="password-reset"
-          validationText={errors.password ? errors.password.message : ''}
-        />
-        <BoxButtonAuth
-          help="Уже есть аккаунт?"
-          linkLabel="Вход!"
-          link="login"
-          validationText={validationAll}
-        >
-          Регистрация
-        </BoxButtonAuth>
-      </form>
-    </AuthBlock>
+  return (
+    !isCreatedUser && (
+      <AuthBlock>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h2 className={styles.title}>Регистрация аккаунта</h2>
+          <BoxInputAuth
+            id="username"
+            autoComplete="username"
+            type="text"
+            register={validateUsername(register)}
+            label="Логин"
+            validationText={errors.username ? errors.username.message : ''}
+          />
+          <BoxInputAuth
+            id="email"
+            autoComplete="email"
+            type="text"
+            register={validateEmail(register)}
+            label="Email"
+            validationText={errors.email ? errors.email.message : ''}
+          />
+          <BoxInputAuth
+            id="password"
+            autoComplete="current-password"
+            type="password"
+            register={validatePassword(register)}
+            label="Пароль"
+            linkLabel="Забыли пароль?"
+            link="password-reset"
+            validationText={errors.password ? errors.password.message : ''}
+          />
+          <BoxButtonAuth
+            help="Уже есть аккаунт?"
+            linkLabel="Вход!"
+            link="login"
+            validationText={validationAll}
+          >
+            Регистрация
+          </BoxButtonAuth>
+        </form>
+      </AuthBlock>
+    )
+  );
+}
+
+function Answer({ email }: { email: string }) {
+  return (
+    <>
+      На Вашу почту <b>{email}</b> отправлено письмо для активации аккаунта и подтверждения
+      e-mail. Ссылка активна в течении 3 суток.
+    </>
   );
 }
