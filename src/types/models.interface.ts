@@ -48,11 +48,20 @@ export interface IUser {
   photoProfile: string;
 }
 /**
- *
+ * Модель подтверждения email
  */
 export interface IUserConfirm {
   userId: string;
   date: number;
   activationToken: string;
+  email: string;
+}
+/**
+ * Модель сброса пароля
+ */
+export interface IPasswordReset {
+  userId: string;
+  date: number;
+  tokenReset: string;
   email: string;
 }

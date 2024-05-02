@@ -2,9 +2,9 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 
 import BoxButtonAuth from '../../BoxButtonAuth/BoxButtonAuth';
 import BoxInputAuth from '../../BoxInputAuth/BoxInputAuth';
-import { validatePassword, validateUsername } from '@/libs/utils/validatorService';
-import styles from '../FormAuth.module.css';
+import { validateEmail } from '@/libs/utils/validatorService';
 import { type IRegistrationForm } from '@/types/index.interface';
+import styles from '../FormAuth.module.css';
 
 type Props = {
   validationAll: string;
@@ -14,7 +14,7 @@ type Props = {
 /**
  * Форма для регистрации нового пользователя
  */
-export default function FormLogin({ onSubmit, validationAll }: Props) {
+export default function FormResetPassword({ onSubmit, validationAll }: Props) {
   const {
     register,
     handleSubmit,
@@ -22,24 +22,14 @@ export default function FormLogin({ onSubmit, validationAll }: Props) {
   } = useForm<IRegistrationForm>({ mode: 'all' });
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h2 className={styles.title}>Вход на Bike-Caucasus</h2>
+      <h2 className={styles.title}>Сброс пароля</h2>
       <BoxInputAuth
-        id="username"
-        autoComplete="username"
+        id="email"
+        autoComplete="email"
         type="text"
-        register={validateUsername(register)}
-        label="Логин"
-        validationText={errors.username ? errors.username.message : ''}
-      />
-      <BoxInputAuth
-        id="password"
-        autoComplete="current-password"
-        type="password"
-        register={validatePassword(register)}
-        label="Пароль"
-        linkLabel="Забыли пароль?"
-        link="reset-password"
-        validationText={errors.password ? errors.password.message : ''}
+        register={validateEmail(register)}
+        label="Email"
+        validationText={errors.email ? errors.email.message : ''}
       />
       <BoxButtonAuth
         help="Впервые на сайте?"
@@ -47,7 +37,7 @@ export default function FormLogin({ onSubmit, validationAll }: Props) {
         link="registration"
         validationText={validationAll}
       >
-        Вход
+        Сбросить пароль
       </BoxButtonAuth>
     </form>
   );
