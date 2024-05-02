@@ -2,6 +2,7 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "unused-imports/no-unused-imports": "error",
+    "no-unused-vars": "warn",
     "no-console": "warn"
   },
   "plugins": ["unused-imports"]
