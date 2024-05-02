@@ -1,0 +1,20 @@
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  transition: all 0.3s;
+}
+.answer__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.answer {
+  text-align: left;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  line-height: 19px;
+}
+.bold {
+  font-weight: 700;
+}

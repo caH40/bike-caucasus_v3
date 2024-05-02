@@ -2,12 +2,8 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 
 import BoxButtonAuth from '../../BoxButtonAuth/BoxButtonAuth';
 import BoxInputAuth from '../../BoxInputAuth/BoxInputAuth';
-import {
-  validateEmail,
-  validatePassword,
-  validateUsername,
-} from '@/libs/utils/validatorService';
-import styles from './FormRegistration.module.css';
+import { validatePassword, validateUsername } from '@/libs/utils/validatorService';
+import styles from './FormLogin.module.css';
 import { type IRegistrationForm } from '@/types/index.interface';
 
 type Props = {
@@ -18,7 +14,7 @@ type Props = {
 /**
  * Форма для регистрации нового пользователя
  */
-export default function FormRegistration({ onSubmit, validationAll }: Props) {
+export default function FormLogin({ onSubmit, validationAll }: Props) {
   const {
     register,
     handleSubmit,
@@ -26,7 +22,7 @@ export default function FormRegistration({ onSubmit, validationAll }: Props) {
   } = useForm<IRegistrationForm>({ mode: 'all' });
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h2 className={styles.title}>Регистрация аккаунта</h2>
+      <h2 className={styles.title}>Вход на Bike-Caucasus</h2>
       <BoxInputAuth
         id="username"
         autoComplete="username"
@@ -34,14 +30,6 @@ export default function FormRegistration({ onSubmit, validationAll }: Props) {
         register={validateUsername(register)}
         label="Логин"
         validationText={errors.username ? errors.username.message : ''}
-      />
-      <BoxInputAuth
-        id="email"
-        autoComplete="email"
-        type="text"
-        register={validateEmail(register)}
-        label="Email"
-        validationText={errors.email ? errors.email.message : ''}
       />
       <BoxInputAuth
         id="password"
@@ -54,12 +42,12 @@ export default function FormRegistration({ onSubmit, validationAll }: Props) {
         validationText={errors.password ? errors.password.message : ''}
       />
       <BoxButtonAuth
-        help="Уже есть аккаунт?"
-        linkLabel="Вход!"
-        link="login"
+        help="Впервые на сайте?"
+        linkLabel="Создать аккаунт!"
+        link="registration"
         validationText={validationAll}
       >
-        Регистрация
+        Вход
       </BoxButtonAuth>
     </form>
   );
