@@ -9,6 +9,7 @@ import type { SubmitHandler } from 'react-hook-form';
 import { useModalStore } from '@/store/modal';
 import FormRegistration from '@/components/UI/Forms/FormRegistration/FormRegistration';
 import { type IRegistrationForm } from '@/types/index.interface';
+import { toast } from 'sonner';
 
 /**
  * Страница регистрации
@@ -29,11 +30,13 @@ export default function RegistrationPage() {
     const data = await response.json();
     if (response.ok) {
       setIsCreatedUser(true);
-
       // отображение модального информационного окна при успешной регистрации
       setModal('Регистрация прошла успешно!', <Answer email={data.email} />);
     } else {
-      setValidationAll(data.message);
+      toast.error(data?.message || 'Ошибка при регистрации');
+      // дублирование сообщения об ошибке в консоле
+      console.error(data); // eslint-disable-line
+      setValidationAll(data?.message);
     }
   };
 

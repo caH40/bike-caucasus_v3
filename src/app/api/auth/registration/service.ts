@@ -1,7 +1,10 @@
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '../../../../database/mongodb/Models/User';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
+import { mailService } from '@/services/mail/nodemailer';
+import { UserConfirm } from '@/database/mongodb/Models/User-confirm';
 
 type Params = {
   username: string;
@@ -31,10 +34,24 @@ export async function postRegistrationService({
   const salt = await bcrypt.genSalt(10);
   const passwordHashed = await bcrypt.hash(password, salt);
 
-  await User.create({
+  // создание нового пользователя
+  const { _id: id } = await User.create({
     username: username.toLowerCase(),
     email: email.toLowerCase(),
     password: passwordHashed,
     role,
   });
+
+  // создание записи контроля активации профиля и подтверждения email
+  const activationToken = uuidv4();
+  await UserConfirm.create({
+    userId: String(id),
+    date: Date.now(),
+    activationToken,
+    email: 10,
+  });
+
+  // отправка письма для контроля активации профиля и подтверждения email
+  const target = 'registration'; //для отправки письма для активации
+  await mailService(target, activationToken, email, username, password);
 }
