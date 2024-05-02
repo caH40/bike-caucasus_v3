@@ -167,8 +167,8 @@ export function htmlRegistration(
                       Для активации учетной записи перейдите по ссылке:
                     </p>
                     <p style="margin: 0; padding: 0 0 20px 0">
-                      <a href="${FRONT}/confirm-email/${token}" target="_blank"
-                        >${FRONT}/confirm-email/${token}</a
+                      <a href="${FRONT}/auth/confirm-email/${token}" target="_blank"
+                        >${FRONT}/auth/confirm-email/${token}</a
                       >
                     </p>
                     <p style="margin: 0; padding: 0 0 5px 0">Логин: ${username}</p>

@@ -9,6 +9,9 @@ import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 const { MAIL_USER, MAIL_PASS, MAIL_HOST, MAIL_PORT, MAIL_SECURE, NEXT_PUBLIC_SERVER_FRONT } =
   process.env;
 
+/**
+ * Сервис отправки email
+ */
 export async function mailService(
   target: string,
   token: string,
