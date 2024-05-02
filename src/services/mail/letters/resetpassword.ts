@@ -166,8 +166,8 @@ export function htmlResetPassword(
                       Для сброса пароля перейдите по ссылке:
                     </p>
                     <p style="margin: 0; padding: 0 0 20px 0">
-                      <a href="${FRONT}/auth/new-password/${token}" target="_blank"
-                        >${FRONT}/auth/new-password/${token}</a
+                      <a href="${FRONT}/auth/create-new-password/${token}" target="_blank"
+                        >${FRONT}/auth/create-new-password/${token}</a
                       >
                     </p>
                     <p style="margin: 0; padding: 0 0 20px 0">
