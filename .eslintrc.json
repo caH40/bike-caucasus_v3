@@ -4,7 +4,8 @@
     "unused-imports/no-unused-imports": "error",
     "no-unused-vars": ["warn"],
     "no-console": "warn",
-    "prefer-const": "error"
+    "prefer-const": "error",
+    "no-template-curly-in-string": "error" // Запрет использования шаблонных строк, если в них нет переменных
   },
   "plugins": ["unused-imports"]
 }

@@ -48,7 +48,7 @@ export async function postRegistrationService({
     userId: String(id),
     date: Date.now(),
     activationToken,
-    email: 10,
+    email: email.toLowerCase(),
   });
 
   // отправка письма для контроля активации профиля и подтверждения email
