@@ -1,6 +1,6 @@
+import { errorRouteHandler } from '@/services/error-controler';
 import { confirmEmailService } from './service';
 
-// }
 type Params = {
   params: { id: string };
 };
@@ -11,10 +11,6 @@ export async function GET(request: Request, { params }: Params) {
 
     return Response.json({ message: messageRes });
   } catch (error) {
-    if (error instanceof Error) {
-      return Response.json({ message: error.message }, { status: 500 });
-    } else {
-      return Response.json({ message: 'error on server' }, { status: 500 });
-    }
+    return errorRouteHandler(error, 'error on server');
   }
 }

@@ -1,6 +1,6 @@
 import { connectToMongo } from '@/database/mongodb/mongoose';
-import { User } from '@/database/mongodb/Models/User';
-import { UserConfirm } from '@/database/mongodb/Models/User-confirm';
+import { User } from '@/Models/User';
+import { UserConfirm } from '@/Models/User-confirm';
 
 /**
  * Сервис подтверждения email, указанного при регистрации

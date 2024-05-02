@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { postRegistrationService } from './service';
+import { errorRouteHandler } from '@/services/error-controler';
 
 /**
  * Регистрация нового пользователя.
  */
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const { username, email, password, role } = await req.json();
 
@@ -16,9 +16,6 @@ export async function POST(req: NextRequest) {
 
     return Response.json({ message: 'Новый пользователь создан', email });
   } catch (error) {
-    if (error instanceof Error) {
-      return Response.json({ message: error.message }, { status: 500 });
-    }
-    return new NextResponse('error on server', { status: 500 });
+    return errorRouteHandler(error, 'error on server');
   }
 }
