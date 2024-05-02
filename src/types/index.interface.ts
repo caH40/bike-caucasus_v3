@@ -21,3 +21,12 @@ export interface IUserData {
   email: string;
   role: string;
 }
+
+/**
+ * Данные запрашиваемые при регистрации нового пользователя
+ */
+export interface IRegistrationForm {
+  username: string;
+  email: string;
+  password: string;
+}

@@ -11,7 +11,7 @@ type Props = {
 };
 
 /**
- * Блок для всех операций связанных с аутентификацией.
+ * Контейнер-блок для всех операций связанных с аутентификацией.
  */
 export default function AuthBlock({ children }: Props) {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function AuthBlock({ children }: Props) {
       if (e.key !== 'Escape') {
         return;
       }
-      router.push('/');
+      router.push('/', { scroll: false });
     };
 
     window.addEventListener('keydown', keyHandler);
@@ -29,7 +29,7 @@ export default function AuthBlock({ children }: Props) {
     return () => window.removeEventListener('keydown', keyHandler);
   }, [router]);
 
-  const getClick = () => router.push('/');
+  const getClick = () => router.push('/', { scroll: false });
 
   return (
     <div className={styles.background}>

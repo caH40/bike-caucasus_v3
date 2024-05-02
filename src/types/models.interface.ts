@@ -47,3 +47,12 @@ export interface IUser {
   role: string;
   photoProfile: string;
 }
+/**
+ *
+ */
+export interface IUserConfirm {
+  userId: string;
+  date: number;
+  activationToken: string;
+  email: string;
+}

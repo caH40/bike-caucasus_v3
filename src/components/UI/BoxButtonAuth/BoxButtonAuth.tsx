@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import styles from './BoxButtonAuth.module.css';
@@ -20,14 +19,6 @@ export default function BoxButtonAuth({
   validationText = '',
   children,
 }: Props) {
-  const router = useRouter();
-  const getClick = () => {
-    if (!link) {
-      return;
-    }
-    router.push(link);
-  };
-
   return (
     <div>
       <div className={styles.box__button}>
@@ -39,15 +30,10 @@ export default function BoxButtonAuth({
 
       <div className={styles.box__help}>
         <span>{help}</span>
-        {link ? (
-          <Link className={styles.link} href={link}>
+        {link && (
+          <Link className={styles.link} href={link} scroll={false}>
             {linkLabel}
           </Link>
-        ) : (
-          // <span onClick={getClick} className={styles.link}>
-          //   {linkLabel}
-          // </span>
-          <span></span>
         )}
       </div>
     </div>
