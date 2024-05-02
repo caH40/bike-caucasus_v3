@@ -8,7 +8,7 @@ type ModalStore = {
   isActive: boolean;
   title: string | null;
   body: React.ReactNode | null;
-  setModal: (title: string, body: React.ReactNode) => void;
+  setModal: (title: string, body: React.ReactNode) => void; // eslint-disable-line
   resetModal: () => void;
 };
 

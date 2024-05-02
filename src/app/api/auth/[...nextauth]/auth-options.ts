@@ -15,7 +15,7 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password', placeholder: 'your password' },
       },
 
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // проверка на заполнение всех обязательных данных
         if (!credentials?.username || !credentials?.password) {
           return null;
