@@ -17,7 +17,7 @@ export async function mailService(
   token: string,
   email: string,
   username: string,
-  password: string
+  password?: string
 ) {
   if (
     !MAIL_USER ||
@@ -47,6 +47,9 @@ export async function mailService(
   const date = new Date().toLocaleString();
 
   if (target === 'registration') {
+    if (!password) {
+      throw new Error('Нет пароля');
+    }
     subject = 'Подтверждение регистрации на сайте bike-caucasus.ru';
     html = htmlRegistration(username, password, email, token, NEXT_PUBLIC_SERVER_FRONT, date);
   }
@@ -55,6 +58,9 @@ export async function mailService(
     html = htmlResetPassword(username, email, token, NEXT_PUBLIC_SERVER_FRONT, date);
   }
   if (target === 'savedNewPassword') {
+    if (!password) {
+      throw new Error('Нет пароля');
+    }
     subject = 'Обновление пароля профиля на сайте bike-caucasus.ru';
     html = htmlRefreshPassword(date, username, password);
   }
