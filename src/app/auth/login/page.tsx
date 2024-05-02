@@ -10,6 +10,9 @@ import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
 import FormLogin from '@/components/UI/Forms/FormLogin/FormLogin';
 import { IRegistrationForm } from '@/types/index.interface';
 
+/**
+ * Страница аутентификации
+ */
 export default function LoginPage() {
   // данные валидации с сервера
   const [validationAll, setValidationAll] = useState('');

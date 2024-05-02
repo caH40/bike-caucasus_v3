@@ -3,7 +3,7 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import BoxButtonAuth from '../../BoxButtonAuth/BoxButtonAuth';
 import BoxInputAuth from '../../BoxInputAuth/BoxInputAuth';
 import { validatePassword, validateUsername } from '@/libs/utils/validatorService';
-import styles from './FormLogin.module.css';
+import styles from '../FormAuth.module.css';
 import { type IRegistrationForm } from '@/types/index.interface';
 
 type Props = {

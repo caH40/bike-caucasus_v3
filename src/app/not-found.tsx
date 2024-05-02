@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+/**
+ * Страница когда задан несуществующий путь (адрес страницы)
+ */
 export default function Page404() {
   const pathWrong = usePathname();
 

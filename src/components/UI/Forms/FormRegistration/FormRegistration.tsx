@@ -7,7 +7,7 @@ import {
   validatePassword,
   validateUsername,
 } from '@/libs/utils/validatorService';
-import styles from './FormRegistration.module.css';
+import styles from '../FormAuth.module.css';
 import { type IRegistrationForm } from '@/types/index.interface';
 
 type Props = {

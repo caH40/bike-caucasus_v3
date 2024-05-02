@@ -10,6 +10,9 @@ import { useModalStore } from '@/store/modal';
 import FormRegistration from '@/components/UI/Forms/FormRegistration/FormRegistration';
 import { type IRegistrationForm } from '@/types/index.interface';
 
+/**
+ * Страница регистрации
+ */
 export default function RegistrationPage() {
   const [validationAll, setValidationAll] = useState('');
   const [isCreatedUser, setIsCreatedUser] = useState(false);

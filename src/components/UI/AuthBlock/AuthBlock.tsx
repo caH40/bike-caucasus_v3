@@ -11,7 +11,7 @@ type Props = {
 };
 
 /**
- * Блок для всех операций связанных с аутентификацией.
+ * Контейнер-блок для всех операций связанных с аутентификацией.
  */
 export default function AuthBlock({ children }: Props) {
   const router = useRouter();
