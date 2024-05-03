@@ -16,6 +16,9 @@
 # production
 /build
 
+#папка с разными документами 
+/src/documents
+
 # misc
 .DS_Store
 *.pem

@@ -1,5 +1,6 @@
 import type { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import Yandex from 'next-auth/providers/yandex';
 import bcrypt from 'bcrypt';
 
 import { User } from '../../../../database/mongodb/Models/User';
@@ -8,6 +9,11 @@ import { connectToMongo } from '../../../../database/mongodb/mongoose';
 
 export const authOptions: AuthOptions = {
   providers: [
+    Yandex({
+      id: 'yandex',
+      clientId: process.env.YANDEX_CLIENT_ID!,
+      clientSecret: process.env.YANDEX_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
