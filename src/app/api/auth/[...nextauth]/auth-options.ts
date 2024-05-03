@@ -2,6 +2,8 @@ import type { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import Yandex from 'next-auth/providers/yandex';
 import bcrypt from 'bcrypt';
+import Google from 'next-auth/providers/google';
+import VK from 'next-auth/providers/vk';
 
 import { User } from '../../../../database/mongodb/Models/User';
 import { IUser } from '../../../../types/models.interface';
@@ -13,6 +15,16 @@ export const authOptions: AuthOptions = {
       id: 'yandex',
       clientId: process.env.YANDEX_CLIENT_ID!,
       clientSecret: process.env.YANDEX_CLIENT_SECRET!,
+    }),
+    Google({
+      id: 'google',
+      clientId: process.env.GOOGLE_ID!,
+      clientSecret: process.env.GOOGLE_SECRET!,
+    }),
+    VK({
+      id: 'vk',
+      clientId: process.env.VK_CLIENT_ID!,
+      clientSecret: process.env.VK_CLIENT_SECRET!,
     }),
     CredentialsProvider({
       name: 'Credentials',
@@ -63,8 +75,10 @@ export const authOptions: AuthOptions = {
       return token;
     },
 
-    async signIn({ user, account }) {
+    async signIn({ user, account, credentials }) {
       try {
+        console.log(credentials);
+
         // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
         if (!account || account?.provider === 'credentials') {
           return true;
