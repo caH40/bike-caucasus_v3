@@ -7,7 +7,7 @@ import { type IRegistrationForm } from '@/types/index.interface';
 import styles from '../FormAuth.module.css';
 
 type Props = {
-  validationAll: string;
+  validationAll?: string;
   onSubmit: SubmitHandler<IRegistrationForm>;
 };
 

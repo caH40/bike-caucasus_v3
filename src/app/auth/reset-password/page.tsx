@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
 export default function PasswordReset() {
-  const [validationAll, setValidationAll] = useState('');
   const [showForm, setShowForm] = useState(true);
   const setModal = useModalStore((state) => state.setModal);
 
@@ -28,7 +27,6 @@ export default function PasswordReset() {
 
     if (!response.ok) {
       const data = await response.json();
-      setValidationAll(data.message);
       toast.error(data.message);
       return;
     }
@@ -40,7 +38,7 @@ export default function PasswordReset() {
   return (
     showForm && (
       <AuthBlock>
-        <FormResetPassword onSubmit={onSubmit} validationAll={validationAll} />
+        <FormResetPassword onSubmit={onSubmit} />
       </AuthBlock>
     )
   );

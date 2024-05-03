@@ -16,7 +16,7 @@ export async function resetPasswordService(email: string): Promise<{
   const userDB = await User.findOne({ email });
 
   if (!userDB) {
-    throw new Error('e-mail не найден');
+    return { message: 'Сброс пароля', email };
   }
 
   const tokenReset = uuidv4();
