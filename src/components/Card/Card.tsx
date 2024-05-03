@@ -95,12 +95,12 @@ const Card = ({ trail }: Props) => {
       <div className={styles.box__kudos}>
         <div>
           <Image width={23} height={13} src="/images/icons/kudos.svg" alt="kudos" />
-          <span className={styles.kudos__text}>{trail.likes ?? 0}</span>
+          {/* <span className={styles.kudos__text}>{trail.likes ?? 0}</span> */}
         </div>
 
         <div>
           <Image width={23} height={13} src="/images/icons/eye.svg" alt="eye" />
-          <span className={styles.kudos__text}>{trail.kudoses?.views ?? 0}</span>
+          {/* <span className={styles.kudos__text}>{trail.kudoses?.views ?? 0}</span> */}
         </div>
       </div>
     </a>

@@ -4,9 +4,9 @@ import { resetPasswordService } from './service';
 /**
  * Контроллер сброса пароля
  */
-export async function POST(res: Response) {
+export async function POST(req: Request) {
   try {
-    const { email } = await res.json();
+    const { email } = await req.json();
 
     const resetPassAnswer = await resetPasswordService(email);
 
