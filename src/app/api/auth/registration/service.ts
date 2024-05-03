@@ -28,7 +28,7 @@ export async function postRegistrationService({
   });
 
   if (candidate) {
-    throw new Error('Ошибка при регистрации');
+    throw new Error('Ошибка при регистрации. Такой username или email уже зарегистрирован.');
   }
 
   const salt = await bcrypt.genSalt(10);
