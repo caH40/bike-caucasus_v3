@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
 
 import styles from './ButtonLogin.module.css';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 /**
@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 const Login = () => {
   const { status } = useSession();
   const router = useRouter();
+  const pathUrl = usePathname();
   const isAuthenticated = status === 'authenticated';
 
   const getClick = () => {
@@ -20,7 +21,7 @@ const Login = () => {
       signOut({ redirect: false });
       toast.success('Вы вышли из системы');
     } else {
-      router.push('/auth/login', { scroll: false });
+      router.push(`/auth/login?callbackUrl=${pathUrl}`, { scroll: false });
     }
   };
   return (

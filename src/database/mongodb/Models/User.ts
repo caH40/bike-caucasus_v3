@@ -4,6 +4,10 @@ const TeamSchema = new Schema({
   id: { type: String },
   name: { type: String, required: true },
 });
+const ProviderSchema = new Schema({
+  providerAccountId: { type: String, unique: true },
+  image: { type: String },
+});
 
 const userSchema = new Schema({
   username: { type: String, unique: true, required: true },
@@ -20,9 +24,9 @@ const userSchema = new Schema({
   team: { type: TeamSchema, default: null },
   role: { type: String }, // !!!! изменить структуру данных, добавить разрешения
   image: { type: String }, // пусть до картинки
-  googleId: { type: String, unique: true }, // данные для аутентификации с помощью сервисов
-  vkId: { type: String, unique: true }, // данные для аутентификации с помощью сервисов
-  yandexId: { type: String, unique: true }, // данные для аутентификации с помощью сервисов
+  yandex: { type: ProviderSchema }, // данные для аутентификации с помощью сервисов
+  vk: { type: ProviderSchema }, // данные для аутентификации с помощью сервисов
+  google: { type: ProviderSchema }, // данные для аутентификации с помощью сервисов
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

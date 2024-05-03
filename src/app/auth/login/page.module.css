@@ -1,0 +1,10 @@
+.block {
+  margin-top: 25px;
+}
+.line {
+  margin-bottom: 10px;
+  padding: 0;
+  height: 3px;
+  border: none;
+  background: var(--main-bg-color);
+}

@@ -1,14 +1,27 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { type SubmitHandler } from 'react-hook-form';
 import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
 import FormLogin from '@/components/UI/Forms/FormLogin/FormLogin';
 import { IRegistrationForm } from '@/types/index.interface';
+import AuthProviderBlock from '@/components/AuthProviderBlock/AuthProviderBlock';
+
+import styles from './page.module.css';
+
+/**
+ * при использовании useSearchParams помещается в Suspense
+ */
+function AuthWithSearchParams() {
+  // получение страницы с которой осуществился вход для последующего возвращения
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  return <AuthProviderBlock callbackUrl={callbackUrl} />;
+}
 
 /**
  * Страница аутентификации
@@ -35,6 +48,12 @@ export default function LoginPage() {
   return (
     <AuthBlock>
       <FormLogin onSubmit={onSubmit} validationAll={validationAll} />
+      <section className={styles.block}>
+        <hr className={styles.line} />
+        <Suspense>
+          <AuthWithSearchParams />
+        </Suspense>
+      </section>
     </AuthBlock>
   );
 }
