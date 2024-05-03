@@ -3,7 +3,7 @@
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { type SubmitHandler } from 'react-hook-form';
 import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
@@ -14,16 +14,22 @@ import AuthProviderBlock from '@/components/AuthProviderBlock/AuthProviderBlock'
 import styles from './page.module.css';
 
 /**
+ * при использовании useSearchParams помещается в Suspense
+ */
+function AuthWithSearchParams() {
+  // получение страницы с которой осуществился вход для последующего возвращения
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  return <AuthProviderBlock callbackUrl={callbackUrl} />;
+}
+
+/**
  * Страница аутентификации
  */
 export default function LoginPage() {
   // данные валидации с сервера
   const [validationAll, setValidationAll] = useState('');
   const router = useRouter();
-
-  // получение страницы с которой осуществился вход для последующего возвращения
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
     const response = await signIn('credentials', { ...dataForm, redirect: false });
@@ -44,7 +50,9 @@ export default function LoginPage() {
       <FormLogin onSubmit={onSubmit} validationAll={validationAll} />
       <section className={styles.block}>
         <hr className={styles.line} />
-        <AuthProviderBlock callbackUrl={callbackUrl} />
+        <Suspense>
+          <AuthWithSearchParams />
+        </Suspense>
       </section>
     </AuthBlock>
   );
