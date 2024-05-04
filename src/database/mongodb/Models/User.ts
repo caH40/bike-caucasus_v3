@@ -4,29 +4,30 @@ const TeamSchema = new Schema({
   id: { type: String },
   name: { type: String, required: true },
 });
-const ProviderSchema = new Schema({
-  providerAccountId: { type: String, unique: true },
-  image: { type: String },
-});
 
 const userSchema = new Schema({
-  username: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-  email: { type: String, unique: true, required: true },
-  emailConfirm: { type: Boolean, default: false },
-  phone: { type: String, default: null },
+  credentials: {
+    username: { type: String }, // при регистрации через логин/пароль
+    password: { type: String }, // при регистрации через логин/пароль
+  },
+  provider: {
+    name: { type: String }, // провайдер с помощью которого произошла регистрация
+    id: { type: String }, // провайдер с помощью которого произошла регистрация
+  },
+  username: { type: String, unique: true }, // при регистрации через провайдера, берется слово до @, в дальнейшем можно изменять
+  email: { type: String, unique: true },
+  emailConfirm: { type: Boolean, default: false }, // через соцсети автоматически true
+  image: { type: String }, // путь до картинки профиля
   firstName: { type: String },
   patronymic: { type: String },
   lastName: { type: String },
   gender: { type: String },
-  birthday: { type: Date, default: null },
-  city: { type: String, default: null },
+  phone: { type: String },
+  birthday: { type: Date },
+  city: { type: String },
   team: { type: TeamSchema, default: null },
   role: { type: String }, // !!!! изменить структуру данных, добавить разрешения
-  image: { type: String }, // пусть до картинки
-  yandex: { type: ProviderSchema }, // данные для аутентификации с помощью сервисов
-  vk: { type: ProviderSchema }, // данные для аутентификации с помощью сервисов
-  google: { type: ProviderSchema }, // данные для аутентификации с помощью сервисов
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

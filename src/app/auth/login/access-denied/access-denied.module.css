@@ -4,9 +4,16 @@
   margin-bottom: 5px;
 }
 .text {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
 }
-
+.list {
+  list-style: disc;
+  list-style-position: inside;
+}
+.list li::after {
+  content: ';';
+}
 .link {
   font-size: 1.2rem;
   text-decoration: underline;

@@ -8,6 +8,7 @@ import VK from 'next-auth/providers/vk';
 import { User } from '../../../../database/mongodb/Models/User';
 import { IUser } from '../../../../types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
+import { customAlphabet } from 'nanoid';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -83,43 +84,76 @@ export const authOptions: AuthOptions = {
     async signIn({ user, account }) {
       try {
         // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
-        if (!account || account?.provider === 'credentials') {
+        if (!account || account.provider === 'credentials') {
           return true;
+        }
+
+        const provider = account.provider;
+        let email = user.email;
+        if (provider === 'vk') {
+          email = email ?? (account.email as string | undefined);
+        }
+
+        // email обязателен !!!!!! добавить в информационное сообщение
+        if (!email) {
+          return false;
         }
 
         // подключение к БД
         await connectToMongo();
 
-        // провайдер с через которого осуществляется аутентификация
-        // два положительных случая:
-        // 1. Провайдер уже привязан к аккаунту
-        // 2. email провайдера совпадает с email зарегистрированного пользователя по логин/паролю
-        const provider = account.provider;
+        // поиск пользователя с id и provider в БД
+        const userWithIdAndProviderDB = await User.findOne({
+          'provider.id': user.id,
+          'provider.name': provider,
+        });
 
-        // поиск пользователя с id пользователя с Провайдера в БД
-        // если пользователь с таким провайдером есть, то обновление картинки профиля и выход
-        const dynamicKey = `${provider}.providerAccountId`;
-        const userWithProviderDB = await User.findOne({ [dynamicKey]: user.id });
-        if (userWithProviderDB) {
-          userWithProviderDB[provider].image = user.image;
-          await userWithProviderDB.save();
-          return true;
-        }
+        // если не найден, то регистрация
+        if (!userWithIdAndProviderDB) {
+          const userDB = await User.findOne({ username: user.name });
+          let username = user.name;
+          // если username уже занят, генерируем username
+          if (userDB || !username) {
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            const nanoid = customAlphabet(alphabet, 6);
+            username = nanoid();
+          }
 
-        // если пользователя с таким провайдером нет, то поиск пользователя,
-        // зарегистрированного по логин/пароль с таким же email
-        const userDB = await User.findOne({ email: user.email });
-        if (userDB) {
-          userDB[provider] = {
-            providerAccountId: user.id,
+          const userNew = {
+            provider: {
+              id: user.id,
+              name: provider.toLocaleLowerCase(),
+            },
+            email: email.toLocaleLowerCase(),
             image: user.image,
+            username: username.toLocaleLowerCase(),
+            role: 'user',
+            emailConfirm: true,
           };
-          await userDB.save();
+          await User.create(userNew);
+
           return true;
         }
 
-        // сначала необходимо зарегистрироваться по логин/пароль
-        return false;
+        // email из provider соответствует email User с БД
+        if (userWithIdAndProviderDB.email === email) {
+          return true;
+        }
+
+        // проверка наличия email из provider у другого пользователя с БД
+        const userWithCurrentEmailDB = await User.findOne({ email: email });
+
+        // ошибка, email из провайдера уже у другого пользователя !!!!!!!!!!
+        if (userWithCurrentEmailDB) {
+          return false;
+        }
+
+        // значит пользователь выполняющий аутентификацию изменил свой email у провайдера
+        // обновляем email в БД
+        userWithIdAndProviderDB.email = email;
+        await userWithIdAndProviderDB.save();
+
+        return true;
       } catch (error) {
         console.log(error); // eslint-disable-line
         return true;
