@@ -1,4 +1,4 @@
-import type { AuthOptions } from 'next-auth';
+import { type AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import Yandex from 'next-auth/providers/yandex';
 import bcrypt from 'bcrypt';
@@ -57,6 +57,7 @@ export const authOptions: AuthOptions = {
           email: userDB.email,
           role: userDB.role,
           image: userDB.photoProfile,
+          provider: 'credentials',
         };
       },
     }),
@@ -67,18 +68,20 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         // добавление в токен данных user
+        if (account) {
+          token.provider = account?.provider;
+        }
         token = { ...token, ...user };
       }
+
       return token;
     },
 
-    async signIn({ user, account, credentials }) {
+    async signIn({ user, account }) {
       try {
-        console.log(credentials);
-
         // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
         if (!account || account?.provider === 'credentials') {
           return true;
@@ -127,6 +130,7 @@ export const authOptions: AuthOptions = {
         session.user.id = token.id;
         session.user.role = token.role;
         session.user.image = token.picture;
+        session.user.provider = token.provider;
       }
 
       return session;

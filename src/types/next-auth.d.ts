@@ -11,6 +11,7 @@ declare module 'next-auth' {
       /** The user's postal address. */
       role: string;
       id: string;
+      provider: string;
     } & DefaultSession['user'];
   }
 }
@@ -21,5 +22,6 @@ declare module 'next-auth/jwt' {
     /** OpenID ID Token */
     role: string;
     id: string;
+    provider: string;
   }
 }

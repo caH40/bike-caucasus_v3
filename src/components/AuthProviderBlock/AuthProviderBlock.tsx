@@ -1,5 +1,6 @@
-import ButtonIconAuth from '../UI/ButtonIconAuth/ButtonIconAuth';
+import { signIn } from 'next-auth/react';
 
+import Button from '../UI/Button/Button';
 import styles from './AuthProviderBlock.module.css';
 
 type Props = {
@@ -7,27 +8,29 @@ type Props = {
 };
 
 export default function AuthProviderBlock({ callbackUrl }: Props) {
+  const getAuth = (provider: string, callbackUrl: string) => {
+    signIn(provider, { callbackUrl });
+  };
   return (
     <div className={styles.wrapper}>
-      <div>Войти через:</div>
       <div className={styles.buttons}>
-        <ButtonIconAuth
-          provider="yandex"
+        <Button
+          name="yandex"
           iconSrc="/images/icons/yandex.svg"
-          callbackUrl={callbackUrl}
-          size={30}
+          getClick={() => getAuth('yandex', callbackUrl)}
+          size={20}
         />
-        <ButtonIconAuth
-          provider="vk"
+        <Button
+          name="vk"
           iconSrc="/images/icons/vk.svg"
-          callbackUrl={callbackUrl}
-          size={30}
+          getClick={() => getAuth('vk', callbackUrl)}
+          size={20}
         />
-        <ButtonIconAuth
-          provider="google"
+        <Button
           iconSrc="/images/icons/gmail.svg"
-          callbackUrl={callbackUrl}
-          size={30}
+          getClick={() => getAuth('google', callbackUrl)}
+          size={20}
+          name="google"
         />
       </div>
     </div>

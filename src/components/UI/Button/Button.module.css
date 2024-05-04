@@ -1,0 +1,40 @@
+.btn {
+  width: 100%;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--link-auth-color);
+  background-color: var(--btn-auth-bg);
+  border-radius: 0.7rem;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
+  padding: 0.3rem 1.5rem;
+  transition: all 0.3s;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid var(--main-color-dark);
+}
+.btn:disabled {
+  background-color: gray;
+}
+.btn:focus {
+  outline: 3px solid var(--btn-focus);
+}
+.btn:hover {
+  background-color: var(--link-auth-color-hover);
+  transition: all 0.3s;
+}
+.btn:active {
+  transform: translateY(-1px);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s;
+}
+.img {
+  display: block;
+}
+.without__icon {
+  justify-content: center;
+}

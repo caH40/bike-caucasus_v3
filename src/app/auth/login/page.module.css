@@ -1,10 +1,38 @@
-.block {
-  margin-top: 25px;
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 20px;
 }
 .line {
-  margin-bottom: 10px;
+  margin: 25px 0px;
   padding: 0;
   height: 3px;
   border: none;
   background: var(--main-bg-color);
+}
+/* .block__btn {
+  margin-bottom: 20px;
+} */
+.credentials {
+  margin-top: 15px;
+}
+.entering {
+  height: 221px;
+  transition: ease-in-out 0.2s;
+}
+.entered {
+  transition: ease-in-out 0.2s;
+  height: 221px;
+  overflow: visible;
+}
+.exiting {
+  height: 0;
+  transition: ease-in-out 0.2s;
+  overflow: hidden;
+}
+.exited {
+  transition: ease-in-out 0.2s;
+  height: 0;
+  overflow: hidden;
 }
