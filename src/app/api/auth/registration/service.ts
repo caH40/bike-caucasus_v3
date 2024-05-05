@@ -5,6 +5,7 @@ import { User } from '../../../../database/mongodb/Models/User';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { mailService } from '@/services/mail/nodemailer';
 import { UserConfirm } from '@/database/mongodb/Models/User-confirm';
+import { getNextSequenceValue } from '@/services/sequence';
 
 type Params = {
   username: string;
@@ -24,7 +25,7 @@ export async function postRegistrationService({
   // проверка существует ли уже пользователь с таким email или username.
   const candidate = await User.findOne({
     // email, username сохраняется в нижний регистр.
-    $or: [{ email: email.toLowerCase() }, { username: username.toLowerCase() }],
+    $or: [{ email: email.toLowerCase() }, { 'credentials.username': username.toLowerCase() }],
   });
 
   if (candidate) {
@@ -34,18 +35,27 @@ export async function postRegistrationService({
   const salt = await bcrypt.genSalt(10);
   const passwordHashed = await bcrypt.hash(password, salt);
 
+  const id = await getNextSequenceValue('user');
+
   // создание нового пользователя
-  const { _id: id } = await User.create({
-    username: username.toLowerCase(),
+  const userDB = await User.create({
+    id,
+    credentials: {
+      username: username.toLowerCase(),
+      password: passwordHashed,
+    },
     email: email.toLowerCase(),
-    password: passwordHashed,
     role,
   });
+
+  if (!userDB) {
+    throw new Error('Ошибка при сохранении данных Пользователя в БД');
+  }
 
   // создание записи контроля активации профиля и подтверждения email
   const activationToken = uuidv4();
   await UserConfirm.create({
-    userId: String(id),
+    userId: String(userDB.id),
     date: Date.now(),
     activationToken,
     email: email.toLowerCase(),
@@ -53,5 +63,5 @@ export async function postRegistrationService({
 
   // отправка письма для контроля активации профиля и подтверждения email
   const target = 'registration'; //для отправки письма для активации
-  await mailService(target, activationToken, email, username, password);
+  await mailService(target, activationToken, email, username.toLowerCase(), password);
 }

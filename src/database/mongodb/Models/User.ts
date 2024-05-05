@@ -1,24 +1,45 @@
-import { models, Schema, model, Types } from 'mongoose';
+import { IUserModel } from '@/types/models.interface';
+import { models, Schema, model } from 'mongoose';
 
 const TeamSchema = new Schema({
   id: { type: Number, require: true }, // id номер, присваиваемый автоматически при регистрации
   name: { type: String, required: true },
 });
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUserModel>(
   {
-    _id: Types.ObjectId,
-    id: { type: Number, unique: true, require: true },
+    id: {
+      type: Number,
+      unique: true,
+      required: true,
+      validate: {
+        validator: function (v: unknown) {
+          return v !== null;
+        },
+        message: 'id cannot be null',
+      },
+    },
     credentials: {
-      username: { type: String }, // при регистрации через логин/пароль
-      password: { type: String }, // при регистрации через логин/пароль
+      type: {
+        username: { type: String }, // при регистрации через логин/пароль
+        password: { type: String }, // при регистрации через логин/пароль
+      },
+      default: null,
     },
     provider: {
       name: { type: String }, // провайдер с помощью которого произошла регистрация
       id: { type: String }, // провайдер с помощью которого произошла регистрация
     },
-    username: { type: String, unique: true }, // при регистрации через провайдера, берется слово до @, в дальнейшем можно изменять
-    email: { type: String, unique: true },
+    email: {
+      type: String,
+      unique: true,
+      validate: {
+        validator: function (v: unknown) {
+          return v !== null;
+        },
+        message: 'email cannot be null',
+      },
+    },
     emailConfirm: { type: Boolean, default: false }, // через соцсети автоматически true
     image: { type: String }, // путь до картинки профиля
     person: {
@@ -48,4 +69,4 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-export const User = models.User || model('User', userSchema);
+export const User = models.User || model<IUserModel>('User', userSchema);

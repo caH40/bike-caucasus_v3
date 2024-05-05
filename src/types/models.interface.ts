@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Date, Types } from 'mongoose';
 
 /**
  * Интерфейс велосипедного маршрута
@@ -27,12 +27,12 @@ export interface ICard {
 }
 
 /**
- * Интерфейс пользователя сайта
+ * Модель пользователя сайта
  */
-export interface IUser {
+export interface IUserModel {
   _id: Types.ObjectId;
   id: number;
-  credentials: {
+  credentials?: {
     username: string; // при регистрации через логин/пароль
     password: string; // при регистрации через логин/пароль
   };
@@ -40,7 +40,6 @@ export interface IUser {
     name: string; // провайдер с помощью которого произошла регистрация
     id: string; // провайдер с помощью которого произошла регистрация
   };
-  username: string; // при регистрации через провайдера, берется слово до @, в дальнейшем можно изменять
   email: string;
   emailConfirm: boolean; // через соцсети автоматически true
   image: string; // путь до картинки профиля
@@ -67,21 +66,13 @@ export interface IUser {
     whatsapp?: string;
     garminConnect?: string;
   };
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 export interface IUserProfile
   extends Omit<
-    IUser,
-    | 'credentials'
-    | '_id'
-    | 'provider'
-    | 'phone'
-    | 'email'
-    | 'person'
-    | 'createdAt'
-    | 'updatedAt'
-    | '__v'
+    IUserModel,
+    '_id' | 'provider' | 'phone' | 'email' | 'person' | 'createdAt' | 'updatedAt' | '__v'
   > {
   person: {
     firstName: string;
@@ -114,3 +105,11 @@ export interface IPasswordReset {
   tokenReset: string;
   email: string;
 }
+
+/**
+ * Типизация модели Counter
+ */
+export type CounterModel = {
+  name: string;
+  sequenceValue: number;
+};
