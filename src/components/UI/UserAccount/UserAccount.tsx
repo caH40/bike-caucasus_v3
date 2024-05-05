@@ -7,6 +7,9 @@ import { toast } from 'sonner';
 
 import styles from './UserAccount.module.css';
 
+/**
+ * Кнопка с изображением профиля для входа в систему/в профиль
+ */
 const UserAccount = () => {
   const { status, data: session } = useSession();
   const router = useRouter();
