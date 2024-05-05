@@ -8,17 +8,18 @@ const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 /**
  * Получение данных профиля с сервера.
  * @param id - id профиля на сайте.
- * @returns
  */
 async function getProfile(id: string): Promise<IProfileForClient | null> {
   try {
     if (!server) {
       throw new Error('Не получены данные с server с .env');
     }
-    const res = await fetch(`${server}/api/profile/${id}`);
+    const res = await fetch(`${server}/api/profile/${id}`, { cache: 'no-store' });
+
     if (!res.ok) {
       throw new Error('Ошибка fetch');
     }
+
     const profile = await res.json();
 
     return profile;
@@ -27,11 +28,17 @@ async function getProfile(id: string): Promise<IProfileForClient | null> {
   }
 }
 
+type Params = {
+  params: {
+    id: string; // id профиля пользователя на сайте
+  };
+};
+
 /**
  * Страница профиля спортсмена
  */
-export default async function ProfilePage() {
-  const profile = await getProfile('1000');
+export default async function ProfilePage({ params }: Params) {
+  const profile = await getProfile(params.id);
 
   return (
     <div className={styles.wrapper}>

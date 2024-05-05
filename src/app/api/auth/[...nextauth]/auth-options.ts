@@ -43,10 +43,11 @@ export const authOptions: AuthOptions = {
 
         await connectToMongo();
         const userDB: IUser | null = await User.findOne({
-          username: username.toLowerCase(),
+          'credentials.username': username.toLowerCase(),
         }).lean();
 
-        const isCorrectedPass = userDB && (await bcrypt.compare(password, userDB.password));
+        const isCorrectedPass =
+          userDB && (await bcrypt.compare(password, userDB.credentials.password));
 
         if (!isCorrectedPass) {
           return null;
@@ -54,10 +55,10 @@ export const authOptions: AuthOptions = {
 
         return {
           id: String(userDB._id),
-          name: userDB.username,
+          name: userDB.credentials.username,
           email: userDB.email,
           role: userDB.role,
-          image: userDB.photoProfile,
+          image: userDB.image,
           provider: 'credentials',
         };
       },

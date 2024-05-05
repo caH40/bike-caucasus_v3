@@ -7,6 +7,9 @@ export interface IProfileForClient {
   email?: string; // не всегда отправляется
   emailConfirm?: boolean; // не всегда отправляется
   image?: string;
+  provider: {
+    name: string;
+  };
   person: {
     firstName: string;
     patronymic?: string;
