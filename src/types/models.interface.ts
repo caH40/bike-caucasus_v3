@@ -31,22 +31,71 @@ export interface ICard {
  */
 export interface IUser {
   _id: Types.ObjectId;
-  username: string;
-  password: string;
-  date: number;
+  id: number;
+  credentials: {
+    username: string; // при регистрации через логин/пароль
+    password: string; // при регистрации через логин/пароль
+  };
+  provider: {
+    name: string; // провайдер с помощью которого произошла регистрация
+    id: string; // провайдер с помощью которого произошла регистрация
+  };
+  username: string; // при регистрации через провайдера, берется слово до @, в дальнейшем можно изменять
   email: string;
-  emailConfirm: boolean;
-  phone: string;
-  firstName: string;
-  patronymic: string;
-  lastName: string;
-  gender: string;
-  birthday: number;
+  emailConfirm: boolean; // через соцсети автоматически true
+  image: string; // путь до картинки профиля
+  person: {
+    firstName: string;
+    patronymic: string;
+    lastName: string;
+    birthday: string;
+    gender: string;
+  };
   city: string;
-  team: string;
-  role: string;
-  photoProfile: string;
+  phone: string;
+  team: {
+    id: number; // id номер, присваиваемый автоматически при регистрации
+    name: string;
+  };
+  role: string; // !!!! изменить структуру данных, добавить разрешения
+  social: {
+    telegram?: string;
+    vk?: string;
+    youtube?: string;
+    komoot?: string;
+    strava?: string;
+    whatsapp?: string;
+    garminConnect?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
+export interface IUserProfile
+  extends Omit<
+    IUser,
+    | 'credentials'
+    | '_id'
+    | 'provider'
+    | 'phone'
+    | 'email'
+    | 'person'
+    | 'createdAt'
+    | 'updatedAt'
+    | '__v'
+  > {
+  person: {
+    firstName: string;
+    patronymic: string;
+    lastName: string;
+    ageCategory: string;
+    birthday?: string;
+    gender: string;
+  };
+  provider: {
+    name: string;
+  };
+}
+
 /**
  * Модель подтверждения email
  */
