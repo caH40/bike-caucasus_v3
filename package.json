@@ -13,7 +13,6 @@
     "bcrypt": "^5.1.1",
     "classnames": "^2.5.1",
     "mongoose": "^8.3.2",
-    "nanoid": "^5.0.7",
     "next": "^14.2.3",
     "next-auth": "^4.24.7",
     "nodemailer": "^6.9.13",

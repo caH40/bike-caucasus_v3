@@ -4,6 +4,7 @@ import { User } from '@/Models/User';
 import { PasswordReset } from '@/database/mongodb/Models/Password-reset';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { mailService } from '@/services/mail/nodemailer';
+import { type IUserModel } from '@/types/models.interface';
 
 /**
  * Сервис сброса пароля
@@ -13,7 +14,10 @@ export async function resetPasswordService(email: string): Promise<{
   email: string;
 }> {
   await connectToMongo();
-  const userDB = await User.findOne({ email });
+  const userDB: IUserModel | null = await User.findOne({
+    email,
+    credentials: { $exists: true, $ne: null },
+  });
 
   if (!userDB) {
     return { message: 'Сброс пароля', email };
@@ -29,7 +33,7 @@ export async function resetPasswordService(email: string): Promise<{
   });
 
   const target = 'resetPassword';
-  await mailService(target, tokenReset, email, userDB.username);
+  await mailService(target, tokenReset, email, userDB.credentials?.username ?? 'username');
 
   return { message: 'Сброс пароля', email };
 }

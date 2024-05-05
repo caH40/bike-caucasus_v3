@@ -3,10 +3,12 @@
  */
 export interface IProfileForClient {
   id: number;
-  username: string;
   email?: string; // не всегда отправляется
   emailConfirm?: boolean; // не всегда отправляется
   image?: string;
+  credentials?: {
+    username: string; // при регистрации через логин/пароль
+  };
   provider: {
     name: string;
   };

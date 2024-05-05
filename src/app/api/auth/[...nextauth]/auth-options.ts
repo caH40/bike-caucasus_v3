@@ -6,9 +6,9 @@ import Google from 'next-auth/providers/google';
 import VK from 'next-auth/providers/vk';
 
 import { User } from '../../../../database/mongodb/Models/User';
-import { IUser } from '../../../../types/models.interface';
+import { IUserModel } from '../../../../types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
-import { customAlphabet } from 'nanoid';
+import { getNextSequenceValue } from '@/services/sequence';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -42,19 +42,22 @@ export const authOptions: AuthOptions = {
         const { username, password } = credentials;
 
         await connectToMongo();
-        const userDB: IUser | null = await User.findOne({
+        const userDB: IUserModel | null = await User.findOne({
           'credentials.username': username.toLowerCase(),
         }).lean();
 
-        const isCorrectedPass =
-          userDB && (await bcrypt.compare(password, userDB.credentials.password));
+        if (!userDB || !userDB.credentials) {
+          return null;
+        }
+
+        const isCorrectedPass = await bcrypt.compare(password, userDB.credentials.password);
 
         if (!isCorrectedPass) {
           return null;
         }
 
         return {
-          id: String(userDB._id),
+          id: String(userDB._id), // !!!!!!!!! добавлять нормальный id
           name: userDB.credentials.username,
           email: userDB.email,
           role: userDB.role,
@@ -111,29 +114,26 @@ export const authOptions: AuthOptions = {
 
         // если не найден, то регистрация
         if (!userWithIdAndProviderDB) {
-          const userDB = await User.findOne({ username: user.name });
-          let username = user.name;
-          // если username уже занят, генерируем username
-          if (userDB || !username) {
-            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-            const nanoid = customAlphabet(alphabet, 6);
-            username = nanoid();
-          }
-
+          const id = await getNextSequenceValue('user');
           const userNew = {
+            id,
             provider: {
               id: user.id,
               name: provider.toLocaleLowerCase(),
             },
             email: email.toLocaleLowerCase(),
             image: user.image,
-            username: username.toLocaleLowerCase(),
             role: 'user',
             emailConfirm: true,
           };
-          await User.create(userNew);
 
-          return true;
+          const userCreated = await User.create(userNew);
+
+          if (userCreated) {
+            return true;
+          }
+
+          return false;
         }
 
         // email из provider соответствует email User с БД
@@ -157,7 +157,7 @@ export const authOptions: AuthOptions = {
         return true;
       } catch (error) {
         console.log(error); // eslint-disable-line
-        return true;
+        return false;
       }
     },
     async session({ session, token }) {
