@@ -19,6 +19,8 @@
   --color-orange: #ec9c07;
 
   --line: #979797; /* для разделительной линии hr */
+  --white-12: rgba(255, 255, 255, 0.2);
+  --white-20: rgba(255, 255, 255, 0.2);
 }
 
 * {
@@ -48,6 +50,11 @@ a {
 ul {
   list-style: none;
 }
+button {
+  border: none;
+  background: none;
+  color: inherit;
+}
 .body {
   min-height: calc(100vh - 80px);
   padding-bottom: 5px;
@@ -59,9 +66,6 @@ ul {
   max-width: 1620px;
   margin: 0px auto;
   padding: 0px 10px;
-}
-button {
-  border: none;
 }
 .toast {
   font-size: 1rem;

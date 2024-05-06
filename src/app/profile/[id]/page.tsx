@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { type IProfileForClient } from '@/types/fetch.interface';
 import { type ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
+import MenuProfile from '@/components/UI/menu/MenuProfile/MenuProfile';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
@@ -50,7 +51,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
           <div className={styles.empty}></div>
         )}
         {profile && (
-          <section className={styles.details}>
+          <section className={styles.wrapper__details}>
             <h1
               className={styles.title}
             >{`${profile.person.lastName} ${profile.person.firstName}`}</h1>
@@ -77,7 +78,9 @@ export default async function ProfilePage({ params }: ParamsWithId) {
             </dl>
           </section>
         )}
-        <div className={styles.menu}></div>
+        <div className={styles.menu}>
+          <MenuProfile />
+        </div>
       </aside>
 
       <div className={styles.wrapper__main}>
