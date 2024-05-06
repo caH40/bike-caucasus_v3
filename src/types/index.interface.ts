@@ -30,3 +30,36 @@ export interface IRegistrationForm {
   email: string;
   password: string;
 }
+/**
+ * Данные profile из provider Yandex
+ */
+export type ProfileProvider = {
+  id: string;
+  login: string;
+  client_id: string;
+  display_name: string;
+  real_name: string;
+  first_name: string; // yandex, vk
+  last_name: string; // yandex, vk
+  sex: string;
+  default_email: string;
+  emails?: [string];
+  default_avatar_id?: string;
+  is_avatar_empty?: boolean;
+  psuid?: string;
+  given_name?: string; // google
+  family_name?: string; // google
+  email: string; // google
+  name?: string; // google
+  picture: string; // google
+  photo_100: string; // vk
+};
+
+/**
+ * Входные параметры функции передаваемые динамически route next
+ */
+export type ParamsWithId = {
+  params: {
+    id: string; // id профиля пользователя на сайте
+  };
+};

@@ -20,7 +20,7 @@ const UserAccount = () => {
       : '/images/avatar.svg';
   const getClick = () => {
     if (status === 'authenticated') {
-      router.push('/profile');
+      router.push(`/profile/${session.user.id}`);
     } else {
       toast.info('Необходима авторизация');
     }

@@ -7,6 +7,7 @@ import { UserConfirm } from '@/Models/User-confirm';
  */
 export async function confirmEmailService(activationToken: string): Promise<string> {
   await connectToMongo();
+
   const userConfirmDB = await UserConfirm.findOneAndDelete({ activationToken });
 
   if (userConfirmDB) {

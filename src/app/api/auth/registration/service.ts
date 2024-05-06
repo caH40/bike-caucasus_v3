@@ -55,7 +55,7 @@ export async function postRegistrationService({
   // создание записи контроля активации профиля и подтверждения email
   const activationToken = uuidv4();
   await UserConfirm.create({
-    userId: String(userDB.id),
+    userId: String(userDB._id),
     date: Date.now(),
     activationToken,
     email: email.toLowerCase(),
