@@ -1,7 +1,8 @@
 import Image from 'next/image';
 
-import styles from './ProfilePage.module.css';
 import { type IProfileForClient } from '@/types/fetch.interface';
+import { type ParamsWithId } from '@/types/index.interface';
+import styles from './ProfilePage.module.css';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
@@ -20,24 +21,18 @@ async function getProfile(id: string): Promise<IProfileForClient | null> {
       throw new Error('Ошибка fetch');
     }
 
-    const profile = await res.json();
+    const dataFromAPI = await res.json();
 
-    return profile;
+    return dataFromAPI.profile;
   } catch (error) {
     return null;
   }
 }
 
-type Params = {
-  params: {
-    id: string; // id профиля пользователя на сайте
-  };
-};
-
 /**
  * Страница профиля спортсмена
  */
-export default async function ProfilePage({ params }: Params) {
+export default async function ProfilePage({ params }: ParamsWithId) {
   const profile = await getProfile(params.id);
 
   return (
@@ -54,21 +49,27 @@ export default async function ProfilePage({ params }: Params) {
         ) : (
           <div className={styles.empty}></div>
         )}
-        {!profile && (
+        {profile && (
           <section className={styles.details}>
-            <h1 className={styles.title}>Бережнев Александр</h1>
+            <h1
+              className={styles.title}
+            >{`${profile.person.lastName} ${profile.person.firstName}`}</h1>
             <dl className={styles.list}>
               <dt className={styles.desc__title}>Город</dt>
-              <dd className={styles.desc__detail}>Пятигорск </dd>
+              <dd className={styles.desc__detail}>{profile.city ?? 'нет данных'}</dd>
 
               <dt className={styles.desc__title}>Возраст</dt>
-              <dd className={styles.desc__detail}>ветеран</dd>
+              <dd className={styles.desc__detail}>
+                {profile.person.ageCategory ?? 'нет данных'}
+              </dd>
 
               <dt className={styles.desc__title}>Пол</dt>
-              <dd className={styles.desc__detail}>мужской</dd>
+              <dd className={styles.desc__detail}>
+                {profile.person.gender === 'female' ? 'женский' : 'мужской'}
+              </dd>
 
               <dt className={styles.desc__title}>Команда</dt>
-              <dd className={styles.desc__detail}>нет</dd>
+              <dd className={styles.desc__detail}>{profile.team?.name ?? 'нет данных'}</dd>
 
               <dt className={styles.desc__title}>Контакты</dt>
               <dd className={styles.desc__detail}>tel</dd>

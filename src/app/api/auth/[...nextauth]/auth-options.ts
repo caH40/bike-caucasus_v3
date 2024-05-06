@@ -9,6 +9,7 @@ import { User } from '../../../../database/mongodb/Models/User';
 import { IUserModel } from '../../../../types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
+import { getProviderProfile } from '@/libs/dto/provider';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -74,18 +75,18 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
-      if (user) {
-        // добавление в токен данных user
-        if (account) {
-          token.provider = account?.provider;
-        }
-        token = { ...token, ...user };
+      // добавление в токен данных user
+      if (account && account.provider === 'vk') {
+        token.provider = account.provider;
+        token.email = account.email as string;
+      } else if (user) {
+        token.email = user.email;
       }
 
       return token;
     },
 
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       try {
         // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
         if (!account || account.provider === 'credentials') {
@@ -114,6 +115,8 @@ export const authOptions: AuthOptions = {
 
         // если не найден, то регистрация
         if (!userWithIdAndProviderDB) {
+          const profileCur = getProviderProfile(profile, provider);
+
           const id = await getNextSequenceValue('user');
           const userNew = {
             id,
@@ -125,6 +128,11 @@ export const authOptions: AuthOptions = {
             image: user.image,
             role: 'user',
             emailConfirm: true,
+            person: {
+              firstName: profileCur.firstName,
+              lastName: profileCur.lastName,
+              gender: profileCur.gender,
+            },
           };
 
           const userCreated = await User.create(userNew);
@@ -162,7 +170,18 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
+        await connectToMongo();
+        const userDB: { id: number } | null = await User.findOne(
+          { email: token.email },
+          { id: true, _id: false }
+        ).lean();
+
+        // при отсутствии пользователя в БД выходить из сессии
+        if (!userDB) {
+          return session;
+        }
+
+        session.user.id = String(userDB.id);
         session.user.role = token.role;
         session.user.image = token.picture;
         session.user.provider = token.provider;
