@@ -22,6 +22,9 @@
   flex-direction: column;
   gap: 34px 0;
 }
+.wrapper__details {
+  margin-bottom: 24px;
+}
 .title__races {
   font-size: 1.6rem;
   font-weight: 700;
