@@ -4,11 +4,13 @@ import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserService } from '@/services/mongodb/UserService';
+import styles from './AccountProfilePage.module.css';
+
 const user = new UserService();
 /**
  * Страница изменения данных профиля
  */
-export default async function AccountSettings() {
+export default async function AccountProfilePage() {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user.idDB) {
@@ -20,18 +22,20 @@ export default async function AccountSettings() {
   const profile = await user.getProfile({ idDB });
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       <div>
-        Server:<pre>{JSON.stringify(session, null, 2)}</pre>
-      </div>
-      <hr />
-      <div>
-        DB:<pre>{JSON.stringify(profile, null, 2)}</pre>
-      </div>
-      <hr />
-      <div>
-        Client:
-        <SessionClient />
+        <div>
+          Server:<pre>{JSON.stringify(session, null, 2)}</pre>
+        </div>
+        <hr />
+        <div>
+          DB:<pre>{JSON.stringify(profile, null, 2)}</pre>
+        </div>
+        <hr />
+        <div>
+          Client:
+          <SessionClient />
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,7 @@
+.wrapper {
+  display: flex;
+  gap: 45px;
+}
+.aside__left {
+  flex: 0 1 300px;
+}

@@ -6,37 +6,36 @@ import MenuOnPage from '../MenuOnPage/MenuOnPage';
 import type { TMenuOnPage } from '@/types/index.interface';
 
 /**
- * Меню на странице профиля
+ * Меню на странице account/profile
  */
-export default function MenuProfile() {
-  // сохранение ссылки в буфер обмена
-  const shareUrl = () => {
-    navigator.clipboard
-      .writeText(window.location.href)
-      .then(() => toast.success('Ссылка на аккаунт скопирована в буфер обмена'));
-  };
-
+export default function MenuAccountProfile() {
   // в разработке
   const onDev = () => toast.info('В разработке');
 
   const buttons: TMenuOnPage[] = [
     {
       id: 0,
-      name: 'Настройки',
+      name: 'Профиль',
       classes: ['btn', 'top'],
       href: '/account/profile',
     },
     {
       id: 1,
-      name: 'Разное',
+      name: 'Команда',
       classes: ['btn'],
-      onClick: onDev,
+      href: '/account/team',
     },
     {
       id: 2,
-      name: 'Поделиться ссылкой',
+      name: 'Аккаунт',
+      classes: ['btn'],
+      href: '/account/details',
+    },
+    {
+      id: 3,
+      name: 'Разное',
       classes: ['btn', 'bottom'],
-      onClick: shareUrl,
+      onClick: onDev,
     },
   ];
 

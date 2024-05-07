@@ -79,7 +79,6 @@ export type MessageServiceDB<T> = {
 export type TMenuOnPage = {
   id: number;
   name: string;
-  position: string;
   classes: string[];
   href?: string;
   onClick?: () => void;
