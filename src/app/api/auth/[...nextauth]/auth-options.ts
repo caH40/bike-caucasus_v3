@@ -10,6 +10,7 @@ import { IUserModel } from '../../../../types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
 import { getProviderProfile } from '@/libs/dto/provider';
+import { type ObjectId } from 'mongoose';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -171,9 +172,9 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         await connectToMongo();
-        const userDB: { id: number; role: string } | null = await User.findOne(
+        const userDB: { id: number; role: string; _id: ObjectId } | null = await User.findOne(
           { email: token.email },
-          { id: true, role: true, _id: false }
+          { id: true, role: true }
         ).lean();
 
         // при отсутствии пользователя в БД выходить из сессии
@@ -182,6 +183,7 @@ export const authOptions: AuthOptions = {
         }
 
         session.user.id = String(userDB.id);
+        session.user.idDB = String(userDB._id);
         session.user.role = userDB.role;
         session.user.image = token.picture;
         session.user.provider = token.provider;

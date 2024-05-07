@@ -63,3 +63,12 @@ export type ParamsWithId = {
     id: string; // id профиля пользователя на сайте
   };
 };
+
+/**
+ * Ответ с сервиса Базы Данных
+ */
+export type MessageServiceDB<T> = {
+  data?: T;
+  ok: boolean;
+  message: string;
+};

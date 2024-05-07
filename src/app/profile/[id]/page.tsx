@@ -1,20 +1,21 @@
 import Image from 'next/image';
 
-import { type ParamsWithId } from '@/types/index.interface';
-import styles from './ProfilePage.module.css';
 import MenuProfile from '@/components/UI/menu/MenuProfile/MenuProfile';
-import { fetchProfileService } from '@/app/api/profile/[id]/service';
+import { UserService } from '@/services/mongodb/UserService';
+import type { ParamsWithId } from '@/types/index.interface';
+import styles from './ProfilePage.module.css';
 
 /**
  * Страница профиля спортсмена
  */
 export default async function ProfilePage({ params }: ParamsWithId) {
-  const profile = await fetchProfileService({ id: +params.id });
+  const userService = new UserService();
+  const { data: profile } = await userService.getProfile({ id: +params.id });
 
   return (
     <div className={styles.wrapper}>
       <aside className={styles.wrapper__aside}>
-        {profile?.image ? (
+        {profile ? (
           <Image
             width={300}
             height={300}
