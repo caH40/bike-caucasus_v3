@@ -72,7 +72,7 @@ export interface IUserModel {
 export interface IUserProfile
   extends Omit<
     IUserModel,
-    '_id' | 'provider' | 'phone' | 'email' | 'person' | 'createdAt' | 'updatedAt' | '__v'
+    '_id' | 'provider' | 'email' | 'phone' | 'person' | 'createdAt' | 'updatedAt' | '__v'
   > {
   person: {
     firstName: string;
@@ -82,6 +82,8 @@ export interface IUserProfile
     birthday?: string;
     gender: string;
   };
+  email?: string;
+  phone?: string;
   provider: {
     name: string;
   };

@@ -171,9 +171,9 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         await connectToMongo();
-        const userDB: { id: number } | null = await User.findOne(
+        const userDB: { id: number; role: string } | null = await User.findOne(
           { email: token.email },
-          { id: true, _id: false }
+          { id: true, role: true, _id: false }
         ).lean();
 
         // при отсутствии пользователя в БД выходить из сессии
@@ -182,7 +182,7 @@ export const authOptions: AuthOptions = {
         }
 
         session.user.id = String(userDB.id);
-        session.user.role = token.role;
+        session.user.role = userDB.role;
         session.user.image = token.picture;
         session.user.provider = token.provider;
       }

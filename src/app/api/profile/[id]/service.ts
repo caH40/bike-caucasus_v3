@@ -4,27 +4,30 @@ import { connectToMongo } from '@/database/mongodb/mongoose';
 import { type IProfileForClient } from '@/types/fetch.interface';
 import { type IUserProfile, type IUserModel } from '@/types/models.interface';
 
+type Params = {
+  id?: number;
+  email?: string;
+  isPublic?: boolean;
+};
 /**
  * Сервис получение данных пользователя
  */
-export async function fetchProfileService(
-  id: number,
-  isPublic = true
-): Promise<IProfileForClient | null> {
+export async function fetchProfileService({
+  id,
+  email,
+  isPublic = true,
+}: Params): Promise<IProfileForClient | null> {
   await connectToMongo();
-  const userDB: IUserModel | null = await User.findOne(
-    { id },
-    {
-      _id: false,
-      'provider.id': false,
-      'credentials.password': false,
-      phone: false,
-      email: false,
-      createdAt: false,
-      updatedAt: false,
-      __v: false,
-    }
-  ).lean();
+  const query = id ? { id } : { email };
+
+  const userDB: IUserModel | null = await User.findOne(query, {
+    _id: false,
+    'provider.id': false,
+    'credentials.password': false,
+    createdAt: false,
+    updatedAt: false,
+    __v: false,
+  }).lean();
 
   if (!userDB) {
     throw new Error('Пользователь не найден');
@@ -38,6 +41,8 @@ export async function fetchProfileService(
   const profile: IUserProfile = { ...userDB, person };
   if (isPublic) {
     delete profile.person.birthday;
+    delete profile.email;
+    delete profile.phone;
     delete profile.credentials;
   }
 
