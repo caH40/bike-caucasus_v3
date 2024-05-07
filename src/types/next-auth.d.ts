@@ -10,8 +10,9 @@ declare module 'next-auth' {
     user: {
       /** The user's postal address. */
       role: string;
-      id: string;
-      provider: string;
+      id: string; // порядковый числовой id, присваиваемый при регистрации
+      provider: string; // название провайдера с помощью которого произошла аутентификация
+      idDB: string; // id базы данных mongodb
     } & DefaultSession['user'];
   }
 }
@@ -21,7 +22,8 @@ declare module 'next-auth/jwt' {
   interface JWT {
     /** OpenID ID Token */
     role: string;
-    id: string;
-    provider: string;
+    id: string; // порядковый числовой id, присваиваемый при регистрации
+    provider: string; // название провайдера с помощью которого произошла аутентификация
+    idDB: string; // id базы данных mongodb
   }
 }

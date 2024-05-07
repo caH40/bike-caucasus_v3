@@ -1,45 +1,21 @@
 import Image from 'next/image';
 
-import { type IProfileForClient } from '@/types/fetch.interface';
-import { type ParamsWithId } from '@/types/index.interface';
-import styles from './ProfilePage.module.css';
 import MenuProfile from '@/components/UI/menu/MenuProfile/MenuProfile';
-
-const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
-
-/**
- * Получение данных профиля с сервера.
- * @param id - id профиля на сайте.
- */
-async function getProfile(id: string): Promise<IProfileForClient | null> {
-  try {
-    if (!server) {
-      throw new Error('Не получены данные с server с .env');
-    }
-    const res = await fetch(`${server}/api/profile/${id}`, { cache: 'no-store' });
-
-    if (!res.ok) {
-      throw new Error('Ошибка fetch');
-    }
-
-    const dataFromAPI = await res.json();
-
-    return dataFromAPI.profile;
-  } catch (error) {
-    return null;
-  }
-}
+import { UserService } from '@/services/mongodb/UserService';
+import type { ParamsWithId } from '@/types/index.interface';
+import styles from './ProfilePage.module.css';
 
 /**
  * Страница профиля спортсмена
  */
 export default async function ProfilePage({ params }: ParamsWithId) {
-  const profile = await getProfile(params.id);
+  const userService = new UserService();
+  const { data: profile } = await userService.getProfile({ id: +params.id });
 
   return (
     <div className={styles.wrapper}>
       <aside className={styles.wrapper__aside}>
-        {profile?.image ? (
+        {profile ? (
           <Image
             width={300}
             height={300}
