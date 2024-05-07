@@ -68,7 +68,19 @@ export type ParamsWithId = {
  * Ответ с сервиса Базы Данных
  */
 export type MessageServiceDB<T> = {
-  data?: T;
+  data: T | null;
   ok: boolean;
   message: string;
+};
+
+/**
+ * Меню которое располагается на страницах с кнопками и линками
+ */
+export type TMenuOnPage = {
+  id: number;
+  name: string;
+  position: string;
+  classes: string[];
+  href?: string;
+  onClick?: () => void;
 };

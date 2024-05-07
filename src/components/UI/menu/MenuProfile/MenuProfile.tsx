@@ -1,12 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import cn from 'classnames/bind';
-
-import styles from './MenuProfile.module.css';
 import { toast } from 'sonner';
-
-const cx = cn.bind(styles);
+import MenuOnPage from '../MenuOnPage/MenuOnPage';
+import type { TMenuOnPage } from '@/types/index.interface';
 
 /**
  * Меню на странице профиля
@@ -22,19 +18,29 @@ export default function MenuProfile() {
   // в разработке
   const onDev = () => toast.info('В разработке');
 
-  return (
-    <div className={cx('wrapper')}>
-      <Link className={cx('btn', 'top')} href={'/account/profile'}>
-        Настройки
-      </Link>
-      <hr className={cx('line')} />
-      <button className={cx('btn')} onClick={onDev}>
-        Разное
-      </button>
-      <hr className={cx('line')} />
-      <button className={cx('btn', 'bottom')} onClick={shareUrl}>
-        Поделиться ссылкой
-      </button>
-    </div>
-  );
+  const buttons: TMenuOnPage[] = [
+    {
+      id: 0,
+      name: 'Настройки',
+      position: 'top',
+      classes: ['btn', 'top'],
+      href: '/account/profile',
+    },
+    {
+      id: 1,
+      name: 'Разное',
+      position: 'middle',
+      classes: ['btn'],
+      onClick: onDev,
+    },
+    {
+      id: 2,
+      name: 'Поделиться ссылкой',
+      position: 'bottom',
+      classes: ['btn', 'bottom'],
+      onClick: shareUrl,
+    },
+  ];
+
+  return MenuOnPage(buttons);
 }

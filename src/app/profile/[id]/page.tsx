@@ -4,12 +4,11 @@ import MenuProfile from '@/components/UI/menu/MenuProfile/MenuProfile';
 import { UserService } from '@/services/mongodb/UserService';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
-
+const userService = new UserService();
 /**
  * Страница профиля спортсмена
  */
 export default async function ProfilePage({ params }: ParamsWithId) {
-  const userService = new UserService();
   const { data: profile } = await userService.getProfile({ id: +params.id });
 
   return (

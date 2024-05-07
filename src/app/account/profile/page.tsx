@@ -4,18 +4,19 @@ import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserService } from '@/services/mongodb/UserService';
-
+const user = new UserService();
 /**
  * Страница изменения данных профиля
  */
 export default async function AccountSettings() {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user.email) {
-    return <h1>Не получен email</h1>;
+  if (!session || !session.user.idDB) {
+    return <h1>Не получен id пользователя</h1>;
   }
+
   const idDB = session.user.idDB;
-  const user = new UserService();
+
   const profile = await user.getProfile({ idDB });
 
   return (

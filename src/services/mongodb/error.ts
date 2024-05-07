@@ -3,7 +3,7 @@
  */
 export function handlerErrorDB(error: unknown) {
   if (error instanceof Error) {
-    return { ok: false, message: error.message };
+    return { data: null, ok: false, message: error.message };
   }
-  return { ok: false, message: 'Непредвиденная ошибка в сервисе работы с БД' };
+  return { data: null, ok: false, message: 'Непредвиденная ошибка в сервисе работы с БД' };
 }

@@ -1,0 +1,33 @@
+.wrapper {
+  background-color: var(--white-12);
+  border-radius: 1rem;
+}
+.btn {
+  color: var(--main-color);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding-left: 48px;
+  font-size: 1.1rem;
+  width: 100%;
+  cursor: pointer;
+  letter-spacing: 0.06rem;
+}
+.active {
+  background-color: var(--white-20);
+}
+.top {
+  border-radius: 1rem 1rem 0 0;
+}
+.bottom {
+  border-radius: 0 0 1rem 1rem;
+}
+.line {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
+.btn:hover {
+  transition: all 0.25s;
+  background-color: var(--white-12);
+}
