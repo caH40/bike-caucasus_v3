@@ -1,12 +1,10 @@
-import SessionClient from '@/components/SessionClient/SessionClient';
-
 import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { UserService } from '@/services/mongodb/UserService';
+import FormProfile from '@/components/UI/Forms/FormProfile/FormProfile';
 import styles from './AccountProfilePage.module.css';
+import { UserService } from '@/services/mongodb/UserService';
 
-const user = new UserService();
 /**
  * Страница изменения данных профиля
  */
@@ -16,27 +14,12 @@ export default async function AccountProfilePage() {
   if (!session || !session.user.idDB) {
     return <h1>Не получен id пользователя</h1>;
   }
-
-  const idDB = session.user.idDB;
-
-  const profile = await user.getProfile({ idDB });
+  const userService = new UserService();
+  const profile = await userService.getProfile({ idDB: session.user.idDB });
 
   return (
     <div className={styles.wrapper}>
-      <div>
-        <div>
-          Server:<pre>{JSON.stringify(session, null, 2)}</pre>
-        </div>
-        <hr />
-        <div>
-          DB:<pre>{JSON.stringify(profile, null, 2)}</pre>
-        </div>
-        <hr />
-        <div>
-          Client:
-          <SessionClient />
-        </div>
-      </div>
+      {profile?.data && <FormProfile formData={profile.data} />}
     </div>
   );
 }

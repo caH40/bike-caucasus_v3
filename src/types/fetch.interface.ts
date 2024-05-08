@@ -1,5 +1,5 @@
 /**
- * Данные профиля
+ * Данные профиля для клиента
  */
 export interface IProfileForClient {
   id: number;
@@ -16,6 +16,7 @@ export interface IProfileForClient {
     firstName: string;
     patronymic?: string;
     lastName: string;
+    birthday?: string;
     ageCategory: string; // вместо даты рождения возвращается возрастная категория
     gender: string;
   };
@@ -35,4 +36,5 @@ export interface IProfileForClient {
     whatsapp?: string;
     garminConnect?: string;
   };
+  bio?: string;
 }

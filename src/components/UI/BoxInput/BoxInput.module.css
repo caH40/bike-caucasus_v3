@@ -1,0 +1,44 @@
+.wrapper {
+  width: 100%;
+}
+.label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.validate {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--error);
+}
+.input {
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-12);
+  border: 1px solid var(--main-color);
+  border-radius: 0.5rem;
+  padding: 0.6rem 3rem 0.6rem 0.5rem;
+  width: 100%;
+  min-width: 300px;
+}
+.wrapper__relative {
+  position: relative;
+}
+.input:focus {
+  outline: 2px solid var(--color-orange);
+}
+.checkmark {
+  overflow: hidden;
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  right: 0.5rem;
+  top: calc(50% - 9px);
+}
+/* Общие стили для календаря */
+.input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* инвертируем цвет значка */
+}

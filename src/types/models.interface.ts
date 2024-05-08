@@ -69,26 +69,6 @@ export interface IUserModel {
   createdAt: Date | string;
   updatedAt: Date | string;
 }
-export interface IUserProfile
-  extends Omit<
-    IUserModel,
-    '_id' | 'provider' | 'email' | 'phone' | 'person' | 'createdAt' | 'updatedAt' | '__v'
-  > {
-  person: {
-    firstName: string;
-    patronymic: string;
-    lastName: string;
-    ageCategory: string;
-    birthday?: string;
-    gender: string;
-  };
-  email?: string;
-  phone?: string;
-  provider: {
-    name: string;
-  };
-}
-
 /**
  * Модель подтверждения email
  */

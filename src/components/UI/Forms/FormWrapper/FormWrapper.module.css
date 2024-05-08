@@ -1,0 +1,14 @@
+.wrapper {
+  width: 100%;
+  background-color: var(--white-12);
+  padding: 1rem 1.4rem 1.4rem 1.4rem;
+  border-radius: 1rem;
+}
+.title {
+  margin-bottom: 7px;
+}
+.line {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
