@@ -13,5 +13,9 @@ export async function getNextSequenceValue(sequenceName: string) {
     { $inc: { sequenceValue: 1 } },
     { new: true, upsert: true }
   );
+
+  if (!sequenceDocument?.sequenceValue) {
+    throw new Error('Не создался id для регистрирующегося пользователя');
+  }
   return sequenceDocument.sequenceValue;
 }

@@ -11,6 +11,8 @@ import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
 import { getProviderProfile } from '@/libs/dto/provider';
 import { type ObjectId } from 'mongoose';
+import { mkdir } from 'fs/promises';
+import { myPath } from '@/libs/utils/path';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -119,6 +121,11 @@ export const authOptions: AuthOptions = {
           const profileCur = getProviderProfile(profile, provider);
 
           const id = await getNextSequenceValue('user');
+
+          // создание папки пользователя для файлов загрузки
+          const pathProfile = myPath.getProfileUploads(id);
+          await mkdir(pathProfile);
+
           const userNew = {
             id,
             provider: {

@@ -9,6 +9,7 @@ import path from 'path';
 import { writeFile } from 'fs/promises';
 import { handlerDateForm } from '@/libs/utils/date';
 import { getGender } from '@/libs/utils/handler-data';
+import { myPath } from '@/libs/utils/path';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -100,8 +101,8 @@ export class UserService {
 
         const extension = profile.image.name?.split('.')?.at(-1) ?? 'jpg';
 
-        const pathImageProfile = `/public/uploads/profiles/user_${profile.id}`;
-        const pathCurrent = path.join(this.rootDir, pathImageProfile, `avatar.${extension}`);
+        const pathImageProfile = myPath.getProfileUploads(profile.id);
+        const pathCurrent = path.join(pathImageProfile, `avatar.${extension}`);
 
         await writeFile(pathCurrent, buffer);
       }
