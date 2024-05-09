@@ -15,7 +15,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1rem;
   color: var(--main-color);
-  background-color: #30832b;
+  background-color: var(--btn-bg);
   border-radius: 0.7rem;
   box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.25);
   padding: 0.3rem 1.5rem;
@@ -25,11 +25,12 @@
   align-items: center;
   cursor: pointer;
   border: none;
+  white-space: nowrap;
 }
 .btn:hover {
   transition: all 0.3s;
-  background-color: #30832b;
+  background-color: var(--btn-bg);
 }
 .btn:active {
-  background-color: #ec9c07;
+  background-color: var(--btn-bg-active);
 }

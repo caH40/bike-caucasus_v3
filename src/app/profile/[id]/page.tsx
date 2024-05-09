@@ -7,6 +7,7 @@ import styles from './ProfilePage.module.css';
 import { handlerDateForm } from '@/libs/utils/date';
 
 const userService = new UserService();
+// const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
 /**
  * Страница профиля пользователя
@@ -21,7 +22,10 @@ export default async function ProfilePage({ params }: ParamsWithId) {
           <Image
             width={300}
             height={300}
-            src={profile.image ?? '/images/icons/noimage.svg'}
+            src={
+              (profile.imageFromProvider ? profile.provider?.image : profile.image) ??
+              '/images/icons/noimage.svg'
+            }
             alt="vk"
             className={styles.profile__image}
           />

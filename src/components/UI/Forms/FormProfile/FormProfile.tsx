@@ -2,6 +2,7 @@
 
 import { ChangeEvent, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import Image from 'next/image';
 
 import BoxInput from '../../BoxInput/BoxInput';
 import BoxSelect from '../../BoxSelect/BoxSelect';
@@ -14,14 +15,14 @@ import {
   validatePatronymic,
 } from '@/libs/utils/validatorService';
 
-import type { IProfileForClient } from '@/types/fetch.interface';
-import type { TFormProfile } from '@/types/index.interface';
-import styles from './FormProfile.module.css';
 import Button from '../../Button/Button';
-import Image from 'next/image';
 import InputFile from '../../InputFile/InputFile';
 import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
+import Checkbox from '../../Checkbox/Checkbox';
+import type { IProfileForClient } from '@/types/fetch.interface';
+import type { TFormProfile } from '@/types/index.interface';
+import styles from './FormProfile.module.css';
 
 type Props = {
   formData: IProfileForClient;
@@ -30,6 +31,9 @@ type Props = {
 };
 
 export default function FormProfile({ formData, getDataClient, idUser }: Props) {
+  const [imageFromProvider, setImageFromProvider] = useState<boolean>(
+    !!formData.imageFromProvider
+  );
   const [file, setFile] = useState<File | null>(null);
   const [urlFile, setUrlFile] = useState<string | undefined>(formData.image);
   const {
@@ -43,6 +47,7 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
     if (file) {
       dataToForm.set('image', file);
     }
+    dataToForm.set('imageFromProvider', String(imageFromProvider));
     dataToForm.set('id', idUser);
     for (const key in dataForm) {
       if (dataForm.hasOwnProperty(key)) {
@@ -54,6 +59,7 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
   };
 
   const getPictures = (event: ChangeEvent<HTMLInputElement>) => {
+    setImageFromProvider(false);
     const fileFromForm = event.target.files?.[0] || null;
     if (!fileFromForm) {
       return;
@@ -78,16 +84,28 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
             width={100}
             height={100}
             alt="Image profile"
-            src={urlFile || '/images/icons/noimage.svg'}
+            src={
+              (imageFromProvider ? formData.provider?.image : urlFile) ??
+              '/images/icons/noimage.svg'
+            }
             className={styles.profile__image}
           />
 
-          <InputFile
-            name="Загрузить фото"
-            accept=".jpg, .jpeg, .png, .webp"
-            getChange={getPictures}
-          />
+          <div className={styles.block__image__control}>
+            <Checkbox
+              value={imageFromProvider}
+              setValue={setImageFromProvider}
+              label={'Загруженная картинка'}
+              id="imageFromProvider"
+            />
+            <InputFile
+              name="Загрузить"
+              accept=".jpg, .jpeg, .png, .webp"
+              getChange={getPictures}
+            />
+          </div>
         </section>
+
         <BoxInput
           label="Фамилия:*"
           id="lastName"

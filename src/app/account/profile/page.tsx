@@ -21,7 +21,6 @@ export default async function AccountProfilePage() {
     'use server';
     const userService = new UserService();
     await userService.putProfile(dataFromClient);
-    // console.log({ response });
   };
 
   return (

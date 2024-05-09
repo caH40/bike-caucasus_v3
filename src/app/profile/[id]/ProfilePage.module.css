@@ -5,6 +5,7 @@
 .profile__image {
   border-radius: 1rem;
   margin-bottom: 24px;
+  object-fit: cover;
 }
 .empty {
   width: 300px;

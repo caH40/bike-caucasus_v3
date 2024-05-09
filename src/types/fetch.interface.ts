@@ -6,11 +6,13 @@ export interface IProfileForClient {
   email?: string; // не всегда отправляется
   emailConfirm?: boolean; // не всегда отправляется
   image?: string;
+  imageFromProvider: boolean;
   credentials?: {
     username: string; // при регистрации через логин/пароль
   };
   provider: {
     name: string;
+    image?: string;
   };
   person: {
     firstName: string;

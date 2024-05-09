@@ -10,6 +10,8 @@
   --link-auth-color-hover: #479692;
   --btn-auth-bg: #55b3ae;
   --btn-focus: #018a83;
+  --btn-bg: #318d2c;
+  --btn-bg-active: var(--color-orange);
 
   --error-color: red;
   --error: red;

@@ -29,6 +29,7 @@ const userSchema = new Schema<IUserModel>(
     provider: {
       name: { type: String }, // провайдер с помощью которого произошла регистрация
       id: { type: String }, // провайдер с помощью которого произошла регистрация
+      image: { type: String }, // путь до картинки профиля  сп провайдера
     },
     email: {
       type: String,
@@ -42,6 +43,7 @@ const userSchema = new Schema<IUserModel>(
     },
     emailConfirm: { type: Boolean, default: false }, // через соцсети автоматически true
     image: { type: String }, // путь до картинки профиля
+    imageFromProvider: { type: Boolean, default: true }, // выбор картинки из БД или провайдера
     person: {
       firstName: { type: String },
       patronymic: { type: String },

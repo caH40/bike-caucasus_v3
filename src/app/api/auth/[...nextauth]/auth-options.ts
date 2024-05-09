@@ -123,7 +123,7 @@ export const authOptions: AuthOptions = {
           const id = await getNextSequenceValue('user');
 
           // создание папки пользователя для файлов загрузки
-          const pathProfile = myPath.getProfileUploads(id);
+          const pathProfile = myPath.getProfileUploads(id).absolute;
           await mkdir(pathProfile);
 
           const userNew = {
@@ -131,9 +131,9 @@ export const authOptions: AuthOptions = {
             provider: {
               id: user.id,
               name: provider.toLocaleLowerCase(),
+              image: user.image,
             },
             email: email.toLocaleLowerCase(),
-            image: user.image,
             role: 'user',
             emailConfirm: true,
             person: {
@@ -179,9 +179,16 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         await connectToMongo();
-        const userDB: { id: number; role: string; _id: ObjectId } | null = await User.findOne(
+        const userDB: {
+          id: number;
+          role: string;
+          _id: ObjectId;
+          image?: string;
+          imageFromProvider: boolean;
+          provider: { image: string };
+        } | null = await User.findOne(
           { email: token.email },
-          { id: true, role: true }
+          { id: true, role: true, image: true, 'provider.image': true, imageFromProvider: true }
         ).lean();
 
         // при отсутствии пользователя в БД выходить из сессии
@@ -189,10 +196,12 @@ export const authOptions: AuthOptions = {
           return session;
         }
 
+        const image = userDB.imageFromProvider ? userDB.provider.image : userDB.image;
+
         session.user.id = String(userDB.id);
         session.user.idDB = String(userDB._id);
         session.user.role = userDB.role;
-        session.user.image = token.picture;
+        session.user.image = image;
         session.user.provider = token.provider;
       }
 

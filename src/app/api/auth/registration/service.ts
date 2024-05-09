@@ -40,7 +40,7 @@ export async function postRegistrationService({
   const id = await getNextSequenceValue('user');
 
   // создание папки пользователя для файлов загрузки
-  const pathProfile = myPath.getProfileUploads(id);
+  const pathProfile = myPath.getProfileUploads(id).absolute;
   await mkdir(pathProfile);
 
   // создание нового пользователя
@@ -52,6 +52,7 @@ export async function postRegistrationService({
     },
     email: email.toLowerCase(),
     role,
+    imageFromProvider: false,
   });
 
   if (!userDB) {

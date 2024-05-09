@@ -10,6 +10,7 @@ import { writeFile } from 'fs/promises';
 import { handlerDateForm } from '@/libs/utils/date';
 import { getGender } from '@/libs/utils/handler-data';
 import { myPath } from '@/libs/utils/path';
+import { revalidatePath } from 'next/cache';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -51,6 +52,7 @@ export class UserService {
         _id: false,
         'provider.id': false,
         'credentials.password': false,
+        'credentials._id': false,
         createdAt: false,
         updatedAt: false,
         __v: false,
@@ -95,36 +97,47 @@ export class UserService {
       await this.dbConnection();
 
       // сохранение изображения для профиля
+
+      let pathImageRelative = '';
+      const pathImageProfile = myPath.getProfileUploads(profile.id);
       if (!!profile.image) {
         const bytes = await profile.image.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
         const extension = profile.image.name?.split('.')?.at(-1) ?? 'jpg';
+        const fileName = `avatar.${extension}`;
+        const pathImage = path.join(pathImageProfile.absolute, fileName);
+        await writeFile(pathImage, buffer);
 
-        const pathImageProfile = myPath.getProfileUploads(profile.id);
-        const pathCurrent = path.join(pathImageProfile, `avatar.${extension}`);
-
-        await writeFile(pathCurrent, buffer);
+        // для бд
+        pathImageRelative = `${pathImageProfile.relative}/${fileName}`;
       }
 
       const gender = getGender[profile.gender];
       const birthday = handlerDateForm.getIsoDate(profile.birthday);
+      const query = {
+        'person.lastName': profile.lastName,
+        'person.firstName': profile.firstName,
+        'person.patronymic': profile.patronymic,
+        'person.birthday': birthday,
+        'person.gender': gender,
+        'person.bio': profile.bio,
+        city: profile.city,
+        imageFromProvider: profile.imageFromProvider === 'true',
+      } as any;
+
+      //если загружалась новая фотография
+      if (profile.image) {
+        query.image = pathImageRelative.replace('/public', '');
+      }
 
       await User.findOneAndUpdate(
         { id: profile.id },
         {
-          $set: {
-            'person.lastName': profile.lastName,
-            'person.firstName': profile.firstName,
-            'person.patronymic': profile.patronymic,
-            'person.birthday': birthday,
-            'person.gender': gender,
-            'person.bio': profile.bio,
-            city: profile.city,
-          },
+          $set: query,
         }
       );
-
+      revalidatePath('/');
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       return handlerErrorDB(error);

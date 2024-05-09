@@ -56,6 +56,7 @@ export type TFormProfile = {
   city?: string;
   phone?: string;
   bio?: string;
+  imageFromProvider?: boolean | string;
   [key: string]: any;
 };
 
