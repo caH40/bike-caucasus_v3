@@ -4,9 +4,12 @@ import MenuProfile from '@/components/UI/menu/MenuProfile/MenuProfile';
 import { UserService } from '@/services/mongodb/UserService';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
+import { handlerDateForm } from '@/libs/utils/date';
+
 const userService = new UserService();
+
 /**
- * Страница профиля спортсмена
+ * Страница профиля пользователя
  */
 export default async function ProfilePage({ params }: ParamsWithId) {
   const { data: profile } = await userService.getProfile({ id: +params.id });
@@ -36,7 +39,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
 
               <dt className={styles.desc__title}>Возраст</dt>
               <dd className={styles.desc__detail}>
-                {profile.person.ageCategory ?? 'нет данных'}
+                {handlerDateForm.getFormDate(profile.person.ageCategory) ?? 'нет данных'}
               </dd>
 
               <dt className={styles.desc__title}>Пол</dt>

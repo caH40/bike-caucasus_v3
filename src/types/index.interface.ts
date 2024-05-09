@@ -46,10 +46,12 @@ export interface IRegistrationForm {
  * Данные профиля для изменения в account/profile
  */
 export type TFormProfile = {
+  id: string;
+  image?: File | undefined;
   firstName: string;
   patronymic?: string;
   lastName: string;
-  birthday?: string;
+  birthday?: string | Date;
   gender: string;
   city?: string;
   phone?: string;

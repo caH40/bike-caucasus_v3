@@ -9,11 +9,8 @@ export default function BoxInput({
   label,
   validationText,
   register,
-
   ...props
 }: PropsBoxInput) {
-  // console.log(label, { validationText });
-
   return (
     <div className={styles.wrapper}>
       <label className={styles.label} htmlFor={id}>

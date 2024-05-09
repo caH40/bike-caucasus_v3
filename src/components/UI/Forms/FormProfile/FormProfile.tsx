@@ -20,13 +20,15 @@ import styles from './FormProfile.module.css';
 import Button from '../../Button/Button';
 import Image from 'next/image';
 import InputFile from '../../InputFile/InputFile';
+import { handlerDateForm } from '@/libs/utils/date';
 
 type Props = {
   formData: IProfileForClient;
   getDataClient: (params: FormData) => Promise<void>; // eslint-disable-line
+  idUser: string;
 };
 
-export default function FormProfile({ formData, getDataClient }: Props) {
+export default function FormProfile({ formData, getDataClient, idUser }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [urlFile, setUrlFile] = useState<string | undefined>(formData.image);
   const {
@@ -36,17 +38,18 @@ export default function FormProfile({ formData, getDataClient }: Props) {
   } = useForm<TFormProfile>({ mode: 'all' });
 
   const onSubmit: SubmitHandler<TFormProfile> = async (dataForm) => {
-    const formData = new FormData();
+    const dataToForm = new FormData();
     if (file) {
-      formData.set('image', file);
+      dataToForm.set('image', file);
     }
+    dataToForm.set('id', idUser);
     for (const key in dataForm) {
       if (dataForm.hasOwnProperty(key)) {
-        formData.set(key, dataForm[key]);
+        dataToForm.set(key, dataForm[key]);
       }
     }
 
-    await getDataClient(formData);
+    await getDataClient(dataToForm);
   };
 
   const getPictures = (event: ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +130,7 @@ export default function FormProfile({ formData, getDataClient }: Props) {
           type="date"
           min="1920-01-01"
           max="2020-01-01"
-          defaultValue={formData.person.birthday}
+          defaultValue={handlerDateForm.getFormDate(formData.person.birthday)}
           register={validateBirthday(register)}
           validationText={errors.birthday && 'Введите корректную дату'}
         />
@@ -136,6 +139,7 @@ export default function FormProfile({ formData, getDataClient }: Props) {
           id="city"
           autoComplete="offered"
           type="text"
+          defaultValue={formData.city}
           register={validateCity(register)}
           validationText={errors.city ? errors.city.message : ''}
         />

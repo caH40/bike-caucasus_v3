@@ -2,9 +2,13 @@ import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 
-import type { MessageServiceDB } from '@/types/index.interface';
+import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import type { IUserModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
+import path from 'path';
+import { writeFile } from 'fs/promises';
+import { handlerDateForm } from '@/libs/utils/date';
+import { getGender } from '@/libs/utils/handler-data';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -17,9 +21,11 @@ type ParamsGetProfile = {
  */
 export class UserService {
   private dbConnection: () => Promise<void>;
+  private rootDir: string;
 
   constructor() {
     this.dbConnection = connectToMongo;
+    this.rootDir = path.resolve(process.cwd());
   }
 
   // получение данных профиля
@@ -67,6 +73,60 @@ export class UserService {
       }
 
       return { data: profile, ok: true, message: 'Публичные данные профиля пользователя' };
+    } catch (error) {
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Сохранение данных профиля из формы account/profile
+   */
+  async putProfile(profileEdited: FormData) {
+    try {
+      const profile = {} as TFormProfile;
+
+      profileEdited.forEach((value, key) => (profile[key] = value));
+
+      if (!profile.id) {
+        throw new Error('Нет id пользователя');
+      }
+      // подключение к БД
+      await this.dbConnection();
+
+      // сохранение изображения для профиля
+      if (!!profile.image) {
+        const bytes = await profile.image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        const extension = profile.image.name?.split('.')?.at(-1) ?? 'jpg';
+
+        const pathImageProfile = `/public/uploads/profiles/user_${profile.id}`;
+        const pathCurrent = path.join(this.rootDir, pathImageProfile, `avatar.${extension}`);
+
+        await writeFile(pathCurrent, buffer);
+      }
+
+      const gender = getGender[profile.gender];
+      const birthday = handlerDateForm.getIsoDate(profile.birthday);
+
+      await User.findOneAndUpdate(
+        { id: profile.id },
+        {
+          $set: {
+            'person.lastName': profile.lastName,
+            'person.firstName': profile.firstName,
+            'person.patronymic': profile.patronymic,
+            'person.birthday': birthday,
+            'person.gender': gender,
+            city: profile.city,
+            bio: profile.bio,
+          },
+        }
+      );
+
+      // console.log(savedData);
+
+      return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       return handlerErrorDB(error);
     }
