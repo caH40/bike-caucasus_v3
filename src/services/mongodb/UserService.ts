@@ -118,13 +118,11 @@ export class UserService {
             'person.patronymic': profile.patronymic,
             'person.birthday': birthday,
             'person.gender': gender,
+            'person.bio': profile.bio,
             city: profile.city,
-            bio: profile.bio,
           },
         }
       );
-
-      // console.log(savedData);
 
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {

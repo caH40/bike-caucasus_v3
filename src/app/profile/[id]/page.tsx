@@ -54,6 +54,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
               <dd className={styles.desc__detail}>tel</dd>
               <dd className={styles.desc__detail}>gar</dd>
             </dl>
+            {profile.person.bio && <p>{profile.person.bio}</p>}
           </section>
         )}
         <div className={styles.menu}>
