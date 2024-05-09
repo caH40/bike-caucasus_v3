@@ -1,10 +1,10 @@
 .btn {
   width: 100%;
-  font-family: inherit;
+  font-family: var(--font-montserrat_Alternates);
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1rem;
   color: var(--link-auth-color);
   background-color: var(--btn-auth-bg);
   border-radius: 0.7rem;
@@ -17,6 +17,7 @@
   cursor: pointer;
   border: 1px solid var(--main-color-dark);
 }
+
 .btn:disabled {
   background-color: gray;
 }
@@ -37,4 +38,18 @@
 }
 .without__icon {
   justify-content: center;
+}
+
+/* темы для кнопок */
+.green {
+  flex: 0 0 auto;
+  width: auto;
+  font-size: 1.1rem;
+  border: none;
+  color: var(--main-color);
+  background-color: #1e541b;
+}
+.green:hover {
+  transition: all 0.3s;
+  background-color: #08a000;
 }

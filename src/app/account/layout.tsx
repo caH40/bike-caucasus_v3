@@ -11,7 +11,7 @@ export default function AccountLayout({
       <aside className={styles.aside__left}>
         <MenuAccountProfile />
       </aside>
-      <div>{children}</div>
+      <div className={styles.main}>{children}</div>
     </div>
   );
 }

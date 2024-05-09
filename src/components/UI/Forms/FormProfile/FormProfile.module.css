@@ -1,0 +1,20 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.box__button {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.block__image {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.profile__image {
+  border-radius: 0.5rem;
+}

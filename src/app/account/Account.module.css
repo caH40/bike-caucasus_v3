@@ -2,6 +2,11 @@
   display: flex;
   gap: 45px;
 }
+.main {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
 .aside__left {
-  flex: 0 1 300px;
+  flex: 0 0 300px;
+  overflow: hidden;
 }

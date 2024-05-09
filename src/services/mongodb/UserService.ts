@@ -1,8 +1,10 @@
 import { User } from '@/database/mongodb/Models/User';
-import type { MessageServiceDB } from '@/types/index.interface';
-import type { IUserModel, IUserProfile } from '@/types/models.interface';
 import { handlerErrorDB } from './error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
+
+import type { MessageServiceDB } from '@/types/index.interface';
+import type { IUserModel } from '@/types/models.interface';
+import type { IProfileForClient } from '@/types/fetch.interface';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -25,7 +27,7 @@ export class UserService {
     idDB,
     id,
     isPrivate = false,
-  }: ParamsGetProfile): Promise<MessageServiceDB<IUserProfile>> {
+  }: ParamsGetProfile): Promise<MessageServiceDB<IProfileForClient>> {
     try {
       // подключение к БД
       await this.dbConnection();
@@ -56,7 +58,7 @@ export class UserService {
 
       const person = { ...userDB.person, ageCategory };
 
-      const profile: IUserProfile = { ...userDB, person };
+      const profile: IProfileForClient = { ...userDB, person };
       if (!isPrivate) {
         delete profile.person.birthday;
         delete profile.email;

@@ -1,4 +1,4 @@
-import { UseFormRegisterReturn } from 'react-hook-form';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -11,6 +11,18 @@ export interface PropsBoxInputAuth {
   link?: string; // путь на страницу
   disabled?: boolean;
 }
+export type PropsBoxInput = {
+  id: string;
+  autoComplete: string;
+  type: string;
+  label: string;
+  disabled?: boolean;
+  validationText?: string;
+  defaultValue?: string;
+  register: UseFormRegisterReturn; // FieldValues
+  min?: string;
+  max?: string;
+};
 
 /**
  * Данные пользователя, возвращаемые после регистрации
@@ -30,6 +42,21 @@ export interface IRegistrationForm {
   email: string;
   password: string;
 }
+/**
+ * Данные профиля для изменения в account/profile
+ */
+export type TFormProfile = {
+  firstName: string;
+  patronymic?: string;
+  lastName: string;
+  birthday?: string;
+  gender: string;
+  city?: string;
+  phone?: string;
+  bio?: string;
+  [key: string]: any;
+};
+
 /**
  * Данные profile из provider Yandex
  */
