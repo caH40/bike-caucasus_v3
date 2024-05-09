@@ -17,9 +17,24 @@ export default async function AccountProfilePage() {
   const userService = new UserService();
   const profile = await userService.getProfile({ idDB: session.user.idDB });
 
+  const getDataClient = async (dataFromClient: FormData) => {
+    'use server';
+    // console.log(dataFromClient);
+    // const bytes = await image.arrayBuffer();
+    // const buffer = Buffer.from(bytes);
+    // let type = 'jpg';
+    // if (image.type === 'image/jpeg') {
+    //   type = 'jpg';
+    // }
+
+    // const srcDir = path.resolve(process.cwd(), 'public', `avatar.${type}`);
+
+    // const writed = await writeFile(srcDir, buffer);
+  };
+
   return (
     <div className={styles.wrapper}>
-      {profile?.data && <FormProfile formData={profile.data} />}
+      {profile?.data && <FormProfile formData={profile.data} getDataClient={getDataClient} />}
     </div>
   );
 }

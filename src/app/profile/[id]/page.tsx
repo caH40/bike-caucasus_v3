@@ -18,7 +18,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
           <Image
             width={300}
             height={300}
-            src={profile.image}
+            src={profile.image ?? '/images/icons/noimage.svg'}
             alt="vk"
             className={styles.profile__image}
           />

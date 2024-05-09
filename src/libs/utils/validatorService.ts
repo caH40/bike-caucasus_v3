@@ -127,7 +127,7 @@ export function validateBirthday(register: UseFormRegister<TFormProfile>) {
 export function validateCity(register: UseFormRegister<TFormProfile>) {
   return {
     ...register('city', {
-      required: true,
+      required: false,
       minLength: { value: 2, message: 'Город должен быть больше 1х символа' },
       maxLength: { value: 20, message: 'Город не может быть больше 20 символов' },
     }),

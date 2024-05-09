@@ -49,12 +49,12 @@ export type TFormProfile = {
   firstName: string;
   patronymic?: string;
   lastName: string;
-  image?: string; // disable url до картинки
   birthday?: string;
   gender: string;
   city?: string;
   phone?: string;
   bio?: string;
+  [key: string]: any;
 };
 
 /**

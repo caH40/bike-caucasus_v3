@@ -1,5 +1,6 @@
 'use client';
 
+import { ChangeEvent, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import BoxInput from '../../BoxInput/BoxInput';
@@ -17,12 +18,17 @@ import type { IProfileForClient } from '@/types/fetch.interface';
 import type { TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
 import Button from '../../Button/Button';
+import Image from 'next/image';
+import InputFile from '../../InputFile/InputFile';
 
 type Props = {
   formData: IProfileForClient;
+  getDataClient: (params: FormData) => Promise<void>; // eslint-disable-line
 };
 
-export default function FormProfile({ formData }: Props) {
+export default function FormProfile({ formData, getDataClient }: Props) {
+  const [file, setFile] = useState<File | null>(null);
+  const [urlFile, setUrlFile] = useState<string | undefined>(formData.image);
   const {
     register,
     handleSubmit,
@@ -30,14 +36,54 @@ export default function FormProfile({ formData }: Props) {
   } = useForm<TFormProfile>({ mode: 'all' });
 
   const onSubmit: SubmitHandler<TFormProfile> = async (dataForm) => {
-    // if()
-    // dataForm.birthday = new Date(dataForm.birthday).toISOString();
-    // console.log(errors);
+    const formData = new FormData();
+    if (file) {
+      formData.set('image', file);
+    }
+    for (const key in dataForm) {
+      if (dataForm.hasOwnProperty(key)) {
+        formData.set(key, dataForm[key]);
+      }
+    }
+
+    await getDataClient(formData);
+  };
+
+  const getPictures = (event: ChangeEvent<HTMLInputElement>) => {
+    const fileFromForm = event.target.files?.[0] || null;
+    if (!fileFromForm) {
+      return;
+    }
+
+    // если уже был url картинки, то убираем, что бы поместить новый url
+    if (urlFile) {
+      URL.revokeObjectURL(urlFile);
+    }
+
+    // создание временного url картинки в памяти для отображения в Image
+    const url = URL.createObjectURL(fileFromForm);
+    setUrlFile(url);
+    setFile(fileFromForm);
   };
 
   return (
     <FormWrapper title="Профиль">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        <section className={styles.block__image}>
+          <Image
+            width={100}
+            height={100}
+            alt="Image profile"
+            src={urlFile || '/images/icons/noimage.svg'}
+            className={styles.profile__image}
+          />
+
+          <InputFile
+            name="Загрузить фото"
+            accept=".jpg, .jpeg, .png, .webp"
+            getChange={getPictures}
+          />
+        </section>
         <BoxInput
           label="Фамилия:*"
           id="lastName"
@@ -70,7 +116,7 @@ export default function FormProfile({ formData }: Props) {
           id="gender"
           autoComplete="offered"
           type="text"
-          // defaultValue={formData.person.patronymic}
+          defaultValue={formData.person.patronymic || 'мужской'}
           register={register('gender')}
           validationText={errors.gender ? errors.gender.message : ''}
         />

@@ -10,3 +10,11 @@
   display: flex;
   justify-content: flex-end;
 }
+.block__image {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.profile__image {
+  border-radius: 0.5rem;
+}
