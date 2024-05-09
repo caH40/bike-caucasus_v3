@@ -21,6 +21,7 @@ import Button from '../../Button/Button';
 import Image from 'next/image';
 import InputFile from '../../InputFile/InputFile';
 import { handlerDateForm } from '@/libs/utils/date';
+import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 
 type Props = {
   formData: IProfileForClient;
@@ -142,6 +143,15 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
           defaultValue={formData.city}
           register={validateCity(register)}
           validationText={errors.city ? errors.city.message : ''}
+        />
+        <BoxTextarea
+          label="О себе:"
+          id="bio"
+          autoComplete="offered"
+          type="text"
+          defaultValue={formData.person.bio}
+          register={{ ...register('bio') }}
+          validationText={errors.bio ? errors.bio.message : ''}
         />
         <div className={styles.box__button}>
           <Button name="Сохранить" theme="green" />

@@ -48,6 +48,7 @@ const userSchema = new Schema<IUserModel>(
       lastName: { type: String },
       birthday: { type: Date },
       gender: { type: String },
+      bio: { type: String },
     },
     city: { type: String },
     phone: { type: String },

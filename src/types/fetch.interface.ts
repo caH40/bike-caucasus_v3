@@ -19,6 +19,7 @@ export interface IProfileForClient {
     birthday?: string;
     ageCategory: string; // вместо даты рождения возвращается возрастная категория
     gender: string;
+    bio?: string;
   };
   city?: string;
   phone?: string; // не всегда отправляется
@@ -36,5 +37,4 @@ export interface IProfileForClient {
     whatsapp?: string;
     garminConnect?: string;
   };
-  bio?: string;
 }

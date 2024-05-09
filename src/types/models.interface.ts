@@ -49,6 +49,7 @@ export interface IUserModel {
     lastName: string;
     birthday: string;
     gender: string;
+    bio: string;
   };
   city: string;
   phone: string;
