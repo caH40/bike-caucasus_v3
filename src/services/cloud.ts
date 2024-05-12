@@ -27,7 +27,7 @@ export class Cloud {
     // Получение соответствующего конфигурацию для облака "cloudName".
     const cloudConfig = new CloudConfig();
     const config = cloudConfig.get(cloudName);
-    this.maxSizeFileInMBytes = maxSizeFileInMBytes || 5;
+    this.maxSizeFileInMBytes = maxSizeFileInMBytes || 7;
 
     if (!config) {
       throw new Error('Нет конфигурации для запрашиваемого облака');

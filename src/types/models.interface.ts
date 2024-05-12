@@ -39,7 +39,7 @@ export interface IUserModel {
   provider: {
     name: string; // провайдер с помощью которого произошла регистрация
     id: string; // провайдер с помощью которого произошла регистрация
-    imageProvider: string; // путь до картинки профиля с провайдера
+    image: string; // путь до картинки профиля с провайдера
   };
   email: string;
   emailConfirm: boolean; // через соцсети автоматически true

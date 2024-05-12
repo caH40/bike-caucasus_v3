@@ -5,6 +5,8 @@ import { UserService } from '@/services/mongodb/UserService';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
 import { handlerDateForm } from '@/libs/utils/date';
+import { blurDataURL } from '@/libs/image';
+import { getLogoProfile } from '@/libs/utils/profile';
 
 const userService = new UserService();
 // const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
@@ -22,12 +24,15 @@ export default async function ProfilePage({ params }: ParamsWithId) {
           <Image
             width={300}
             height={300}
-            src={
-              (profile.imageFromProvider ? profile.provider?.image : profile.image) ??
-              '/images/icons/noimage.svg'
-            }
+            src={getLogoProfile(
+              profile.imageFromProvider,
+              profile.provider?.image,
+              profile.image
+            )}
             alt="vk"
             className={styles.profile__image}
+            placeholder="blur"
+            blurDataURL={blurDataURL}
           />
         ) : (
           <div className={styles.empty}></div>

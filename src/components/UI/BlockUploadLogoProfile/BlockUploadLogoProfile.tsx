@@ -5,6 +5,7 @@ import Checkbox from '../Checkbox/Checkbox';
 import InputFile from '../InputFile/InputFile';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import styles from './BlockUploadLogoProfile.module.css';
+import { blurDataURL } from '@/libs/image';
 
 /**
  * Компонент для загрузки логотипа профиля.
@@ -65,6 +66,8 @@ export default function BlockUploadLogoProfile({
           '/images/icons/noimage.svg'
         }
         className={styles.img}
+        placeholder="blur"
+        blurDataURL={blurDataURL}
       />
 
       <div className={styles.image__control}>

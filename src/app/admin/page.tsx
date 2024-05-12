@@ -1,8 +1,8 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/auth-options';
 import Template from './Template';
-
 import { Cloud } from '@/services/cloud';
+import styles from './AdminPage.module.css';
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
@@ -25,6 +25,13 @@ export default async function AdminPage() {
   return (
     <div>
       <Template handlerAction={handlerAction} />
+      <div className={styles.box}>
+        <p className={styles.paragraph}>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ullam perferendis
+          possimus iusto quidem magni doloremque necessitatibus dolore sunt veritatis reiciendis
+          quibusdam nisi asperiores, atque id aut molestias quia facilis?
+        </p>
+      </div>
     </div>
   );
 }
