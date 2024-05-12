@@ -21,7 +21,7 @@ export class CloudConfig {
   }
 
   /**
-   * Конфигурация aws sdk для vk-cloud.
+   * Конфигурация aws sdk для clouds.
    * Существующие конфигурации: "vk".
    */
   get(cloudName: string): S3ClientConfig | undefined {

@@ -14,14 +14,13 @@ import {
   validateLastName,
   validatePatronymic,
 } from '@/libs/utils/validatorService';
-
+import BlockUploadLogoProfile from '../../BlockUploadLogoProfile/BlockUploadLogoProfile';
 import Button from '../../Button/Button';
 import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
-import BlockUploadLogoProfile from '../../BlockUploadLogoProfile/BlockUploadLogoProfile';
 
 type Props = {
   formData: IProfileForClient;

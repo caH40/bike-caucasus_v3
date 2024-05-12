@@ -18,10 +18,14 @@ export default async function AccountProfilePage() {
   const userService = new UserService();
   const profile = await userService.getProfile({ idDB: session.user.idDB, isPrivate: true });
 
+  /**
+   * Функция для обновления профиля пользователя.
+   * @param dataFromClient Данные профиля пользователя.
+   * @returns Результат операции обновления профиля.
+   */
   const putProfile = async (dataFromClient: FormData): Promise<MessageServiceDB<any>> => {
     'use server';
     const userService = new UserService();
-
     const response = await userService.putProfile(dataFromClient, {
       cloudName: 'vk',
       domainCloudName: 'hb.vkcs.cloud',
