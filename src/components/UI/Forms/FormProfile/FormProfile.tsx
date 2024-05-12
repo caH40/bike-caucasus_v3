@@ -1,8 +1,7 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import Image from 'next/image';
 import { toast } from 'sonner';
 
 import BoxInput from '../../BoxInput/BoxInput';
@@ -17,13 +16,12 @@ import {
 } from '@/libs/utils/validatorService';
 
 import Button from '../../Button/Button';
-import InputFile from '../../InputFile/InputFile';
 import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
-import Checkbox from '../../Checkbox/Checkbox';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
+import BlockUploadLogoProfile from '../../BlockUploadLogoProfile/BlockUploadLogoProfile';
 
 type Props = {
   formData: IProfileForClient;
@@ -39,7 +37,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
     !!formData.imageFromProvider
   );
   const [file, setFile] = useState<File | null>(null);
-  const [urlFile, setUrlFile] = useState<string | undefined>(formData.image);
+
   const {
     register,
     handleSubmit,
@@ -68,58 +66,15 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
     }
   };
 
-  const getPictures = (event: ChangeEvent<HTMLInputElement>) => {
-    setImageFromProvider(false);
-    const fileFromForm = event.target.files?.[0] || null;
-    if (!fileFromForm) {
-      return;
-    }
-
-    if (!fileFromForm.type.startsWith('image/')) {
-      return toast.error('Выбранный файл не является изображением');
-    }
-
-    // если уже был url картинки, то убираем, что бы поместить новый url
-    if (urlFile) {
-      URL.revokeObjectURL(urlFile);
-    }
-
-    // создание временного url картинки в памяти для отображения в Image
-    const url = URL.createObjectURL(fileFromForm);
-    setUrlFile(url);
-    setFile(fileFromForm);
-  };
-
   return (
     <FormWrapper title="Профиль">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <section className={styles.block__image}>
-          <Image
-            width={100}
-            height={100}
-            alt="Image profile"
-            src={
-              (imageFromProvider ? formData.provider?.image : urlFile) ??
-              '/images/icons/noimage.svg'
-            }
-            className={styles.profile__image}
-          />
-
-          <div className={styles.block__image__control}>
-            <Checkbox
-              value={imageFromProvider}
-              setValue={setImageFromProvider}
-              label={'Загруженная картинка'}
-              id="imageFromProvider"
-            />
-            <InputFile
-              name="uploadImage"
-              label="Загрузить"
-              accept=".jpg, .jpeg, .png, .webp"
-              getChange={getPictures}
-            />
-          </div>
-        </section>
+        <BlockUploadLogoProfile
+          setFile={setFile}
+          imageFromProvider={imageFromProvider}
+          setImageFromProvider={setImageFromProvider}
+          formData={formData}
+        />
 
         <BoxInput
           label="Фамилия:*"
