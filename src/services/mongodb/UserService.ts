@@ -129,7 +129,8 @@ export class UserService {
         if (!extension) {
           throw new Error('Нет расширения у загружаемого изображения');
         }
-        fileNameFull = `${fileName}.${extension}`;
+        const suffix = Date.now();
+        fileNameFull = `${fileName}-${suffix}.${extension}`;
         await cloud.saveFile(file, bucketName, fileNameFull);
       }
 
@@ -162,7 +163,7 @@ export class UserService {
           $set: query,
         }
       );
-      revalidatePath('/');
+      revalidatePath(`/profile/${profile.id}`);
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       return handlerErrorDB(error);

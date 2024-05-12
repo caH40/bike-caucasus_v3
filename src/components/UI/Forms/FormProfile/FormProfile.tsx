@@ -21,6 +21,7 @@ import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
+import { useSession } from 'next-auth/react';
 
 type Props = {
   formData: IProfileForClient;
@@ -36,7 +37,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
     !!formData.imageFromProvider
   );
   const [file, setFile] = useState<File | null>(null);
-
+  const { update } = useSession();
   const {
     register,
     handleSubmit,
@@ -57,7 +58,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
     }
 
     const { ok, message } = await putProfile(dataToForm);
-
+    update();
     if (ok) {
       toast.success(message);
     } else {
