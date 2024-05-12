@@ -6,6 +6,7 @@ import styles from './InputFile.module.css';
 
 type Props = {
   name: string;
+  label: string;
   multiple?: boolean;
   accept: string;
   getChange: (e: ChangeEvent<HTMLInputElement>) => void; //eslint-disable-line
@@ -14,7 +15,7 @@ type Props = {
 /**
  * Input в виде кнопки для загрузки файлов
  */
-export default function InputFile({ name, multiple = false, accept, getChange }: Props) {
+export default function InputFile({ label, name, multiple = false, accept, getChange }: Props) {
   const refInput = useRef<HTMLInputElement>(null);
   const getClick = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     e.preventDefault();
@@ -31,9 +32,10 @@ export default function InputFile({ name, multiple = false, accept, getChange }:
         accept={accept}
         className={styles.hidden}
         onChange={getChange}
+        name={name}
       />
       <button className={styles.btn} onClick={getClick}>
-        {name}
+        {label}
       </button>
     </div>
   );
