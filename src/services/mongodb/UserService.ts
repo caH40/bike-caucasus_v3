@@ -109,20 +109,28 @@ export class UserService {
       await this.dbConnection();
 
       // Сохранение изображения для профиля, если оно загружено.
-      let fileName = '';
+      let fileNameFull = ''; // Название файла с расширением
       if (!!profile.image) {
         const file = profile.image;
         if (!file.type.startsWith('image/')) {
           throw new Error('Загружаемый файл не является изображением');
         }
 
+        // Название файла без расширения
+        const fileName = `user_${profile.id}_logo`;
+
+        // создание объекта для управления файлами в облаке
+        const cloud = new Cloud(cloudName);
+
+        // удаление предыдущих файлов лого пользователя
+        await cloud.deleteFiles(bucketName, fileName);
+
         const extension = file.name.split('.').pop();
         if (!extension) {
           throw new Error('Нет расширения у загружаемого изображения');
         }
-        fileName = `user_${profile.id}_logo.${extension}`;
-        const cloud = new Cloud(cloudName);
-        await cloud.saveFile(file, bucketName, fileName);
+        fileNameFull = `${fileName}.${extension}`;
+        await cloud.saveFile(file, bucketName, fileNameFull);
       }
 
       // Получение значения пола в нужной форме.
@@ -145,7 +153,7 @@ export class UserService {
 
       //если загружалась новая фотография
       if (profile.image) {
-        query.image = `https://${bucketName}.${domainCloudName}/${fileName}`;
+        query.image = `https://${bucketName}.${domainCloudName}/${fileNameFull}`;
       }
 
       await User.findOneAndUpdate(
