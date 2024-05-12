@@ -10,18 +10,3 @@
   display: flex;
   justify-content: flex-end;
 }
-.block__image {
-  width: 100%;
-  display: flex;
-  gap: 40px;
-}
-.block__image__control {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.profile__image {
-  border-radius: 0.5rem;
-  object-fit: cover;
-}
