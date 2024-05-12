@@ -1,0 +1,13 @@
+.block__form {
+  display: flex;
+  gap: 100px;
+}
+.input {
+  margin-bottom: 20px;
+}
+.btn {
+  margin-bottom: 20px;
+}
+.img {
+  object-fit: cover;
+}

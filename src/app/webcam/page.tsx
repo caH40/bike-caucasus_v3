@@ -1,12 +1,6 @@
-'use client';
-
-import { useSession } from 'next-auth/react';
-
+/**
+ * Страница популярных вебкамер
+ */
 export default function WebcamPage() {
-  const { data: session } = useSession();
-  return (
-    <div>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
-    </div>
-  );
+  return <>WebcamPage</>;
 }

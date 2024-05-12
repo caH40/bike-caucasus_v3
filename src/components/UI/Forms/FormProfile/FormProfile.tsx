@@ -3,6 +3,7 @@
 import { ChangeEvent, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 import BoxInput from '../../BoxInput/BoxInput';
 import BoxSelect from '../../BoxSelect/BoxSelect';
@@ -21,16 +22,19 @@ import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import Checkbox from '../../Checkbox/Checkbox';
 import type { IProfileForClient } from '@/types/fetch.interface';
-import type { TFormProfile } from '@/types/index.interface';
+import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
 
 type Props = {
   formData: IProfileForClient;
-  getDataClient: (params: FormData) => Promise<void>; // eslint-disable-line
+  putProfile: (params: FormData) => Promise<MessageServiceDB<any>>; // eslint-disable-line
   idUser: string;
 };
 
-export default function FormProfile({ formData, getDataClient, idUser }: Props) {
+/**
+ * Форма для изменения данных Пользователя в профиле
+ */
+export default function FormProfile({ formData, putProfile, idUser }: Props) {
   const [imageFromProvider, setImageFromProvider] = useState<boolean>(
     !!formData.imageFromProvider
   );
@@ -55,7 +59,13 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
       }
     }
 
-    await getDataClient(dataToForm);
+    const { ok, message } = await putProfile(dataToForm);
+
+    if (ok) {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
   };
 
   const getPictures = (event: ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +73,10 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
     const fileFromForm = event.target.files?.[0] || null;
     if (!fileFromForm) {
       return;
+    }
+
+    if (!fileFromForm.type.startsWith('image/')) {
+      return toast.error('Выбранный файл не является изображением');
     }
 
     // если уже был url картинки, то убираем, что бы поместить новый url
@@ -99,7 +113,8 @@ export default function FormProfile({ formData, getDataClient, idUser }: Props) 
               id="imageFromProvider"
             />
             <InputFile
-              name="Загрузить"
+              name="uploadImage"
+              label="Загрузить"
               accept=".jpg, .jpeg, .png, .webp"
               getChange={getPictures}
             />

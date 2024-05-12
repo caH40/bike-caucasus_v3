@@ -1,16 +1,14 @@
+import { revalidatePath } from 'next/cache';
+
+import { connectToMongo } from '@/database/mongodb/mongoose';
+import { handlerDateForm } from '@/libs/utils/date';
+import { getGender } from '@/libs/utils/handler-data';
+import { Cloud } from '../cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
-import { connectToMongo } from '@/database/mongodb/mongoose';
-
 import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import type { IUserModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
-import path from 'path';
-import { writeFile } from 'fs/promises';
-import { handlerDateForm } from '@/libs/utils/date';
-import { getGender } from '@/libs/utils/handler-data';
-import { myPath } from '@/libs/utils/path';
-import { revalidatePath } from 'next/cache';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -23,11 +21,9 @@ type ParamsGetProfile = {
  */
 export class UserService {
   private dbConnection: () => Promise<void>;
-  private rootDir: string;
 
   constructor() {
     this.dbConnection = connectToMongo;
-    this.rootDir = path.resolve(process.cwd());
   }
 
   // получение данных профиля
@@ -82,40 +78,61 @@ export class UserService {
   }
 
   /**
-   * Сохранение данных профиля из формы account/profile
+   * Обновляет профиль пользователя в базе данных и загружает новое изображение профиля, если оно было изменено.
+   * @param {FormData} profileEdited - Данные профиля, включая измененные поля.
+   * @param {Object} options - Объект с параметрами для загрузки изображения. Для `https://${bucketName}.${domainCloudName}/${fileName}
+   * @param options.cloudName - Название облачного сервиса для загрузки изображения (должно быть 'vk').
+   * @param options.bucketName - Название бакета для загрузки изображения.
+   * @param options.domainCloudName - Доменное имя облачного сервиса для формирования URL изображения.
+   * @returns Объект с результатом операции или ошибкой.
    */
-  async putProfile(profileEdited: FormData) {
+  async putProfile(
+    profileEdited: FormData,
+    {
+      cloudName,
+      bucketName,
+      domainCloudName,
+    }: { cloudName: 'vk'; bucketName: string; domainCloudName: string }
+  ): Promise<MessageServiceDB<any>> {
     try {
       const profile = {} as TFormProfile;
 
-      profileEdited.forEach((value, key) => (profile[key] = value));
+      for (const [key, value] of [...profileEdited]) {
+        profile[key] = value;
+      }
 
+      // Выброс ошибки, если отсутствует идентификатор пользователя в профиле.
       if (!profile.id) {
         throw new Error('Нет id пользователя');
       }
-      // подключение к БД
+      // Подключение к БД.
       await this.dbConnection();
 
-      // сохранение изображения для профиля
-
-      let pathImageRelative = '';
-      const pathImageProfile = myPath.getProfileUploads(profile.id);
+      // Сохранение изображения для профиля, если оно загружено.
+      let fileName = '';
       if (!!profile.image) {
-        const bytes = await profile.image.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        const file = profile.image;
+        if (!file.type.startsWith('image/')) {
+          throw new Error('Загружаемый файл не является изображением');
+        }
 
-        const extension = profile.image.name?.split('.')?.at(-1) ?? 'jpg';
-        const fileName = `avatar.${extension}`;
-        const pathImage = path.join(pathImageProfile.absolute, fileName);
-        await writeFile(pathImage, buffer);
-
-        // для бд
-        pathImageRelative = `${pathImageProfile.relative}/${fileName}`;
+        const extension = file.name.split('.').pop();
+        if (!extension) {
+          throw new Error('Нет расширения у загружаемого изображения');
+        }
+        fileName = `user_${profile.id}_logo.${extension}`;
+        const cloud = new Cloud(cloudName);
+        await cloud.saveFile(file, bucketName, fileName);
       }
 
+      // Получение значения пола в нужной форме.
       const gender = getGender[profile.gender];
+
+      // Преобразование даты рождения в ISO формат.
       const birthday = handlerDateForm.getIsoDate(profile.birthday);
-      const query = {
+
+      // Формирование запроса для обновления профиля в базе данных.
+      const query: any = {
         'person.lastName': profile.lastName,
         'person.firstName': profile.firstName,
         'person.patronymic': profile.patronymic,
@@ -124,11 +141,11 @@ export class UserService {
         'person.bio': profile.bio,
         city: profile.city,
         imageFromProvider: profile.imageFromProvider === 'true',
-      } as any;
+      };
 
       //если загружалась новая фотография
       if (profile.image) {
-        query.image = pathImageRelative.replace('/public', '');
+        query.image = `https://${bucketName}.${domainCloudName}/${fileName}`;
       }
 
       await User.findOneAndUpdate(
