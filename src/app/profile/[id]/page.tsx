@@ -7,6 +7,7 @@ import styles from './ProfilePage.module.css';
 import { handlerDateForm } from '@/libs/utils/date';
 import { blurDataURL } from '@/libs/image';
 import { getLogoProfile } from '@/libs/utils/profile';
+import BlockSocial from '@/components/BlockSocial/BlockSocial';
 
 const userService = new UserService();
 // const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
@@ -60,8 +61,9 @@ export default async function ProfilePage({ params }: ParamsWithId) {
               <dd className={styles.desc__detail}>{profile.team?.name ?? 'нет данных'}</dd>
 
               <dt className={styles.desc__title}>Контакты</dt>
-              <dd className={styles.desc__detail}>tel</dd>
-              <dd className={styles.desc__detail}>gar</dd>
+              <dd className={styles.desc__detail}>
+                <BlockSocial social={profile.social} />
+              </dd>
             </dl>
             {profile.person.bio && <p>{profile.person.bio}</p>}
           </section>
