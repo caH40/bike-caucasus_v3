@@ -19,7 +19,7 @@
 }
 
 .btn:disabled {
-  background-color: var(--line);
+  background-color: var(--loading);
 }
 .btn:focus {
   outline: 3px solid var(--btn-focus);

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 
 import BoxInput from '../../BoxInput/BoxInput';
 import BoxSelect from '../../BoxSelect/BoxSelect';
@@ -23,6 +22,7 @@ import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
 import { useSession } from 'next-auth/react';
 import { useLoadingStore } from '@/store/loading';
+import { handlerResponse } from '@/libs/utils/response';
 
 type Props = {
   formData: IProfileForClient;
@@ -65,19 +65,16 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
       }
     }
 
-    const { ok, message } = await putProfile(dataToForm);
+    const res = await putProfile(dataToForm);
+    handlerResponse(res);
     update();
-    if (ok) {
-      toast.success(message);
-    } else {
-      toast.error(message);
-    }
+
     setLoading(false);
     setLoadingStore(false);
   };
 
   return (
-    <FormWrapper title="Профиль">
+    <FormWrapper title="Данные профиля">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <BlockUploadLogoProfile
           setFile={setFile}

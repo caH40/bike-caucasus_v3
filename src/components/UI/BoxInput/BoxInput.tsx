@@ -13,6 +13,7 @@ export default function BoxInput({
   label,
   validationText,
   register,
+  disabled,
   loading,
   ...props
 }: PropsBoxInput) {
@@ -23,7 +24,12 @@ export default function BoxInput({
         <span className={styles.validate}>{validationText}</span>
       </label>
       <div className={styles.wrapper__relative}>
-        <input {...props} {...register} className={cx('input', loading)} disabled={loading} />
+        <input
+          {...props}
+          {...register}
+          className={cx('input', loading)}
+          disabled={disabled || loading}
+        />
         <div className={styles.checkmark}>
           <Checkmark isCompleted={!validationText} />
         </div>
