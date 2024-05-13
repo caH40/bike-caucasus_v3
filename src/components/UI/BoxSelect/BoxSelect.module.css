@@ -43,6 +43,7 @@
 }
 .select:disabled {
   background-color: var(--loading);
+  color: var(--line);
 }
 .checkmark {
   overflow: hidden;

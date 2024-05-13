@@ -6,7 +6,7 @@ import { getGender } from '@/libs/utils/handler-data';
 import { Cloud } from '../cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
-import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
+import type { MessageServiceDB, TFormAccount, TFormProfile } from '@/types/index.interface';
 import type { IUserModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
 
@@ -49,6 +49,7 @@ export class UserService {
         'provider.id': false,
         'credentials.password': false,
         'credentials._id': false,
+        'social._id': false,
         createdAt: false,
         updatedAt: false,
         __v: false,
@@ -71,7 +72,7 @@ export class UserService {
         delete profile.credentials;
       }
 
-      return { data: profile, ok: true, message: 'Публичные данные профиля пользователя' };
+      return { data: profile, ok: true, message: 'Данные профиля пользователя' };
     } catch (error) {
       return handlerErrorDB(error);
     }
@@ -164,6 +165,49 @@ export class UserService {
         }
       );
       revalidatePath(`/profile/${profile.id}`);
+      return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
+    } catch (error) {
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновляет информацию об аккаунте пользователя.
+   * @param accountEdited - Отредактированные данные аккаунта пользователя.
+   * @returns Промис, содержащий информацию об успешном выполнении операции или об ошибке.
+   */
+  public async putAccount(accountEdited: TFormAccount): Promise<MessageServiceDB<any>> {
+    try {
+      // Выбрасывается ошибка, если отсутствует идентификатор пользователя в профиле.
+      if (!accountEdited.id) {
+        throw new Error('Нет id пользователя');
+      }
+
+      // Подключение к базе данных.
+      await this.dbConnection();
+
+      // Формирование запроса для обновления профиля в базе данных.
+      const query: any = {
+        'social.telegram': accountEdited.telegram,
+        'social.vk': accountEdited.vk,
+        'social.strava': accountEdited.strava,
+        'social.komoot': accountEdited.komoot,
+        'social.whatsapp': accountEdited.whatsapp,
+        'social.garminConnect': accountEdited.garminConnect,
+        phone: accountEdited.phone,
+      };
+
+      // Обновление данных профиля в базе данных.
+      await User.findOneAndUpdate(
+        { id: accountEdited.id },
+        {
+          $set: query,
+        }
+      );
+
+      // Обновление пути валидации.
+      revalidatePath(`/account`);
+
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       return handlerErrorDB(error);

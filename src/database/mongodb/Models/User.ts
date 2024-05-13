@@ -6,6 +6,16 @@ const TeamSchema = new Schema({
   name: { type: String, required: true },
 });
 
+const SocialSchema = new Schema({
+  telegram: String,
+  vk: String,
+  youtube: String,
+  komoot: String,
+  strava: String,
+  whatsapp: String,
+  garminConnect: String,
+});
+
 const userSchema = new Schema<IUserModel>(
   {
     id: {
@@ -56,15 +66,7 @@ const userSchema = new Schema<IUserModel>(
     phone: { type: String },
     team: { type: TeamSchema, default: null },
     role: { type: String }, // !!!! изменить структуру данных, добавить разрешения
-    social: {
-      telegram: String,
-      vk: String,
-      youtube: String,
-      komoot: String,
-      strava: String,
-      whatsapp: String,
-      garminConnect: String,
-    },
+    social: { type: SocialSchema, default: {} },
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
