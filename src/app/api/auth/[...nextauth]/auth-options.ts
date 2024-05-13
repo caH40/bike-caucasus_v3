@@ -196,7 +196,7 @@ export const authOptions: AuthOptions = {
           return session;
         }
 
-        const image = userDB.imageFromProvider ? userDB.provider.image : userDB.image;
+        const image = userDB.imageFromProvider ? userDB.provider?.image : userDB.image;
 
         session.user.id = String(userDB.id);
         session.user.idDB = String(userDB._id);
