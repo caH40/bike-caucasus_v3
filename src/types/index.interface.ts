@@ -13,13 +13,14 @@ export interface PropsBoxInputAuth {
 }
 export type PropsBoxInput = {
   id: string;
+  name?: string;
   autoComplete: string;
   type: string;
   label: string;
   disabled?: boolean;
   validationText?: string;
   defaultValue?: string;
-  register: UseFormRegisterReturn; // FieldValues
+  register?: UseFormRegisterReturn; // FieldValues
   min?: string;
   max?: string;
   loading?: boolean;
