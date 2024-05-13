@@ -47,9 +47,18 @@
   font-size: 1.1rem;
   border: none;
   color: var(--main-color);
-  background-color: #1e541b;
+  background-color: var(--btn-bg);
 }
 .green:hover {
-  transition: all 0.3s;
-  background-color: #08a000;
+  transition: all 0.2s;
+  background-color: var(--btn-bg-hover);
+}
+.green:active {
+  background-color: var(--btn-bg-active);
+}
+.green:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+}
+.green:focus {
+  outline: none;
 }

@@ -1,5 +1,5 @@
 :root {
-  --main-color: #f1f1f1;
+  --main-color: #fafafa;
   --main-color-dark: #0f0f0f;
   --main-bg-color: linear-gradient(
     90.53deg,
@@ -10,9 +10,12 @@
   --link-auth-color-hover: #479692;
   --btn-auth-bg: #55b3ae;
   --btn-focus: #018a83;
-  --btn-bg: #318d2c;
-  --btn-bg-active: var(--color-orange);
 
+  /* зеленая кнопка */
+  --btn-bg: #318d2c;
+  --btn-bg-hover: #3fb439;
+  --btn-bg-active: var(--color-orange);
+  /* 0 0 5px 4px #44bb3d; */
   --error-color: red;
   --error: red;
   --warning: #ffa500;

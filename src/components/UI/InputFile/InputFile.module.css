@@ -28,9 +28,15 @@
   white-space: nowrap;
 }
 .btn:hover {
-  transition: all 0.3s;
-  background-color: var(--btn-bg);
+  transition: all 0.2s;
+  background-color: var(--btn-bg-hover);
 }
 .btn:active {
   background-color: var(--btn-bg-active);
+}
+.btn:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+}
+.btn:focus {
+  outline: none;
 }
