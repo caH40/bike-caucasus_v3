@@ -63,6 +63,23 @@ export type TFormProfile = {
 };
 
 /**
+ * Данные профиля (аккаунта) для изменения в account/details
+ */
+export type TFormAccount = {
+  telegram?: string;
+  vk?: string;
+  youtube?: string;
+  komoot?: string;
+  strava?: string;
+  whatsapp?: string;
+  garminConnect?: string;
+  phone?: string;
+  role: string;
+  email: string;
+  id: number;
+};
+
+/**
  * Данные profile из provider Yandex
  */
 export type ProfileProvider = {

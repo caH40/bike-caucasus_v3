@@ -1,38 +1,27 @@
 'use client';
 
+import { SubmitHandler, useForm } from 'react-hook-form';
+
 import FormWrapper from '../Forms/FormWrapper/FormWrapper';
-import type { MessageServiceDB } from '@/types/index.interface';
-import styles from './FormAccount.module.css';
-import { useForm } from 'react-hook-form';
 import BoxInput from '../BoxInput/BoxInput';
-import { useLoadingStore } from '@/store/loading';
 import Button from '../Button/Button';
+import { useLoadingStore } from '@/store/loading';
+import { handlerResponse } from '@/libs/utils/response';
+import type { IProfileForClient } from '@/types/fetch.interface';
+import type { MessageServiceDB, TFormAccount } from '@/types/index.interface';
+import styles from './FormAccount.module.css';
 
 type Props = {
-  formData: any;
-  putAccount: () => Promise<MessageServiceDB<any>>;
-};
-type TFormAccount = {
-  telegram?: string;
-  vk?: string;
-  youtube?: string;
-  komoot?: string;
-  strava?: string;
-  whatsapp?: string;
-  garminConnect?: string;
-
-  phone?: string;
-  role: string;
-  email: string;
-  id: number;
+  profile: IProfileForClient; // данные профиля из БД
+  putAccount: (dataForm: TFormAccount) => Promise<MessageServiceDB<any>>; // eslint-disable-line
 };
 
 /**
- * Форма ввода данных аккаунта.
+ * Форма для обновления данных аккаунта.
  * @param param0
  * @returns
  */
-export default function FormAccount({ formData, putAccount }: Props) {
+export default function FormAccount({ profile, putAccount }: Props) {
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
   const {
@@ -41,9 +30,12 @@ export default function FormAccount({ formData, putAccount }: Props) {
     formState: { errors },
   } = useForm<TFormAccount>({ mode: 'all' });
 
-  const onSubmit = async () => {
+  const onSubmit: SubmitHandler<TFormAccount> = async (dataForm) => {
     setLoading(true);
-    putAccount();
+    dataForm.id = profile.id;
+    const responseFromServer = await putAccount(dataForm);
+
+    handlerResponse(responseFromServer);
     setLoading(false);
   };
   return (
@@ -55,7 +47,7 @@ export default function FormAccount({ formData, putAccount }: Props) {
           id="telegram"
           autoComplete="offered"
           type="text"
-          defaultValue={formData.telegram ?? ''}
+          defaultValue={profile.social.telegram ?? ''}
           loading={isLoading}
           register={register('telegram', {
             pattern: {
@@ -72,7 +64,7 @@ export default function FormAccount({ formData, putAccount }: Props) {
           id="vk"
           autoComplete="offered"
           type="text"
-          defaultValue={formData.vk ?? ''}
+          defaultValue={profile.social.vk ?? ''}
           loading={isLoading}
           register={register('vk', {
             pattern: {
@@ -89,7 +81,7 @@ export default function FormAccount({ formData, putAccount }: Props) {
           id="strava"
           autoComplete="offered"
           type="text"
-          defaultValue={formData.strava ?? ''}
+          defaultValue={profile.social.strava ?? ''}
           loading={isLoading}
           register={register('strava', {
             pattern: {
@@ -108,7 +100,7 @@ export default function FormAccount({ formData, putAccount }: Props) {
           autoComplete="offered"
           type="string"
           disabled={true}
-          defaultValue={formData.id ?? 'не найден, обратитесь в поддержку!'}
+          defaultValue={String(profile.id) ?? 'не найден, обратитесь в поддержку!'}
         />
 
         {/* поле ввода информации об роли пользователя */}
@@ -119,18 +111,18 @@ export default function FormAccount({ formData, putAccount }: Props) {
           autoComplete="offered"
           type="string"
           disabled={true}
-          defaultValue={formData.role ?? 'не найден, обратитесь в поддержку!'}
+          defaultValue={profile.role ?? 'не найден, обратитесь в поддержку!'}
         />
 
         {/* поле ввода информации об email */}
         <BoxInput
-          label="Статус на сайте:"
+          label="E-mail:"
           id="email"
           name="email"
           autoComplete="email"
           type="email"
           disabled={true}
-          defaultValue={formData.email ?? 'не найден, обратитесь в поддержку!'}
+          defaultValue={profile.email ?? 'не найден, обратитесь в поддержку!'}
         />
         <div className={styles.box__button}>
           <Button name="Сохранить" theme="green" loading={isLoading} />

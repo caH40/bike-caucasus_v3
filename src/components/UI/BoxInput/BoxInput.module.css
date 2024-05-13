@@ -31,9 +31,9 @@
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
   outline: none;
 }
-
 .input:disabled {
   background-color: var(--loading);
+  color: var(--line);
 }
 .checkmark {
   overflow: hidden;
