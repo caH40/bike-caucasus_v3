@@ -39,9 +39,10 @@
 }
 .select:focus {
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
-}
-.select:focus {
   outline: none;
+}
+.select:disabled {
+  background-color: var(--loading);
 }
 .checkmark {
   overflow: hidden;

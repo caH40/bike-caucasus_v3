@@ -19,7 +19,7 @@
 }
 
 .btn:disabled {
-  background-color: gray;
+  background-color: var(--line);
 }
 .btn:focus {
   outline: 3px solid var(--btn-focus);
@@ -58,7 +58,5 @@
 }
 .green:focus {
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
-}
-.green:focus {
   outline: none;
 }

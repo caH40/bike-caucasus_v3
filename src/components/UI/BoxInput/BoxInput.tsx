@@ -1,14 +1,19 @@
 'use client';
 
-import { PropsBoxInput } from '@/types/index.interface';
-import styles from './BoxInput.module.css';
+import cn from 'classnames/bind';
+
 import Checkmark from '@/components/Icons/Checkmark';
+import type { PropsBoxInput } from '@/types/index.interface';
+import styles from './BoxInput.module.css';
+
+const cx = cn.bind(styles);
 
 export default function BoxInput({
   id,
   label,
   validationText,
   register,
+  loading,
   ...props
 }: PropsBoxInput) {
   return (
@@ -18,7 +23,7 @@ export default function BoxInput({
         <span className={styles.validate}>{validationText}</span>
       </label>
       <div className={styles.wrapper__relative}>
-        <input {...props} {...register} className={styles.input} />
+        <input {...props} {...register} className={cx('input', loading)} disabled={loading} />
         <div className={styles.checkmark}>
           <Checkmark isCompleted={!validationText} />
         </div>

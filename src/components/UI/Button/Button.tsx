@@ -13,6 +13,7 @@ type Props = {
   size?: number;
   disabled?: boolean;
   theme?: string;
+  loading?: boolean;
 };
 
 /**
@@ -28,12 +29,17 @@ export default function Button({
   size = 24,
   disabled,
   theme,
+  loading,
 }: Props) {
   return (
     <button
-      className={cx('btn', { ['without__icon']: !iconSrc, [theme as string]: theme })}
+      className={cx('btn', {
+        ['without__icon']: !iconSrc,
+        [theme as string]: theme,
+        loading,
+      })}
       onClick={getClick}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
       {iconSrc && (
         <Image

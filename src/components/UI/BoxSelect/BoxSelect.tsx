@@ -1,15 +1,19 @@
 'use client';
 
-import { PropsBoxInput } from '@/types/index.interface';
+import cn from 'classnames/bind';
+
 import Checkmark from '@/components/Icons/Checkmark';
+import type { PropsBoxInput } from '@/types/index.interface';
 import styles from './BoxSelect.module.css';
+
+const cx = cn.bind(styles);
 
 export default function BoxSelect({
   id,
   label,
   validationText,
   register,
-
+  loading,
   ...props
 }: PropsBoxInput) {
   const options = ['мужской', 'женский'];
@@ -20,7 +24,7 @@ export default function BoxSelect({
         <span className={styles.validate}>{validationText}</span>
       </label>
       <div className={styles.wrapper__relative}>
-        <select className={styles.select} {...props} {...register}>
+        <select className={cx('select', loading)} disabled={loading} {...props} {...register}>
           {options.map((elm) => (
             <option key={elm} value={elm} className={styles.option}>
               {elm}

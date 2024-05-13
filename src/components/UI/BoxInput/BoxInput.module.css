@@ -29,9 +29,11 @@
 }
 .input:focus {
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
-}
-.input:focus {
   outline: none;
+}
+
+.input:disabled {
+  background-color: var(--loading);
 }
 .checkmark {
   overflow: hidden;

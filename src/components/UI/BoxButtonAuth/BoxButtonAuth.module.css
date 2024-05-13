@@ -20,7 +20,7 @@
   transition: all 0.3s;
 }
 .button:disabled {
-  background-color: gray;
+  background-color: var (--loading);
 }
 .button:hover {
   background-color: var(--link-auth-color-hover);

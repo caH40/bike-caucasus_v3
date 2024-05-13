@@ -22,6 +22,7 @@ export type PropsBoxInput = {
   register: UseFormRegisterReturn; // FieldValues
   min?: string;
   max?: string;
+  loading?: boolean;
 };
 
 /**

@@ -33,6 +33,7 @@ type Props = {
  * Форма для изменения данных Пользователя в профиле
  */
 export default function FormProfile({ formData, putProfile, idUser }: Props) {
+  const [loading, setLoading] = useState(false);
   const [imageFromProvider, setImageFromProvider] = useState<boolean>(
     !!formData.imageFromProvider
   );
@@ -45,6 +46,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
   } = useForm<TFormProfile>({ mode: 'all' });
 
   const onSubmit: SubmitHandler<TFormProfile> = async (dataForm) => {
+    setLoading(true);
     const dataToForm = new FormData();
     if (file) {
       dataToForm.set('image', file);
@@ -64,6 +66,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
     } else {
       toast.error(message);
     }
+    setLoading(false);
   };
 
   return (
@@ -74,6 +77,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           imageFromProvider={imageFromProvider}
           setImageFromProvider={setImageFromProvider}
           formData={formData}
+          loading={loading}
         />
 
         <BoxInput
@@ -82,6 +86,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           autoComplete="family-name"
           type="text"
           defaultValue={formData.person.lastName}
+          loading={loading}
           register={validateLastName(register)}
           validationText={errors.lastName ? errors.lastName.message : ''}
         />
@@ -91,6 +96,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           autoComplete="name"
           type="text"
           defaultValue={formData.person.firstName}
+          loading={loading}
           register={validateFirstName(register)}
           validationText={errors.firstName ? errors.firstName.message : ''}
         />
@@ -100,6 +106,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           autoComplete="offered"
           type="text"
           defaultValue={formData.person.patronymic}
+          loading={loading}
           register={validatePatronymic(register)}
           validationText={errors.patronymic ? errors.patronymic.message : ''}
         />
@@ -109,6 +116,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           autoComplete="offered"
           type="text"
           defaultValue={formData.person.patronymic || 'мужской'}
+          loading={loading}
           register={register('gender')}
           validationText={errors.gender ? errors.gender.message : ''}
         />
@@ -120,6 +128,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           min="1920-01-01"
           max="2020-01-01"
           defaultValue={handlerDateForm.getFormDate(formData.person.birthday)}
+          loading={loading}
           register={validateBirthday(register)}
           validationText={errors.birthday && 'Введите корректную дату'}
         />
@@ -129,6 +138,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           autoComplete="offered"
           type="text"
           defaultValue={formData.city}
+          loading={loading}
           register={validateCity(register)}
           validationText={errors.city ? errors.city.message : ''}
         />
@@ -138,11 +148,12 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           autoComplete="offered"
           type="text"
           defaultValue={formData.person.bio}
+          loading={loading}
           register={{ ...register('bio') }}
           validationText={errors.bio ? errors.bio.message : ''}
         />
         <div className={styles.box__button}>
-          <Button name="Сохранить" theme="green" />
+          <Button name="Сохранить" theme="green" loading={loading} />
         </div>
       </form>
     </FormWrapper>

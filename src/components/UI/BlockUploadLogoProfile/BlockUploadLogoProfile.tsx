@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useState, ChangeEvent } from 'react';
 import { toast } from 'sonner';
+
 import Checkbox from '../Checkbox/Checkbox';
 import InputFile from '../InputFile/InputFile';
+import { blurDataURL } from '@/libs/image';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import styles from './BlockUploadLogoProfile.module.css';
-import { blurDataURL } from '@/libs/image';
 
 /**
  * Компонент для загрузки логотипа профиля.
@@ -19,6 +20,7 @@ type Props = {
   imageFromProvider: boolean;
   setImageFromProvider: Dispatch<SetStateAction<boolean>>;
   formData: IProfileForClient;
+  loading?: boolean;
 };
 
 export default function BlockUploadLogoProfile({
@@ -26,6 +28,7 @@ export default function BlockUploadLogoProfile({
   imageFromProvider,
   setImageFromProvider,
   formData,
+  loading,
 }: Props) {
   const [urlFile, setUrlFile] = useState<string | undefined>(formData.image);
 
@@ -82,6 +85,7 @@ export default function BlockUploadLogoProfile({
           label="Загрузить"
           accept=".jpg, .jpeg, .png, .webp"
           getChange={getPictures}
+          loading={loading}
         />
       </div>
     </section>

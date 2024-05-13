@@ -15,7 +15,7 @@
   --btn-bg: #318d2c;
   --btn-bg-hover: #3fb439;
   --btn-bg-active: var(--color-orange);
-  /* 0 0 5px 4px #44bb3d; */
+
   --error-color: red;
   --error: red;
   --warning: #ffa500;
@@ -26,6 +26,8 @@
   --line: #979797; /* для разделительной линии hr */
   --white-12: rgba(255, 255, 255, 0.2);
   --white-20: rgba(255, 255, 255, 0.2);
+
+  --loading: #979797;
 }
 
 * {
@@ -59,6 +61,12 @@ button {
   border: none;
   background: none;
   color: inherit;
+}
+input,
+button,
+select,
+textarea:disabled {
+  opacity: 1;
 }
 .body {
   min-height: calc(100vh - 80px);
