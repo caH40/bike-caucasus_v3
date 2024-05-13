@@ -17,7 +17,7 @@ const UserAccount = () => {
   const avatar =
     status === 'authenticated' && session.user?.image
       ? session.user.image
-      : '/images/avatar.svg';
+      : '/images/icons/avatar.svg';
   const getClick = () => {
     if (status === 'authenticated') {
       router.push(`/profile/${session.user.id}`);
@@ -27,7 +27,14 @@ const UserAccount = () => {
   };
   return (
     <button className={styles.btn} onClick={getClick}>
-      <Image width={30} height={30} className={styles.img} src={avatar} alt="avatar" />
+      <Image
+        width={34}
+        height={34}
+        className={styles.img}
+        src={avatar}
+        alt="avatar"
+        quality={100}
+      />
     </button>
   );
 };

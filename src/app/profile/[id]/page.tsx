@@ -34,6 +34,8 @@ export default async function ProfilePage({ params }: ParamsWithId) {
             className={styles.profile__image}
             placeholder="blur"
             blurDataURL={blurDataURL}
+            priority={true}
+            quality={90}
           />
         ) : (
           <div className={styles.empty}></div>
