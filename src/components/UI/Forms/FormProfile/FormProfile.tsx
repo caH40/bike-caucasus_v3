@@ -22,6 +22,7 @@ import type { IProfileForClient } from '@/types/fetch.interface';
 import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
 import styles from './FormProfile.module.css';
 import { useSession } from 'next-auth/react';
+import { useLoadingStore } from '@/store/loading';
 
 type Props = {
   formData: IProfileForClient;
@@ -34,6 +35,10 @@ type Props = {
  */
 export default function FormProfile({ formData, putProfile, idUser }: Props) {
   const [loading, setLoading] = useState(false);
+
+  // глобальный спиннер
+  const setLoadingStore = useLoadingStore((state) => state.setLoading);
+
   const [imageFromProvider, setImageFromProvider] = useState<boolean>(
     !!formData.imageFromProvider
   );
@@ -47,6 +52,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
 
   const onSubmit: SubmitHandler<TFormProfile> = async (dataForm) => {
     setLoading(true);
+    setLoadingStore(true);
     const dataToForm = new FormData();
     if (file) {
       dataToForm.set('image', file);
@@ -67,6 +73,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
       toast.error(message);
     }
     setLoading(false);
+    setLoadingStore(false);
   };
 
   return (

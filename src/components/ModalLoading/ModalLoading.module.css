@@ -1,0 +1,28 @@
+.wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid var(--main-color); /* белая рамка */
+  border-top: 4px solid var(--btn-bg); /* синяя верхняя часть */
+  animation: spin 1s linear infinite; /* анимация */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

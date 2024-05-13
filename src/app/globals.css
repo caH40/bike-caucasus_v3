@@ -48,6 +48,7 @@ h1 {
   margin: 0;
 }
 .main {
+  position: relative;
   min-height: calc(100vh - 80px);
 }
 a {

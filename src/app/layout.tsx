@@ -10,6 +10,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import Footer from '@/components/Footer/Footer';
 import Modal from '@/components/UI/Modal/Modal';
+import ModalLoading from '@/components/ModalLoading/ModalLoading';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bike-caucasus.ru'),
@@ -31,7 +32,10 @@ export default function RootLayout({
         <Providers>
           <div className="container">
             <Header />
-            <main className="main">{children}</main>
+            <main className="main">
+              <ModalLoading />
+              {children}
+            </main>
             <Footer />
           </div>
 

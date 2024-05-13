@@ -1,7 +1,3 @@
-/**
- * Хранилище для модального информационного окна.
- */
-
 import { create } from 'zustand';
 
 type ModalStore = {
@@ -12,6 +8,9 @@ type ModalStore = {
   resetModal: () => void;
 };
 
+/**
+ * Хранилище для модального информационного окна.
+ */
 export const useModalStore = create<ModalStore>((set) => ({
   isActive: false,
   title: '',
