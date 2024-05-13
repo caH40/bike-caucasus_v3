@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import classNames from 'classnames/bind';
 
 import styles from './Navbar.module.css';
+import { useResize } from '@/hooks/resize';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,8 @@ const links = [
 ];
 
 const Navbar = () => {
+  const { isScreenLg: lg } = useResize();
+
   const pathname = usePathname();
   const isActivePage = (href: string) => {
     if (pathname === '/' && pathname === href) {
@@ -31,15 +34,20 @@ const Navbar = () => {
 
   return (
     <nav className={styles.nav}>
-      <ul className={styles.list}>
-        {links.map((link) => (
-          <li className={styles.item} key={link.id}>
-            <Link className={cx('link', { active: isActivePage(link.href) })} href={link.href}>
-              {link.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {lg && (
+        <ul className={styles.list}>
+          {links.map((link) => (
+            <li className={styles.item} key={link.id}>
+              <Link
+                className={cx('link', { active: isActivePage(link.href) })}
+                href={link.href}
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </nav>
   );
 };

@@ -4,6 +4,7 @@ import ButtonLogin from '../UI/ButtonLogin/ButtonLogin';
 
 import styles from './Header.module.css';
 import LogoMain from '../UI/LogoMain/LogoMain';
+import Burger from '../UI/Burger/Burger';
 
 const Header = () => {
   return (
@@ -21,6 +22,7 @@ const Header = () => {
             </div>
 
             <ButtonLogin />
+            <Burger />
           </div>
         </div>
       </div>
