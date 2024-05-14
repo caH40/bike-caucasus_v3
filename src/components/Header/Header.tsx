@@ -22,7 +22,9 @@ export default async function Header() {
             </div>
 
             {/* кнопка входа */}
-            <ButtonLogin />
+            <div className={styles.box__login}>
+              <ButtonLogin />
+            </div>
 
             {/* бургер в мобильной версии, когда разрешение меньше 992px */}
             <Burger />

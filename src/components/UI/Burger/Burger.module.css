@@ -17,19 +17,16 @@
   transform: rotate(45deg) translate(6px, 6px);
   transition: ease-out 0.4s;
   width: 28px;
-  background-color: var(--color-orange);
 }
 .bar.clicked:nth-child(2) {
   transform: scale(0.1);
   transition: ease-out 0.5s;
   width: 28px;
-  background-color: var(--color-orange);
 }
 .bar.clicked:nth-child(3) {
   transform: rotate(-45deg) translate(9px, -9px);
   transition: ease-out 0.4s;
   width: 28px;
-  background-color: var(--color-orange);
 }
 .bar.unClicked {
   transform: rotate(0deg) translate(0);

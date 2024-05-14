@@ -32,4 +32,10 @@
   .header {
     padding: 0 10px;
   }
+  .navbar {
+    gap: 0;
+  }
+  .box__login {
+    display: none;
+  }
 }

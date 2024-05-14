@@ -18,7 +18,7 @@ const Burger = () => {
   return (
     !lg && (
       <>
-        <div className={styles.burger} onClick={() => setMobileMenu()}>
+        <div className={styles.burger} onClick={() => setMobileMenu(!isMenuOpen)}>
           <div className={bar} />
           <div className={bar} />
           <div className={bar} />
