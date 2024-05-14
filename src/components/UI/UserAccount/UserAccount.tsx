@@ -28,8 +28,8 @@ const UserAccount = () => {
   return (
     <button className={styles.btn} onClick={getClick}>
       <Image
-        width={34}
-        height={34}
+        width={30}
+        height={30}
         className={styles.img}
         src={avatar}
         alt="avatar"

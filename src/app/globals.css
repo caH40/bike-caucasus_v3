@@ -37,19 +37,19 @@
 }
 html,
 body {
+  width: 100%;
   overflow-x: hidden;
   font-size: 14px;
   letter-spacing: 0.05rem;
   color: var(--main-color);
   background: var(--main-bg-color);
 }
+.fixed {
+  position: fixed;
+}
 
 h1 {
   margin: 0;
-}
-.main {
-  position: relative;
-  min-height: calc(100vh - 80px);
 }
 a {
   color: inherit;
@@ -80,6 +80,11 @@ textarea:disabled {
   max-width: 1620px;
   margin: 0px auto;
   padding: 0px 10px;
+}
+.main {
+  position: relative;
+  min-height: calc(100vh - 80px);
+  padding-top: 5px;
 }
 .toast {
   font-size: 1rem;
