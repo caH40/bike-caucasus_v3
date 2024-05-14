@@ -6,7 +6,7 @@ import styles from './Header.module.css';
 import LogoMain from '../UI/LogoMain/LogoMain';
 import Burger from '../UI/Burger/Burger';
 
-const Header = () => {
+export default async function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
@@ -21,13 +21,14 @@ const Header = () => {
               <UserAccount />
             </div>
 
+            {/* кнопка входа */}
             <ButtonLogin />
+
+            {/* бургер в мобильной версии, когда разрешение меньше 992px */}
             <Burger />
           </div>
         </div>
       </div>
     </header>
   );
-};
-
-export default Header;
+}

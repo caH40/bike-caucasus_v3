@@ -27,17 +27,19 @@ const Login = () => {
     }
   };
   return (
-    lg && (
-      <button className={styles.btn} onClick={getClick}>
-        <Image
-          className={styles.img}
-          width={21}
-          height={28}
-          src={isAuthenticated ? '/images/icons/logout.svg' : '/images/icons/login.svg'}
-          alt="login"
-        />
-      </button>
-    )
+    <>
+      {lg && (
+        <button className={styles.btn} onClick={getClick}>
+          <Image
+            className={styles.img}
+            width={21}
+            height={28}
+            src={isAuthenticated ? '/images/icons/logout.svg' : '/images/icons/login.svg'}
+            alt="login"
+          />
+        </button>
+      )}
+    </>
   );
 };
 

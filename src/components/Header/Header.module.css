@@ -8,7 +8,6 @@
   height: 80px;
   gap: 0 20px;
 }
-
 .navbar {
   flex: 0 1 1000px;
   display: flex;
@@ -17,6 +16,7 @@
   gap: 0 44px;
 }
 .box__auth {
+  flex: 0 0 74px;
   display: flex;
   align-items: center;
   gap: 0 20px;
@@ -26,4 +26,10 @@
   width: 30px;
   flex: 0 0 30px;
   height: 30px;
+}
+
+@media screen and (max-width: 992px) {
+  .header {
+    padding: 0 10px;
+  }
 }

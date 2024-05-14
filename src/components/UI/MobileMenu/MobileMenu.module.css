@@ -1,0 +1,16 @@
+.wrapper {
+  position: fixed;
+  left: -100%;
+  top: 80px;
+  z-index: 1001;
+  width: 100%;
+  height: 100%;
+  background: var(--main-bg-color);
+  transition: all 0.3s;
+  padding: 10px 20px;
+}
+
+.open {
+  left: 0;
+  transition: all 0.3s;
+}

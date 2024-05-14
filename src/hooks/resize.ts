@@ -9,19 +9,19 @@ import {
 } from '@/libs/utils/breakpoints';
 
 export const useResize = () => {
-  const [width, setWidth] = useState<number>(
-    typeof window !== 'undefined' ? window.innerWidth : 0
-  );
+  const [width, setWidth] = useState<number>(1000);
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(typeof window !== 'undefined' ? window.innerWidth : 0);
+      setWidth(window.innerWidth);
     };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
+    // Вызываем функцию handleResize при монтировании компонента,
+    // чтобы установить начальное значение ширины
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return {

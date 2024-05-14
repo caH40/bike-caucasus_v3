@@ -11,6 +11,7 @@ import { Toaster } from 'sonner';
 import Footer from '@/components/Footer/Footer';
 import Modal from '@/components/UI/Modal/Modal';
 import ModalLoading from '@/components/ModalLoading/ModalLoading';
+import MobileMenu from '@/components/UI/MobileMenu/MobileMenu';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bike-caucasus.ru'),
@@ -33,6 +34,7 @@ export default function RootLayout({
           <div className="container">
             <Header />
             <main className="main">
+              <MobileMenu />
               <ModalLoading />
               {children}
             </main>
