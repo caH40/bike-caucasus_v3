@@ -1,5 +1,5 @@
 type Props = {};
 
-export default function ListNewsPage({}: Props) {
-  return <div>ListNewsPage</div>;
+export default function NewsListPage({}: Props) {
+  return <div>NewsListPage</div>;
 }

@@ -1,5 +1,12 @@
-type Props = {};
+import FormNewsCreate from '@/components/UI/Forms/FormNewsCreate/FormNewsCreate';
 
-export default function CreateNewsPage({}: Props) {
-  return <div>CreateNewsPage</div>;
+/**
+ * Страница создания новости
+ */
+export default function NewsCreatePage() {
+  return (
+    <div>
+      <FormNewsCreate />
+    </div>
+  );
 }
