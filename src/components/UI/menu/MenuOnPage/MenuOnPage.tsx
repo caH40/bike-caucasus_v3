@@ -1,11 +1,12 @@
 'use client';
 
 import { Fragment } from 'react';
+import Link from 'next/link';
 import cn from 'classnames/bind';
 
-import styles from './MenuOnPage.module.css';
-import Link from 'next/link';
 import type { TMenuOnPage } from '@/types/index.interface';
+import styles from './MenuOnPage.module.css';
+import { handlerPosition } from '@/libs/utils/buttons';
 
 const cx = cn.bind(styles);
 
@@ -19,13 +20,16 @@ export default function MenuOnPage(buttons: TMenuOnPage[]) {
         buttons.map((button, index) => (
           <Fragment key={button.id}>
             {button.href ? (
-              <Link className={cx(...button.classes)} href={button.href}>
+              <Link
+                className={cx('btn', handlerPosition(buttons.length, index))}
+                href={button.href}
+              >
                 {button.name}
               </Link>
             ) : (
               <button
                 key={button.id}
-                className={cx(...button.classes)}
+                className={cx('btn', handlerPosition(buttons.length, index))}
                 onClick={button.onClick}
               >
                 {button.name}

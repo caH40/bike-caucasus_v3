@@ -1,14 +1,21 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import MenuOnPage from '../MenuOnPage/MenuOnPage';
 import type { TMenuOnPage } from '@/types/index.interface';
 
+type Params = {
+  profileId: string;
+};
+
 /**
  * Меню на странице профиля
  */
-export default function MenuProfile() {
+export default function MenuProfile({ profileId }: Params) {
+  const { data: session } = useSession();
+
   // сохранение ссылки в буфер обмена
   const shareUrl = () => {
     navigator.clipboard
@@ -23,22 +30,24 @@ export default function MenuProfile() {
     {
       id: 0,
       name: 'Настройки',
-      classes: ['btn', 'top'],
       href: '/account/profile',
+      isMyButton: true,
     },
     {
       id: 1,
       name: 'Разное',
-      classes: ['btn'],
       onClick: onDev,
     },
     {
       id: 2,
       name: 'Поделиться ссылкой',
-      classes: ['btn', 'bottom'],
       onClick: shareUrl,
     },
   ];
 
-  return MenuOnPage(buttons);
+  const buttonsFiltered = buttons.filter(
+    (button) => !button.isMyButton || (profileId === session?.user.id && button.isMyButton)
+  );
+
+  return MenuOnPage(buttonsFiltered);
 }

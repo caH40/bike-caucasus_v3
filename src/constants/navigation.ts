@@ -6,7 +6,9 @@ export const navLinksFull = [
   { id: 3, name: 'Галерея', href: '/gallery' },
   { id: 4, name: 'Джилы-Су', href: '/dzhilsu' },
   { id: 5, name: 'Админ', href: '/admin' },
+  { id: 6, name: 'Профиль', href: '/profile' },
 ];
+const linkExceptions = ['Вебкамеры', 'Админ', 'Профиль'];
 export const navLinksDesktop = navLinksFull.filter(
-  (link) => link.name !== 'Вебкамеры' && link.name !== 'Админ'
+  (link) => !linkExceptions.includes(link.name)
 );

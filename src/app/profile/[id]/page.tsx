@@ -10,7 +10,6 @@ import { getLogoProfile } from '@/libs/utils/profile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
 
 const userService = new UserService();
-// const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
 /**
  * Страница профиля пользователя
@@ -70,8 +69,10 @@ export default async function ProfilePage({ params }: ParamsWithId) {
             {profile.person.bio && <p>{profile.person.bio}</p>}
           </section>
         )}
+
+        {/* меню профиля */}
         <div className={styles.menu}>
-          <MenuProfile />
+          <MenuProfile profileId={params.id} />
         </div>
       </aside>
 
