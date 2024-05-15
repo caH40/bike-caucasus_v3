@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
-import MenuOnPage from '../MenuOnPage/MenuOnPage';
+import MenuOnPage from '@/UI/Menu/MenuOnPage/MenuOnPage';
 import type { TMenuOnPage } from '@/types/index.interface';
 
 type Params = {
@@ -52,5 +52,5 @@ export default function MenuProfile({ profileId }: Params) {
     (button) => !button.isMyButton || (profileId === session?.user.id && button.isMyButton)
   );
 
-  return MenuOnPage(buttonsFiltered);
+  return <MenuOnPage buttons={buttonsFiltered} />;
 }
