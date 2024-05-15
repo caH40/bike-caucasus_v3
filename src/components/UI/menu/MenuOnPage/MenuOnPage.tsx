@@ -10,10 +10,14 @@ import { handlerPosition } from '@/libs/utils/buttons';
 
 const cx = cn.bind(styles);
 
+type Props = {
+  buttons: TMenuOnPage[];
+};
+
 /**
  * Меню которое располагается на страницах с кнопками и линками
  */
-export default function MenuOnPage(buttons: TMenuOnPage[]) {
+export default function MenuOnPage({ buttons }: Props) {
   return (
     <div className={cx('wrapper')}>
       {!!buttons.length &&

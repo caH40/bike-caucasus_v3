@@ -1,4 +1,4 @@
-import MenuAccountProfile from '@/components/UI/menu/MenuAccountProfile/MenuAccountProfile';
+import MenuAccountProfile from '@/components/UI/Menu/MenuAccountProfile/MenuAccountProfile';
 import styles from './Account.module.css';
 
 export default function AccountLayout({

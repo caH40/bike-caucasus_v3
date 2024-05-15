@@ -1,0 +1,14 @@
+.wrapper {
+  display: grid;
+  gap: 1rem 45px;
+  grid-template-columns: 300px 1fr;
+}
+.aside__left {
+  max-width: 300px;
+}
+/* ====================================================================== */
+@media screen and (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+}
