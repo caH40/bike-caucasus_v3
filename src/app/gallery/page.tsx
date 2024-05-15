@@ -3,7 +3,11 @@ import { authOptions } from '../api/auth/[...nextauth]/auth-options';
 
 export default async function GalleryPage() {
   const session = await getServerSession(authOptions);
-  console.log('GalleryPage', session); // eslint-disable-line
+  // console.log('GalleryPage', session); // eslint-disable-line
 
-  return <div>Gallery</div>;
+  return (
+    <div>
+      <pre>{JSON.stringify(session, null, 2)}</pre>
+    </div>
+  );
 }

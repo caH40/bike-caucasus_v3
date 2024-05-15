@@ -30,12 +30,15 @@ export default async function TrailsPage() {
   const trails = await fetchTrails();
 
   return (
-    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', padding: '10px' }}>
-      {trails.map((trail) => {
-        trail._id = trail._id?.toString();
+    <>
+      <h1 style={{ color: 'red' }}>TrailsPage</h1>
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', padding: '10px' }}>
+        {trails.map((trail) => {
+          trail._id = trail._id?.toString();
 
-        return <Card key={String(trail._id)} trail={trail} />;
-      })}
-    </div>
+          return <Card key={String(trail._id)} trail={trail} />;
+        })}
+      </div>
+    </>
   );
 }
