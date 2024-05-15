@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import cn from 'classnames/bind';
 
 import { useMobileMenuStore } from '@/store/mobile';
@@ -19,7 +19,8 @@ export default function MobileMenu() {
   const isMenuOpen = useMobileMenuStore((state) => state.isMenuOpen);
   const setMobileMenu = useMobileMenuStore((state) => state.setMobileMenu);
   const path = usePathname();
-  const searchParams = useSearchParams();
+  // !! добавить если будут использоваться query search параметры в url, на странице перехода
+  // const searchParams = useSearchParams();
 
   // удаление прокрутки при открытом мобильном меню
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function MobileMenu() {
     return () => {
       setMobileMenu(false);
     };
-  }, [path, searchParams, setMobileMenu]);
+  }, [path, setMobileMenu]);
 
   return (
     <div className={cx('wrapper', { open: isMenuOpen })}>

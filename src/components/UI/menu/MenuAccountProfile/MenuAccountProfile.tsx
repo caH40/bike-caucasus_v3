@@ -19,25 +19,25 @@ export default function MenuAccountProfile() {
     {
       id: 0,
       name: 'Профиль',
-      classes: ['btn', 'top'],
+      classes: [],
       href: '/account/profile',
     },
     {
       id: 1,
       name: 'Команда',
-      classes: ['btn'],
+      classes: [],
       href: '/account/team',
     },
     {
       id: 2,
       name: 'Аккаунт',
-      classes: ['btn'],
+      classes: [],
       href: '/account/details',
     },
     {
       id: 3,
       name: 'Разное',
-      classes: ['btn', 'bottom'],
+      classes: [],
       onClick: onDev,
     },
   ];

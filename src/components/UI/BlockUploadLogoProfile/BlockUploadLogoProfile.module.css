@@ -8,8 +8,14 @@
   flex-direction: column;
   justify-content: space-between;
 }
-
 .img {
   border-radius: 0.5rem;
   object-fit: cover;
+}
+
+/* ====================================================================== */
+@media screen and (max-width: 992px) {
+  .wrapper {
+    gap: 20px;
+  }
 }

@@ -6,7 +6,7 @@ import {
   SCREEN_LG,
   SCREEN_XL,
   SCREEN_XXL,
-} from '@/libs/utils/breakpoints';
+} from '@/constants/breakpoints';
 
 export const useResize = () => {
   const [width, setWidth] = useState<number>(1000);

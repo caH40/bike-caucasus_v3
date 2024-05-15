@@ -128,6 +128,7 @@ export type MessageServiceDB<T> = {
 export type TMenuOnPage = {
   id: number;
   name: string;
+  classes: string[];
   href?: string;
   onClick?: () => void;
   isMyButton?: boolean; // отображается только авторизованному пользователю для данной кнопки

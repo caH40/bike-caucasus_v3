@@ -39,6 +39,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
         ) : (
           <div className={styles.empty}></div>
         )}
+
         {profile && (
           <section className={styles.wrapper__details}>
             <h1

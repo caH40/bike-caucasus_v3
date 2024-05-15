@@ -56,3 +56,10 @@
 .desc__detail {
   grid-column: 2;
 }
+
+/* ====================================================================== */
+@media screen and (max-width: 992px) {
+  .wrapper {
+    flex-wrap: wrap;
+  }
+}

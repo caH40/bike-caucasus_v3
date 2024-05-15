@@ -21,7 +21,7 @@ export default function MenuOnPage(buttons: TMenuOnPage[]) {
           <Fragment key={button.id}>
             {button.href ? (
               <Link
-                className={cx('btn', handlerPosition(buttons.length, index))}
+                className={cx('btn', handlerPosition(buttons.length, index), ...button.classes)}
                 href={button.href}
               >
                 {button.name}
@@ -29,7 +29,7 @@ export default function MenuOnPage(buttons: TMenuOnPage[]) {
             ) : (
               <button
                 key={button.id}
-                className={cx('btn', handlerPosition(buttons.length, index))}
+                className={cx('btn', handlerPosition(buttons.length, index), ...button.classes)}
                 onClick={button.onClick}
               >
                 {button.name}
