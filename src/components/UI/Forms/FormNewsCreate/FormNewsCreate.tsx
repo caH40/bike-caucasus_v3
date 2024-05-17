@@ -67,7 +67,10 @@ export default function FormNewsCreate({ dataFromAPI }: Props) {
           autoComplete={'off'}
           validationText={''} // необходима проверка?
         />
-        <BlockUploadImage setFileImageTitle={setFileImageTitle} />
+        <BlockUploadImage
+          fileImageTitle={fileImageTitle}
+          setFileImageTitle={setFileImageTitle}
+        />
       </form>
     </FormWrapper>
   );

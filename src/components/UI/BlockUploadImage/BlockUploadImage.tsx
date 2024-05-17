@@ -8,6 +8,7 @@ import styles from './BlockUploadImage.module.css';
 
 type Props = {
   isLoading?: boolean;
+  fileImageTitle: File | null;
   setFileImageTitle: Dispatch<SetStateAction<File | null>>;
 };
 const noImage = '/images/icons/noimage.svg';
@@ -16,7 +17,11 @@ const noImage = '/images/icons/noimage.svg';
  * Блок для загрузки Титульного изображения для новости
  * Устанавливает в setFileImageTitle данные типа File, показывает загруженное изображения для контроля
  */
-export default function BlockUploadImage({ setFileImageTitle, isLoading }: Props) {
+export default function BlockUploadImage({
+  fileImageTitle,
+  setFileImageTitle,
+  isLoading,
+}: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
   // обработка загрузки изображения
@@ -58,14 +63,18 @@ export default function BlockUploadImage({ setFileImageTitle, isLoading }: Props
 
   return (
     <section className={styles.wrapper}>
-      <h2 className={styles.title}>Титульное изображение</h2>
+      <h2 className={styles.title}>Титульное изображение:*</h2>
       <div className={styles.block__image}>
         <div className={styles.relative}>
           {/* в данном случае компонент Image не нужен */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={imageTitle} alt="title image" className={styles.img} />
-          <ButtonClose getClick={deleteImage} />
-          <div className={styles.top} />
+          {fileImageTitle && (
+            <>
+              <ButtonClose getClick={deleteImage} />
+              <div className={styles.top} />
+            </>
+          )}
         </div>
 
         <InputFile
