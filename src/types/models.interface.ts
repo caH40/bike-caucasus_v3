@@ -106,9 +106,17 @@ export type CounterModel = {
 export type TNews = {
   title: string;
   subTitle: string;
-  blocks: { text: string; image: string | null; position: number }[];
+  blocks: TNewsBlock[];
   content: string;
   author: ObjectId | string;
   poster: string;
   hashtags: string[];
+};
+/**
+ * Модель блока новости
+ */
+export type TNewsBlock = {
+  text: string;
+  image: string | null;
+  position: number;
 };

@@ -1,8 +1,4 @@
-.wrapper {
-  position: relative;
-}
 .hidden {
-  position: absolute;
   width: 0px;
   height: 0px;
   margin: 0px;
@@ -44,4 +40,15 @@
 }
 .btn:disabled {
   background-color: var(--loading);
+}
+
+/* ====================================================================== */
+.btn__icon {
+  cursor: pointer;
+}
+.btn__icon:hover {
+  opacity: 0.8;
+}
+.icon__disabled {
+  opacity: 0.8;
 }

@@ -1,4 +1,6 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
+import { TNews, TNewsBlock } from './models.interface';
+import { Dispatch, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -16,7 +18,7 @@ export type PropsBoxInput = {
   name?: string;
   autoComplete: string;
   type: string;
-  label: string;
+  label?: string;
   disabled?: boolean;
   validationText?: string;
   defaultValue?: string;
@@ -25,7 +27,16 @@ export type PropsBoxInput = {
   max?: string;
   loading?: boolean;
 };
-
+/**
+ * Пропсы для BoxInputSimple
+ */
+export type PropsBoxInputSimple = Omit<PropsBoxInput, 'register' | 'setValue'> &
+  // eslint-disable-next-line no-unused-vars
+  TDispatchInput & { handlerInput: (value: string) => void };
+/**
+ * Описание для инпута useState
+ */
+type TDispatchInput = { value: any; setValue?: Dispatch<SetStateAction<any>> };
 /**
  * Данные пользователя, возвращаемые после регистрации
  */
@@ -132,4 +143,13 @@ export type TMenuOnPage = {
   href?: string;
   onClick?: () => void;
   isMyButton?: boolean; // отображается только авторизованному пользователю для данной кнопки
+};
+
+/**
+ * типы с добавлением image типа File для отправки на сервер
+ */
+export type TNewsBlocksEdit = TNewsBlock & { imageFile: File | null };
+export type TNewsEdit = Omit<TNews, 'blocks'> & {
+  posterFile: File | null;
+  blocks: TNewsBlocksEdit[];
 };

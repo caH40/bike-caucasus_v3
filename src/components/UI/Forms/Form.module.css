@@ -2,11 +2,17 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 1rem;
 }
 .box__button {
   margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: flex-end;
+}
+.line {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin-bottom: 1rem;
+  width: 100%;
 }

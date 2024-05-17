@@ -1,12 +1,13 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'sonner';
 
-import InputFile from '../InputFile/InputFile';
+import InputFileIcon from '../InputFile/InputFileIcon';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import ButtonClose from '../ButtonClose/ButtonClose';
 import styles from './BlockUploadImage.module.css';
 
 type Props = {
+  title: string;
   isLoading?: boolean;
   fileImageTitle: File | null;
   setFileImageTitle: Dispatch<SetStateAction<File | null>>;
@@ -18,6 +19,7 @@ const noImage = '/images/icons/noimage.svg';
  * Устанавливает в setFileImageTitle данные типа File, показывает загруженное изображения для контроля
  */
 export default function BlockUploadImage({
+  title,
   fileImageTitle,
   setFileImageTitle,
   isLoading,
@@ -63,28 +65,31 @@ export default function BlockUploadImage({
 
   return (
     <section className={styles.wrapper}>
-      <h2 className={styles.title}>Титульное изображение:*</h2>
-      <div className={styles.block__image}>
-        <div className={styles.relative}>
-          {/* в данном случае компонент Image не нужен */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={imageTitle} alt="title image" className={styles.img} />
-          {fileImageTitle && (
-            <>
-              <ButtonClose getClick={deleteImage} />
-              <div className={styles.top} />
-            </>
-          )}
-        </div>
+      <h2 className={styles.title}>{title}</h2>
+      <InputFileIcon
+        name="uploadImage"
+        icon={{
+          width: 26,
+          height: 22,
+          src: '/images/icons/image-upload.svg',
+          alt: 'Upload image',
+        }}
+        accept=".jpg, .jpeg, .png, .webp"
+        getChange={getPictures}
+        loading={isLoading}
+        disabled={imageTitle !== noImage}
+      />
 
-        <InputFile
-          name="uploadImage"
-          label="Загрузить"
-          accept=".jpg, .jpeg, .png, .webp"
-          getChange={getPictures}
-          loading={isLoading}
-          disabled={imageTitle !== noImage}
-        />
+      <div className={styles.relative}>
+        {/* в данном случае компонент Image не нужен */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageTitle} alt="title image" className={styles.img} />
+        {fileImageTitle && (
+          <>
+            <ButtonClose getClick={deleteImage} />
+            <div className={styles.top} />
+          </>
+        )}
       </div>
     </section>
   );

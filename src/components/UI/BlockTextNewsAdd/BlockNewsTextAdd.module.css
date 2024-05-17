@@ -1,11 +1,29 @@
+.wrapper {
+  width: 100%;
+}
 .relative {
   position: relative;
   width: 180px;
   height: 120px;
 }
 .title {
-  font-size: 1em;
+  font-size: 1rem;
   margin-bottom: 5px;
+}
+.block__icons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+.block__icons__right {
+  display: flex;
+  gap: 0.7rem;
+}
+.btn {
+  cursor: pointer;
+}
+.btn:hover {
+  opacity: 0.8;
 }
 .img {
   width: 100%;
@@ -14,7 +32,7 @@
   border-radius: 0.5rem;
 }
 .top {
-  border-radius: 0.5rem;
+  border-radius: 0.5rem 0.5rem 0 0;
   overflow: hidden;
   position: absolute;
   top: 0;
