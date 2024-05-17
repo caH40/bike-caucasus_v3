@@ -49,5 +49,5 @@ export default function MenuAccountProfile() {
     }
   });
 
-  return MenuOnPage(buttons);
+  return <MenuOnPage buttons={buttons} />;
 }

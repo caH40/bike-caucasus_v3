@@ -14,6 +14,7 @@ type Props = {
   accept: string;
   getChange: (e: ChangeEvent<HTMLInputElement>) => void; //eslint-disable-line
   loading?: boolean;
+  disabled?: boolean;
 };
 
 /**
@@ -26,6 +27,7 @@ export default function InputFile({
   accept,
   getChange,
   loading,
+  disabled,
 }: Props) {
   const refInput = useRef<HTMLInputElement>(null);
   const getClick = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
@@ -35,7 +37,7 @@ export default function InputFile({
     }
   };
   return (
-    <div>
+    <div className={styles.wrapper}>
       <input
         ref={refInput}
         type="file"
@@ -45,7 +47,11 @@ export default function InputFile({
         onChange={getChange}
         name={name}
       />
-      <button className={cx('btn', { loading })} onClick={getClick} disabled={loading}>
+      <button
+        className={cx('btn', { loading: disabled || loading })}
+        onClick={getClick}
+        disabled={loading || disabled}
+      >
         {label}
       </button>
     </div>

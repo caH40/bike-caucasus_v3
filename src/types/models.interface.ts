@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose';
 import { Date, Types } from 'mongoose';
 
 /**
@@ -97,4 +98,17 @@ export interface IPasswordReset {
 export type CounterModel = {
   name: string;
   sequenceValue: number;
+};
+
+/**
+ * Модель новости
+ */
+export type TNews = {
+  title: string;
+  subTitle: string;
+  blocks: { text: string; image: string | null; position: number }[];
+  content: string;
+  author: ObjectId | string;
+  poster: string;
+  hashtags: string[];
 };

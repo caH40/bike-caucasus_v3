@@ -1,4 +1,8 @@
+.wrapper {
+  position: relative;
+}
 .hidden {
+  position: absolute;
   width: 0px;
   height: 0px;
   margin: 0px;

@@ -19,7 +19,7 @@ import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
-import styles from './FormProfile.module.css';
+import styles from '../Form.module.css';
 import { useSession } from 'next-auth/react';
 import { useLoadingStore } from '@/store/loading';
 import { handlerResponse } from '@/libs/utils/response';
