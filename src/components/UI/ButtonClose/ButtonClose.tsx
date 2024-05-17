@@ -5,7 +5,7 @@ type Props = {
 };
 
 const ButtonClose = ({ getClick }: Props) => {
-  return <button onClick={getClick} className={styles.myBtn} type="button" />;
+  return <button onClick={getClick} className={styles.btn} type="button" />;
 };
 
 export default ButtonClose;

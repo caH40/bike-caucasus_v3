@@ -1,5 +1,5 @@
 type Props = {};
 
-export default function EditNewsPage({}: Props) {
-  return <div>EditNewsPage</div>;
+export default function NewsEditPage({}: Props) {
+  return <div>NewsEditPage</div>;
 }
