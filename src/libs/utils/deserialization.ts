@@ -1,7 +1,18 @@
 import type { TNews } from '@/types/models.interface';
 
+type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
+  blocks: {
+    text: string;
+    image?: File | string;
+    position: number;
+  }[];
+  poster?: File | string;
+  hashtags: string | string[];
+  // hashtagsArray?: string[];
+};
+
 export function deserializeNewsCreate(formData: FormData) {
-  const news = {} as TNews & { [key: string]: any };
+  const news = {} as TNewsCreateFromClient & { [key: string]: any };
 
   for (const [name, value] of formData.entries()) {
     // Разбиваем имя на ключи с использованием регулярки /[\[\]]/ и фильтруем пустые строки.
@@ -26,5 +37,5 @@ export function deserializeNewsCreate(formData: FormData) {
     }, news);
   }
 
-  return news as TNews;
+  return news as TNewsCreateFromClient;
 }

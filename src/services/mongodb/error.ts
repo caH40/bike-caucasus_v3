@@ -2,8 +2,6 @@
  * Обработчик ошибок для сервисов работы с БД
  */
 export function handlerErrorDB(error: unknown) {
-  console.log(error);
-
   if (error instanceof Error) {
     return { data: null, ok: false, message: error.message };
   }

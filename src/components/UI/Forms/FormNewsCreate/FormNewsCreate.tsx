@@ -15,6 +15,7 @@ import styles from '../Form.module.css';
 import { serializationNewsCreate } from '@/libs/utils/serialization';
 
 type Props = {
+  // eslint-disable-next-line no-unused-vars
   fetchNewsCreated: (formData: FormData) => Promise<MessageServiceDB<any>>;
 };
 
@@ -28,11 +29,11 @@ const initialData: TNewsBlocksEdit[] = [
  * @returns
  */
 export default function FormNewsCreate({ fetchNewsCreated }: Props) {
-  const [newsBlocks, setNewsBlocks] = useState<TNewsBlocksEdit[]>(initialData);
+  const [blocks, setBlocks] = useState<TNewsBlocksEdit[]>(initialData);
   const [title, setTitle] = useState<string>('');
   const [subTitle, setSubTitle] = useState<string>('');
-  const [hashtag, setHashtag] = useState<string>('');
-  const [fileImageTitle, setFileImageTitle] = useState<File | null>(null);
+  const [hashtags, setHashtags] = useState<string>('');
+  const [poster, setPoster] = useState<File | null>(null);
 
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -40,24 +41,35 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
   // хэндлер отправки формы
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!fileImageTitle || !title || !subTitle || !hashtag) {
+
+    if (!poster || !title || !subTitle || !hashtags) {
       toast.error('Не заполнены все обязательные поля!');
       return;
     }
+
+    // Отображения спинера загрузки.
+    setLoading(true);
+
     const formData = serializationNewsCreate({
-      newsBlocks,
+      blocks,
       title,
       subTitle,
-      hashtag,
-      fileImageTitle,
+      hashtags,
+      poster,
     });
 
     const response = await fetchNewsCreated(formData);
     if (response.ok) {
+      setBlocks(initialData);
+      setTitle('');
+      setSubTitle('');
+      setHashtags('');
+      setPoster(null);
       toast.success(response.message);
     } else {
       toast.error(response.message);
     }
+    setLoading(false);
   };
 
   // загрузка основного изображения
@@ -91,18 +103,19 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
         {/* Блок загрузки Титульного изображения */}
         <BlockUploadImage
           title={'Титульное изображение:*'}
-          fileImageTitle={fileImageTitle}
-          setFileImageTitle={setFileImageTitle}
+          poster={poster}
+          setPoster={setPoster}
         />
 
         {/* <hr className={styles.line} /> */}
         {/* Блок добавления текста и изображения новости */}
-        {newsBlocks.map((newsBlock) => (
-          <Fragment key={newsBlock.position}>
+        {blocks.map((block) => (
+          <Fragment key={block.position}>
             <BlockNewsTextAdd
-              newsBlock={newsBlock}
-              newsBlocks={newsBlocks}
-              setNewsBlocks={setNewsBlocks}
+              block={block}
+              blocks={blocks}
+              setBlocks={setBlocks}
+              isLoading={isLoading}
             />
             {/* <hr className={styles.line} /> */}
           </Fragment>
@@ -111,13 +124,13 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
         <BoxInputSimple
           id="hashtag"
           name="hashtag"
-          value={hashtag}
-          handlerInput={setHashtag}
+          value={hashtags}
+          handlerInput={setHashtags}
           type={'text'}
           label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={hashtag.length > 3 ? '' : 'пустое!'} // необходима проверка?
+          validationText={hashtags.length > 3 ? '' : 'пустое!'} // необходима проверка?
         />
 
         <div className={styles.box__button}>

@@ -9,21 +9,16 @@ import styles from './BlockUploadImage.module.css';
 type Props = {
   title: string;
   isLoading?: boolean;
-  fileImageTitle: File | null;
-  setFileImageTitle: Dispatch<SetStateAction<File | null>>;
+  poster: File | null;
+  setPoster: Dispatch<SetStateAction<File | null>>;
 };
 const noImage = '/images/icons/noimage.svg';
 
 /**
  * Блок для загрузки Титульного изображения для новости
- * Устанавливает в setFileImageTitle данные типа File, показывает загруженное изображения для контроля
+ * Устанавливает в setPoster данные типа File, показывает загруженное изображения для контроля
  */
-export default function BlockUploadImage({
-  title,
-  fileImageTitle,
-  setFileImageTitle,
-  isLoading,
-}: Props) {
+export default function BlockUploadImage({ title, poster, setPoster, isLoading }: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
   // обработка загрузки изображения
@@ -50,8 +45,8 @@ export default function BlockUploadImage({
         // установка Data URL (base64) для отображения загруженного изображения
         setImageTitle(dataUrl);
 
-        // установка изображения File в fileImageTitle для дальнейшей работы с ним
-        setFileImageTitle(file);
+        // установка изображения File в poster для дальнейшей работы с ним
+        setPoster(file);
       }
     };
     reader.readAsDataURL(file);
@@ -60,7 +55,7 @@ export default function BlockUploadImage({
   // удаление загруженного изображения
   const deleteImage = () => {
     setImageTitle(noImage);
-    setFileImageTitle(null);
+    setPoster(null);
   };
 
   return (
@@ -84,7 +79,7 @@ export default function BlockUploadImage({
         {/* в данном случае компонент Image не нужен */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={imageTitle} alt="title image" className={styles.img} />
-        {fileImageTitle && (
+        {poster && (
           <>
             <ButtonClose getClick={deleteImage} />
             <div className={styles.top} />

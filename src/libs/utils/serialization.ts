@@ -1,11 +1,11 @@
 import type { TNewsBlocksEdit } from '@/types/index.interface';
 
 type Params = {
-  newsBlocks: TNewsBlocksEdit[]; // Блоки новостей, содержащие текст и изображения.
+  blocks: TNewsBlocksEdit[]; // Блоки новостей, содержащие текст и изображения.
   title: string; // Заголовок новости.
   subTitle: string; // Подзаголовок новости.
-  hashtag: string; // Хэштег новости.
-  fileImageTitle: File | null; // Изображение заголовка новости.
+  hashtags: string; // Хэштег новости.
+  poster: File | null; // Изображение заголовка новости.
 };
 
 /**
@@ -13,34 +13,34 @@ type Params = {
  * @returns Сериализованные данные в формате FormData.
  */
 export function serializationNewsCreate({
-  newsBlocks,
+  blocks,
   title,
   subTitle,
-  hashtag,
-  fileImageTitle,
+  hashtags,
+  poster,
 }: Params): FormData {
   const formData = new FormData();
   formData.set('title', title);
   formData.set('subTitle', subTitle);
-  formData.set('hashtag', hashtag);
-  if (fileImageTitle) {
-    formData.set('fileImageTitle', fileImageTitle);
+  formData.set('hashtags', hashtags);
+  if (poster) {
+    formData.set('poster', poster);
   }
 
   // Если заголовочное изображение присутствует, добавляем его в formData.
-  newsBlocks.forEach((block) => {
+  blocks.forEach((block) => {
     if (block.imageFile) {
       block.imageFile;
     }
   });
 
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
-  for (let i = 0; i < newsBlocks.length; i++) {
-    if (newsBlocks[i].imageFile) {
-      formData.set(`newsBlocks[${i}][image]`, newsBlocks[i].imageFile as File);
+  for (let i = 0; i < blocks.length; i++) {
+    if (blocks[i].imageFile) {
+      formData.set(`blocks[${i}][image]`, blocks[i].imageFile as File);
     }
-    formData.set(`newsBlocks[${i}][position]`, String(newsBlocks[i].position));
-    formData.set(`newsBlocks[${i}][text]`, newsBlocks[i].text);
+    formData.set(`blocks[${i}][position]`, String(blocks[i].position));
+    formData.set(`blocks[${i}][text]`, blocks[i].text);
   }
 
   return formData;

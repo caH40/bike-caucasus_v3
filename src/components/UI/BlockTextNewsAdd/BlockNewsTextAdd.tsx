@@ -12,12 +12,13 @@ import type { TNewsBlocksEdit } from '@/types/index.interface';
 import BoxTextareaSimple from '../BoxTextarea/BoxTextareaSimple';
 
 type Props = {
-  newsBlock: TNewsBlocksEdit; // новостной блок из новости, текст и изображение(не обязательно)
-  newsBlocks: TNewsBlocksEdit[]; // новостной блок из новости, текст и изображение(не обязательно)
-  setNewsBlocks: Dispatch<SetStateAction<TNewsBlocksEdit[]>>; // изменение массива newsBlocks
+  block: TNewsBlocksEdit; // новостной блок из новости, текст и изображение(не обязательно)
+  blocks: TNewsBlocksEdit[]; // новостной блок из новости, текст и изображение(не обязательно)
+  setBlocks: Dispatch<SetStateAction<TNewsBlocksEdit[]>>; // изменение массива blocks
+  isLoading: boolean;
 };
 
-export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks }: Props) {
+export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }: Props) {
   // обработка загрузки изображения
   const getImage = async (event: ChangeEvent<HTMLInputElement>) => {
     const imageFile = event.target.files?.[0] || null;
@@ -39,10 +40,10 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
       if (e.target && typeof e.target.result === 'string') {
         const dataUrl = e.target.result;
 
-        setNewsBlocks((prev) => {
+        setBlocks((prev) => {
           const blocks = prev.map((elm) => {
-            return elm.position === newsBlock.position
-              ? { ...newsBlock, image: dataUrl, imageFile, position: elm.position }
+            return elm.position === block.position
+              ? { ...block, image: dataUrl, imageFile, position: elm.position }
               : elm;
           });
 
@@ -53,12 +54,12 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
     reader.readAsDataURL(imageFile);
   };
 
-  // функция получения и формирования данных с нужной структурой для setNewsBlocks
+  // функция получения и формирования данных с нужной структурой для setBlocks
   const handlerInput = (value: string) => {
-    setNewsBlocks((prev) => {
+    setBlocks((prev) => {
       const blocks = prev.map((elm) => {
-        return elm.position === newsBlock.position
-          ? { ...newsBlock, text: value, position: elm.position }
+        return elm.position === block.position
+          ? { ...block, text: value, position: elm.position }
           : elm;
       });
 
@@ -68,10 +69,10 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
 
   // удаление загруженного изображения
   const deleteImage = () => {
-    setNewsBlocks((prev) => {
+    setBlocks((prev) => {
       const blocks = prev.map((elm) => {
-        return elm.position === newsBlock.position
-          ? { ...newsBlock, image: null, imageFile: null, position: elm.position }
+        return elm.position === block.position
+          ? { ...block, image: null, imageFile: null, position: elm.position }
           : elm;
       });
 
@@ -82,10 +83,10 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
   // добавление новостного блока
   const addBlock = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
-    const positionLast = newsBlocks.at(-1)?.position;
+    const positionLast = blocks.at(-1)?.position;
 
-    setNewsBlocks([
-      ...newsBlocks,
+    setBlocks([
+      ...blocks,
       {
         text: '',
         image: null,
@@ -98,10 +99,10 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
   // удаление новостного блока
   const deleteBlock = (e: MouseEvent<HTMLButtonElement>, position: number): void => {
     e.preventDefault();
-    if (newsBlocks.length < 2) {
+    if (blocks.length < 2) {
       return;
     }
-    setNewsBlocks((prev) => prev.filter((elm) => elm.position !== position));
+    setBlocks((prev) => prev.filter((elm) => elm.position !== position));
   };
 
   // вставка link
@@ -111,9 +112,7 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
 
   return (
     <section className={styles.wrapper}>
-      <h2
-        className={styles.title}
-      >{`Блок текста и изображения к нему №${newsBlock.position}`}</h2>
+      <h2 className={styles.title}>{`Блок текста и изображения к нему №${block.position}`}</h2>
       <div className={styles.block__icons}>
         <div className={styles.block__icons__right}>
           <InputFileIcon
@@ -149,7 +148,7 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
           </button>
         </div>
 
-        <button onClick={(e) => deleteBlock(e, newsBlock.position)} className={styles.btn}>
+        <button onClick={(e) => deleteBlock(e, block.position)} className={styles.btn}>
           <Image
             width={26}
             height={22}
@@ -160,20 +159,21 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
         </button>
       </div>
       <BoxTextareaSimple
-        value={newsBlock.text}
-        name={`block-${newsBlock.position}`}
-        id={`block-${newsBlock.position}`}
+        value={block.text}
+        name={`block-${block.position}`}
+        id={`block-${block.position}`}
+        loading={isLoading}
         autoComplete="off"
         type="text"
         handlerInput={handlerInput}
-        validationText={newsBlock.text.length > 30 ? '' : 'пустое!'}
+        validationText={block.text.length > 30 ? '' : 'пустое!'}
       />
 
-      {newsBlock.image && (
+      {block.image && (
         <div className={styles.relative}>
           {/* в данном случае компонент Image не нужен */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={newsBlock.image} alt="image for block" className={styles.img} />
+          <img src={block.image} alt="image for block" className={styles.img} />
 
           <ButtonClose getClick={deleteImage} />
           <div className={styles.top} />
