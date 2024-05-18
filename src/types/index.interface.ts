@@ -21,6 +21,7 @@ export type PropsBoxInput = {
   label?: string;
   disabled?: boolean;
   validationText?: string;
+  showValidationText?: boolean;
   defaultValue?: string;
   register?: UseFormRegisterReturn; // FieldValues
   min?: string;

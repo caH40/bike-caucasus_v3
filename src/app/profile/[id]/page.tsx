@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import MenuProfile from '@/components/UI/menu/MenuProfile/MenuProfile';
+import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import { UserService } from '@/services/mongodb/UserService';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';

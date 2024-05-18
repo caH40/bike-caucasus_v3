@@ -111,7 +111,9 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
 
   return (
     <section className={styles.wrapper}>
-      <h2 className={styles.title}>{`Блок ${newsBlock.position}`}</h2>
+      <h2
+        className={styles.title}
+      >{`Блок текста и изображения к нему №${newsBlock.position}`}</h2>
       <div className={styles.block__icons}>
         <div className={styles.block__icons__right}>
           <InputFileIcon
@@ -159,10 +161,12 @@ export default function BlockNewsTextAdd({ newsBlock, newsBlocks, setNewsBlocks 
       </div>
       <BoxTextareaSimple
         value={newsBlock.text}
+        name={`block-${newsBlock.position}`}
         id={`block-${newsBlock.position}`}
         autoComplete="off"
         type="text"
         handlerInput={handlerInput}
+        validationText={newsBlock.text.length > 30 ? '' : 'пустое!'}
       />
 
       {newsBlock.image && (

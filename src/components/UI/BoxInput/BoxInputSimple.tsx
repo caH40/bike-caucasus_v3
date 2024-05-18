@@ -12,20 +12,21 @@ const cx = cn.bind(styles);
  * Инпут без использования библиотеки react-hook-form
  */
 export default function BoxInputSimple({
-  id,
   label,
   value,
   handlerInput,
   validationText,
+  showValidationText,
   disabled,
   loading,
+  name,
   ...props
 }: PropsBoxInputSimple) {
   return (
     <div className={styles.wrapper}>
-      <label className={styles.label} htmlFor={id}>
+      <label className={styles.label} htmlFor={name}>
         {label}
-        <span className={styles.validate}>{validationText}</span>
+        {showValidationText && <span className={styles.validate}>{validationText}</span>}
       </label>
       <div className={styles.wrapper__relative}>
         <input

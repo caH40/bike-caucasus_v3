@@ -13,24 +13,26 @@ const cx = cn.bind(styles);
  * если есть кастомный обработчик получаемых данных handlerInput, то используется он
  */
 export default function BoxTextareaSimple({
-  id,
+  name,
   value,
   label,
   validationText,
+  showValidationText,
   loading,
   handlerInput,
   ...props
 }: PropsBoxInputSimple) {
   return (
     <div className={styles.wrapper}>
-      <label className={styles.label} htmlFor={id}>
+      <label className={styles.label} htmlFor={name}>
         {label}
-        <span className={styles.validate}>{validationText}</span>
+        {showValidationText && <span className={styles.validate}>{validationText}</span>}
       </label>
       <div className={styles.wrapper__relative}>
         <textarea
           {...props}
           value={value}
+          name={name}
           onChange={(e) => handlerInput(e.target.value)}
           className={cx('textarea', { loading })}
           disabled={loading}
