@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import InputFileIcon from '../InputFile/InputFileIcon';
@@ -11,6 +11,7 @@ type Props = {
   isLoading?: boolean;
   poster: File | null;
   setPoster: Dispatch<SetStateAction<File | null>>;
+  resetPoster: boolean; // триггер сброса изображения
 };
 const noImage = '/images/icons/noimage.svg';
 
@@ -18,8 +19,18 @@ const noImage = '/images/icons/noimage.svg';
  * Блок для загрузки Титульного изображения для новости
  * Устанавливает в setPoster данные типа File, показывает загруженное изображения для контроля
  */
-export default function BlockUploadImage({ title, poster, setPoster, isLoading }: Props) {
+export default function BlockUploadImage({
+  title,
+  poster,
+  setPoster,
+  isLoading,
+  resetPoster,
+}: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
+
+  useEffect(() => {
+    setImageTitle(noImage);
+  }, [resetPoster]);
 
   // обработка загрузки изображения
   const getPictures = async (event: ChangeEvent<HTMLInputElement>) => {

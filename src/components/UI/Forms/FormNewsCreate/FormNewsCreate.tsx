@@ -34,6 +34,7 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
   const [subTitle, setSubTitle] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [poster, setPoster] = useState<File | null>(null);
+  const [resetPoster, setResetPoster] = useState<boolean>(false);
 
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -65,6 +66,7 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
       setSubTitle('');
       setHashtags('');
       setPoster(null);
+      setResetPoster(!resetPoster);
       toast.success(response.message);
     } else {
       toast.error(response.message);
@@ -105,6 +107,7 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
           title={'Титульное изображение:*'}
           poster={poster}
           setPoster={setPoster}
+          resetPoster={resetPoster}
         />
 
         {/* <hr className={styles.line} /> */}
