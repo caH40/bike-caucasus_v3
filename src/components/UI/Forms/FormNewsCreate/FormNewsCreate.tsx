@@ -13,31 +13,44 @@ import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import type { MessageServiceDB, TNewsBlocksEdit } from '@/types/index.interface';
 import styles from '../Form.module.css';
 import { serializationNewsCreate } from '@/libs/utils/serialization';
+import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
   fetchNewsCreated: (formData: FormData) => Promise<MessageServiceDB<any>>;
 };
 
-const initialData: TNewsBlocksEdit[] = [
+const initialBlocks: TNewsBlocksEdit[] = [
   { text: '', image: null, imageFile: null, position: 1 },
 ];
-
+// const suffix = '__bc_moderation_news_create-';
 /**
  * Форма создания новости
  * Разделение новости на блоки осуществляется для добавления картинки к соответствующему блоку
  * @returns
  */
 export default function FormNewsCreate({ fetchNewsCreated }: Props) {
-  const [blocks, setBlocks] = useState<TNewsBlocksEdit[]>(initialData);
+  const [blocks, setBlocks] = useState<TNewsBlocksEdit[]>(initialBlocks);
   const [title, setTitle] = useState<string>('');
   const [subTitle, setSubTitle] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [poster, setPoster] = useState<File | null>(null);
-  const [resetPoster, setResetPoster] = useState<boolean>(false);
+  const [resetData, setResetData] = useState<boolean>(false);
 
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
+
+  // инициализация данных полей при монтировании из Локального хранилища.
+  useLSNewsInit({
+    setBlocks,
+    setTitle,
+    setSubTitle,
+    setHashtags,
+    initialBlocks,
+  });
+
+  // сохранение данных текстовых полей в Локальном хранилище.
+  useLSNews({ title, subTitle, hashtags, blocks, resetData });
 
   // хэндлер отправки формы
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -61,12 +74,12 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
 
     const response = await fetchNewsCreated(formData);
     if (response.ok) {
-      setBlocks(initialData);
+      setBlocks(initialBlocks);
       setTitle('');
       setSubTitle('');
       setHashtags('');
       setPoster(null);
-      setResetPoster(!resetPoster);
+      setResetData(true);
       toast.success(response.message);
     } else {
       toast.error(response.message);
@@ -107,10 +120,9 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
           title={'Титульное изображение:*'}
           poster={poster}
           setPoster={setPoster}
-          resetPoster={resetPoster}
+          resetData={resetData}
         />
 
-        {/* <hr className={styles.line} /> */}
         {/* Блок добавления текста и изображения новости */}
         {blocks.map((block) => (
           <Fragment key={block.position}>
@@ -120,7 +132,6 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
               setBlocks={setBlocks}
               isLoading={isLoading}
             />
-            {/* <hr className={styles.line} /> */}
           </Fragment>
         ))}
 
@@ -133,7 +144,7 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
           label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={hashtags.length > 3 ? '' : 'пустое!'} // необходима проверка?
+          validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
         />
 
         <div className={styles.box__button}>

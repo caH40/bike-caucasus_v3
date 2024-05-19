@@ -11,7 +11,7 @@ type Props = {
   isLoading?: boolean;
   poster: File | null;
   setPoster: Dispatch<SetStateAction<File | null>>;
-  resetPoster: boolean; // триггер сброса изображения
+  resetData: boolean; // триггер сброса изображения
 };
 const noImage = '/images/icons/noimage.svg';
 
@@ -24,13 +24,13 @@ export default function BlockUploadImage({
   poster,
   setPoster,
   isLoading,
-  resetPoster,
+  resetData,
 }: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
   useEffect(() => {
     setImageTitle(noImage);
-  }, [resetPoster]);
+  }, [resetData]);
 
   // обработка загрузки изображения
   const getPictures = async (event: ChangeEvent<HTMLInputElement>) => {
