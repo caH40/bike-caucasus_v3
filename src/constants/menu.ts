@@ -21,3 +21,25 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
     href: '/moderation/news/list',
   },
 ];
+
+// Кнопки для меню на странице Модерация новости /moderation/news
+export const buttonsMenuModerationPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Новости',
+    classes: [],
+    href: '/moderation/news/create',
+  },
+  {
+    id: 1,
+    name: 'Маршруты',
+    classes: [],
+    href: '/moderation/routes/create',
+  },
+  {
+    id: 2,
+    name: 'Соревнования',
+    classes: [],
+    href: '/moderation/championship',
+  },
+];

@@ -1,0 +1,24 @@
+.wrapper {
+  display: grid;
+  gap: 1rem 45px;
+  grid-template-columns: 300px 1fr;
+}
+.main {
+  letter-spacing: 0.05rem;
+}
+.main p {
+  margin-bottom: 0.5rem;
+}
+.title {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+.aside__left {
+  max-width: 300px;
+}
+/* ====================================================================== */
+@media screen and (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+}
