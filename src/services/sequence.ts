@@ -1,4 +1,5 @@
 import { Counter } from '@/database/mongodb/Models/Counter';
+import { connectToMongo } from '@/database/mongodb/mongoose';
 import { CounterModel } from '@/types/models.interface';
 
 /**
@@ -8,6 +9,9 @@ import { CounterModel } from '@/types/models.interface';
  * @returns Следующее значение последовательности.
  */
 export async function getNextSequenceValue(sequenceName: string) {
+  // Подключение к БД.
+  await connectToMongo();
+
   const sequenceDocument: CounterModel = await Counter.findOneAndUpdate(
     { name: sequenceName },
     { $inc: { sequenceValue: 1 } },

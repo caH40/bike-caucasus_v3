@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 /* ====================================================================== */
-@media screen and (max-width: 992px) {
+@media (max-width: 992px) {
   .wrapper {
     flex-wrap: wrap;
   }

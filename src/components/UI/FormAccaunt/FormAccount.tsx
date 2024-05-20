@@ -2,7 +2,7 @@
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import FormWrapper from '../Forms/FormWrapper/FormWrapper';
+import Wrapper from '../../Wrapper/Wrapper';
 import BoxInput from '../BoxInput/BoxInput';
 import Button from '../Button/Button';
 import { useLoadingStore } from '@/store/loading';
@@ -39,7 +39,7 @@ export default function FormAccount({ profile, putAccount }: Props) {
     setLoading(false);
   };
   return (
-    <FormWrapper title="Данные аккаунта">
+    <Wrapper title="Данные аккаунта">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {/* поле ввода информации об аккаунте в Телеграм */}
         <BoxInput
@@ -128,6 +128,6 @@ export default function FormAccount({ profile, putAccount }: Props) {
           <Button name="Сохранить" theme="green" loading={isLoading} />
         </div>
       </form>
-    </FormWrapper>
+    </Wrapper>
   );
 }

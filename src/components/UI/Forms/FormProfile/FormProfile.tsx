@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import BoxInput from '../../BoxInput/BoxInput';
 import BoxSelect from '../../BoxSelect/BoxSelect';
-import FormWrapper from '../FormWrapper/FormWrapper';
+import Wrapper from '../../../Wrapper/Wrapper';
 import {
   validateBirthday,
   validateCity,
@@ -74,7 +74,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
   };
 
   return (
-    <FormWrapper title="Данные профиля">
+    <Wrapper title="Данные профиля">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <BlockUploadLogoProfile
           setFile={setFile}
@@ -160,6 +160,6 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           <Button name="Сохранить" theme="green" loading={loading} />
         </div>
       </form>
-    </FormWrapper>
+    </Wrapper>
   );
 }

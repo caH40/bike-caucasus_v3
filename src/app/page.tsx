@@ -1,22 +1,42 @@
-import Client from '@/components/Client';
+import Wrapper from '@/components/Wrapper/Wrapper';
+import NewsShort from '@/components/NewsShort/NewsShort';
+import { News } from '@/services/news';
+import type { TNews } from '@/types/models.interface';
+import styles from './Home.module.css';
 
-export default function Home() {
+async function getNews(quantity: number) {
+  try {
+    const news = new News();
+    const response: { data: TNews[] | null; ok: boolean; message: string } = await news.getMany(
+      {
+        quantity,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(response.message);
+    }
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error({ message: error.message }); // eslint-disable-line no-console
+    }
+    console.error(error); // eslint-disable-line no-console
+  }
+}
+
+export default async function Home() {
+  const news = await getNews(4);
+
   return (
-    <div>
-      {/* <iframe
-        src="https://www.komoot.com/tour/1539543846/embed?share_token=avUiaitoA0t923xvdgh8mxY8z5HMuxbRGyx51W9Vw4DIdSFDzp&profile=1"
-        width="100%"
-        height="700"
-        style={{ border: '0px', overflow: 'hidden' }}
-        scrolling="no"
-      ></iframe>
-      <iframe
-        src="https://www.komoot.com/tour/1541705823/embed?share_token=axmpgvh8T7x8u3BoOvnCfttMdtLEtFoCGF660Klhd1eKoxJOnW&profile=1"
-        width="100%"
-        height="700"
-      ></iframe> */}
-
-      <Client />
+    <div className={styles.wrapper}>
+      <div className={styles.wrapper__main}>
+        <Wrapper title="Новости, события и анонсы мероприятий">
+          <NewsShort news={news} />
+        </Wrapper>
+      </div>
+      <aside className={styles.wrapper__aside}></aside>
     </div>
   );
 }

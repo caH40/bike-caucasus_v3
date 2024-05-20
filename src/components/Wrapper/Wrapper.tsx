@@ -1,4 +1,4 @@
-import styles from './FormWrapper.module.css';
+import styles from './Wrapper.module.css';
 
 type Props = {
   title: string;
@@ -8,7 +8,7 @@ type Props = {
 /**
  * Блок для формы
  */
-export default function FormWrapper({ title, children }: Props) {
+export default function Wrapper({ title, children }: Props) {
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.title}>{title}</h1>
