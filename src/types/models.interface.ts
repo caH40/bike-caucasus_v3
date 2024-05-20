@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongoose';
-import { Date, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 /**
  * Интерфейс велосипедного маршрута
@@ -104,13 +104,17 @@ export type CounterModel = {
  * Модель новости
  */
 export type TNews = {
+  _id: ObjectId;
   title: string;
+  urlSlug: string;
   subTitle: string;
   blocks: TNewsBlock[];
   content: string;
   author: ObjectId | string;
   poster: string;
   hashtags: string[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 /**
  * Модель блока новости

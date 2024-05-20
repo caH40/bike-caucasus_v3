@@ -27,7 +27,7 @@
   color: #39a034;
 }
 
-@media screen and (max-width: 992px) {
+@media (max-width: 992px) {
   .list {
     display: none;
   }

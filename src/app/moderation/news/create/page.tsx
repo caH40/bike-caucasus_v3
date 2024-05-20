@@ -3,6 +3,7 @@ import FormNewsCreate from '@/components/UI/Forms/FormNewsCreate/FormNewsCreate'
 
 import { News } from '@/services/news';
 import { getServerSession } from 'next-auth';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Страница создания новости
@@ -28,6 +29,8 @@ export default async function NewsCreatePage() {
       },
       author
     );
+
+    revalidatePath(`/`);
 
     return response;
   };

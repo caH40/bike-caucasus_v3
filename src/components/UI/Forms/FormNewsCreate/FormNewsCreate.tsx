@@ -4,7 +4,7 @@ import { FormEvent, Fragment, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useLoadingStore } from '@/store/loading';
-import FormWrapper from '../FormWrapper/FormWrapper';
+import Wrapper from '../../../Wrapper/Wrapper';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
@@ -90,7 +90,7 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
   // загрузка основного изображения
 
   return (
-    <FormWrapper title={'Создание новости'}>
+    <Wrapper title={'Создание новости'}>
       <form onSubmit={onSubmit} className={styles.form}>
         <BoxInputSimple
           id="title"
@@ -151,6 +151,6 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
           <Button name="Опубликовать" theme="green" loading={isLoading} />
         </div>
       </form>
-    </FormWrapper>
+    </Wrapper>
   );
 }
