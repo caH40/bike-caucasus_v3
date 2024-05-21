@@ -154,3 +154,21 @@ export type TNewsEdit = Omit<TNews, 'blocks'> & {
   posterFile: File | null;
   blocks: TNewsBlocksEdit[];
 };
+
+/**
+ * Тип сущности автора поста, новости, сообщения.
+ */
+export type TAuthor = {
+  author: {
+    id: number;
+    provider: {
+      image?: string;
+    };
+    imageFromProvider: boolean;
+    image?: string;
+    person: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+};
