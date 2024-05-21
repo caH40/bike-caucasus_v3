@@ -167,7 +167,15 @@ export class News {
 
       // isLikedByUser поставил или нет пользователь лайк данной новости
       if (idUserDB) {
-        newsDB.isLikedByUser = newsDB.likedBy?.map((id) => id.toString()).includes(idUserDB);
+        const res = await NewsModel.findOne(
+          {
+            urlSlug,
+            likedBy: { $elemMatch: { $eq: idUserDB } },
+          },
+          { _id: true }
+        );
+
+        newsDB.isLikedByUser = res ? true : false;
       }
 
       // Очистка ненужных данных для клиента.

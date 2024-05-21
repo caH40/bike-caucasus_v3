@@ -10,7 +10,13 @@ export function getHashtags(hashtag: string): string[] {
   const cleanedInput = hashtag.replace(/[^a-zA-Zа-яА-ЯёЁ0-9\s]/g, ' ');
 
   // Разделение строки по пробелам и фильтрация пустых элементов
-  const words = cleanedInput.split(/\s+/).filter((word) => word.length >= minLength);
+  const hashtags = cleanedInput.split(/\s+/).filter((word) => word.length >= minLength);
 
-  return words;
+  // Удаление дубликатов.
+  const hashtagsSet = new Set<string>();
+  for (const hash of hashtags) {
+    hashtagsSet.add(hash);
+  }
+
+  return [...hashtagsSet];
 }
