@@ -1,17 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { getTimerLocal } from '@/libs/utils/date-local';
 import InteractiveNewsCard from '../UI/InteractiveNewsCard/InteractiveNewsCard';
+import { getTimerLocal } from '@/libs/utils/date-local';
 import type { TNews } from '@/types/models.interface';
 import styles from './NewsCard.module.css';
 
 type Props = {
-  newsOne: TNews;
+  newsOne: TNews & { isLikedByUser: boolean };
 };
 
 export default function NewsCard({ newsOne }: Props) {
-  // console.log(newsOne);
+  const idNews = newsOne?._id ? String(newsOne._id) : undefined;
 
   return (
     <div className={styles.wrapper}>
@@ -35,7 +35,12 @@ export default function NewsCard({ newsOne }: Props) {
         </Link>
         <div className={styles.bottom}>
           <span>{getTimerLocal(newsOne.createdAt, 'DDMMYYHm')}</span>
-          <InteractiveNewsCard likes={20} messages={30} />
+          <InteractiveNewsCard
+            likes={newsOne.likesCount}
+            isLikedByUser={newsOne.isLikedByUser}
+            messages={30}
+            idNews={idNews}
+          />
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import type { TNews } from '@/types/models.interface';
 import styles from './BlockNews.module.css';
 
 type Props = {
-  news: TNews[] | null | undefined;
+  news: (TNews & { isLikedByUser: boolean })[] | null | undefined;
 };
 
 export default function BlockNews({ news }: Props) {

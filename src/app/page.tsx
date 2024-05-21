@@ -1,18 +1,24 @@
+import { getServerSession } from 'next-auth';
+
 import Wrapper from '@/components/Wrapper/Wrapper';
 import NewsShort from '@/components/NewsShort/NewsShort';
-import { News } from '@/services/news';
 import BlockNews from '@/components/BlockNews/BlockNews';
+import { News } from '@/services/news';
+import { authOptions } from './api/auth/[...nextauth]/auth-options';
 import type { TNews } from '@/types/models.interface';
 import styles from './Home.module.css';
 
-async function getNews(quantity: number) {
+async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
   try {
     const news = new News();
-    const response: { data: TNews[] | null; ok: boolean; message: string } = await news.getMany(
-      {
-        quantity,
-      }
-    );
+    const response: {
+      data: (TNews & { isLikedByUser: boolean })[] | null;
+      ok: boolean;
+      message: string;
+    } = await news.getMany({
+      quantity,
+      idUserDB,
+    });
 
     if (!response.ok) {
       throw new Error(response.message);
@@ -27,8 +33,13 @@ async function getNews(quantity: number) {
   }
 }
 
+/**
+ * Главная (домашняя) страница сайта.
+ */
 export default async function Home() {
-  const news = await getNews(4);
+  const session = await getServerSession(authOptions);
+
+  const news = await getNews({ quantity: 6, idUserDB: session?.user.idDB });
 
   return (
     <div className={styles.wrapper}>

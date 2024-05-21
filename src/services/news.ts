@@ -1,5 +1,6 @@
 import slugify from 'slugify';
 
+import { User } from '@/database/mongodb/Models/User';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { handlerErrorDB } from './mongodb/error';
 import { getNextSequenceValue } from './sequence';
@@ -9,7 +10,7 @@ import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import type { TNews } from '@/types/models.interface';
-import { TAuthor } from '@/types/index.interface';
+import type { MessageServiceDB, TAuthor } from '@/types/index.interface';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -99,15 +100,25 @@ export class News {
    * @param quantity количество последних новостей
    * @returns
    */
-  public async getMany({ quantity }: { quantity: number }) {
+  public async getMany({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
     try {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB: TNews[] = await NewsModel.find()
+      const newsDB: (TNews & { isLikedByUser: boolean })[] = await NewsModel.find()
         .sort({ createdAt: -1 })
         .limit(quantity)
         .lean();
+
+      for (const newsOne of newsDB) {
+        if (idUserDB) {
+          // isLikedByUser поставил или нет пользователь лайк данной новости
+          newsOne.isLikedByUser =
+            newsOne.likedBy?.map((id) => id.toString()).includes(idUserDB) || false;
+        }
+        // Очистка ненужных данных для клиента.
+        newsOne.likedBy = [];
+      }
 
       return {
         data: newsDB,
@@ -124,33 +135,97 @@ export class News {
    * @param urlSlug идентификатор новости
    * @returns
    */
-  public async getOne({ urlSlug }: { urlSlug: string }) {
+  public async getOne({
+    urlSlug,
+    idUserDB,
+  }: {
+    urlSlug: string;
+    idUserDB: string | undefined;
+  }) {
     try {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB: (TNews & TAuthor) | null = await NewsModel.findOne({ urlSlug })
-        .populate({
-          path: 'author',
-          select: [
-            'id',
-            'person.firstName',
-            'person.lastName',
-            'provider.image',
-            'imageFromProvider',
-            'image',
-          ],
-        })
-        .lean();
+      const newsDB: (TNews & TAuthor & { isLikedByUser: boolean }) | null =
+        await NewsModel.findOne({ urlSlug })
+          .populate({
+            path: 'author',
+            select: [
+              'id',
+              'person.firstName',
+              'person.lastName',
+              'provider.image',
+              'imageFromProvider',
+              'image',
+            ],
+          })
+          .lean();
 
       if (!newsDB) {
         throw new Error(`Не найдена запрашиваемая новость с адресом ${urlSlug}`);
       }
 
+      // isLikedByUser поставил или нет пользователь лайк данной новости
+      if (idUserDB) {
+        newsDB.isLikedByUser = newsDB.likedBy?.map((id) => id.toString()).includes(idUserDB);
+      }
+
+      // Очистка ненужных данных для клиента.
+      newsDB.likedBy = [];
+
       return {
         data: newsDB,
         ok: true,
         message: `Запрашиваемая новости с адресом  ${urlSlug}`,
+      };
+    } catch (error) {
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обрабатывает лайк или снятие лайка новости пользователем.
+   * @param {Object} params - Объект с параметрами.
+   * @param {string} params.idUserDB - Идентификатор пользователя в базе данных.
+   * @param {string} params.idNews - Идентификатор новости в базе данных.
+   * @returns {Promise<MessageServiceDB<any>>} - Результат операции учета лайка.
+   */
+  public async countLike({
+    idUserDB,
+    idNews,
+  }: {
+    idUserDB: string;
+    idNews: string;
+  }): Promise<MessageServiceDB<any>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const userDB = await User.findOne({ _id: idUserDB });
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с _id:${userDB}`);
+      }
+
+      const newsDB = await NewsModel.findOne({ _id: idNews });
+      if (!newsDB) {
+        throw new Error(`Новость с не найдена с _id:${idNews}`);
+      }
+
+      if (newsDB.likedBy.includes(idUserDB)) {
+        const userIndex = newsDB.likedBy.indexOf(idUserDB);
+        newsDB.likedBy.splice(userIndex, 1);
+        newsDB.likesCount = newsDB.likedBy.length;
+      } else {
+        newsDB.likedBy.push(idUserDB);
+        newsDB.likesCount = newsDB.likedBy.length;
+      }
+
+      await newsDB.save();
+
+      return {
+        data: null,
+        ok: true,
+        message: `Учет лайка от пользователя _id:${idUserDB}`,
       };
     } catch (error) {
       return handlerErrorDB(error);

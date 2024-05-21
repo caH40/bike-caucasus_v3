@@ -6,18 +6,31 @@ import IconShare from '@/components/Icons/IconShare';
 import IconEye from '@/components/Icons/IconEye';
 import styles from './InteractiveNewsCard.module.css';
 
+import { toast } from 'sonner';
+import { setLike } from '@/services/server_actions/likes';
+
 type Props = {
   likes?: number; // Количество лайков.
   messages?: number; // Количество сообщений.
+  idNews: string | undefined;
+  isLikedByUser: boolean;
 };
 
-export default function InteractiveNewsCard({ likes, messages }: Props) {
+export default function InteractiveNewsCard({ likes, isLikedByUser, messages, idNews }: Props) {
   const getShare = () => {};
-  const getLike = () => {};
+
+  // Обработка клика лайка.
+  const getLike = async () => {
+    const response = await setLike({ idNews });
+    if (response) {
+      toast.error(response.message);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.box__icon}>
-        <IconHandThumbUp getClick={getLike} squareSize={20} />
+        <IconHandThumbUp getClick={getLike} squareSize={20} isActive={isLikedByUser} />
         {likes && <span className={styles.icon__label}>{likes}</span>}
       </div>
       <div className={styles.box__icon}>

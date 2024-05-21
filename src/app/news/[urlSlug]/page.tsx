@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getServerSession } from 'next-auth';
 
+import InteractiveNewsCard from '@/components/UI/InteractiveNewsCard/InteractiveNewsCard';
 import { News } from '@/services/news';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogoProfile } from '@/libs/utils/profile';
-import InteractiveNewsCard from '@/components/UI/InteractiveNewsCard/InteractiveNewsCard';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import type { TAuthor } from '@/types/index.interface';
 import type { TNews } from '@/types/models.interface';
 import styles from './NewsPage.module.css';
@@ -15,10 +17,23 @@ type Props = {
   };
 };
 
-async function getNewsOne(urlSlug: string): Promise<any> {
+async function getNewsOne({
+  urlSlug,
+  idUserDB,
+}: {
+  urlSlug: string;
+  idUserDB: string | undefined;
+}): Promise<
+  | (TNews &
+      TAuthor & {
+        isLikedByUser: boolean;
+      })
+  | null
+  | undefined
+> {
   try {
     const news = new News();
-    const response = await news.getOne({ urlSlug });
+    const response = await news.getOne({ urlSlug, idUserDB });
 
     if (!response.ok) {
       throw new Error(response.message);
@@ -33,8 +48,19 @@ async function getNewsOne(urlSlug: string): Promise<any> {
   }
 }
 
+/**
+ * Страница Новости
+ */
 export default async function NewsPage({ params }: Props) {
-  const newsOne: (TNews & TAuthor) | null = await getNewsOne(params.urlSlug);
+  const session = await getServerSession(authOptions);
+  const newsOne = await getNewsOne({
+    urlSlug: params.urlSlug,
+    idUserDB: session?.user.idDB,
+  });
+
+  const idNews = newsOne?._id ? String(newsOne._id) : undefined;
+
+  // Учет лайка новости.
 
   return (
     <div className={styles.wrapper}>
@@ -56,6 +82,7 @@ export default async function NewsPage({ params }: Props) {
                     newsOne.author.image
                   )}
                   className={styles.author__img}
+                  priority={true}
                 />
               </Link>
               <Link href={`/profile/${newsOne.author.id}`} className={styles.author__name}>
@@ -111,7 +138,11 @@ export default async function NewsPage({ params }: Props) {
 
             {/* Интерактивный блок. */}
             <div className={styles.interactive}>
-              <InteractiveNewsCard />
+              <InteractiveNewsCard
+                likes={newsOne.likesCount}
+                isLikedByUser={newsOne.isLikedByUser}
+                idNews={idNews}
+              />
             </div>
           </>
         )}

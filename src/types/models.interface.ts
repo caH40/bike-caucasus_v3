@@ -113,6 +113,10 @@ export type TNews = {
   author: ObjectId | string;
   poster: string;
   hashtags: string[];
+  viewsCount: number; // Счетчик просмотров
+  likesCount: number; // Счетчик лайков
+  sharesCount: number; // Счетчик шеров
+  likedBy: ObjectId[]; // Массив идентификаторов пользователей, которые лайкнули
   createdAt: Date;
   updatedAt: Date;
 };
