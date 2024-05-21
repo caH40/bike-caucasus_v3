@@ -1,6 +1,7 @@
 import Wrapper from '@/components/Wrapper/Wrapper';
 import NewsShort from '@/components/NewsShort/NewsShort';
 import { News } from '@/services/news';
+import BlockNews from '@/components/BlockNews/BlockNews';
 import type { TNews } from '@/types/models.interface';
 import styles from './Home.module.css';
 
@@ -34,6 +35,7 @@ export default async function Home() {
       <div className={styles.wrapper__main}>
         <Wrapper title="Новости, события и анонсы мероприятий">
           <NewsShort news={news} />
+          <BlockNews news={news} />
         </Wrapper>
       </div>
       <aside className={styles.wrapper__aside}></aside>

@@ -1,7 +1,8 @@
+import Link from 'next/link';
+
+import { getTimerLocal } from '@/libs/utils/date-local';
 import { TNews } from '@/types/models.interface';
 import styles from './NewsShort.module.css';
-import { getTimerLocal } from '@/libs/utils/date-local';
-import Link from 'next/link';
 
 type Props = {
   news: TNews[] | null | undefined;

@@ -1,3 +1,4 @@
+import TitleAndLine from '../UI/TitleAndLine/TitleAndLine';
 import styles from './Wrapper.module.css';
 
 type Props = {
@@ -11,9 +12,8 @@ type Props = {
 export default function Wrapper({ title, children }: Props) {
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.title}>{title}</h1>
-      <hr className={styles.line} />
-      {children}
+      <TitleAndLine hSize={1} title={title} />
+      <div className={styles.gaps}>{children}</div>
     </div>
   );
 }
