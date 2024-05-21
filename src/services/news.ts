@@ -9,6 +9,7 @@ import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import type { TNews } from '@/types/models.interface';
+import { TAuthor } from '@/types/index.interface';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -118,9 +119,46 @@ export class News {
     }
   }
 
+  /**
+   * Получения списка новостей
+   * @param urlSlug идентификатор новости
+   * @returns
+   */
+  public async getOne({ urlSlug }: { urlSlug: string }) {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const newsDB: (TNews & TAuthor) | null = await NewsModel.findOne({ urlSlug })
+        .populate({
+          path: 'author',
+          select: [
+            'id',
+            'person.firstName',
+            'person.lastName',
+            'provider.image',
+            'imageFromProvider',
+            'image',
+          ],
+        })
+        .lean();
+
+      if (!newsDB) {
+        throw new Error(`Не найдена запрашиваемая новость с адресом ${urlSlug}`);
+      }
+
+      return {
+        data: newsDB,
+        ok: true,
+        message: `Запрашиваемая новости с адресом  ${urlSlug}`,
+      };
+    } catch (error) {
+      return handlerErrorDB(error);
+    }
+  }
+
   async put() {}
   async delete() {}
-  async getOne() {}
 
   /**
    * Сохраняет изображение в облаке и возвращает URL сохраненного файла.

@@ -3,7 +3,7 @@ import styles from './icons.module.css';
 export default function Checkmark({ isCompleted }: { isCompleted: boolean }) {
   return (
     <svg
-      className={styles.icon}
+      className={styles.icon__custom}
       id="input__trek-img"
       width="25"
       height="28"
