@@ -3,6 +3,15 @@
   gap: 1rem 20px;
   grid-template-columns: 1fr 468px;
 }
+.webcam__title__mobile {
+  display: none;
+}
+
+@media screen and (max-width: 992px) {
+  .webcam__title__mobile {
+    display: block;
+  }
+}
 
 @media (max-width: 1100px) {
   .wrapper {

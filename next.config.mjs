@@ -26,6 +26,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'gw.cmo.sai.msu.ru',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
