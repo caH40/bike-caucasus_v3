@@ -15,17 +15,18 @@ export default function NewsCard({ newsOne }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.box__img}>
-        <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
+      <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
+        <div className={styles.box__img}>
           <Image
             src={newsOne.poster}
             fill={true}
             sizes="(max-width: 992px) 100vw, 20vw"
             alt={`image ${newsOne.title}`}
             className={styles.img}
+            priority={true}
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
       <div className={styles.wrapper__info}>
         <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
           <h3 className={styles.title}>{newsOne.title}</h3>
