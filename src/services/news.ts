@@ -10,7 +10,9 @@ import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import type { TNews } from '@/types/models.interface';
-import type { MessageServiceDB, TAuthor } from '@/types/index.interface';
+import type { MessageServiceDB } from '@/types/index.interface';
+import type { TAuthor } from '@/types/dto.types';
+import { serviceGetOneToDto } from '@/dto/news';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -146,20 +148,21 @@ export class News {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB: (TNews & TAuthor & { isLikedByUser: boolean }) | null =
-        await NewsModel.findOne({ urlSlug })
-          .populate({
-            path: 'author',
-            select: [
-              'id',
-              'person.firstName',
-              'person.lastName',
-              'provider.image',
-              'imageFromProvider',
-              'image',
-            ],
-          })
-          .lean();
+      const newsDB:
+        | (Omit<TNews, 'author'> & { author: TAuthor } & { isLikedByUser: boolean })
+        | null = await NewsModel.findOne({ urlSlug })
+        .populate({
+          path: 'author',
+          select: [
+            'id',
+            'person.firstName',
+            'person.lastName',
+            'provider.image',
+            'imageFromProvider',
+            'image',
+          ],
+        })
+        .lean();
 
       if (!newsDB) {
         throw new Error(`Не найдена запрашиваемая новость с адресом ${urlSlug}`);
@@ -178,13 +181,44 @@ export class News {
         newsDB.isLikedByUser = res ? true : false;
       }
 
-      // Очистка ненужных данных для клиента.
-      newsDB.likedBy = [];
-
       return {
-        data: newsDB,
+        data: serviceGetOneToDto(newsDB),
         ok: true,
         message: `Запрашиваемая новости с адресом  ${urlSlug}`,
+      };
+    } catch (error) {
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Подсчет просмотра новости любыми пользователеми.
+   */
+  public async countView({
+    idNews,
+  }: {
+    idNews?: string | null;
+  }): Promise<MessageServiceDB<any>> {
+    try {
+      if (!idNews) {
+        throw new Error(`Не получена _id новости`);
+      }
+      // Подключение к БД.
+      this.dbConnection();
+
+      const newsDB = await NewsModel.findOneAndUpdate(
+        { _id: idNews },
+        { $inc: { viewsCount: 1 } }
+      );
+
+      if (!newsDB) {
+        throw new Error(`Новость с не найдена с _id:${idNews}`);
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Учет просмотра новости с _id:${idNews}`,
       };
     } catch (error) {
       return handlerErrorDB(error);

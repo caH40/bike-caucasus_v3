@@ -12,11 +12,18 @@ import { setLike } from '@/services/server_actions/likes';
 type Props = {
   likes?: number; // Количество лайков.
   messages?: number; // Количество сообщений.
+  views?: number; // Количество просмотров.
   idNews: string | undefined;
   isLikedByUser: boolean;
 };
 
-export default function InteractiveNewsCard({ likes, isLikedByUser, messages, idNews }: Props) {
+export default function InteractiveNewsCard({
+  likes,
+  isLikedByUser,
+  messages,
+  idNews,
+  views,
+}: Props) {
   const getShare = () => {};
 
   // Обработка клика лайка.
@@ -39,6 +46,7 @@ export default function InteractiveNewsCard({ likes, isLikedByUser, messages, id
       </div>
       <div className={styles.box__icon}>
         <IconEye squareSize={20} />
+        {views && <span className={styles.icon__label}>{views}</span>}
       </div>
       <div className={styles.box__icon}>
         <IconShare squareSize={20} getClick={getShare} />

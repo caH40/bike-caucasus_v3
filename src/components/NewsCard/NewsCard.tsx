@@ -38,8 +38,8 @@ export default function NewsCard({ newsOne }: Props) {
           <InteractiveNewsCard
             likes={newsOne.likesCount}
             isLikedByUser={newsOne.isLikedByUser}
-            messages={30}
             idNews={idNews}
+            views={newsOne.viewsCount}
           />
         </div>
       </div>

@@ -110,7 +110,7 @@ export type TNews = {
   subTitle: string;
   blocks: TNewsBlock[];
   content: string;
-  author: ObjectId | string;
+  author: ObjectId;
   poster: string;
   hashtags: string[];
   viewsCount: number; // Счетчик просмотров
@@ -124,6 +124,7 @@ export type TNews = {
  * Модель блока новости
  */
 export type TNewsBlock = {
+  _id: ObjectId;
   text: string;
   image: string | null;
   position: number;

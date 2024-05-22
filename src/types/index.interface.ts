@@ -149,26 +149,8 @@ export type TMenuOnPage = {
 /**
  * типы с добавлением image типа File для отправки на сервер
  */
-export type TNewsBlocksEdit = TNewsBlock & { imageFile: File | null };
+export type TNewsBlocksEdit = Omit<TNewsBlock, '_id'> & { imageFile: File | null };
 export type TNewsEdit = Omit<TNews, 'blocks'> & {
   posterFile: File | null;
   blocks: TNewsBlocksEdit[];
-};
-
-/**
- * Тип сущности автора поста, новости, сообщения.
- */
-export type TAuthor = {
-  author: {
-    id: number;
-    provider: {
-      image?: string;
-    };
-    imageFromProvider: boolean;
-    image?: string;
-    person: {
-      firstName: string;
-      lastName: string;
-    };
-  };
 };

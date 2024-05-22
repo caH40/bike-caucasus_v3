@@ -7,9 +7,9 @@ import { News } from '@/services/news';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogoProfile } from '@/libs/utils/profile';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import type { TAuthor } from '@/types/index.interface';
-import type { TNews } from '@/types/models.interface';
+import type { TNewsHetOneDto } from '@/types/dto.types';
 import styles from './NewsPage.module.css';
+import { revalidatePath } from 'next/cache';
 
 type Props = {
   params: {
@@ -17,20 +17,16 @@ type Props = {
   };
 };
 
+/**
+ * Получение данных новости с БД.
+ */
 async function getNewsOne({
   urlSlug,
   idUserDB,
 }: {
   urlSlug: string;
   idUserDB: string | undefined;
-}): Promise<
-  | (TNews &
-      TAuthor & {
-        isLikedByUser: boolean;
-      })
-  | null
-  | undefined
-> {
+}): Promise<TNewsHetOneDto | null | undefined> {
   try {
     const news = new News();
     const response = await news.getOne({ urlSlug, idUserDB });
@@ -49,6 +45,24 @@ async function getNewsOne({
 }
 
 /**
+ * Подсчет просмотра новости с _id:idNews.
+ */
+async function countView(idNews: string | undefined): Promise<void> {
+  try {
+    if (!idNews) {
+      return;
+    }
+    // Учет просмотра новости.
+    const news = new News();
+    await news.countView({ idNews });
+
+    revalidatePath('/news/[urlSlug]');
+  } catch (error) {
+    console.error(error); // eslint-disable-line no-console
+  }
+}
+
+/**
  * Страница Новости
  */
 export default async function NewsPage({ params }: Props) {
@@ -59,8 +73,7 @@ export default async function NewsPage({ params }: Props) {
   });
 
   const idNews = newsOne?._id ? String(newsOne._id) : undefined;
-
-  // Учет лайка новости.
+  await countView(newsOne?._id);
 
   return (
     <div className={styles.wrapper}>
@@ -142,6 +155,7 @@ export default async function NewsPage({ params }: Props) {
                 likes={newsOne.likesCount}
                 isLikedByUser={newsOne.isLikedByUser}
                 idNews={idNews}
+                views={newsOne.viewsCount}
               />
             </div>
           </>
