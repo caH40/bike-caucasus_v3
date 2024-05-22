@@ -2,7 +2,7 @@
 
 import IconHandThumbUp from '@/components/Icons/IconHandThumbUp';
 import IconChatBubble from '@/components/Icons/IconChatBubble';
-import IconShare from '@/components/Icons/IconShare';
+
 import IconEye from '@/components/Icons/IconEye';
 import styles from './InteractiveNewsCard.module.css';
 
@@ -24,8 +24,6 @@ export default function InteractiveNewsCard({
   idNews,
   views,
 }: Props) {
-  const getShare = () => {};
-
   // Обработка клика лайка.
   const getLike = async () => {
     const response = await setLike({ idNews });
@@ -47,9 +45,6 @@ export default function InteractiveNewsCard({
       <div className={styles.box__icon}>
         <IconEye squareSize={20} />
         {views && <span className={styles.icon__label}>{views}</span>}
-      </div>
-      <div className={styles.box__icon}>
-        <IconShare squareSize={20} getClick={getShare} />
       </div>
     </div>
   );

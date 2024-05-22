@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 
 import InteractiveNewsCard from '@/components/UI/InteractiveNewsCard/InteractiveNewsCard';
@@ -8,8 +9,8 @@ import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogoProfile } from '@/libs/utils/profile';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import type { TNewsHetOneDto } from '@/types/dto.types';
+import BlockShare from '@/components/BlockShare/BlockShare';
 import styles from './NewsPage.module.css';
-import { revalidatePath } from 'next/cache';
 
 type Props = {
   params: {
@@ -158,6 +159,8 @@ export default async function NewsPage({ params }: Props) {
                 views={newsOne.viewsCount}
               />
             </div>
+            <hr className={styles.line} />
+            <BlockShare title={'Поделиться'} />
           </>
         )}
       </div>
