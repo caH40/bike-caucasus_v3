@@ -7,6 +7,8 @@ import { News } from '@/services/news';
 import { authOptions } from './api/auth/[...nextauth]/auth-options';
 import type { TNews } from '@/types/models.interface';
 import styles from './Home.module.css';
+import Webcam from '@/components/Webcam/Webcam';
+import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
 
 async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
   try {
@@ -49,7 +51,12 @@ export default async function Home() {
           <BlockNews news={news} />
         </Wrapper>
       </div>
-      <aside className={styles.wrapper__aside}></aside>
+      <aside className={styles.wrapper__aside}>
+        <div className={styles.webcam__title__mobile}>
+          <TitleAndLine hSize={2} title="Вебкамеры на горе Шаджатмаз" />
+        </div>
+        <Webcam />
+      </aside>
     </div>
   );
 }
