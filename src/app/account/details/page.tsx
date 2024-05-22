@@ -1,5 +1,5 @@
 import FormAccount from '@/components/UI/FormAccaunt/FormAccount';
-import type { MessageServiceDB, TFormAccount } from '@/types/index.interface';
+import type { ResponseServer, TFormAccount } from '@/types/index.interface';
 import styles from './AccountDetailsPage.module.css';
 import { UserService } from '@/services/mongodb/UserService';
 import { getServerSession } from 'next-auth';
@@ -17,7 +17,7 @@ export default async function AccountDetailsPage() {
   const profile = await userService.getProfile({ idDB: session.user.idDB, isPrivate: true });
 
   // обновление данных аккаунта в БД
-  const putAccount = async (dataForm: TFormAccount): Promise<MessageServiceDB<any>> => {
+  const putAccount = async (dataForm: TFormAccount): Promise<ResponseServer<any>> => {
     'use server';
 
     const response = await userService.putAccount(dataForm);

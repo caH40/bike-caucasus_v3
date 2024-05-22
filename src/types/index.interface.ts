@@ -126,9 +126,9 @@ export type ParamsWithId = {
 };
 
 /**
- * Ответ с сервиса Базы Данных
+ * Ответ с сервера.
  */
-export type MessageServiceDB<T> = {
+export type ResponseServer<T> = {
   data: T | null;
   ok: boolean;
   message: string;

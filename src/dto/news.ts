@@ -1,6 +1,10 @@
-import type { TAuthor, TNewsBlockDto, TNewsHetOneDto } from '@/types/dto.types';
+import type {
+  TAuthor,
+  TNewsBlockDto,
+  TNewsHetOneDto,
+  TNewsInteractiveDto,
+} from '@/types/dto.types';
 import type { TNews } from '@/types/models.interface';
-export const NewsDto = {};
 
 /**
  * ДТО возвращаемых данных сервиса "Получение одной новости news.getOne()"
@@ -32,5 +36,19 @@ export function serviceGetOneToDto(
     updatedAt: news.updatedAt,
     isLikedByUser: news.isLikedByUser,
     author: news.author,
+  };
+}
+
+/**
+ * ДТО возвращаемых данных сервиса "Получение интерактивных данных новости news.getInteractive()"
+ */
+export function serviceGetInteractiveToDto(
+  news: { viewsCount: number; likesCount: number },
+  isLikedByUser: boolean
+): TNewsInteractiveDto {
+  return {
+    likesCount: news.likesCount,
+    viewsCount: news.viewsCount,
+    isLikedByUser,
   };
 }

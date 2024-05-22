@@ -37,3 +37,10 @@ export type TAuthor = {
 
 // Блок новости без _id.
 export type TNewsBlockDto = Omit<TNewsBlock, '_id'>;
+
+// Интерактивный блок новостей
+export type TNewsInteractiveDto = {
+  viewsCount: number;
+  likesCount: number;
+  isLikedByUser: boolean;
+};

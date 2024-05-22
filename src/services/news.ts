@@ -10,9 +10,9 @@ import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import type { TNews } from '@/types/models.interface';
-import type { MessageServiceDB } from '@/types/index.interface';
+import type { ResponseServer } from '@/types/index.interface';
 import type { TAuthor } from '@/types/dto.types';
-import { serviceGetOneToDto } from '@/dto/news';
+import { serviceGetInteractiveToDto, serviceGetOneToDto } from '@/dto/news';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -192,13 +192,57 @@ export class News {
   }
 
   /**
+   * Сервис получения данных для интерактивного блока новости idNews.
+   */
+  public async getInteractive({
+    idNews,
+    idUserDB,
+  }: {
+    idNews: string;
+    idUserDB: string | undefined;
+  }) {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const newsDB: { viewsCount: number; likesCount: number } | null = await NewsModel.findOne(
+        { _id: idNews },
+        { viewsCount: true, likesCount: true, _id: false }
+      ).lean();
+
+      if (!newsDB) {
+        throw new Error(`Не найдена запрашиваемая новость с _id:${idNews}`);
+      }
+
+      let isLikedByUser = false;
+
+      // isLikedByUser поставил или нет пользователь лайк данной новости
+      if (idUserDB) {
+        const res = await NewsModel.findOne(
+          {
+            _id: idNews,
+            likedBy: { $elemMatch: { $eq: idUserDB } },
+          },
+          { _id: true }
+        );
+
+        isLikedByUser = res ? true : false;
+      }
+
+      return {
+        data: serviceGetInteractiveToDto(newsDB, isLikedByUser),
+        ok: true,
+        message: `Запрашиваемая новости с адресом  ${idNews}`,
+      };
+    } catch (error) {
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
    * Подсчет просмотра новости любыми пользователеми.
    */
-  public async countView({
-    idNews,
-  }: {
-    idNews?: string | null;
-  }): Promise<MessageServiceDB<any>> {
+  public async countView({ idNews }: { idNews?: string | null }): Promise<ResponseServer<any>> {
     try {
       if (!idNews) {
         throw new Error(`Не получена _id новости`);
@@ -230,7 +274,7 @@ export class News {
    * @param {Object} params - Объект с параметрами.
    * @param {string} params.idUserDB - Идентификатор пользователя в базе данных.
    * @param {string} params.idNews - Идентификатор новости в базе данных.
-   * @returns {Promise<MessageServiceDB<any>>} - Результат операции учета лайка.
+   * @returns {Promise<ResponseServer<any>>} - Результат операции учета лайка.
    */
   public async countLike({
     idUserDB,
@@ -238,7 +282,7 @@ export class News {
   }: {
     idUserDB: string;
     idNews: string;
-  }): Promise<MessageServiceDB<any>> {
+  }): Promise<ResponseServer<any>> {
     try {
       // Подключение к БД.
       this.dbConnection();

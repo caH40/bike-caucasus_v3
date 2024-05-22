@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import FormProfile from '@/components/UI/Forms/FormProfile/FormProfile';
 import { UserService } from '@/services/mongodb/UserService';
-import type { MessageServiceDB } from '@/types/index.interface';
+import type { ResponseServer } from '@/types/index.interface';
 import styles from './AccountProfilePage.module.css';
 
 /**
@@ -23,7 +23,7 @@ export default async function AccountProfilePage() {
    * @param dataFromClient Данные профиля пользователя.
    * @returns Результат операции обновления профиля.
    */
-  const putProfile = async (dataFromClient: FormData): Promise<MessageServiceDB<any>> => {
+  const putProfile = async (dataFromClient: FormData): Promise<ResponseServer<any>> => {
     'use server';
     const userService = new UserService();
     const response = await userService.putProfile(dataFromClient, {

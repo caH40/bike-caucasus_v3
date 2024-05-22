@@ -10,14 +10,14 @@ import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
-import type { MessageServiceDB, TNewsBlocksEdit } from '@/types/index.interface';
+import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
 import styles from '../Form.module.css';
 import { serializationNewsCreate } from '@/libs/utils/serialization';
 import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
-  fetchNewsCreated: (formData: FormData) => Promise<MessageServiceDB<any>>;
+  fetchNewsCreated: (formData: FormData) => Promise<ResponseServer<any>>;
 };
 
 const initialBlocks: TNewsBlocksEdit[] = [

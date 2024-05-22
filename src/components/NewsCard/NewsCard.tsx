@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import InteractiveNewsCard from '../UI/InteractiveNewsCard/InteractiveNewsCard';
+import InteractiveBlockNews from '../UI/InteractiveBlockNews/InteractiveBlockNews';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import type { TNews } from '@/types/models.interface';
 import styles from './NewsCard.module.css';
@@ -35,11 +35,11 @@ export default function NewsCard({ newsOne }: Props) {
         </Link>
         <div className={styles.bottom}>
           <span>{getTimerLocal(newsOne.createdAt, 'DDMMYYHm')}</span>
-          <InteractiveNewsCard
-            likes={newsOne.likesCount}
+          <InteractiveBlockNews
+            likesCount={newsOne.likesCount}
             isLikedByUser={newsOne.isLikedByUser}
             idNews={idNews}
-            views={newsOne.viewsCount}
+            viewsCount={newsOne.viewsCount}
           />
         </div>
       </div>

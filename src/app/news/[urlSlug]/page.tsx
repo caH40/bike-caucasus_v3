@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 
-import InteractiveNewsCard from '@/components/UI/InteractiveNewsCard/InteractiveNewsCard';
+import InteractiveBlockNews from '@/components/UI/InteractiveBlockNews/InteractiveBlockNews';
 import { News } from '@/services/news';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogoProfile } from '@/libs/utils/profile';
@@ -56,8 +55,6 @@ async function countView(idNews: string | undefined): Promise<void> {
     // Учет просмотра новости.
     const news = new News();
     await news.countView({ idNews });
-
-    revalidatePath('/news/[urlSlug]');
   } catch (error) {
     console.error(error); // eslint-disable-line no-console
   }
@@ -152,11 +149,11 @@ export default async function NewsPage({ params }: Props) {
 
             {/* Интерактивный блок. */}
             <div className={styles.interactive}>
-              <InteractiveNewsCard
-                likes={newsOne.likesCount}
+              <InteractiveBlockNews
+                likesCount={newsOne.likesCount}
                 isLikedByUser={newsOne.isLikedByUser}
                 idNews={idNews}
-                views={newsOne.viewsCount}
+                viewsCount={newsOne.viewsCount}
               />
             </div>
             <hr className={styles.line} />

@@ -18,7 +18,7 @@ import Button from '../../Button/Button';
 import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import type { IProfileForClient } from '@/types/fetch.interface';
-import type { MessageServiceDB, TFormProfile } from '@/types/index.interface';
+import type { ResponseServer, TFormProfile } from '@/types/index.interface';
 import styles from '../Form.module.css';
 import { useSession } from 'next-auth/react';
 import { useLoadingStore } from '@/store/loading';
@@ -26,7 +26,7 @@ import { handlerResponse } from '@/libs/utils/response';
 
 type Props = {
   formData: IProfileForClient;
-  putProfile: (params: FormData) => Promise<MessageServiceDB<any>>; // eslint-disable-line
+  putProfile: (params: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line
   idUser: string;
 };
 

@@ -6,7 +6,7 @@ import { getGender } from '@/libs/utils/handler-data';
 import { Cloud } from '../cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
-import type { MessageServiceDB, TFormAccount, TFormProfile } from '@/types/index.interface';
+import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
 import type { IUserModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
 
@@ -31,7 +31,7 @@ export class UserService {
     idDB,
     id,
     isPrivate = false,
-  }: ParamsGetProfile): Promise<MessageServiceDB<IProfileForClient>> {
+  }: ParamsGetProfile): Promise<ResponseServer<IProfileForClient> | ResponseServer<null>> {
     try {
       // подключение к БД
       await this.dbConnection();
@@ -94,7 +94,7 @@ export class UserService {
       bucketName,
       domainCloudName,
     }: { cloudName: 'vk'; bucketName: string; domainCloudName: string }
-  ): Promise<MessageServiceDB<any>> {
+  ): Promise<ResponseServer<any>> {
     try {
       const profile = {} as TFormProfile;
 
@@ -176,7 +176,7 @@ export class UserService {
    * @param accountEdited - Отредактированные данные аккаунта пользователя.
    * @returns Промис, содержащий информацию об успешном выполнении операции или об ошибке.
    */
-  public async putAccount(accountEdited: TFormAccount): Promise<MessageServiceDB<any>> {
+  public async putAccount(accountEdited: TFormAccount): Promise<ResponseServer<any>> {
     try {
       // Выбрасывается ошибка, если отсутствует идентификатор пользователя в профиле.
       if (!accountEdited.id) {
