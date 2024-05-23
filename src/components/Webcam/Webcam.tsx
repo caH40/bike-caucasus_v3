@@ -1,13 +1,33 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { lcWebcamShadzhatmaz as lcName } from '@/constants/local-storage';
 import ArrowsWebcam from '../UI/ArrowWebcam/ArrowsWebcam';
+import noImage from '../../../public/images/transparent800.png';
 import styles from './Webcam.module.css';
 
-export default function Webcam() {
-  const [numberWebcam, setNumberWebcam] = useState(1);
+type Props = {
+  forFullScr?: boolean;
+};
+
+export default function Webcam({ forFullScr }: Props) {
+  const [numberWebcam, setNumberWebcam] = useState<number>(0);
+
+  useEffect(() => {
+    const initialWebcam = Number(localStorage.getItem(lcName) ?? 1);
+    setNumberWebcam(initialWebcam);
+  }, []);
+
+  // Сохранение номера вебкамеры в Локальном хранилище.
+  // Если numberWebcam=0, значит еще не получены данные инициализации из Локального хранилища.
+  useEffect(() => {
+    if (!numberWebcam) {
+      return;
+    }
+    localStorage.setItem(lcName, String(numberWebcam));
+  }, [numberWebcam]);
 
   return (
     <div className={styles.wrapper}>
@@ -18,10 +38,11 @@ export default function Webcam() {
         <div className={styles.box__img}>
           <Image
             className={styles.img}
-            src={`https://gw.cmo.sai.msu.ru/webcam${numberWebcam}.jpg`}
+            src={numberWebcam ? `https://gw.cmo.sai.msu.ru/webcam${numberWebcam}.jpg` : noImage}
             alt={`Вебкамера на горе Шаджатмаз webcam${numberWebcam}`}
             fill={true}
-            sizes="(max-width: 992px) 100vw, 33vw"
+            sizes={forFullScr ? '90vw' : '(max-width: 992px) 100vw, 33vw'}
+            priority={forFullScr}
           />
         </div>
       </div>

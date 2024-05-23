@@ -8,7 +8,7 @@ export const navLinksFull = [
   { id: 5, name: 'Управление', href: '/moderation' },
   { id: 6, name: 'Профиль', href: '/profile' },
 ];
-const linkExceptions = ['Вебкамеры', 'Профиль'];
+const linkExceptions = ['Профиль'];
 export const navLinksDesktop = navLinksFull.filter(
   (link) => !linkExceptions.includes(link.name)
 );

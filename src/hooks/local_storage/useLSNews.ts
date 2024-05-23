@@ -1,5 +1,6 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
+import { lcSuffixNewsCreate as suffix } from '@/constants/local-storage';
 import { TNewsBlocksEdit } from '@/types/index.interface';
 
 type Props = {
@@ -19,7 +20,6 @@ type PropsInit = {
 };
 
 // Суффикс для локального хранилища.
-const suffix = '__bc_moderation_news_create-';
 
 /**
  * Хук сохраняет вводимые данные в форме создания Новости.
