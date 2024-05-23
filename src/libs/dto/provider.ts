@@ -52,7 +52,7 @@ type Vk = {
 /**
  * DTO для профиля получаемого с провайдеров yandex, vk, google
  */
-export function getProviderProfile(profileData: unknown, provider: string): ProviderProfile {
+export function getProviderProfileDto(profileData: unknown, provider: string): ProviderProfile {
   if (provider === 'yandex') {
     // Используем оператор as для приведения типа profileData к типу Yandex
     const yandexData = profileData as Yandex;

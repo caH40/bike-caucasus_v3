@@ -9,10 +9,8 @@ import { User } from '../../../../database/mongodb/Models/User';
 import { IUserModel } from '../../../../types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
-import { getProviderProfile } from '@/libs/dto/provider';
+import { getProviderProfileDto } from '@/libs/dto/provider';
 import { type ObjectId } from 'mongoose';
-import { mkdir } from 'fs/promises';
-import { myPath } from '@/libs/utils/path';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -118,13 +116,9 @@ export const authOptions: AuthOptions = {
 
         // если не найден, то регистрация
         if (!userWithIdAndProviderDB) {
-          const profileCur = getProviderProfile(profile, provider);
+          const profileCur = getProviderProfileDto(profile, provider);
 
           const id = await getNextSequenceValue('user');
-
-          // создание папки пользователя для файлов загрузки
-          const pathProfile = myPath.getProfileUploads(id).absolute;
-          await mkdir(pathProfile);
 
           const userNew = {
             id,

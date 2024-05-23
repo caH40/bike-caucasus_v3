@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import { mkdir } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '../../../../database/mongodb/Models/User';
@@ -7,7 +6,6 @@ import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { mailService } from '@/services/mail/nodemailer';
 import { UserConfirm } from '@/database/mongodb/Models/User-confirm';
 import { getNextSequenceValue } from '@/services/sequence';
-import { myPath } from '@/libs/utils/path';
 
 type Params = {
   username: string;
@@ -38,10 +36,6 @@ export async function postRegistrationService({
   const passwordHashed = await bcrypt.hash(password, salt);
 
   const id = await getNextSequenceValue('user');
-
-  // создание папки пользователя для файлов загрузки
-  const pathProfile = myPath.getProfileUploads(id).absolute;
-  await mkdir(pathProfile);
 
   // создание нового пользователя
   const userDB = await User.create({
