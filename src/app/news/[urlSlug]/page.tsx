@@ -89,23 +89,27 @@ export default async function NewsPage({ params }: Props) {
 
             {/*Блок об авторе новости и дате создания. */}
             <div className={styles.author}>
-              <Link href={`/profile/${newsOne.author.id}`} className={styles.author__name}>
+              <Link href={`/profile/${newsOne.author?.id}`} className={styles.author__name}>
                 <Image
                   width={24}
                   height={24}
                   alt={'Постер новости'}
                   src={getLogoProfile(
-                    newsOne.author.imageFromProvider,
-                    newsOne.author.provider.image,
-                    newsOne.author.image
+                    newsOne.author?.imageFromProvider,
+                    newsOne.author?.provider.image,
+                    newsOne.author?.image
                   )}
                   className={styles.author__img}
                   priority={true}
                 />
               </Link>
-              <Link href={`/profile/${newsOne.author.id}`} className={styles.author__name}>
-                {newsOne.author.person.firstName} {newsOne.author.person.lastName}
-              </Link>
+              {newsOne.author ? (
+                <Link href={`/profile/${newsOne.author?.id}`} className={styles.author__name}>
+                  {newsOne.author?.person.firstName} {newsOne.author?.person.lastName}
+                </Link>
+              ) : (
+                <span>Неизвестный</span>
+              )}
 
               <span className={styles.author__date}>
                 {getTimerLocal(newsOne.createdAt, 'DDMMYYHm')}
