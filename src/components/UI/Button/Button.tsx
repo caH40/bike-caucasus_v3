@@ -2,12 +2,14 @@ import Image from 'next/image';
 import cn from 'classnames/bind';
 
 import styles from './Button.module.css';
+import { MouseEvent } from 'react';
 
 const cx = cn.bind(styles);
 
 type Props = {
   name: string;
-  getClick?: () => void;
+  // eslint-disable-next-line no-unused-vars
+  getClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   iconSrc?: string;
   alt?: string;
   size?: number;

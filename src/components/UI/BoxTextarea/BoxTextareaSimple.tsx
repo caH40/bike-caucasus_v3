@@ -20,6 +20,7 @@ export default function BoxTextareaSimple({
   showValidationText,
   loading,
   handlerInput,
+  refTextArea,
   ...props
 }: PropsBoxInputSimple) {
   return (
@@ -37,6 +38,7 @@ export default function BoxTextareaSimple({
           className={cx('textarea', { loading })}
           disabled={loading}
           rows={5}
+          ref={refTextArea}
         />
         <div className={styles.checkmark}>
           <Checkmark isCompleted={!validationText} />

@@ -40,3 +40,28 @@
   height: 35px;
   background: linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.8));
 }
+.title__modal {
+  margin-bottom: 3px;
+}
+.input {
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-50);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.6rem 3rem 0.6rem 0.5rem;
+  width: 100%;
+  min-width: 250px;
+  margin-bottom: 0.5rem;
+}
+.input:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
+}
+.input:disabled {
+  background-color: var(--loading);
+  color: var(--line);
+}
+.btn__insert__link {
+  margin-bottom: 0.5rem;
+}

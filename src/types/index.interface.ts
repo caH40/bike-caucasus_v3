@@ -1,6 +1,6 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { TNews, TNewsBlock } from './models.interface';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -27,6 +27,7 @@ export type PropsBoxInput = {
   min?: string;
   max?: string;
   loading?: boolean;
+  refTextArea?: LegacyRef<HTMLTextAreaElement>;
 };
 /**
  * Пропсы для BoxInputSimple

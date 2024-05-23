@@ -1,15 +1,22 @@
-/* eslint-disable @next/next/no-img-element */
-import { type MouseEvent, type ChangeEvent, type Dispatch, type SetStateAction } from 'react';
+import {
+  type MouseEvent,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+  useRef,
+} from 'react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
 import InputFileIcon from '../InputFile/InputFileIcon';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import ButtonClose from '../ButtonClose/ButtonClose';
-import styles from './BlockNewsTextAdd.module.css';
-
 import type { TNewsBlocksEdit } from '@/types/index.interface';
 import BoxTextareaSimple from '../BoxTextarea/BoxTextareaSimple';
+import useInsertLink from '@/hooks/link-insert';
+import styles from './BlockNewsTextAdd.module.css';
+import ModalSimple from '../Modal/ModalInput';
+import Button from '../Button/Button';
 
 type Props = {
   block: TNewsBlocksEdit; // новостной блок из новости, текст и изображение(не обязательно)
@@ -19,6 +26,15 @@ type Props = {
 };
 
 export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }: Props) {
+  const refTextArea = useRef<HTMLTextAreaElement>(null);
+
+  // Хук фитчи вставки link вместо выделенного текста.
+  const { showModal, setShowModal, url, setUrl, handleInsertLink, handleSelection } =
+    useInsertLink({
+      refTextArea,
+      handlerInput,
+      block,
+    });
   // обработка загрузки изображения
   const getImage = async (event: ChangeEvent<HTMLInputElement>) => {
     const imageFile = event.target.files?.[0] || null;
@@ -55,7 +71,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
   };
 
   // функция получения и формирования данных с нужной структурой для setBlocks
-  const handlerInput = (value: string) => {
+  function handlerInput(value: string) {
     setBlocks((prev) => {
       const blocks = prev.map((elm) => {
         return elm.position === block.position
@@ -65,7 +81,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
 
       return blocks;
     });
-  };
+  }
 
   // удаление загруженного изображения
   const deleteImage = () => {
@@ -105,13 +121,30 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
     setBlocks((prev) => prev.filter((elm) => elm.position !== position));
   };
 
-  // вставка link
-  const getLink = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
   return (
     <section className={styles.wrapper}>
+      {/* Модальное окно ввода url линка для выделенного текста в области textarea */}
+      {showModal && (
+        <ModalSimple>
+          <h4 className={styles.title__modal}>Ведите полный url</h4>
+          <input
+            className={styles.input}
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+          <div className={styles.btn__insert__link}>
+            <Button getClick={handleInsertLink} name="Вставить Link" />
+          </div>
+          <Button
+            getClick={() => {
+              setShowModal(false);
+            }}
+            name="Отмена"
+          />
+        </ModalSimple>
+      )}
+
       <h2 className={styles.title}>{`Блок текста и изображения к нему №${block.position}`}</h2>
       <div className={styles.block__icons}>
         <div className={styles.block__icons__right}>
@@ -127,7 +160,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
             getChange={getImage}
           />
 
-          <button onClick={getLink} className={styles.btn}>
+          <button onClick={handleSelection} className={styles.btn}>
             <Image
               width={26}
               height={22}
@@ -167,6 +200,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
         type="text"
         handlerInput={handlerInput}
         validationText={block.text.length > 30 ? '' : 'пустое!'}
+        refTextArea={refTextArea}
       />
 
       {block.image && (
