@@ -12,7 +12,7 @@ import { useModalStore } from '@/store/modal';
  * Общее модальное окно по центру экрана
  */
 export default function Modal() {
-  const { isActive, title, body, resetModal } = useModalStore();
+  const { title, body, resetModal } = useModalStore();
   const router = useRouter();
 
   // прослушка кнопки Escape для закрытия страницы аутентификации
@@ -35,17 +35,15 @@ export default function Modal() {
   };
 
   return (
-    isActive && (
-      <div className={styles.background}>
-        <div className={styles.wrapper}>
-          <ButtonClose getClick={getClick} />
-          <h2 className={styles.title}>
-            <MdInfo size={26} className={styles.icon} />
-            {title}
-          </h2>
-          {body}
-        </div>
+    <div className={styles.background}>
+      <div className={styles.wrapper}>
+        <ButtonClose getClick={getClick} />
+        <h2 className={styles.title}>
+          <MdInfo size={26} className={styles.icon} />
+          {title}
+        </h2>
+        {body}
       </div>
-    )
+    </div>
   );
 }

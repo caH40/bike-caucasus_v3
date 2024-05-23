@@ -2,18 +2,21 @@
 
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
+import { toast } from 'sonner';
 
+import { useModalStore } from '@/store/modal';
 import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
 import FormResetPassword from '@/components/UI/Forms/FormResetPassword/FormResetPassword';
 import { type IRegistrationForm } from '@/types/index.interface';
-import { useModalStore } from '@/store/modal';
-import { toast } from 'sonner';
+
+import Modal from '@/components/UI/Modal/Modal';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
 export default function PasswordReset() {
   const [showForm, setShowForm] = useState(true);
   const setModal = useModalStore((state) => state.setModal);
+  const isActive = useModalStore((state) => state.isActive);
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
     const response = await fetch(`${server}/api/auth/reset-password`, {
@@ -36,11 +39,14 @@ export default function PasswordReset() {
     setModal('Сброс пароля!', <Answer email={data.email} />);
   };
   return (
-    showForm && (
-      <AuthBlock>
-        <FormResetPassword onSubmit={onSubmit} />
-      </AuthBlock>
-    )
+    <>
+      {isActive && <Modal />}
+      {showForm && (
+        <AuthBlock>
+          <FormResetPassword onSubmit={onSubmit} />
+        </AuthBlock>
+      )}
+    </>
   );
 }
 

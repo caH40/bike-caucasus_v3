@@ -9,7 +9,6 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import Footer from '@/components/Footer/Footer';
-import Modal from '@/components/UI/Modal/Modal';
 import ModalLoading from '@/components/ModalLoading/ModalLoading';
 import MobileMenu from '@/components/UI/MobileMenu/MobileMenu';
 import { metadataHomePage } from '@/constants/meta';
@@ -40,7 +39,6 @@ export default function RootLayout({
             richColors={true}
             toastOptions={{ className: 'toast-success' }}
           />
-          <Modal />
         </Providers>
       </body>
     </html>
