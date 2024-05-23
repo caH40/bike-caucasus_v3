@@ -10,6 +10,13 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import type { TNewsHetOneDto } from '@/types/dto.types';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import styles from './NewsPage.module.css';
+import { generateMetadataNews } from '@/constants/meta';
+import { Metadata } from 'next';
+
+// Создание динамических meta данных
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataNews(props);
+}
 
 type Props = {
   params: {
@@ -20,12 +27,12 @@ type Props = {
 /**
  * Получение данных новости с БД.
  */
-async function getNewsOne({
+export async function getNewsOne({
   urlSlug,
   idUserDB,
 }: {
   urlSlug: string;
-  idUserDB: string | undefined;
+  idUserDB?: string;
 }): Promise<TNewsHetOneDto | null | undefined> {
   try {
     const news = new News();

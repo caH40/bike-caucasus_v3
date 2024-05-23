@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { TNews } from '@/types/models.interface';
 import styles from './NewsShort.module.css';
+import TitleAndLine from '../UI/TitleAndLine/TitleAndLine';
 
 type Props = {
   news: TNews[] | null | undefined;
@@ -19,6 +20,7 @@ export default async function NewsShort({ news }: Props): Promise<false | JSX.El
   return (
     !!news?.length && (
       <article className={styles.wrapper}>
+        <TitleAndLine hSize={2} title="Последние новости" />
         <ul className={styles.list}>
           {news.map((elm) => (
             <li className={styles.item} key={String(elm._id)}>
