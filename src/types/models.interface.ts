@@ -60,7 +60,7 @@ export interface IUserModel {
     id: number; // id номер, присваиваемый автоматически при регистрации
     name: string;
   };
-  role: string; // !!!! изменить структуру данных, добавить разрешения
+  role: ObjectId;
   social: {
     telegram?: string;
     vk?: string;
@@ -120,6 +120,7 @@ export type TNews = {
   createdAt: Date;
   updatedAt: Date;
 };
+
 /**
  * Модель блока новости
  */
@@ -129,4 +130,16 @@ export type TNewsBlock = {
   image: string | null;
   imageTitle: string;
   position: number;
+};
+
+/**
+ * Модель блока новости
+ */
+export type TRoleModel = {
+  _id: ObjectId;
+  name: string;
+  description?: string;
+  permissions: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
 };

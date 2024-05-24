@@ -111,7 +111,7 @@ export default function FormAccount({ profile, putAccount }: Props) {
           autoComplete="offered"
           type="string"
           disabled={true}
-          defaultValue={profile.role ?? 'не найден, обратитесь в поддержку!'}
+          defaultValue={profile.role?.name ?? 'не найден, обратитесь в поддержку!'}
         />
 
         {/* поле ввода информации об email */}

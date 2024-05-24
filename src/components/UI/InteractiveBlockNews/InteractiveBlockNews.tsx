@@ -44,6 +44,11 @@ export default function InteractiveNewsCard({
 
   // Запрос актуальных данных интерактивного блока после "Лайка"
   useEffect(() => {
+    // Не обновлять, если не было клика по лайку (Первое получение данных происходит из серверного экшена).
+    if (!updateInter) {
+      return;
+    }
+
     getInteractive({ idNews }).then((res) => {
       if (!res.data) {
         return;

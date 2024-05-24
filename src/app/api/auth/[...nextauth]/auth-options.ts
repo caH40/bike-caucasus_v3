@@ -1,16 +1,17 @@
 import { type AuthOptions } from 'next-auth';
+import { type ObjectId } from 'mongoose';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import Yandex from 'next-auth/providers/yandex';
 import bcrypt from 'bcrypt';
 import Google from 'next-auth/providers/google';
 import VK from 'next-auth/providers/vk';
 
-import { User } from '../../../../database/mongodb/Models/User';
-import { IUserModel } from '../../../../types/models.interface';
+import { User } from '@/Models/User';
+import { IUserModel, TRoleModel } from '@/types/models.interface';
 import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
 import { getProviderProfileDto } from '@/libs/dto/provider';
-import { type ObjectId } from 'mongoose';
+import { Role } from '@/database/mongodb/Models/Role';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -76,12 +77,21 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
+      await connectToMongo();
+      const userDB: { role: Omit<TRoleModel, '_id'> } | null = await User.findOne(
+        { email: token.email },
+        { role: true }
+      )
+        .populate('role')
+        .lean();
+
       // добавление в токен данных user
       if (account && account.provider === 'vk') {
         token.provider = account.provider;
         token.email = account.email as string;
       } else if (user) {
         token.email = user.email;
+        token.rolePermissions = userDB?.role.permissions || [];
       }
 
       return token;
@@ -120,6 +130,16 @@ export const authOptions: AuthOptions = {
 
           const id = await getNextSequenceValue('user');
 
+          // Получение id
+          const roleUser: { _id: ObjectId } | null = await Role.findOne(
+            { name: 'user' },
+            { _id: true }
+          );
+
+          if (!roleUser) {
+            throw new Error('Не найдена роль пользователя user для регистрации пользователя.');
+          }
+
           const userNew = {
             id,
             provider: {
@@ -128,7 +148,7 @@ export const authOptions: AuthOptions = {
               image: user.image,
             },
             email: email.toLocaleLowerCase(),
-            role: 'user',
+            role: roleUser._id,
             emailConfirm: true,
             person: {
               firstName: profileCur.firstName,
@@ -175,15 +195,23 @@ export const authOptions: AuthOptions = {
         await connectToMongo();
         const userDB: {
           id: number;
-          role: string;
+          role: Omit<TRoleModel, '_id'>;
           _id: ObjectId;
           image?: string;
           imageFromProvider: boolean;
           provider: { image: string };
         } | null = await User.findOne(
           { email: token.email },
-          { id: true, role: true, image: true, 'provider.image': true, imageFromProvider: true }
-        ).lean();
+          {
+            id: true,
+            role: true,
+            image: true,
+            'provider.image': true,
+            imageFromProvider: true,
+          }
+        )
+          .populate({ path: 'role', select: ['name', 'description', 'permissions'] })
+          .lean();
 
         // при отсутствии пользователя в БД выходить из сессии
         if (!userDB) {

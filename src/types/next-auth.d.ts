@@ -1,4 +1,5 @@
 import { DefaultSession } from 'next-auth';
+import { TRoleModel } from './models.interface';
 
 declare module 'next-auth' {
   /**
@@ -9,7 +10,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       /** The user's postal address. */
-      role: string;
+      role: Omit<TRoleModel, '_id'>;
       id: string; // порядковый числовой id, присваиваемый при регистрации
       provider: string; // название провайдера с помощью которого произошла аутентификация
       idDB: string; // id базы данных mongodb
@@ -21,7 +22,7 @@ declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
     /** OpenID ID Token */
-    role: string;
+    rolePermissions: string[];
     id: string; // порядковый числовой id, присваиваемый при регистрации
     provider: string; // название провайдера с помощью которого произошла аутентификация
     idDB: string; // id базы данных mongodb
