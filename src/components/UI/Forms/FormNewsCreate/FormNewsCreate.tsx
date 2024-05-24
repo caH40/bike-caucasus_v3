@@ -2,8 +2,11 @@
 
 import { FormEvent, Fragment, useState } from 'react';
 import { toast } from 'sonner';
+import cn from 'classnames';
 
 import { useLoadingStore } from '@/store/loading';
+import { serializationNewsCreate } from '@/libs/utils/serialization';
+import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
 import Wrapper from '../../../Wrapper/Wrapper';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
@@ -12,8 +15,6 @@ import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
 import styles from '../Form.module.css';
-import { serializationNewsCreate } from '@/libs/utils/serialization';
-import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
@@ -21,7 +22,7 @@ type Props = {
 };
 
 const initialBlocks: TNewsBlocksEdit[] = [
-  { text: '', image: null, imageFile: null, position: 1 },
+  { text: '', image: null, imageFile: null, imageTitle: '', position: 1 },
 ];
 // const suffix = '__bc_moderation_news_create-';
 /**
@@ -91,7 +92,7 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
 
   return (
     <Wrapper title={'Создание новости'}>
-      <form onSubmit={onSubmit} className={styles.form}>
+      <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
         <BoxInputSimple
           id="title"
           name="title"

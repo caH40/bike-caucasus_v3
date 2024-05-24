@@ -17,6 +17,7 @@ export function serviceGetOneToDto(
   const blocksDto: TNewsBlockDto[] = news.blocks.map((block) => ({
     text: block.text,
     image: block.image,
+    imageTitle: block.imageTitle,
     position: block.position,
   }));
 

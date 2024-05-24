@@ -137,14 +137,17 @@ export default async function NewsPage({ params }: Props) {
                 <section className={styles.article__block} key={block.position}>
                   <p className={styles.content__text}>{block.text}</p>
                   {block.image && (
-                    <div className={styles.content__box__img}>
-                      <Image
-                        fill={true}
-                        src={block.image}
-                        alt={`Картинка к блоку ${block.position}`}
-                        sizes="(max-width: 992px) 100vw, 50vw"
-                        className={styles.content__img}
-                      />
+                    <div className={styles.block__img}>
+                      <div className={styles.content__box__img}>
+                        <Image
+                          fill={true}
+                          src={block.image}
+                          alt={`Картинка к блоку ${block.position}`}
+                          sizes="(max-width: 992px) 100vw, 50vw"
+                          className={styles.content__img}
+                        />
+                      </div>
+                      <h4 className={styles.img__title}>{block.imageTitle}</h4>
                     </div>
                   )}
                 </section>

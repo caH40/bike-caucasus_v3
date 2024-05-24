@@ -127,5 +127,6 @@ export type TNewsBlock = {
   _id: ObjectId;
   text: string;
   image: string | null;
+  imageTitle: string;
   position: number;
 };

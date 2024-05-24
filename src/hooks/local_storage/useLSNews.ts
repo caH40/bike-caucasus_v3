@@ -56,6 +56,7 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData }: Prop
       image: null,
       text: block.text,
       position: block.position,
+      imageTitle: block.imageTitle,
     }));
 
     localStorage.setItem(`${suffix}blocks`, JSON.stringify(blocksWithoutImage));

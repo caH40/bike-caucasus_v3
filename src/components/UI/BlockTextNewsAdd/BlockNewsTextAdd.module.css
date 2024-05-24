@@ -5,6 +5,7 @@
   position: relative;
   width: 180px;
   height: 120px;
+  margin-bottom: 0.5rem;
 }
 .title {
   font-size: 1rem;

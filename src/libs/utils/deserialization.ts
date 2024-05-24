@@ -4,6 +4,7 @@ type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
   blocks: {
     text: string;
     image?: File | string;
+    imageTitle?: string;
     position: number;
   }[];
   poster?: File | string;

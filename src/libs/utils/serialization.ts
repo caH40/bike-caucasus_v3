@@ -41,6 +41,7 @@ export function serializationNewsCreate({
     }
     formData.set(`blocks[${i}][position]`, String(blocks[i].position));
     formData.set(`blocks[${i}][text]`, blocks[i].text);
+    formData.set(`blocks[${i}][imageTitle]`, blocks[i].imageTitle);
   }
 
   return formData;

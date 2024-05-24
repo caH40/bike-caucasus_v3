@@ -17,6 +17,7 @@ import useInsertLink from '@/hooks/link-insert';
 import styles from './BlockNewsTextAdd.module.css';
 import ModalSimple from '../Modal/ModalInput';
 import Button from '../Button/Button';
+import BoxInputSimple from '../BoxInput/BoxInputSimple';
 
 type Props = {
   block: TNewsBlocksEdit; // новостной блок из новости, текст и изображение(не обязательно)
@@ -71,6 +72,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
   };
 
   // функция получения и формирования данных с нужной структурой для setBlocks
+  // при вводе в Textarea для свойства text
   function handlerInput(value: string) {
     setBlocks((prev) => {
       const blocks = prev.map((elm) => {
@@ -83,12 +85,26 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
     });
   }
 
+  // функция получения и формирования данных с нужной структурой для setBlocks
+  // при вводе в Input для свойства imageTitle
+  function handlerInputImage(value: string) {
+    setBlocks((prev) => {
+      const blocks = prev.map((elm) => {
+        return elm.position === block.position
+          ? { ...block, imageTitle: value, position: elm.position }
+          : elm;
+      });
+
+      return blocks;
+    });
+  }
+
   // удаление загруженного изображения
   const deleteImage = () => {
     setBlocks((prev) => {
       const blocks = prev.map((elm) => {
         return elm.position === block.position
-          ? { ...block, image: null, imageFile: null, position: elm.position }
+          ? { ...block, image: null, imageFile: null, imageTitle: '', position: elm.position }
           : elm;
       });
 
@@ -107,6 +123,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
         text: '',
         image: null,
         imageFile: null,
+        imageTitle: '',
         position: positionLast ? positionLast + 1 : 1,
       },
     ]);
@@ -204,14 +221,28 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
       />
 
       {block.image && (
-        <div className={styles.relative}>
-          {/* в данном случае компонент Image не нужен */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={block.image} alt="image for block" className={styles.img} />
+        <>
+          <div className={styles.relative}>
+            {/* в данном случае компонент Image не нужен */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={block.image} alt="image for block" className={styles.img} />
 
-          <ButtonClose getClick={deleteImage} />
-          <div className={styles.top} />
-        </div>
+            <ButtonClose getClick={deleteImage} />
+            <div className={styles.top} />
+          </div>
+          <BoxInputSimple
+            id={`block-${block.imageTitle}`}
+            name={`block-${block.imageTitle}`}
+            value={block.imageTitle}
+            handlerInput={handlerInputImage}
+            type={'text'}
+            label="Краткое описание изображения:"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={block.imageTitle?.length < 70 ? '' : 'не больше 70 символов'} // необходима проверка?
+          />
+        </>
       )}
     </section>
   );
