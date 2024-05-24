@@ -140,6 +140,6 @@ export type TRoleModel = {
   name: string;
   description?: string;
   permissions: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

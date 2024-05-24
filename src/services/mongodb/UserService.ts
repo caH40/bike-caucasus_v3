@@ -66,13 +66,20 @@ export class UserService {
       const ageCategory = userDB.person?.birthday;
 
       const person = { ...userDB.person, ageCategory };
+      const role = {
+        _id: String(userDB.role._id),
+        name: userDB.role.name,
+        description: userDB.role.description,
+        permissions: userDB.role.permissions,
+      };
 
-      const profile: IProfileForClient = { ...userDB, person };
+      const profile: IProfileForClient = { ...userDB, role, person };
       if (!isPrivate) {
         delete profile.person.birthday;
         delete profile.email;
         delete profile.phone;
         delete profile.credentials;
+        delete profile.role;
       }
 
       return { data: profile, ok: true, message: 'Данные профиля пользователя' };

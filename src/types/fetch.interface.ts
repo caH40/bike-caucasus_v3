@@ -31,7 +31,7 @@ export interface IProfileForClient {
     id?: number;
     name: string;
   };
-  role: TRoleModel; // !!!! изменить структуру данных, добавить разрешения
+  role?: Omit<TRoleModel, '_id'> & { _id: string }; // Свойство не передаётся для публичного запроса.
   social: {
     telegram?: string;
     vk?: string;
