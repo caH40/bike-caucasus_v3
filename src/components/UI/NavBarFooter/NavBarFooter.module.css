@@ -1,0 +1,23 @@
+.title {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.2rem;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 100px);
+  grid-gap: 5px 20px;
+}
+.link {
+  border-bottom: solid transparent 2px;
+  transition: all 0.4s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.link:hover {
+  border-bottom: solid #39a034 2px;
+  transition: all 0.4s;
+}
+.active {
+  color: #39a034;
+}

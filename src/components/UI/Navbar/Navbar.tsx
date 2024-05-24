@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import classNames from 'classnames/bind';
 
+import PermissionCheck from '@/hoc/permission-check';
 import { useResize } from '@/hooks/resize';
-import { navLinksDesktop } from '@/constants/navigation';
+import { navLinksFull } from '@/constants/navigation';
 import styles from './Navbar.module.css';
 
 const cx = classNames.bind(styles);
@@ -28,15 +29,17 @@ const Navbar = () => {
     <nav className={styles.nav}>
       {lg && (
         <ul className={styles.list}>
-          {navLinksDesktop.map((link) => (
-            <li className={styles.item} key={link.id}>
-              <Link
-                className={cx('link', { active: isActivePage(link.href) })}
-                href={link.href}
-              >
-                {link.name}
-              </Link>
-            </li>
+          {navLinksFull.map((link) => (
+            <PermissionCheck permission={link.permission} key={link.id}>
+              <li className={styles.item}>
+                <Link
+                  className={cx('link', { active: isActivePage(link.href) })}
+                  href={link.href}
+                >
+                  {link.name}
+                </Link>
+              </li>
+            </PermissionCheck>
           ))}
         </ul>
       )}
