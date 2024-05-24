@@ -9,11 +9,13 @@ import { handlerErrorDB } from './error';
 import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
 import type { IUserModel, TRoleModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
+import { getAgeCategory } from '@/libs/utils/age-category';
 
 type ParamsGetProfile = {
   idDB?: string;
   id?: Number;
   isPrivate?: boolean;
+  ageCategoryVersion?: string; // Название версии категоризации по возрасту
 };
 
 /**
@@ -31,12 +33,13 @@ export class UserService {
     idDB,
     id,
     isPrivate = false,
+    ageCategoryVersion = 'simple',
   }: ParamsGetProfile): Promise<ResponseServer<IProfileForClient> | ResponseServer<null>> {
     try {
       // подключение к БД
       await this.dbConnection();
 
-      // Проверка, должен быть один из параметров: только id, или только idDB
+      // Проверка, должен быть один из параметров: только id, или только idDB.
       if (!id === !idDB) {
         throw new Error(
           'Обязательно должен быть один из параметров: только id, или только idDB'
@@ -62,8 +65,12 @@ export class UserService {
         throw new Error('Пользователь не найден');
       }
 
-      // функция получения возрастной категории из даты рождения
-      const ageCategory = userDB.person?.birthday;
+      // Функция получения возрастной категории из даты рождения.
+      const ageCategory = await getAgeCategory({
+        birthday: userDB.person?.birthday,
+        ageCategoryVersion,
+        gender: userDB.person.gender,
+      });
 
       const person = { ...userDB.person, ageCategory };
       const role = {

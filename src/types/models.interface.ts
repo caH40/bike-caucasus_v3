@@ -28,7 +28,7 @@ export interface ICard {
 }
 
 /**
- * Модель пользователя сайта
+ * Типы модели пользователя сайта.
  */
 export interface IUserModel {
   _id: Types.ObjectId;
@@ -51,7 +51,7 @@ export interface IUserModel {
     patronymic: string;
     lastName: string;
     birthday: string;
-    gender: string;
+    gender: 'male' | 'female';
     bio: string;
   };
   city: string;
@@ -74,7 +74,7 @@ export interface IUserModel {
   updatedAt: Date | string;
 }
 /**
- * Модель подтверждения email
+ * Типы модели подтверждения email.
  */
 export interface IUserConfirm {
   userId: string;
@@ -83,7 +83,7 @@ export interface IUserConfirm {
   email: string;
 }
 /**
- * Модель сброса пароля
+ * Типы модели сброса пароля.
  */
 export interface IPasswordReset {
   userId: string;
@@ -93,7 +93,7 @@ export interface IPasswordReset {
 }
 
 /**
- * Типизация модели Counter
+ * Типы модели счетчика id для сущностей name.
  */
 export type CounterModel = {
   name: string;
@@ -101,7 +101,7 @@ export type CounterModel = {
 };
 
 /**
- * Модель новости
+ * Типы модели новости.
  */
 export type TNews = {
   _id: ObjectId;
@@ -122,7 +122,7 @@ export type TNews = {
 };
 
 /**
- * Модель блока новости
+ * Типы модели блока новости.
  */
 export type TNewsBlock = {
   _id: ObjectId;
@@ -133,13 +133,30 @@ export type TNewsBlock = {
 };
 
 /**
- * Модель блока новости
+ * Типы модели блока новости.
  */
 export type TRoleModel = {
   _id: ObjectId;
   name: string;
   description?: string;
   permissions: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+/**
+ * Типы модели возрастной категории.
+ */
+export type TAgeCategory = {
+  _id: ObjectId;
+  version: string; // Название версии разделения по возрастным категориям.
+  description?: String; // Описание версии деления по категориям.
+  name: string; // Название категории.
+  age: {
+    min: number; // Минимальное количество лет в категории (включительно).
+    max: number; // Максимальное количество лет в категории (включительно).
+  };
+  gender: 'male' | 'female';
   createdAt?: Date;
   updatedAt?: Date;
 };

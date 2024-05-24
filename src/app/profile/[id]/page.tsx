@@ -1,13 +1,12 @@
 import Image from 'next/image';
 
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
+import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/mongodb/UserService';
-import type { ParamsWithId } from '@/types/index.interface';
-import styles from './ProfilePage.module.css';
-import { handlerDateForm } from '@/libs/utils/date';
 import { blurDataURL } from '@/libs/image';
 import { getLogoProfile } from '@/libs/utils/profile';
-import BlockSocial from '@/components/BlockSocial/BlockSocial';
+import type { ParamsWithId } from '@/types/index.interface';
+import styles from './ProfilePage.module.css';
 
 const userService = new UserService();
 
@@ -51,7 +50,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
 
               <dt className={styles.desc__title}>Возраст</dt>
               <dd className={styles.desc__detail}>
-                {handlerDateForm.getFormDate(profile.person.ageCategory) ?? 'нет данных'}
+                {profile.person.ageCategory ?? 'нет данных'}
               </dd>
 
               <dt className={styles.desc__title}>Пол</dt>
