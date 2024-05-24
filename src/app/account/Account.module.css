@@ -1,6 +1,7 @@
 .wrapper {
-  display: flex;
-  gap: 45px;
+  display: grid;
+  gap: 1rem 20px;
+  grid-template-columns: 300px 1fr;
 }
 .main {
   flex: 1 1 auto;
@@ -13,6 +14,6 @@
 /* ====================================================================== */
 @media (max-width: 992px) {
   .wrapper {
-    flex-wrap: wrap;
+    grid-template-columns: 1fr;
   }
 }

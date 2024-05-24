@@ -1,6 +1,7 @@
 .wrapper {
-  display: flex;
-  gap: 24px 45px;
+  display: grid;
+  gap: 1rem 20px;
+  grid-template-columns: 300px 1fr;
 }
 .profile__image {
   border-radius: 1rem;
@@ -18,7 +19,6 @@
   max-width: 300px;
 }
 .wrapper__main {
-  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   gap: 34px 0;
@@ -60,6 +60,6 @@
 /* ====================================================================== */
 @media (max-width: 992px) {
   .wrapper {
-    flex-wrap: wrap;
+    grid-template-columns: 1fr;
   }
 }
