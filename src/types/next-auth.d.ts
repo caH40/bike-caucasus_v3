@@ -22,7 +22,7 @@ declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
     /** OpenID ID Token */
-    role: Omit<TRoleModel, '_id'>;
+    rolePermissions: string[];
     id: string; // порядковый числовой id, присваиваемый при регистрации
     provider: string; // название провайдера с помощью которого произошла аутентификация
     idDB: string; // id базы данных mongodb

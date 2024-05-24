@@ -77,12 +77,21 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
+      await connectToMongo();
+      const userDB: { role: Omit<TRoleModel, '_id'> } | null = await User.findOne(
+        { email: token.email },
+        { role: true }
+      )
+        .populate('role')
+        .lean();
+
       // добавление в токен данных user
       if (account && account.provider === 'vk') {
         token.provider = account.provider;
         token.email = account.email as string;
       } else if (user) {
         token.email = user.email;
+        token.rolePermissions = userDB?.role.permissions || [];
       }
 
       return token;
