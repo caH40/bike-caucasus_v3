@@ -1,5 +1,6 @@
-import MenuAccountProfile from '@/components/UI/Menu/MenuAccountProfile/MenuAccountProfile';
+import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import styles from './Account.module.css';
+import { buttonsMenuAccountPage } from '@/constants/menu';
 
 export default function AccountLayout({
   children,
@@ -9,7 +10,7 @@ export default function AccountLayout({
   return (
     <div className={styles.wrapper}>
       <aside className={styles.aside__left}>
-        <MenuAccountProfile />
+        <MenuOnPage needBack={true} buttons={buttonsMenuAccountPage} />
       </aside>
       <div className={styles.main}>{children}</div>
     </div>

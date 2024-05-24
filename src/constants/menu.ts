@@ -43,3 +43,25 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     href: '/moderation/championship',
   },
 ];
+
+// Кнопки для меню на странице Аккаунт новости /account/
+export const buttonsMenuAccountPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Профиль',
+    classes: [],
+    href: '/account/profile',
+  },
+  {
+    id: 1,
+    name: 'Команда',
+    classes: [],
+    href: '/account/team',
+  },
+  {
+    id: 2,
+    name: 'Аккаунт',
+    classes: [],
+    href: '/account/details',
+  },
+];
