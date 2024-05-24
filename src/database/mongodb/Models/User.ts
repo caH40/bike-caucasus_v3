@@ -65,7 +65,7 @@ const userSchema = new Schema<IUserModel>(
     city: { type: String },
     phone: { type: String },
     team: { type: TeamSchema, default: null },
-    role: { type: String }, // !!!! изменить структуру данных, добавить разрешения
+    role: { type: Schema.Types.ObjectId, ref: 'Role', required: true },
     social: { type: SocialSchema, default: {} },
 
     createdAt: { type: Date, default: Date.now },

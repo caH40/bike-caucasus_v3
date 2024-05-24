@@ -1,3 +1,5 @@
+import { type TRoleModel } from './models.interface';
+
 /**
  * Данные профиля для клиента
  */
@@ -29,7 +31,7 @@ export interface IProfileForClient {
     id?: number;
     name: string;
   };
-  role: string; // !!!! изменить структуру данных, добавить разрешения
+  role: TRoleModel; // !!!! изменить структуру данных, добавить разрешения
   social: {
     telegram?: string;
     vk?: string;

@@ -7,7 +7,7 @@ import { Cloud } from '../cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
 import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
-import type { IUserModel } from '@/types/models.interface';
+import type { IUserModel, TRoleModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
 
 type ParamsGetProfile = {
@@ -44,16 +44,19 @@ export class UserService {
       }
 
       const query = id ? { id } : { _id: idDB };
-      const userDB: IUserModel | null = await User.findOne(query, {
-        _id: false,
-        'provider.id': false,
-        'credentials.password': false,
-        'credentials._id': false,
-        'social._id': false,
-        createdAt: false,
-        updatedAt: false,
-        __v: false,
-      }).lean();
+      const userDB: (Omit<IUserModel, 'role'> & { role: TRoleModel }) | null =
+        await User.findOne(query, {
+          _id: false,
+          'provider.id': false,
+          'credentials.password': false,
+          'credentials._id': false,
+          'social._id': false,
+          createdAt: false,
+          updatedAt: false,
+          __v: false,
+        })
+          .populate({ path: 'role', select: ['name', 'description', 'permissions'] })
+          .lean();
 
       if (!userDB) {
         throw new Error('Пользователь не найден');
