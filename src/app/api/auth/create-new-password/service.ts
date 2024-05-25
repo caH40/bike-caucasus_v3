@@ -26,7 +26,7 @@ export async function createNewPasswordService({ password: newPassword, userId }
   // Обновление пароля пользователя в базе данных
   const userDB: IUserModel | null = await User.findOneAndUpdate(
     { _id: userId },
-    { $set: { password: passwordHashed } }
+    { $set: { 'credentials.password': passwordHashed } }
   );
 
   // Проверка успешного обновления пароля пользователя

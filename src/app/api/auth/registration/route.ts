@@ -6,13 +6,13 @@ import { errorRouteHandler } from '@/services/error-controler';
  */
 export async function POST(req: Request) {
   try {
-    const { username, email, password, role } = await req.json();
+    const { username, email, password } = await req.json();
 
     if (!username || !email || !password) {
       throw new Error('Нет одного или нескольких обязательных параметров для регистрации');
     }
 
-    await postRegistrationService({ username, email, password, role });
+    await postRegistrationService({ username, email, password });
 
     return Response.json({ message: 'Новый пользователь создан', email });
   } catch (error) {

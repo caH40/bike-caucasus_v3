@@ -23,7 +23,7 @@ export default function RegistrationPage() {
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
     const response = await fetch('/api/auth/registration', {
       method: 'post',
-      body: JSON.stringify({ ...dataForm, role: 'user' }),
+      body: JSON.stringify(dataForm),
       headers: {
         'Content-type': 'application/json',
       },

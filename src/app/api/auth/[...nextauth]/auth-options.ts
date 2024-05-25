@@ -127,9 +127,10 @@ export const authOptions: AuthOptions = {
         if (!userWithIdAndProviderDB) {
           const profileCur = getProviderProfileDto(profile, provider);
 
+          // Получение порядкового id профиля нового пользователя.
           const id = await getNextSequenceValue('user');
 
-          // Получение id
+          // Получение _id Роли пользователя с правами User.
           const roleUser: { _id: ObjectId } | null = await Role.findOne(
             { name: 'user' },
             { _id: true }

@@ -6,19 +6,19 @@ import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { mailService } from '@/services/mail/nodemailer';
 import { UserConfirm } from '@/database/mongodb/Models/User-confirm';
 import { getNextSequenceValue } from '@/services/sequence';
+import { ObjectId } from 'mongoose';
+import { Role } from '@/database/mongodb/Models/Role';
 
 type Params = {
   username: string;
   email: string;
   password: string;
-  role: string;
 };
 
 export async function postRegistrationService({
   username,
   email,
   password,
-  role,
 }: Params): Promise<void> {
   await connectToMongo();
 
@@ -35,7 +35,14 @@ export async function postRegistrationService({
   const salt = await bcrypt.genSalt(10);
   const passwordHashed = await bcrypt.hash(password, salt);
 
+  // Получение порядкового id профиля нового пользователя.
   const id = await getNextSequenceValue('user');
+
+  // Получение _id Роли пользователя с правами User.
+  const roleUser: { _id: ObjectId } | null = await Role.findOne(
+    { name: 'user' },
+    { _id: true }
+  );
 
   // создание нового пользователя
   const userDB = await User.create({
@@ -45,7 +52,7 @@ export async function postRegistrationService({
       password: passwordHashed,
     },
     email: email.toLowerCase(),
-    role,
+    role: roleUser?._id,
     imageFromProvider: false,
   });
 

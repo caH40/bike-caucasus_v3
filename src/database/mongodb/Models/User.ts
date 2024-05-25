@@ -59,7 +59,7 @@ const userSchema = new Schema<IUserModel>(
       patronymic: { type: String },
       lastName: { type: String },
       birthday: { type: Date },
-      gender: { type: String },
+      gender: { type: String, default: 'male' },
       bio: { type: String },
     },
     city: { type: String },
