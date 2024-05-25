@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
-import MenuOnPage from '@/UI/Menu/MenuOnPage/MenuOnPage';
+import MenuOnPage from '@/components/UI/MenuM/MenuOnPage/MenuOnPage';
 import type { TMenuOnPage } from '@/types/index.interface';
 
 type Params = {

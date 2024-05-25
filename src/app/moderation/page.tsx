@@ -1,6 +1,6 @@
 type Props = {};
 
-import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
+import MenuOnPage from '@/components/UI/MenuM/MenuOnPage/MenuOnPage';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { buttonsMenuModerationPage } from '@/constants/menu';
 import styles from './ModerationPage.module.css';

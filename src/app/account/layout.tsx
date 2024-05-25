@@ -1,4 +1,4 @@
-import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
+import MenuOnPage from '@/components/UI/MenuM/MenuOnPage/MenuOnPage';
 import styles from './Account.module.css';
 import { buttonsMenuAccountPage } from '@/constants/menu';
 
