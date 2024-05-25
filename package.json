@@ -1,6 +1,6 @@
 {
-  "name": "bc_nextjs",
-  "version": "0.1.0",
+  "name": "bike-caucasus_nextjs",
+  "version": "3.21.4",
   "private": true,
   "scripts": {
     "dev": "npm run open-browser & next dev",
