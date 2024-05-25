@@ -57,20 +57,20 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     name: 'Профиль',
     classes: [],
     href: '/account/profile',
-    permission: 'account.profile',
+    permission: 'authorized', // Для авторизованного пользователя.
   },
   {
     id: 1,
     name: 'Команда',
     classes: [],
     href: '/account/team',
-    permission: 'account.team',
+    permission: 'authorized', // Для авторизованного пользователя.
   },
   {
     id: 2,
     name: 'Аккаунт',
     classes: [],
     href: '/account/details',
-    permission: 'account.details',
+    permission: 'authorized', // Для авторизованного пользователя.
   },
 ];

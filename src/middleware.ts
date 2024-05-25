@@ -73,12 +73,20 @@ const paths = [
   },
   {
     path: '/account',
-    permission: ['moderation.account'],
+    permission: ['authorized'], // Для авторизованного пользователя.
   },
-  // {
-  //   path: '/products',
-  //   permission: ['products.list', 'products.all'],
-  // },
+  {
+    path: '/account/profile',
+    permission: ['authorized'], // Для авторизованного пользователя.
+  },
+  {
+    path: '/account/team',
+    permission: ['authorized'], // Для авторизованного пользователя.
+  },
+  {
+    path: '/account/details',
+    permission: ['authorized'], // Для авторизованного пользователя.
+  },
   // {
   //   path: '/products/create',
   //   permission: ['products.create', 'products.all'],
