@@ -7,18 +7,21 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
     name: 'Создание',
     classes: [],
     href: '/moderation/news/create',
+    permission: 'moderation.news.create',
   },
   {
     id: 1,
     name: 'Редактирование',
     classes: [],
     href: '/moderation/news/edit',
+    permission: 'moderation.news.edit',
   },
   {
     id: 2,
     name: 'Список всех новостей',
     classes: [],
     href: '/moderation/news/list',
+    permission: 'moderation.news.list',
   },
 ];
 
@@ -29,18 +32,21 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     name: 'Новости',
     classes: [],
     href: '/moderation/news/create',
+    permission: 'moderation.news.create',
   },
   {
     id: 1,
     name: 'Маршруты',
     classes: [],
     href: '/moderation/routes/create',
+    permission: 'moderation.routes.create',
   },
   {
     id: 2,
     name: 'Соревнования',
     classes: [],
     href: '/moderation/championship',
+    permission: 'moderation.championship',
   },
 ];
 
@@ -51,17 +57,20 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     name: 'Профиль',
     classes: [],
     href: '/account/profile',
+    permission: 'account.profile',
   },
   {
     id: 1,
     name: 'Команда',
     classes: [],
     href: '/account/team',
+    permission: 'account.team',
   },
   {
     id: 2,
     name: 'Аккаунт',
     classes: [],
     href: '/account/details',
+    permission: 'account.details',
   },
 ];

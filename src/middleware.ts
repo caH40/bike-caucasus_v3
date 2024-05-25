@@ -59,6 +59,22 @@ const paths = [
     path: '/moderation',
     permission: ['moderation'],
   },
+  {
+    path: '/moderation/news/create',
+    permission: ['moderation.news.create'],
+  },
+  {
+    path: '/moderation/news/edit',
+    permission: ['moderation.news.edit'],
+  },
+  {
+    path: '/moderation/news/list',
+    permission: ['moderation.news.list'],
+  },
+  {
+    path: '/account',
+    permission: ['moderation.account'],
+  },
   // {
   //   path: '/products',
   //   permission: ['products.list', 'products.all'],

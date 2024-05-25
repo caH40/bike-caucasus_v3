@@ -15,5 +15,5 @@ type Props = {
 export default function PermissionCheck({ permission, children }: Props): JSX.Element | null {
   const hasAccess = useHasAccess(permission);
 
-  return hasAccess ? <div>{children}</div> : null;
+  return hasAccess ? <>{children}</> : null;
 }

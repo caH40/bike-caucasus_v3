@@ -91,9 +91,8 @@ export const authOptions: AuthOptions = {
         token.email = account.email as string;
       } else if (user) {
         token.email = user.email;
-        token.rolePermissions = userDB?.role.permissions || [];
       }
-
+      token.rolePermissions = userDB?.role.permissions || [];
       return token;
     },
 

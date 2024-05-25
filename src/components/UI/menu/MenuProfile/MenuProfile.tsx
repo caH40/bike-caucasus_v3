@@ -33,18 +33,21 @@ export default function MenuProfile({ profileId }: Params) {
       classes: [],
       href: '/account/profile',
       isMyButton: true,
+      permission: null,
     },
     {
       id: 1,
       name: 'Разное',
       classes: [],
       onClick: onDev,
+      permission: null,
     },
     {
       id: 2,
       name: 'Поделиться ссылкой',
       classes: [],
       onClick: shareUrl,
+      permission: null,
     },
   ];
 

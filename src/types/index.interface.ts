@@ -136,7 +136,7 @@ export type ResponseServer<T> = {
 };
 
 /**
- * Меню которое располагается на страницах с кнопками и линками
+ * Меню которое располагается на страницах с кнопками и линками.
  */
 export type TMenuOnPage = {
   id: number;
@@ -145,6 +145,7 @@ export type TMenuOnPage = {
   href?: string;
   onClick?: () => void;
   isMyButton?: boolean; // отображается только авторизованному пользователю для данной кнопки
+  permission: string | null; // правило доступа
 };
 
 /**
