@@ -96,6 +96,25 @@ export class UserService {
   }
 
   /**
+   * Получает все профили зарегистрированных пользователей.
+   */
+  async getProfiles(): Promise<ResponseServer<IUserModel[] | null>> {
+    try {
+      // Подключение к базе данных
+      await this.dbConnection();
+
+      // Получение всех пользователей из базы данных и преобразование результата в простой объект JavaScript
+      const usersDB: IUserModel[] = await User.find().lean();
+
+      // Возвращение данных всех пользователей с успешным статусом
+      return { data: usersDB, ok: true, message: 'Данные всех пользователей.' };
+    } catch (error) {
+      // Обработка ошибок с помощью функции handlerErrorDB и возврат результата
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
    * Обновляет профиль пользователя в базе данных и загружает новое изображение профиля, если оно было изменено.
    * @param {FormData} profileEdited - Данные профиля, включая измененные поля.
    * @param {Object} options - Объект с параметрами для загрузки изображения. Для `https://${bucketName}.${domainCloudName}/${fileName}
