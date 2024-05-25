@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import MenuProfile from '@/components/UI/MenuM/MenuProfile/MenuProfile';
+import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/mongodb/UserService';
 import { blurDataURL } from '@/libs/image';
