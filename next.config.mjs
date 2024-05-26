@@ -22,6 +22,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'sun1-97.userapi.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'bike-caucasus.hb.vkcs.cloud',
         port: '',
         pathname: '/**',
