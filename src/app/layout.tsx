@@ -10,6 +10,9 @@ import ModalLoading from '@/components/ModalLoading/ModalLoading';
 import MobileMenu from '@/components/UI/MobileMenu/MobileMenu';
 import { metadataHomePage } from '@/constants/meta';
 import './globals.css';
+import Script from 'next/script';
+import { Suspense } from 'react';
+import YandexMetrika from '@/components/YandexMetrika/YandexMetrika';
 
 export const metadata: Metadata = metadataHomePage;
 
@@ -21,6 +24,28 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={cn(roboto.className, montserrat_Alternates.variable, 'body')}>
+        {/* <!-- Yandex.Metrika counter --> */}
+
+        <Script id="metrika-counter" strategy="afterInteractive">
+          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+              m[i].l=1*new Date();
+              for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+              k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+              (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+ 
+              ym(88492388, "init", {
+                    defer: true,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true
+              });`}
+        </Script>
+        <Suspense fallback={<></>}>
+          <YandexMetrika />
+        </Suspense>
+
+        {/* <!-- /Yandex.Metrika counter --> */}
         <Providers>
           <div className="container">
             <Header />
