@@ -76,6 +76,7 @@
 }
 .tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -110,9 +111,6 @@
   }
 }
 @media (max-width: 992px) {
-  .wrapper {
-    grid-template-columns: 1fr;
-  }
   .box__img {
     height: 55vw;
   }
