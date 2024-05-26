@@ -111,7 +111,7 @@ export const authOptions: AuthOptions = {
 
         // email обязателен !!!!!! добавить в информационное сообщение
         if (!email) {
-          return false;
+          throw new Error('Не получен email с provider!');
         }
 
         // подключение к БД
@@ -159,11 +159,11 @@ export const authOptions: AuthOptions = {
 
           const userCreated = await User.create(userNew);
 
-          if (userCreated) {
-            return true;
+          if (!userCreated) {
+            throw new Error('Ошибка при создании нового пользователя в БД.');
           }
 
-          return false;
+          return true;
         }
 
         // email из provider соответствует email User с БД
@@ -176,7 +176,7 @@ export const authOptions: AuthOptions = {
 
         // ошибка, email из провайдера уже у другого пользователя !!!!!!!!!!
         if (userWithCurrentEmailDB) {
-          return false;
+          throw new Error('email из провайдера уже у другого пользователя.');
         }
 
         // значит пользователь выполняющий аутентификацию изменил свой email у провайдера
