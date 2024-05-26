@@ -1,17 +1,19 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import { lcWebcamShadzhatmaz as lcName } from '@/constants/local-storage';
 import ArrowsWebcam from '../UI/ArrowWebcam/ArrowsWebcam';
-import noImage from '../../../public/images/transparent800.png';
+// import noImage from '../../../public/images/transparent800.png';
 import styles from './Webcam.module.css';
 
 type Props = {
   forFullScr?: boolean;
 };
+const noImage = '/images/transparent800.png';
 
+// eslint-disable-next-line no-unused-vars
 export default function Webcam({ forFullScr }: Props) {
   const [numberWebcam, setNumberWebcam] = useState<number>(0);
 
@@ -36,13 +38,13 @@ export default function Webcam({ forFullScr }: Props) {
       <div className={styles.webcam}>
         <ArrowsWebcam numberWebcam={numberWebcam} setNumberWebcam={setNumberWebcam} />
         <div className={styles.box__img}>
-          <Image
+          <img
             className={styles.img}
             src={numberWebcam ? `https://gw.cmo.sai.msu.ru/webcam${numberWebcam}.jpg` : noImage}
             alt={`Вебкамера на горе Шаджатмаз webcam${numberWebcam}`}
-            fill={true}
-            sizes={forFullScr ? '90vw' : '(max-width: 992px) 100vw, 33vw'}
-            priority={forFullScr}
+            // fill={true}
+            // sizes={forFullScr ? '90vw' : '(max-width: 992px) 100vw, 33vw'}
+            // priority={forFullScr}
           />
         </div>
       </div>
