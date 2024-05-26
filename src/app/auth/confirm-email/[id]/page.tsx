@@ -1,5 +1,7 @@
+const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
+
 const fetchData = async (id: string): Promise<string> => {
-  const response = await fetch(`http://localhost:3000/api/auth/confirm-email/${id}`, {
+  const response = await fetch(`${server}/api/auth/confirm-email/${id}`, {
     cache: 'no-cache',
   });
   if (!response.ok) {
