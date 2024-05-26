@@ -135,7 +135,11 @@ export default async function NewsPage({ params }: Props) {
             <article className={styles.content}>
               {newsOne.blocks.map((block) => (
                 <section className={styles.article__block} key={block.position}>
-                  <p className={styles.content__text}>{block.text}</p>
+                  <div
+                    className={styles.content__text}
+                    dangerouslySetInnerHTML={{ __html: block.text }}
+                  />
+
                   {block.image && (
                     <div className={styles.block__img}>
                       <div className={styles.content__box__img}>

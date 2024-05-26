@@ -58,7 +58,7 @@ export default function useInsertLink({ refTextArea, handlerInput, block }: Prop
       const selected = block.text.slice(start, end);
 
       // Формирование тэга <a></a>.
-      const newText = `${beginString}<a className="link__news" href="${url}">${selected}</a>${endString}`;
+      const newText = `${beginString}<a class="link__news" href="${url}">${selected}</a>${endString}`;
 
       handlerInput(newText);
       setShowModal(false);

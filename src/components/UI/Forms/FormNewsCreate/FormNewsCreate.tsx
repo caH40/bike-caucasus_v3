@@ -13,6 +13,7 @@ import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
+import { formateAndStripContent } from './utils';
 import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
 import styles from '../Form.module.css';
 
@@ -65,11 +66,20 @@ export default function FormNewsCreate({ fetchNewsCreated }: Props) {
     // Отображения спинера загрузки.
     setLoading(true);
 
+    // Очищает текст от тэгов html, кроме <a>, <br>.
+    // Заменяет символы CRLF перевода строк на html тэг <br>.
+    const {
+      blockFormatted,
+      titleStripedHtmlTags,
+      subTitleStripedHtmlTags,
+      hashtagsStripedHtmlTags,
+    } = formateAndStripContent({ title, subTitle, hashtags, blocks });
+
     const formData = serializationNewsCreate({
-      blocks,
-      title,
-      subTitle,
-      hashtags,
+      blocks: blockFormatted,
+      title: titleStripedHtmlTags,
+      subTitle: subTitleStripedHtmlTags,
+      hashtags: hashtagsStripedHtmlTags,
       poster,
     });
 

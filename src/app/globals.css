@@ -11,6 +11,8 @@
   --btn-auth-bg: #55b3ae;
   --btn-focus: #018a83;
 
+  --link-color: rgb(98, 161, 255);
+
   /* зеленая кнопка */
   --btn-bg: #318d2c;
   --btn-bg-hover: #3fb439;
@@ -95,6 +97,15 @@ textarea:disabled {
 }
 .toast {
   font-size: 1rem;
+}
+.link__news {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  color: var(--link-color);
+}
+.link__news:hover {
+  transition: all 0.3s;
+  text-decoration-color: var(--link-color);
 }
 /* ===================================================================================== */
 .page404 {
