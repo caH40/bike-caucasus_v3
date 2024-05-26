@@ -73,8 +73,26 @@ export async function generateMetadataNews({ params }: Props): Promise<Metadata>
       title: news.title,
       description: news.subTitle,
       url: './',
-      type: 'website',
       images: [news.poster],
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Вебкамеры "/webcam".
+ */
+export function generateMetadataWebcam(): Metadata {
+  const title = 'Вебкамеры на горе Шаджатмаз по дороге на Джилы-Су.';
+  const description =
+    'Вебкамеры на горе Шаджатмаз на высоте 2000 метров. Потрясающие виды на Эльбрус, КМВ, Учкекен, Канжол, дорога на теплые источники Джилы-СУ.';
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      url: './',
+      images: '/images/og/Webcam.jpg',
     },
   };
 }
