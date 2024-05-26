@@ -7,6 +7,7 @@ import cn from 'classnames/bind';
 
 import { useMobileMenuStore } from '@/store/mobile';
 import { navLinksFull } from '@/constants/navigation';
+import PermissionCheck from '@/hoc/permission-check';
 import Login from '../ButtonLogin/ButtonLogin';
 import styles from './MobileMenu.module.css';
 
@@ -43,11 +44,13 @@ export default function MobileMenu() {
       <nav className={styles.nav}>
         <ul className={styles.list}>
           {navLinksFull.map((link) => (
-            <li key={link.id}>
-              <Link href={link.href} className={styles.link}>
-                {link.name}
-              </Link>
-            </li>
+            <PermissionCheck permission={link.permission} key={link.id}>
+              <li key={link.id}>
+                <Link href={link.href} className={styles.link}>
+                  {link.name}
+                </Link>
+              </li>
+            </PermissionCheck>
           ))}
         </ul>
 
