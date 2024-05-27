@@ -1,4 +1,5 @@
 import { AgeCategory } from '@/database/mongodb/Models/AgeCategory';
+import { errorLogger } from '@/errors/error';
 
 type Params = {
   birthday: Date | string;
@@ -46,7 +47,7 @@ export async function getAgeCategory({
 
     return ageCategoryDB.name;
   } catch (error) {
-    console.log(error); // eslint-disable-line
+    errorLogger(error);
     return 'нет категории';
   }
 }

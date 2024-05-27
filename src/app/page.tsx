@@ -9,7 +9,7 @@ import type { TNews } from '@/types/models.interface';
 import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
-import { errorHandler } from '@/errors/error';
+import { errorLogger } from '@/errors/error';
 
 async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
   try {
@@ -29,10 +29,7 @@ async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: st
 
     return response.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error({ message: error.message }); // eslint-disable-line no-console
-    }
-    errorHandler(error); // eslint-disable-line no-console
+    errorLogger(error);
   }
 }
 

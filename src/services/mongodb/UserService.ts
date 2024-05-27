@@ -10,6 +10,7 @@ import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.i
 import type { IUserModel, TRoleModel } from '@/types/models.interface';
 import type { IProfileForClient } from '@/types/fetch.interface';
 import { getAgeCategory } from '@/libs/utils/age-category';
+import { errorLogger } from '@/errors/error';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -23,9 +24,12 @@ type ParamsGetProfile = {
  */
 export class UserService {
   private dbConnection: () => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  private errorLogger: (error: unknown) => Promise<void>;
 
   constructor() {
     this.dbConnection = connectToMongo;
+    this.errorLogger = errorLogger;
   }
 
   // получение данных профиля
@@ -91,6 +95,7 @@ export class UserService {
 
       return { data: profile, ok: true, message: 'Данные профиля пользователя' };
     } catch (error) {
+      this.errorLogger(error);
       return handlerErrorDB(error);
     }
   }
@@ -109,7 +114,7 @@ export class UserService {
       // Возвращение данных всех пользователей с успешным статусом
       return { data: usersDB, ok: true, message: 'Данные всех пользователей.' };
     } catch (error) {
-      // Обработка ошибок с помощью функции handlerErrorDB и возврат результата
+      this.errorLogger(error);
       return handlerErrorDB(error);
     }
   }
@@ -130,7 +135,7 @@ export class UserService {
       bucketName,
       domainCloudName,
     }: { cloudName: 'vk'; bucketName: string; domainCloudName: string }
-  ): Promise<ResponseServer<any>> {
+  ): Promise<ResponseServer<null>> {
     try {
       const profile = {} as TFormProfile;
 
@@ -203,6 +208,7 @@ export class UserService {
       revalidatePath(`/profile/${profile.id}`);
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -212,7 +218,7 @@ export class UserService {
    * @param accountEdited - Отредактированные данные аккаунта пользователя.
    * @returns Промис, содержащий информацию об успешном выполнении операции или об ошибке.
    */
-  public async putAccount(accountEdited: TFormAccount): Promise<ResponseServer<any>> {
+  public async putAccount(accountEdited: TFormAccount): Promise<ResponseServer<null>> {
     try {
       // Выбрасывается ошибка, если отсутствует идентификатор пользователя в профиле.
       if (!accountEdited.id) {
@@ -246,6 +252,7 @@ export class UserService {
 
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }

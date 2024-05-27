@@ -1,4 +1,4 @@
-import { errorHandler } from '@/errors/error';
+import { errorLogger } from '@/errors/error';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
@@ -20,7 +20,7 @@ const fetchData = async (id: string): Promise<string> => {
     const data = await response.json();
     return data.message;
   } catch (error) {
-    errorHandler(error);
+    errorLogger(error);
     return error instanceof Error
       ? error.message
       : 'Неизвестная ошибка, обратитесь в службу поддержки!';

@@ -3,12 +3,11 @@ import { parseError } from './parse';
 import { Logger } from '@/services/logger';
 
 /**
- * Обрабатывает ошибку, проверяя, следует ли её игнорировать,
- * логирует её в базу данных или выводит в консоль в зависимости от среды(прод или разработка).
+ * Логирует ошибку в базу данных или выводит в консоль в зависимости от среды(прод или разработка).
  * @param {unknown} error - Ошибка для обработки.
  * @returns {Promise<void>}
  */
-export const errorHandler = async (error: unknown): Promise<void> => {
+export const errorLogger = async (error: unknown): Promise<void> => {
   try {
     // Выход, если ошибка из списка игнорируемых.
     if (ignoreError(error)) {

@@ -3,7 +3,8 @@ import { toast } from 'sonner'; // Импорт функции toast из биб
 import type { ResponseServer } from '@/types/index.interface'; // Импорт интерфейса ResponseServer
 
 /**
- * Обрабатывает ответ от сервера, выводя сообщение об успехе или ошибке с помощью библиотеки sonner.
+ * Обрабатывает ответ от сервера на клиентской стороне,
+ * выводя сообщение об успехе или ошибке с помощью библиотеки sonner.
  * @param response - Ответ от сервера.
  */
 export function handlerResponse(response: ResponseServer<any>): void {

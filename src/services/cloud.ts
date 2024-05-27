@@ -1,3 +1,4 @@
+import { ResponseMetadata } from '@aws-sdk/types';
 import {
   DeleteObjectCommand,
   DeleteObjectCommandInput,
@@ -10,6 +11,8 @@ import {
 
 import { CloudConfig } from '@/configs/clouds';
 import { convertBytesTo } from '@/libs/utils/handler-data';
+import { errorLogger } from '@/errors/error';
+import { ResponseServer } from '@/types/index.interface';
 
 // название сконфигурированных облаков
 type Clouds = 'vk';
@@ -20,6 +23,8 @@ type Clouds = 'vk';
 export class Cloud {
   private config: S3ClientConfig;
   private s3: S3Client;
+  // eslint-disable-next-line no-unused-vars
+  private errorLogger: (error: unknown) => Promise<void>;
 
   maxSizeFileInMBytes: number;
 
@@ -35,6 +40,7 @@ export class Cloud {
 
     this.config = config;
     this.s3 = new S3Client(this.config);
+    this.errorLogger = errorLogger;
   }
 
   /**
@@ -43,7 +49,11 @@ export class Cloud {
    * @param file сохраняемый файл в формате File
    * @param fileName название файла с расширением, по умолчанию берется из входного параметра file
    */
-  public async saveFile(file: File, bucketName: string, fileName?: string) {
+  public async saveFile(
+    file: File,
+    bucketName: string,
+    fileName?: string
+  ): Promise<ResponseServer<ResponseMetadata>> {
     if (!file || !bucketName) {
       throw new Error('Переданы не все обязательные параметры');
     }
@@ -67,7 +77,14 @@ export class Cloud {
 
     const command = new PutObjectCommand(params);
     const response = await this.s3.send(command);
-    return response.$metadata;
+    return {
+      data: response.$metadata,
+      ok: true,
+      message: 'Ошибка при удалении файла из облака, смотри логи',
+    };
+
+    // при возникновении ошибки необходимо прервать выполнение функции,
+    // поэтому ошибка обрабатывается на верхнем уровне
   }
 
   /**
@@ -76,10 +93,7 @@ export class Cloud {
    * @param fileName - Имя файла, который нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файла.
    */
-  public async deleteFile(
-    bucketName: string,
-    fileName: string
-  ): Promise<{ ok: boolean; message: string }> {
+  public async deleteFile(bucketName: string, fileName: string): Promise<ResponseServer<null>> {
     try {
       // Создание параметров для команды удаления файла.
       const params: DeleteObjectCommandInput = {
@@ -93,9 +107,14 @@ export class Cloud {
       // Отправка команды удаления файла в S3.
       await this.s3.send(deleteCommand);
 
-      return { ok: true, message: 'Файл удален из облака' };
+      return { data: null, ok: true, message: 'Файл удален из облака' };
     } catch (error) {
-      return { ok: false, message: 'Ошибка при удалении файла из облака' };
+      this.errorLogger(error);
+      return {
+        data: null,
+        ok: false,
+        message: 'Ошибка при удалении файла из облака, смотри логи',
+      };
     }
   }
 
@@ -105,10 +124,7 @@ export class Cloud {
    * @param prefix - Префикс (путь) к объектам, которые нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файлов.
    */
-  public async deleteFiles(
-    bucketName: string,
-    prefix: string
-  ): Promise<{ ok: boolean; message: string }> {
+  public async deleteFiles(bucketName: string, prefix: string): Promise<ResponseServer<null>> {
     try {
       // Создаем параметры запроса для получения списка объектов с заданным префиксом
       const params = {
@@ -134,9 +150,14 @@ export class Cloud {
         }
       }
 
-      return { ok: true, message: 'Файлы удалены из облака' };
+      return { data: null, ok: true, message: 'Файлы удалены из облака' };
     } catch (error) {
-      return { ok: false, message: 'Ошибка при удалении файлов из облака' };
+      this.errorLogger(error);
+      return {
+        data: null,
+        ok: false,
+        message: 'Ошибка при удалении файлов из облака, смотри логи',
+      };
     }
   }
 }

@@ -9,10 +9,11 @@ import { Cloud } from './cloud';
 import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
+import { serviceGetInteractiveToDto, serviceGetOneToDto } from '@/dto/news';
+import { errorLogger } from '@/errors/error';
 import type { TNews } from '@/types/models.interface';
 import type { ResponseServer } from '@/types/index.interface';
-import type { TAuthor } from '@/types/dto.types';
-import { serviceGetInteractiveToDto, serviceGetOneToDto } from '@/dto/news';
+import type { TAuthor, TNewsHetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -31,8 +32,12 @@ type TSaveImage = {
  */
 export class News {
   private dbConnection: () => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  private errorLogger: (error: unknown) => Promise<void>;
+
   constructor() {
     this.dbConnection = connectToMongo;
+    this.errorLogger = errorLogger;
   }
 
   /**
@@ -42,7 +47,7 @@ export class News {
     formData: FormData,
     { cloudName, bucketName, domainCloudName }: TCloudConnect,
     author: string
-  ) {
+  ): Promise<ResponseServer<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
@@ -93,6 +98,7 @@ export class News {
 
       return { data: null, ok: true, message: 'Новость сохранена в БД!' };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -102,7 +108,20 @@ export class News {
    * @param quantity количество последних новостей
    * @returns
    */
-  public async getMany({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
+  public async getMany({
+    quantity,
+    idUserDB,
+  }: {
+    quantity: number;
+    idUserDB?: string;
+  }): Promise<
+    ResponseServer<
+      | null
+      | (TNews & {
+          isLikedByUser: boolean;
+        })[]
+    >
+  > {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -128,6 +147,7 @@ export class News {
         message: `Последние новости в количестве ${quantity} шт. `,
       };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -143,7 +163,7 @@ export class News {
   }: {
     urlSlug: string;
     idUserDB: string | undefined;
-  }) {
+  }): Promise<ResponseServer<null | TNewsHetOneDto>> {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -187,6 +207,7 @@ export class News {
         message: `Запрашиваемая новости с адресом  ${urlSlug}`,
       };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -200,7 +221,7 @@ export class News {
   }: {
     idNews: string;
     idUserDB: string | undefined;
-  }) {
+  }): Promise<ResponseServer<null | TNewsInteractiveDto>> {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -235,6 +256,7 @@ export class News {
         message: `Запрашиваемая новости с адресом  ${idNews}`,
       };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -242,7 +264,11 @@ export class News {
   /**
    * Подсчет просмотра новости любыми пользователеми.
    */
-  public async countView({ idNews }: { idNews?: string | null }): Promise<ResponseServer<any>> {
+  public async countView({
+    idNews,
+  }: {
+    idNews?: string | null;
+  }): Promise<ResponseServer<null>> {
     try {
       if (!idNews) {
         throw new Error(`Не получена _id новости`);
@@ -265,6 +291,7 @@ export class News {
         message: `Учет просмотра новости с _id:${idNews}`,
       };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -314,6 +341,7 @@ export class News {
         message: `Учет лайка от пользователя _id:${idUserDB}`,
       };
     } catch (error) {
+      this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
   }
@@ -329,9 +357,9 @@ export class News {
     cloudName,
     domainCloudName,
     bucketName,
-  }: TSaveImage): Promise<string | undefined> {
+  }: TSaveImage): Promise<string> {
     if (!fileImage) {
-      return undefined;
+      throw new Error('Не получен файл изображения fileImage для сохранения в Облаке!');
     }
 
     let fileName = '';

@@ -12,6 +12,7 @@ import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
 import { getProviderProfileDto } from '@/libs/dto/provider';
 import { Role } from '@/database/mongodb/Models/Role';
+import { errorLogger } from '@/errors/error';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -186,7 +187,7 @@ export const authOptions: AuthOptions = {
 
         return true;
       } catch (error) {
-        console.log(error); // eslint-disable-line
+        errorLogger(error); // eslint-disable-line
         return false;
       }
     },
