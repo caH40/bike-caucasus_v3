@@ -1,4 +1,4 @@
-import { TNewsBlock } from './models.interface';
+import { TLogsErrorModel, TNewsBlock } from './models.interface';
 
 /**
  * Одна новость с сервера.
@@ -44,3 +44,8 @@ export type TNewsInteractiveDto = {
   likesCount: number;
   isLikedByUser: boolean;
 };
+
+/**
+ *
+ */
+export type TGetErrorsDto = Omit<TLogsErrorModel, '_id'> & { _id: string };

@@ -162,6 +162,7 @@ export type TAgeCategory = {
 };
 
 export interface TLogsErrorModel {
+  _id: ObjectId;
   timestamp: number; // время создания ошибки
   type?: string; // тип ошибки
   responseData?: string; // ответ при ошибки Axios

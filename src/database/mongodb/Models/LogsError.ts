@@ -13,4 +13,5 @@ const logsErrorSchema = new Schema<TLogsErrorModel>({
   config: { type: Object, default: null },
 });
 
-export const LogsError = models.LogsError || model('LogsError', logsErrorSchema);
+export const LogsError =
+  models.LogsError || model<TLogsErrorModel>('LogsError', logsErrorSchema);
