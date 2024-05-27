@@ -1,0 +1,32 @@
+import { ignoreError } from './ignore';
+import { parseError } from './parse';
+import { Logger } from '@/services/logger';
+
+/**
+ * Обрабатывает ошибку, проверяя, следует ли её игнорировать,
+ * логирует её в базу данных или выводит в консоль в зависимости от среды(прод или разработка).
+ * @param {unknown} error - Ошибка для обработки.
+ * @returns {Promise<void>}
+ */
+export const errorHandler = async (error: unknown): Promise<void> => {
+  try {
+    // Выход, если ошибка из списка игнорируемых.
+    if (ignoreError(error)) {
+      return;
+    }
+
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
+    if (isDevelopment) {
+      // Если разработка, то выводить ошибку в консоль.
+      console.log(error); // eslint-disable-line
+    } else {
+      // логирование ошибки в БД
+      const logger = new Logger();
+      const errorParsed = parseError(error);
+      await logger.saveError(errorParsed);
+    }
+  } catch (error) {
+    console.log(error); // eslint-disable-line
+  }
+};

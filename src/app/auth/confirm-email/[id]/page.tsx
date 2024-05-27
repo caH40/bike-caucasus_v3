@@ -1,14 +1,30 @@
+import { errorHandler } from '@/errors/error';
+
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
 const fetchData = async (id: string): Promise<string> => {
-  const response = await fetch(`${server}/api/auth/confirm-email/${id}`, {
-    cache: 'no-cache',
-  });
-  if (!response.ok) {
-    return 'Ошибка запросе данных с сервера';
+  try {
+    const url = `${server}/api/auth/confirm-email/${id}`;
+    const response = await fetch(url, {
+      cache: 'no-cache',
+    });
+
+    if (!response.ok) {
+      // Обработка HTTP ошибок
+      const errorText = await response.text();
+
+      throw new Error(
+        `HTTP Error: ${response.status} ${response.statusText} - ${errorText}, urlRequest:${url}`
+      );
+    }
+    const data = await response.json();
+    return data.message;
+  } catch (error) {
+    errorHandler(error);
+    return error instanceof Error
+      ? error.message
+      : 'Неизвестная ошибка, обратитесь в службу поддержки!';
   }
-  const data = await response.json();
-  return data.message;
 };
 
 export default async function ConfirmEmail({ params }: { params: { id: string } }) {

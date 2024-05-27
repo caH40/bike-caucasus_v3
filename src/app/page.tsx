@@ -9,6 +9,7 @@ import type { TNews } from '@/types/models.interface';
 import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
+import { errorHandler } from '@/errors/error';
 
 async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
   try {
@@ -31,7 +32,7 @@ async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: st
     if (error instanceof Error) {
       console.error({ message: error.message }); // eslint-disable-line no-console
     }
-    console.error(error); // eslint-disable-line no-console
+    errorHandler(error); // eslint-disable-line no-console
   }
 }
 

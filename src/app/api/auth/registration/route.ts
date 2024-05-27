@@ -1,5 +1,5 @@
 import { postRegistrationService } from './service';
-import { errorRouteHandler } from '@/services/error-controler';
+import { errorRouteHandler } from '@/errors/error-controler';
 
 /**
  * Регистрация нового пользователя.

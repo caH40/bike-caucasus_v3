@@ -160,3 +160,12 @@ export type TAgeCategory = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export interface TLogsErrorModel {
+  timestamp: number; // время создания ошибки
+  type?: string; // тип ошибки
+  responseData?: string; // ответ при ошибки Axios
+  message: string; // краткое описание
+  stack?: string; // стэк ошибки
+  config?: unknown; // конфигурация при Axios ошибке
+}

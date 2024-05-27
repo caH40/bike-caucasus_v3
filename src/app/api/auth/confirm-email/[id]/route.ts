@@ -1,4 +1,4 @@
-import { errorRouteHandler } from '@/services/error-controler';
+import { errorRouteHandler } from '@/errors/error-controler';
 import { confirmEmailService } from './service';
 
 type Params = {

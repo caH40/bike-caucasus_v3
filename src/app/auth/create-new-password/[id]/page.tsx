@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { SubmitHandler } from 'react-hook-form';
 
 import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
 import FormNewPassword from '@/components/UI/Forms/FormNewPassword/FormNewPassword';
-import { SubmitHandler } from 'react-hook-form';
+import { parseError } from '@/errors/parse';
+import { errorHandlerClient } from '@/services/server_actions/error-handler';
 import { type IRegistrationForm } from '@/types/index.interface';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 type Params = {
   params: {
@@ -54,25 +56,36 @@ export default function CreateNewPassword({ params: { id } }: Params) {
   }, [id]);
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
-    const res = await fetch(`${server}/api/auth/create-new-password`, {
-      method: 'POST',
-      body: JSON.stringify({ ...dataForm, userId }),
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
+    try {
+      const url = `${server}/api/auth/create-new-password`;
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ ...dataForm, userId }),
+        headers: {
+          'Content-type': 'application/json',
+        },
+      });
 
-    const data = await res.json();
+      if (!response.ok) {
+        // Обработка HTTP ошибок
+        const errorText = await response.text();
 
-    if (!res.ok) {
-      setValidationAll(data.message);
-      toast.error(data.message);
-      return;
+        toast.error(errorText);
+        // дублирование сообщения об ошибке в консоли
+        setValidationAll(errorText);
+
+        throw new Error(
+          `HTTP Error: ${response.status} ${response.statusText} - ${errorText}, urlRequest:${url}`
+        );
+      }
+
+      const data = await response.json();
+      setShowForm(false);
+      toast.success(data.message);
+      router.push('/');
+    } catch (error) {
+      errorHandlerClient(parseError(error));
     }
-
-    setShowForm(false);
-    toast.success(data.message);
-    router.push('/');
   };
 
   return (

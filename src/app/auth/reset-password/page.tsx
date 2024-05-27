@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import Modal from '@/components/UI/Modal/Modal';
+import { parseError } from '@/errors/parse';
+import { errorHandlerClient } from '@/services/server_actions/error-handler';
 import { useModalStore } from '@/store/modal';
 import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
 import FormResetPassword from '@/components/UI/Forms/FormResetPassword/FormResetPassword';
 import { type IRegistrationForm } from '@/types/index.interface';
-
-import Modal from '@/components/UI/Modal/Modal';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
@@ -19,25 +20,36 @@ export default function PasswordReset() {
   const isActive = useModalStore((state) => state.isActive);
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
-    const response = await fetch(`${server}/api/auth/reset-password`, {
-      method: 'POST',
-      body: JSON.stringify(dataForm),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-cache',
-    });
+    try {
+      const url = `${server}/api/auth/reset-password`;
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(dataForm),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-cache',
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        // Обработка HTTP ошибок
+        const errorText = await response.text();
+
+        toast.error(errorText);
+
+        throw new Error(
+          `HTTP Error: ${response.status} ${response.statusText} - ${errorText}, urlRequest:${url}`
+        );
+      }
+
       const data = await response.json();
-      toast.error(data.message);
-      return;
+      setShowForm(false);
+      setModal('Сброс пароля!', <Answer email={data.email} />);
+    } catch (error) {
+      errorHandlerClient(parseError(error));
     }
-
-    const data = await response.json();
-    setShowForm(false);
-    setModal('Сброс пароля!', <Answer email={data.email} />);
   };
+
   return (
     <>
       {isActive && <Modal />}
