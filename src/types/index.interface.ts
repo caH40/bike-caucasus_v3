@@ -146,6 +146,7 @@ export type TMenuOnPage = {
   onClick?: () => void;
   isMyButton?: boolean; // отображается только авторизованному пользователю для данной кнопки
   permission: string | null; // правило доступа
+  icon?: React.ComponentType<TIconProps>;
 };
 
 /**
@@ -155,4 +156,13 @@ export type TNewsBlocksEdit = Omit<TNewsBlock, '_id'> & { imageFile: File | null
 export type TNewsEdit = Omit<TNews, 'blocks'> & {
   posterFile: File | null;
   blocks: TNewsBlocksEdit[];
+};
+
+/**
+ * Пропсы для иконок.
+ */
+export type TIconProps = {
+  squareSize?: number;
+  isActive?: boolean; // нажатое состояние
+  getClick?: () => void;
 };

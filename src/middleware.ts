@@ -51,7 +51,14 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ['/account', '/account/(.*)', '/moderation', '/moderation/(.*)'],
+  matcher: [
+    '/admin',
+    '/admin/(.*)',
+    '/account',
+    '/account/(.*)',
+    '/moderation',
+    '/moderation/(.*)',
+  ],
 };
 
 const paths = [
@@ -86,6 +93,22 @@ const paths = [
   {
     path: '/account/details',
     permission: ['authorized'], // Для авторизованного пользователя.
+  },
+  {
+    path: '/admin',
+    permission: ['admin'],
+  },
+  {
+    path: '/admin/users',
+    permission: ['admin'],
+  },
+  {
+    path: '/admin/logs/admin',
+    permission: ['admin'],
+  },
+  {
+    path: '/admin/logs/errors',
+    permission: ['admin'],
   },
   // {
   //   path: '/products/create',

@@ -6,4 +6,5 @@ export const navLinksFull = [
   // { id: 3, name: 'Галерея', href: '/gallery', permission: null },
   // { id: 4, name: 'Джилы-Су', href: '/dzhilsu', permission: null },
   { id: 5, name: 'Управление', href: '/moderation', permission: 'moderation' },
+  { id: 6, name: 'Админ', href: '/admin', permission: 'admin' },
 ];

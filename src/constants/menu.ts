@@ -1,4 +1,7 @@
 import { TMenuOnPage } from '@/types/index.interface';
+// import IconUsers from '@/components/Icons/IconUsers';
+// import IconCreator from '@/components/Icons/IconCreator';
+// import IconLog from '@/components/Icons/IconLog';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -72,5 +75,33 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     classes: [],
     href: '/account/details',
     permission: 'authorized', // Для авторизованного пользователя.
+  },
+];
+
+// Кнопки для меню на странице Админ /admin/
+export const buttonsMenuAdminPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Пользователи',
+    classes: [],
+    href: '/admin/users',
+    permission: 'admin', // Для администратора сайта.
+    // icon: IconUsers,
+  },
+  {
+    id: 1,
+    name: 'Логи модераторов',
+    classes: [],
+    href: '/admin/logs/admin',
+    permission: 'admin', // Для администратора сайта.
+    // icon: IconCreator,
+  },
+  {
+    id: 2,
+    name: 'Логи ошибок',
+    classes: [],
+    href: '/admin/logs/errors',
+    permission: 'admin', // Для администратора сайта.
+    // icon: IconLog,
   },
 ];
