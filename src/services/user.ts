@@ -206,7 +206,10 @@ export class UserService {
           $set: query,
         }
       );
+
+      // Обновления ревалидация данных на указанных страницах.
       revalidatePath(`/profile/${profile.id}`);
+      revalidatePath('/admin/users');
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       this.errorLogger(error); // логирование
