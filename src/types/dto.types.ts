@@ -1,4 +1,4 @@
-import { TLogsErrorModel, TNewsBlock } from './models.interface';
+import { IUserModel, TLogsErrorModel, TNewsBlock, TRoleModel } from './models.interface';
 
 /**
  * Одна новость с сервера.
@@ -46,6 +46,40 @@ export type TNewsInteractiveDto = {
 };
 
 /**
- *
+ * Типы модели блока новости.
+ */
+export type TRoleDto = Omit<TRoleModel, '_id'> & { _id: string };
+
+/**
+ * Лог ошибки на сервере (фронте).
  */
 export type TGetErrorsDto = Omit<TLogsErrorModel, '_id'> & { id: number; _id: string };
+
+/**
+ * Профиль пользователя, получаемый с сервера на клиент.
+ */
+export type TUserDto = Omit<IUserModel, '_id' | 'role' | 'credentials'> & {
+  _id: string;
+  role: TRoleDto;
+  credentials: {
+    username: string;
+  } | null;
+};
+
+/**
+ * Профиль пользователя, получаемый с сервера на клиент (Публичный).
+ */
+export type TUserDtoPublic = Omit<TUserDto, 'provider' | 'email' | 'person'> & {
+  provider: {
+    name: string;
+    image?: string;
+  } | null;
+  person: {
+    firstName: string;
+    patronymic: string;
+    lastName: string;
+    ageCategory: string; // birthday заменён на ageCategory
+    gender: 'male' | 'female';
+    bio: string;
+  };
+};

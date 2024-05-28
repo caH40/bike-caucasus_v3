@@ -50,7 +50,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
 
               <dt className={styles.desc__title}>Возраст</dt>
               <dd className={styles.desc__detail}>
-                {profile.person.ageCategory ?? 'нет данных'}
+                {'ageCategory' in profile.person ? profile.person.ageCategory : 'нет данных'}
               </dd>
 
               <dt className={styles.desc__title}>Пол</dt>

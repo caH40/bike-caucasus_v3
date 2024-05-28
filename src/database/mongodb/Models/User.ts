@@ -37,9 +37,12 @@ const userSchema = new Schema<IUserModel>(
       default: null,
     },
     provider: {
-      name: { type: String }, // провайдер с помощью которого произошла регистрация
-      id: { type: String }, // провайдер с помощью которого произошла регистрация
-      image: { type: String }, // путь до картинки профиля  сп провайдера
+      type: {
+        name: { type: String }, // провайдер с помощью которого произошла регистрация
+        id: { type: String }, // провайдер с помощью которого произошла регистрация
+        image: { type: String }, // путь до картинки профиля  сп провайдера}
+      },
+      default: null,
     },
     email: {
       type: String,

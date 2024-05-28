@@ -28,20 +28,20 @@ export interface ICard {
 }
 
 /**
- * Типы модели пользователя сайта.
+ * Типизация модели пользователя сайта (Профиля).
  */
-export interface IUserModel {
-  _id: Types.ObjectId;
-  id: number;
-  credentials?: {
+export type IUserModel = {
+  _id: ObjectId;
+  id: number; // Порядковый номер,  присваиваемый при регистрации.
+  credentials: {
     username: string; // при регистрации через логин/пароль
     password: string; // при регистрации через логин/пароль
-  };
+  } | null;
   provider: {
     name: string; // провайдер с помощью которого произошла регистрация
     id: string; // провайдер с помощью которого произошла регистрация
-    image: string; // путь до картинки профиля с провайдера
-  };
+    image?: string; // путь до картинки профиля с провайдера
+  } | null;
   email: string;
   emailConfirm: boolean; // через соцсети автоматически true
   image: string; // путь до картинки профиля
@@ -54,9 +54,9 @@ export interface IUserModel {
     gender: 'male' | 'female';
     bio: string;
   };
-  city: string;
-  phone: string;
-  team: {
+  city?: string;
+  phone?: string;
+  team?: {
     id: number; // id номер, присваиваемый автоматически при регистрации
     name: string;
   };
@@ -70,9 +70,9 @@ export interface IUserModel {
     whatsapp?: string;
     garminConnect?: string;
   };
-  createdAt: Date | string;
-  updatedAt: Date | string;
-}
+  createdAt: Date;
+  updatedAt: Date;
+};
 /**
  * Типы модели подтверждения email.
  */

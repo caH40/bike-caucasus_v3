@@ -4,6 +4,7 @@ import styles from './AccountDetailsPage.module.css';
 import { UserService } from '@/services/mongodb/UserService';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { TUserDto } from '@/types/dto.types';
 
 const userService = new UserService();
 
@@ -14,7 +15,10 @@ export default async function AccountDetailsPage() {
     return <h1>Не получен id пользователя</h1>;
   }
 
-  const profile = await userService.getProfile({ idDB: session.user.idDB, isPrivate: true });
+  const profile = (await userService.getProfile({
+    idDB: session.user.idDB,
+    isPrivate: true,
+  })) as ResponseServer<TUserDto | null>; // запрос идет isPrivate:true, поэтому TUserDto
 
   // обновление данных аккаунта в БД
   const putAccount = async (dataForm: TFormAccount): Promise<ResponseServer<any>> => {
@@ -26,7 +30,7 @@ export default async function AccountDetailsPage() {
   };
   return (
     <div className={styles.wrapper}>
-      <FormAccount putAccount={putAccount} profile={profile.data!} />
+      {profile?.data && <FormAccount putAccount={putAccount} profile={profile.data} />}
     </div>
   );
 }

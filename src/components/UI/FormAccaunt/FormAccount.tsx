@@ -7,12 +7,12 @@ import BoxInput from '../BoxInput/BoxInput';
 import Button from '../Button/Button';
 import { useLoadingStore } from '@/store/loading';
 import { handlerResponse } from '@/libs/utils/response';
-import type { IProfileForClient } from '@/types/fetch.interface';
 import type { ResponseServer, TFormAccount } from '@/types/index.interface';
+import type { TUserDto } from '@/types/dto.types';
 import styles from './FormAccount.module.css';
 
 type Props = {
-  profile: IProfileForClient; // данные профиля из БД
+  profile: TUserDto; // данные профиля из БД
   putAccount: (dataForm: TFormAccount) => Promise<ResponseServer<any>>; // eslint-disable-line
 };
 

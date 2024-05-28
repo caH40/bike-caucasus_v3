@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
 
 import BoxInput from '../../BoxInput/BoxInput';
 import BoxSelect from '../../BoxSelect/BoxSelect';
@@ -17,15 +18,14 @@ import BlockUploadLogoProfile from '../../BlockUploadLogoProfile/BlockUploadLogo
 import Button from '../../Button/Button';
 import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
-import type { IProfileForClient } from '@/types/fetch.interface';
+import type { TUserDto } from '@/types/dto.types';
 import type { ResponseServer, TFormProfile } from '@/types/index.interface';
-import styles from '../Form.module.css';
-import { useSession } from 'next-auth/react';
 import { useLoadingStore } from '@/store/loading';
 import { handlerResponse } from '@/libs/utils/response';
+import styles from '../Form.module.css';
 
 type Props = {
-  formData: IProfileForClient;
+  formData: TUserDto;
   putProfile: (params: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line
   idUser: string;
 };

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import Checkbox from '../Checkbox/Checkbox';
 import InputFile from '../InputFile/InputFile';
 import { blurDataURL } from '@/libs/image';
-import type { IProfileForClient } from '@/types/fetch.interface';
+import type { TUserDto } from '@/types/dto.types';
 import styles from './BlockUploadLogoProfile.module.css';
 
 /**
@@ -19,7 +19,7 @@ type Props = {
   setFile: Dispatch<SetStateAction<File | null>>;
   imageFromProvider: boolean;
   setImageFromProvider: Dispatch<SetStateAction<boolean>>;
-  formData: IProfileForClient;
+  formData: TUserDto;
   loading?: boolean;
 };
 

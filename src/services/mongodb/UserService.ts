@@ -8,9 +8,10 @@ import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
 import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
 import type { IUserModel, TRoleModel } from '@/types/models.interface';
-import type { IProfileForClient } from '@/types/fetch.interface';
 import { getAgeCategory } from '@/libs/utils/age-category';
 import { errorLogger } from '@/errors/error';
+import { TUserDto, TUserDtoPublic } from '@/types/dto.types';
+import { dtoGetUser, dtoGetUserPublic } from '@/dto/user';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -38,7 +39,9 @@ export class UserService {
     id,
     isPrivate = false,
     ageCategoryVersion = 'simple',
-  }: ParamsGetProfile): Promise<ResponseServer<IProfileForClient> | ResponseServer<null>> {
+  }: ParamsGetProfile): Promise<
+    ResponseServer<TUserDto | TUserDtoPublic> | ResponseServer<null>
+  > {
     try {
       // подключение к БД
       await this.dbConnection();
@@ -76,22 +79,9 @@ export class UserService {
         gender: userDB.person.gender,
       });
 
-      const person = { ...userDB.person, ageCategory };
-      const role = {
-        _id: String(userDB.role._id),
-        name: userDB.role.name,
-        description: userDB.role.description,
-        permissions: userDB.role.permissions,
-      };
+      const userPrivate = dtoGetUser(userDB);
 
-      const profile: IProfileForClient = { ...userDB, role, person };
-      if (!isPrivate) {
-        delete profile.person.birthday;
-        delete profile.email;
-        delete profile.phone;
-        delete profile.credentials;
-        delete profile.role;
-      }
+      const profile = isPrivate ? userPrivate : dtoGetUserPublic(userPrivate, ageCategory);
 
       return { data: profile, ok: true, message: 'Данные профиля пользователя' };
     } catch (error) {

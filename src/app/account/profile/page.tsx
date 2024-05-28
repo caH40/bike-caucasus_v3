@@ -5,6 +5,7 @@ import FormProfile from '@/components/UI/Forms/FormProfile/FormProfile';
 import { UserService } from '@/services/mongodb/UserService';
 import type { ResponseServer } from '@/types/index.interface';
 import styles from './AccountProfilePage.module.css';
+import { TUserDto } from '@/types/dto.types';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -18,7 +19,10 @@ export default async function AccountProfilePage() {
     return <h1>Не получен id пользователя</h1>;
   }
   const userService = new UserService();
-  const profile = await userService.getProfile({ idDB: session.user.idDB, isPrivate: true });
+  const profile = (await userService.getProfile({
+    idDB: session.user.idDB,
+    isPrivate: true,
+  })) as ResponseServer<TUserDto | null>;
 
   /**
    * Функция для обновления профиля пользователя.
