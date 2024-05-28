@@ -34,6 +34,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'bike-caucasus-dev.hb.vkcs.cloud',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'gw.cmo.sai.msu.ru',
         port: '',
         pathname: '/**',

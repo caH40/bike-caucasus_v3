@@ -6,6 +6,8 @@ import { UserService } from '@/services/mongodb/UserService';
 import type { ResponseServer } from '@/types/index.interface';
 import styles from './AccountProfilePage.module.css';
 
+const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
+
 /**
  * Страница изменения данных профиля
  */
@@ -29,7 +31,7 @@ export default async function AccountProfilePage() {
     const response = await userService.putProfile(dataFromClient, {
       cloudName: 'vk',
       domainCloudName: 'hb.vkcs.cloud',
-      bucketName: 'bike-caucasus',
+      bucketName,
     });
 
     return response;

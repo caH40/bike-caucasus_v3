@@ -5,6 +5,8 @@ import { News } from '@/services/news';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 
+const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
+
 /**
  * Страница создания новости
  */
@@ -25,7 +27,7 @@ export default async function NewsCreatePage() {
       {
         cloudName: 'vk',
         domainCloudName: 'hb.vkcs.cloud',
-        bucketName: 'bike-caucasus',
+        bucketName,
       },
       author
     );
