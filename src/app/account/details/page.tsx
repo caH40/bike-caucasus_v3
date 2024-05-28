@@ -1,7 +1,7 @@
 import FormAccount from '@/components/UI/FormAccaunt/FormAccount';
 import type { ResponseServer, TFormAccount } from '@/types/index.interface';
 import styles from './AccountDetailsPage.module.css';
-import { UserService } from '@/services/mongodb/UserService';
+import { UserService } from '@/services/user';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { TUserDto } from '@/types/dto.types';

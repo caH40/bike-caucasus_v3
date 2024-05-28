@@ -1,5 +1,6 @@
 import { errorRouteHandler } from '@/errors/error-controler';
 import { checkRequestPasswordService } from './service';
+import { errorLogger } from '@/errors/error';
 
 export async function POST(req: Request) {
   try {
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
       userId,
     });
   } catch (error) {
+    errorLogger(error);
     return errorRouteHandler(error, 'Ошибка при проверке на сброс пароля');
   }
 }

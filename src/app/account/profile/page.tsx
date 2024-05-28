@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import FormProfile from '@/components/UI/Forms/FormProfile/FormProfile';
-import { UserService } from '@/services/mongodb/UserService';
+import { UserService } from '@/services/user';
 import type { ResponseServer } from '@/types/index.interface';
 import styles from './AccountProfilePage.module.css';
 import { TUserDto } from '@/types/dto.types';

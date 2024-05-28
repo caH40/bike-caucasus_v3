@@ -1,5 +1,5 @@
 import TableUsersAdmin from '@/components/Table/TableUsersAdmin/TableUsersAdmin';
-import { UserService } from '@/services/mongodb/UserService';
+import { UserService } from '@/services/user';
 import { TUserDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import styles from './UsersAdminPage.module.css';

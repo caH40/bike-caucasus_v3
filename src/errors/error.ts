@@ -18,7 +18,7 @@ export const errorLogger = async (error: unknown): Promise<void> => {
 
     if (isDevelopment) {
       // Если разработка, то выводить ошибку в консоль.
-      console.log(error); // eslint-disable-line
+      console.error(error); // eslint-disable-line
     } else {
       // логирование ошибки в БД
       const logger = new Logger();
@@ -26,6 +26,6 @@ export const errorLogger = async (error: unknown): Promise<void> => {
       await logger.saveError(errorParsed);
     }
   } catch (error) {
-    console.log(error); // eslint-disable-line
+    console.error(error); // eslint-disable-line
   }
 };

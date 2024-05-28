@@ -24,7 +24,7 @@ export class Logger {
         throw new Error('Ошибка при сохранении лога в БД');
       }
     } catch (error) {
-      console.log('Ошибка в методе saveError записи лога:', error); // eslint-disable-line
+      console.error('Ошибка в методе saveError записи лога:', error); // eslint-disable-line
     }
   }
 

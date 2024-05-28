@@ -1,4 +1,4 @@
-import { UserService } from '@/services/mongodb/UserService';
+import { UserService } from '@/services/user';
 import { News } from '@/services/news';
 import { MetadataRoute } from 'next';
 

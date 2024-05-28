@@ -12,6 +12,7 @@ import BlockShare from '@/components/BlockShare/BlockShare';
 import styles from './NewsPage.module.css';
 import { generateMetadataNews } from '@/constants/meta';
 import { Metadata } from 'next';
+import { errorLogger } from '@/errors/error';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -44,10 +45,7 @@ export async function getNewsOne({
 
     return response.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error({ message: error.message }); // eslint-disable-line no-console
-    }
-    console.error(error); // eslint-disable-line no-console
+    errorLogger(error);
   }
 }
 
@@ -63,7 +61,7 @@ async function countView(idNews: string | undefined): Promise<void> {
     const news = new News();
     await news.countView({ idNews });
   } catch (error) {
-    console.error(error); // eslint-disable-line no-console
+    errorLogger(error);
   }
 }
 

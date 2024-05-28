@@ -1,5 +1,6 @@
 import { errorRouteHandler } from '@/errors/error-controler';
 import { createNewPasswordService } from './service';
+import { errorLogger } from '@/errors/error';
 
 export async function POST(req: Request) {
   try {
@@ -8,6 +9,7 @@ export async function POST(req: Request) {
 
     return Response.json(createdNewPassword);
   } catch (error) {
+    errorLogger(error);
     errorRouteHandler(error, 'Ошибка при создании нового пароля');
   }
 }

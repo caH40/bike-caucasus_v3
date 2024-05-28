@@ -9,7 +9,7 @@ import { Logger } from '../logger';
 export async function errorHandlerClient(errorParsed: TLogsErrorParsed): Promise<void> {
   try {
     const isDevelopment = process.env.NODE_ENV === 'development';
-    if (!isDevelopment) {
+    if (isDevelopment) {
       // если разработка, то выводить ошибку в консоль
       console.log(errorParsed); // eslint-disable-line
     } else {

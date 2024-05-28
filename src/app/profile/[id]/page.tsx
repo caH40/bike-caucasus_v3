@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
-import { UserService } from '@/services/mongodb/UserService';
+import { UserService } from '@/services/user';
 import { blurDataURL } from '@/libs/image';
 import { getLogoProfile } from '@/libs/utils/profile';
 import type { ParamsWithId } from '@/types/index.interface';

@@ -1,3 +1,4 @@
+import { errorLogger } from '@/errors/error';
 import { postRegistrationService } from './service';
 import { errorRouteHandler } from '@/errors/error-controler';
 
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
 
     return Response.json({ message: 'Новый пользователь создан', email });
   } catch (error) {
+    errorLogger(error);
     return errorRouteHandler(error, 'error on server');
   }
 }
