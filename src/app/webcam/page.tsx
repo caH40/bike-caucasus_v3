@@ -1,10 +1,10 @@
 import { type Metadata } from 'next';
 
-import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
 import Webcam from '@/components/Webcam/Webcam';
 
 import styles from './WebcamPage.module.css';
 import { generateMetadataWebcam } from '@/constants/meta';
+import Wrapper from '@/components/Wrapper/Wrapper';
 
 // Создание динамических meta данных
 export async function generateMetadata(): Promise<Metadata> {
@@ -16,10 +16,21 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default function WebcamPage() {
   return (
-    <div>
-      <TitleAndLine title={'Вебкамеры'} hSize={1} />
-      <h2 className={styles.title__h2}>Гора Шаджатмаз</h2>
-      <Webcam forFullScr={true} />
+    <div className={styles.wrapper}>
+      <div className={styles.wrapper__main}>
+        <Wrapper title={'Вебкамеры'}>
+          <div>
+            <Webcam forFullScr={true} />
+            <div className={styles.author}>
+              <span>Изображения с сайта</span>
+              <a href="https://gw.cmo.sai.msu.ru/" className={styles.link}>
+                https://gw.cmo.sai.msu.ru/
+              </a>
+            </div>
+          </div>
+        </Wrapper>
+      </div>
+      <aside className={styles.wrapper__aside}></aside>
     </div>
   );
 }

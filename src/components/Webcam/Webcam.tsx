@@ -42,9 +42,6 @@ export default function Webcam({ forFullScr }: Props) {
             className={styles.img}
             src={numberWebcam ? `https://gw.cmo.sai.msu.ru/webcam${numberWebcam}.jpg` : noImage}
             alt={`Вебкамера на горе Шаджатмаз webcam${numberWebcam}`}
-            // fill={true}
-            // sizes={forFullScr ? '90vw' : '(max-width: 992px) 100vw, 33vw'}
-            // priority={forFullScr}
           />
         </div>
       </div>

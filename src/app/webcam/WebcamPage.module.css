@@ -1,3 +1,35 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 468px;
+  gap: 1rem 20px;
+  letter-spacing: 0.08rem;
+}
+.wrapper__aside {
+  background-color: var(--white-12);
+  border-radius: 1rem;
+  height: 30vh;
+}
+
 .title__h2 {
   margin-bottom: 3px;
+}
+.author {
+  text-align: right;
+  color: var(--white-50);
+  margin-top: 0.5rem;
+}
+.author span {
+  margin-right: 0.5rem;
+}
+.link {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+}
+
+/* ====================================================================== */
+@media (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
 }
