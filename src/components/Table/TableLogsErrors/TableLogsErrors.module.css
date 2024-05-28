@@ -1,0 +1,41 @@
+.wrapper {
+  overflow-x: auto;
+}
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+}
+.caption {
+  text-align: left;
+  padding: 1rem;
+  text-transform: uppercase;
+  background-color: #00000050;
+  font-size: 1.1em;
+  font-weight: 700;
+}
+.trh {
+  text-transform: uppercase;
+  background-color: #ffffff10;
+  padding: 1rem;
+}
+
+.th {
+  text-align: left;
+  padding: 1rem 8px;
+}
+.td {
+  text-align: left;
+  padding: 1rem;
+}
+.tr {
+  background-color: #ffffff30;
+  cursor: pointer;
+}
+.tr:nth-of-type(2n) {
+  background-color: #ffffff20;
+}
+.tr:hover {
+  background-color: var(--white-50);
+  transition: all 0.2s;
+}

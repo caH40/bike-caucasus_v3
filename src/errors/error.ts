@@ -16,7 +16,7 @@ export const errorLogger = async (error: unknown): Promise<void> => {
 
     const isDevelopment = process.env.NODE_ENV === 'development';
 
-    if (isDevelopment) {
+    if (!isDevelopment) {
       // Если разработка, то выводить ошибку в консоль.
       console.log(error); // eslint-disable-line
     } else {

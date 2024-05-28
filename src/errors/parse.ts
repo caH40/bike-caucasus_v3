@@ -1,9 +1,9 @@
-import type { TLogsErrorModel } from '@/types/models.interface';
+import type { TLogsErrorParsed } from '@/types/index.interface';
 
 /**
- * Обработка получаемого error и возврат в нужном формате
+ * Обработка полей получаемого error и возврат в нужном формате
  */
-export const parseError = (error: unknown): Omit<TLogsErrorModel, 'timestamp'> => {
+export const parseError = (error: unknown): TLogsErrorParsed => {
   if (error instanceof Error) {
     const message = error?.message || 'Нет описания ошибки';
 

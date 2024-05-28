@@ -48,4 +48,4 @@ export type TNewsInteractiveDto = {
 /**
  *
  */
-export type TGetErrorsDto = Omit<TLogsErrorModel, '_id'> & { _id: string };
+export type TGetErrorsDto = Omit<TLogsErrorModel, '_id'> & { id: number; _id: string };

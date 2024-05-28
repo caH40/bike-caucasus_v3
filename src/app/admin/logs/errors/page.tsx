@@ -1,3 +1,4 @@
+import TableLogsErrors from '@/components/Table/TableLogsErrors/TableLogsErrors';
 import { Logger } from '@/services/logger';
 import type { TGetErrorsDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
@@ -13,8 +14,9 @@ async function getLogsError(): Promise<ResponseServer<TGetErrorsDto[] | null>> {
 export default async function LogsErrorsPage() {
   const logsData = await getLogsError();
   return (
-    <div>
-      <pre>{JSON.stringify(logsData, null, 2)}</pre>
-    </div>
+    <>
+      <h1>Логирование ошибок</h1>
+      <TableLogsErrors logs={logsData.data || []} />
+    </>
   );
 }

@@ -1,14 +1,12 @@
 'use server';
 
+import type { TLogsErrorParsed } from '@/types/index.interface';
 import { Logger } from '../logger';
-import type { TLogsErrorModel } from '@/types/models.interface';
 
 /**
  * Серверный экшен обработки ошибок на клиентской стороне.
  */
-export async function errorHandlerClient(
-  errorParsed: Omit<TLogsErrorModel, 'timestamp'>
-): Promise<void> {
+export async function errorHandlerClient(errorParsed: TLogsErrorParsed): Promise<void> {
   try {
     const isDevelopment = process.env.NODE_ENV === 'development';
     if (!isDevelopment) {

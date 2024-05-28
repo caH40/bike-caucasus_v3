@@ -1,5 +1,5 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TNews, TNewsBlock } from './models.interface';
+import { TLogsErrorModel, TNews, TNewsBlock } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
@@ -166,3 +166,8 @@ export type TIconProps = {
   isActive?: boolean; // нажатое состояние
   getClick?: () => void;
 };
+
+/**
+ * Инстанс Error после парсинга полей<div className=""></div>
+ */
+export type TLogsErrorParsed = Omit<TLogsErrorModel, 'createdAt' | 'updatedAt' | '_id'>;
