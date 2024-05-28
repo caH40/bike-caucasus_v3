@@ -1,39 +1,44 @@
 'use client';
 
 // import { useRouter } from 'next/navigation';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useMemo } from 'react';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
 
 import styles from '../TableCommon.module.css';
 // import { toast } from 'sonner';
-import { IUserModel } from '@/types/models.interface';
+import { TUserDto } from '@/types/dto.types';
 
 type Props = {
-  users: IUserModel[] | null;
+  users: TUserDto[] | null;
 };
 
-const columns = [
-  // {
-  //   header: '#',
-  //   accessorKey: 'id',
-  //   cell: (props: any) => <span>{props.getValue()}</span>,
-  // },
-  {
-    header: 'email',
-    accessorKey: 'email',
-    cell: (props: any) => <span>{props.getValue()}</span>,
-  },
+const columns: ColumnDef<TUserDto>[] = [
   {
     header: 'Дата создания',
     accessorKey: 'createdAt',
-    cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
+    cell: (props) => <span>{getTimerLocal(props.getValue<Date>(), 'DDMMYYHm')}</span>,
   },
   {
-    header: '_id',
-    accessorKey: '_id',
-    cell: (props: any) => <span>{String(props.getValue())}</span>,
+    header: 'bcId',
+    accessorKey: 'id',
+    cell: (props) => <span>{props.getValue<string>()}</span>,
+  },
+  {
+    header: 'Спортсмен',
+    accessorFn: (row) => `${row.person.firstName} ${row.person.lastName}`,
+  },
+
+  {
+    header: 'email',
+    accessorKey: 'email',
+    cell: (props) => <span>{props.getValue<string>()}</span>,
+  },
+  {
+    header: 'Роль',
+    accessorKey: 'role.name',
+    cell: (props) => <span>{String(props.getValue<string>())}</span>,
   },
 ];
 

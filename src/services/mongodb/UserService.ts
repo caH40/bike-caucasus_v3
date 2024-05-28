@@ -6,12 +6,12 @@ import { getGender } from '@/libs/utils/handler-data';
 import { Cloud } from '../cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './error';
-import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
-import type { IUserModel, TRoleModel } from '@/types/models.interface';
 import { getAgeCategory } from '@/libs/utils/age-category';
 import { errorLogger } from '@/errors/error';
 import { TUserDto, TUserDtoPublic } from '@/types/dto.types';
 import { dtoGetUser, dtoGetUserPublic } from '@/dto/user';
+import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
+import type { IUserModel, TRoleModel } from '@/types/models.interface';
 
 type ParamsGetProfile = {
   idDB?: string;
@@ -56,7 +56,6 @@ export class UserService {
       const query = id ? { id } : { _id: idDB };
       const userDB: (Omit<IUserModel, 'role'> & { role: TRoleModel }) | null =
         await User.findOne(query, {
-          _id: false,
           'provider.id': false,
           'credentials.password': false,
           'credentials._id': false,
@@ -93,16 +92,28 @@ export class UserService {
   /**
    * Получает все профили зарегистрированных пользователей.
    */
-  async getProfiles(): Promise<ResponseServer<IUserModel[] | null>> {
+  async getProfiles(): Promise<ResponseServer<TUserDto[] | null>> {
     try {
       // Подключение к базе данных
       await this.dbConnection();
 
       // Получение всех пользователей из базы данных и преобразование результата в простой объект JavaScript
-      const usersDB: IUserModel[] = await User.find().lean();
+      const usersDB: (Omit<IUserModel, 'role'> & { role: TRoleModel })[] = await User.find(
+        {},
+        {
+          'provider.id': false,
+          'credentials.password': false,
+          'credentials._id': false,
+          'social._id': false,
+        }
+      )
+        .populate('role')
+        .lean();
+
+      const users = usersDB.map((user) => dtoGetUser(user));
 
       // Возвращение данных всех пользователей с успешным статусом
-      return { data: usersDB, ok: true, message: 'Данные всех пользователей.' };
+      return { data: users, ok: true, message: 'Данные всех пользователей.' };
     } catch (error) {
       this.errorLogger(error);
       return handlerErrorDB(error);
