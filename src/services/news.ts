@@ -387,6 +387,11 @@ export class News {
         throw new Error('Нельзя удалить новость, которая была создана больше 7ми дней назад!');
       }
 
+      const newsDeleted = await NewsModel.findOneAndDelete(query);
+      if (!newsDeleted) {
+        throw new Error('Не найдена новость на удаление!');
+      }
+
       // Ревалидация данных после удаления новости.
       revalidatePath('/');
 
