@@ -9,11 +9,11 @@ import { Cloud } from './cloud';
 import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
-import { serviceGetInteractiveToDto, serviceGetOneToDto } from '@/dto/news';
+import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
 import { errorLogger } from '@/errors/error';
 import type { TNews } from '@/types/models.interface';
 import type { ResponseServer } from '@/types/index.interface';
-import type { TAuthor, TNewsHetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
+import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -112,23 +112,29 @@ export class News {
     quantity,
     idUserDB,
   }: {
-    quantity: number;
+    quantity?: number;
     idUserDB?: string;
-  }): Promise<
-    ResponseServer<
-      | null
-      | (TNews & {
-          isLikedByUser: boolean;
-        })[]
-    >
-  > {
+  }): Promise<ResponseServer<null | TNewsGetOneDto[]>> {
     try {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB: (TNews & { isLikedByUser: boolean })[] = await NewsModel.find()
+      const newsDB: (Omit<TNews, 'author'> & { author: TAuthor } & {
+        isLikedByUser: boolean;
+      })[] = await NewsModel.find()
         .sort({ createdAt: -1 })
-        .limit(quantity)
+        .limit(quantity ? quantity : 0)
+        .populate({
+          path: 'author',
+          select: [
+            'id',
+            'person.firstName',
+            'person.lastName',
+            'provider.image',
+            'imageFromProvider',
+            'image',
+          ],
+        })
         .lean();
 
       for (const newsOne of newsDB) {
@@ -142,7 +148,7 @@ export class News {
       }
 
       return {
-        data: newsDB,
+        data: newsDB.map((newsOne) => dtoNewsGetOne(newsOne)),
         ok: true,
         message: `Последние новости в количестве ${quantity} шт. `,
       };
@@ -163,7 +169,7 @@ export class News {
   }: {
     urlSlug: string;
     idUserDB: string | undefined;
-  }): Promise<ResponseServer<null | TNewsHetOneDto>> {
+  }): Promise<ResponseServer<null | TNewsGetOneDto>> {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -202,7 +208,7 @@ export class News {
       }
 
       return {
-        data: serviceGetOneToDto(newsDB),
+        data: dtoNewsGetOne(newsDB),
         ok: true,
         message: `Запрашиваемая новости с адресом  ${urlSlug}`,
       };

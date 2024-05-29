@@ -1,6 +1,6 @@
 .wrapper {
   display: grid;
-  gap: 1rem 45px;
+  gap: 1rem 20px;
   grid-template-columns: 300px 1fr;
 }
 .aside__left {
