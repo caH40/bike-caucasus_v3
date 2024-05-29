@@ -1,13 +1,19 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import { useMemo } from 'react';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { TGetErrorsDto } from '@/types/dto.types';
 import styles from './TableLogsErrors.module.css';
 import { toast } from 'sonner';
+import Pagination from '@/components/UI/Pagination/Pagination';
 
 type Props = {
   logs: TGetErrorsDto[];
@@ -42,7 +48,18 @@ const columns = [
 export default function TableLogsErrors({ logs }: Props) {
   const data = useMemo(() => logs, [logs]);
 
-  const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() });
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), //load client-side pagination code
+    initialState: {
+      pagination: {
+        pageIndex: 0, //custom initial page index
+        pageSize: 10, //custom default page size
+      },
+    },
+  });
 
   const router = useRouter();
   const getLink = (id: string) => {
@@ -84,6 +101,27 @@ export default function TableLogsErrors({ logs }: Props) {
           ))}
         </tbody>
       </table>
+
+      {/* <select
+        value={table.getState().pagination.pageSize}
+        onChange={(e) => {
+          table.setPageSize(Number(e.target.value));
+        }}
+      >
+        {[10, 20, 30, 40, 50].map((pageSize) => (
+          <option key={pageSize} value={pageSize}>
+            {pageSize}
+          </option>
+        ))}
+      </select> */}
+
+      <Pagination
+        isFirstPage={!table.getCanPreviousPage()}
+        isLastPage={!table.getCanNextPage()}
+        quantityPages={table.getPageCount()}
+        page={table.getState().pagination.pageIndex}
+        setPage={table.setPageIndex}
+      />
     </div>
   );
 }
