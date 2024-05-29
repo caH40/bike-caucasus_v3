@@ -82,6 +82,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           setImageFromProvider={setImageFromProvider}
           formData={formData}
           loading={loading}
+          maxSizeFileInMBytes={7} // Максимальный разрешенный размер загружаемого файла.
         />
 
         <BoxInput

@@ -160,20 +160,22 @@ export class UserService {
         }
 
         // Название файла без расширения
-        const fileName = `user_${profile.id}_logo`;
+        const fileNamePrefix = `user_${profile.id}_logo`;
 
         // создание объекта для управления файлами в облаке
         const cloud = new Cloud(cloudName);
-
-        // удаление предыдущих файлов лого пользователя
-        await cloud.deleteFiles(bucketName, fileName);
 
         const extension = file.name.split('.').pop();
         if (!extension) {
           throw new Error('Нет расширения у загружаемого изображения');
         }
+
+        // Удаление предыдущих файлов лого пользователя.
+        // !!! Если будет ошибка при сохранении файла, то предыдущий удалится, а новый не сохраниться.
+        await cloud.deleteFiles(bucketName, fileNamePrefix);
+
         const suffix = Date.now();
-        fileNameFull = `${fileName}-${suffix}.${extension}`;
+        fileNameFull = `${fileNamePrefix}-${suffix}.${extension}`;
         await cloud.saveFile(file, bucketName, fileNameFull);
       }
 

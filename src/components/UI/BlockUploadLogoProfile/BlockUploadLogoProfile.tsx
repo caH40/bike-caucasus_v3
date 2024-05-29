@@ -7,6 +7,7 @@ import InputFile from '../InputFile/InputFile';
 import { blurDataURL } from '@/libs/image';
 import type { TUserDto } from '@/types/dto.types';
 import styles from './BlockUploadLogoProfile.module.css';
+import { convertBytesTo } from '@/libs/utils/handler-data';
 
 /**
  * Компонент для загрузки логотипа профиля.
@@ -21,6 +22,7 @@ type Props = {
   setImageFromProvider: Dispatch<SetStateAction<boolean>>;
   formData: TUserDto;
   loading?: boolean;
+  maxSizeFileInMBytes: number; // Максимальный разрешенный размер загружаемого файла.
 };
 
 export default function BlockUploadLogoProfile({
@@ -29,6 +31,8 @@ export default function BlockUploadLogoProfile({
   setImageFromProvider,
   formData,
   loading,
+
+  maxSizeFileInMBytes,
 }: Props) {
   const [urlFile, setUrlFile] = useState<string | undefined>(formData.image);
 
@@ -43,7 +47,15 @@ export default function BlockUploadLogoProfile({
       return;
     }
 
+    // проверка на максимальный разрешенный размер загружаемого файла
+    const sizeFileInMBytes = convertBytesTo(fileFromForm.size, 'mB');
+    if (sizeFileInMBytes > maxSizeFileInMBytes) {
+      event.target.value = '';
+      return toast.error(`Размер файла не должен превышать ${maxSizeFileInMBytes} МБайт`);
+    }
+
     if (!fileFromForm.type.startsWith('image/')) {
+      event.target.value = '';
       return toast.error('Выбранный файл не является изображением');
     }
 

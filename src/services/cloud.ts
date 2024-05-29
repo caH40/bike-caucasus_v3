@@ -90,15 +90,18 @@ export class Cloud {
   /**
    * Удаляет указанный файл из заданного ведра (bucket) в облаке.
    * @param bucketName - Имя ведра (bucket) в облаке.
-   * @param fileName - Имя файла, который нужно удалить.
+   * @param fileNamePrefix - Имя файла, который нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файла.
    */
-  public async deleteFile(bucketName: string, fileName: string): Promise<ResponseServer<null>> {
+  public async deleteFile(
+    bucketName: string,
+    fileNamePrefix: string
+  ): Promise<ResponseServer<null>> {
     try {
       // Создание параметров для команды удаления файла.
       const params: DeleteObjectCommandInput = {
         Bucket: bucketName,
-        Key: fileName,
+        Key: fileNamePrefix,
       };
 
       // Создание команды удаления файла.
