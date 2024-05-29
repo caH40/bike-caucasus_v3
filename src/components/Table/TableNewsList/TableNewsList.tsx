@@ -11,19 +11,23 @@ import {
 } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { toast } from 'sonner';
+import cn from 'classnames/bind';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import Pagination from '@/components/UI/Pagination/Pagination';
-import styles from '../TableCommon.module.css';
-
 import IconDelete from '@/components/Icons/IconDelete';
 import IconEdit from '@/components/Icons/IconEdit';
 import BlockInteractive from '@/components/BlockInteractive/BlockInteractive';
 
+import styles from '../TableCommon.module.css';
+import { deleteNews } from '@/services/server_actions/news';
+
+const cx = cn.bind(styles);
+
 type Props = {
   news: TNewsGetOneDto[];
-  userDbId: string | undefined; // _id Пользователя в БД.
+  idUserDB: string | undefined; // _id Пользователя в БД.
 };
 
 const columns: ColumnDef<TNewsGetOneDto>[] = [
@@ -56,13 +60,13 @@ const columns: ColumnDef<TNewsGetOneDto>[] = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TableNewsList({ news, userDbId }: Props) {
+export default function TableNewsList({ news, idUserDB }: Props) {
   const data = useMemo(() => {
     return [...news]
-      .filter((newsOne) => newsOne.author._id === userDbId)
+      .filter((newsOne) => newsOne.author._id === idUserDB)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .map((newsOne, index) => ({ ...newsOne, index }));
-  }, [news, userDbId]);
+  }, [news, idUserDB]);
 
   const table = useReactTable({
     data,
@@ -85,7 +89,7 @@ export default function TableNewsList({ news, userDbId }: Props) {
         </caption>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr className={styles.trh} key={headerGroup.id}>
+            <tr className={cx('trh')} key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <th className={styles.th} key={header.id}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
@@ -112,19 +116,6 @@ export default function TableNewsList({ news, userDbId }: Props) {
         </tbody>
       </table>
 
-      {/* <select
-        value={table.getState().pagination.pageSize}
-        onChange={(e) => {
-          table.setPageSize(Number(e.target.value));
-        }}
-      >
-        {[10, 20, 30, 40, 50].map((pageSize) => (
-          <option key={pageSize} value={pageSize}>
-            {pageSize}
-          </option>
-        ))}
-      </select> */}
-
       <Pagination
         isFirstPage={!table.getCanPreviousPage()}
         isLastPage={!table.getCanNextPage()}
@@ -142,6 +133,9 @@ function InteractiveBlock({
   props: CellContext<TNewsGetOneDto, unknown>;
 }): JSX.Element {
   const router = useRouter();
+
+  const urlSlug = props.row.original.urlSlug;
+
   const getNavigate = (id: string) => {
     if (id === 'undefined') {
       return toast.error('Не получен urlSlug новости!');
@@ -149,10 +143,29 @@ function InteractiveBlock({
 
     router.push(`/moderation/news/edit/${id}`);
   };
-  const deleteNews = () => props.row.original.urlSlug;
+
+  /**
+   * Обработка клика на удаление новости.
+   */
+  const getDeleteNews = async () => {
+    const confirmed = window.confirm(
+      `Вы действительно хотите удалить новость c urlSlug:${urlSlug}?`
+    );
+    if (!confirmed) {
+      return toast.warning('Отменён запрос на удаление новости!');
+    }
+    const res = await deleteNews(urlSlug);
+    if (res.ok) {
+      toast.success(res.message);
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  // Иконки управления новостью.
   const icons = [
     { id: 0, icon: IconEdit, getClick: () => getNavigate(props.row.original.urlSlug) },
-    { id: 1, icon: IconDelete, getClick: () => deleteNews() },
+    { id: 1, icon: IconDelete, getClick: () => getDeleteNews() },
   ];
 
   return <BlockInteractive icons={icons} />;

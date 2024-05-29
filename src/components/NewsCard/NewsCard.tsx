@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 import InteractiveBlockNews from '../UI/InteractiveBlockNews/InteractiveBlockNews';
 import { getTimerLocal } from '@/libs/utils/date-local';
-import type { TNews } from '@/types/models.interface';
+import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsCard.module.css';
 
 type Props = {
-  newsOne: TNews & { isLikedByUser: boolean };
+  newsOne: TNewsGetOneDto;
 };
 
 export default function NewsCard({ newsOne }: Props) {

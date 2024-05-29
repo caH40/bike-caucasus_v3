@@ -1,10 +1,10 @@
 import NewsCard from '../NewsCard/NewsCard';
 import TitleAndLine from '../UI/TitleAndLine/TitleAndLine';
-import type { TNews } from '@/types/models.interface';
+import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './BlockNews.module.css';
 
 type Props = {
-  news: (TNews & { isLikedByUser: boolean })[] | null | undefined;
+  news: TNewsGetOneDto[] | null | undefined;
 };
 
 export default function BlockNews({ news }: Props) {

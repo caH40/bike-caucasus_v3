@@ -14,7 +14,7 @@ export default function BlockInteractive({ icons }: Props) {
   return (
     <div className={styles.wrapper}>
       {icons.map((icon) => (
-        <icon.icon getClick={icon.getClick} key={icon.id} />
+        <icon.icon getClick={icon.getClick} key={icon.id} squareSize={20} />
       ))}
     </div>
   );

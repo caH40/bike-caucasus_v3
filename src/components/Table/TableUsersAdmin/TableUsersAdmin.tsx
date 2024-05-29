@@ -3,12 +3,14 @@
 // import { useRouter } from 'next/navigation';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useMemo } from 'react';
+import cn from 'classnames/bind';
+// import { toast } from 'sonner';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-
-import styles from '../TableCommon.module.css';
-// import { toast } from 'sonner';
 import { TUserDto } from '@/types/dto.types';
+import styles from '../TableCommon.module.css';
+
+const cx = cn.bind(styles);
 
 type Props = {
   users: TUserDto[] | null;
@@ -70,7 +72,7 @@ export default function TableUsersAdmin({ users }: Props) {
         <caption className={styles.caption}>Таблица логов ошибок</caption>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr className={styles.trh} key={headerGroup.id}>
+            <tr className={cx('trh')} key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <th className={styles.th} key={header.id}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
@@ -82,7 +84,7 @@ export default function TableUsersAdmin({ users }: Props) {
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr
-              className={styles.tr}
+              className={cx('tr', 'tr__link')}
               key={row.id}
               // onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
             >

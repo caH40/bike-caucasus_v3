@@ -20,7 +20,7 @@ export default async function NewsListPage({}: Props) {
   return (
     <div>
       <TitleAndLine hSize={1} title="Список новостей, созданных пользователем" />
-      {news && <TableNewsList news={news} userDbId={session?.user.idDB} />}
+      {news && <TableNewsList news={news} idUserDB={session?.user.idDB} />}
     </div>
   );
 }

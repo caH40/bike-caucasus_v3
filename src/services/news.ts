@@ -14,6 +14,8 @@ import { errorLogger } from '@/errors/error';
 import type { TNews } from '@/types/models.interface';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
+import { revalidatePath } from 'next/cache';
+import { ObjectId } from 'mongoose';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -352,8 +354,54 @@ export class News {
     }
   }
 
+  /**
+   * Удаление новости админом или модератором, который создал новость.
+   */
+  public async delete({ urlSlug, idUserDB }: { urlSlug: string; idUserDB: string }) {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      // Проверка, является ли модератор, удаляющий новость, администратором.
+      const user: { role: { name: string } } | null = await User.findOne(
+        { _id: idUserDB },
+        { role: true }
+      )
+        .populate({ path: 'role', select: ['name', '-_id'] })
+        .lean();
+
+      // Админ может удалить любую новость. Модератор только свою.
+      const isAdmin = user?.role.name === 'admin';
+      const query = isAdmin ? { urlSlug } : { urlSlug, author: idUserDB };
+
+      const newsDB: { _id: ObjectId; createdAt: Date } | null = await NewsModel.findOne(query, {
+        createdAt: true,
+      });
+
+      if (!newsDB) {
+        throw new Error('Не найдена новость или у вас нет прав на удаление данной новости!');
+      }
+
+      const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+      if (Date.now() - new Date(newsDB?.createdAt).getTime() > weekInMilliseconds) {
+        throw new Error('Нельзя удалить новость, которая была создана больше 7ми дней назад!');
+      }
+
+      // Ревалидация данных после удаления новости.
+      revalidatePath('/');
+
+      return {
+        data: null,
+        ok: true,
+        message: `Удалена новость с urlSlug:${urlSlug}!`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
+  }
+
   async put() {}
-  async delete() {}
 
   /**
    * Сохраняет изображение в облаке и возвращает URL сохраненного файла.

@@ -50,7 +50,7 @@ export async function setLike({ idNews }: ParamsSetLike): Promise<ResponseServer
 
     // Проверка авторизации пользователя.
     if (!idUserDB) {
-      throw new Error('Необходима авторизация!');
+      throw new Error('Необходима авторизация и наличие idUserDB!');
     }
 
     const news = new News();
@@ -85,6 +85,30 @@ export async function getInteractive({
 
     const newsService = new News();
     const response = await newsService.getInteractive({ idUserDB, idNews });
+
+    return response;
+  } catch (error) {
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен, удаления новости.
+ */
+export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+    const idUserDB = session?.user.idDB;
+
+    // Проверка авторизации пользователя.
+    if (!idUserDB) {
+      throw new Error('Необходима авторизация и наличие idUserDB!');
+    }
+
+    const newsService = new News();
+
+    const response = await newsService.delete({ urlSlug, idUserDB });
 
     return response;
   } catch (error) {
