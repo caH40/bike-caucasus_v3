@@ -7,7 +7,7 @@ import { News } from '@/services/news';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogoProfile } from '@/libs/utils/profile';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import type { TNewsHetOneDto } from '@/types/dto.types';
+import type { TNewsGetOneDto } from '@/types/dto.types';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import styles from './NewsPage.module.css';
 import { generateMetadataNews } from '@/constants/meta';
@@ -34,7 +34,7 @@ export async function getNewsOne({
 }: {
   urlSlug: string;
   idUserDB?: string;
-}): Promise<TNewsHetOneDto | null | undefined> {
+}): Promise<TNewsGetOneDto | null | undefined> {
   try {
     const news = new News();
     const response = await news.getOne({ urlSlug, idUserDB });

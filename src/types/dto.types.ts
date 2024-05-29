@@ -3,7 +3,7 @@ import { IUserModel, TLogsErrorModel, TNewsBlock, TRoleModel } from './models.in
 /**
  * Одна новость с сервера.
  */
-export type TNewsHetOneDto = {
+export type TNewsGetOneDto = {
   _id: string;
   title: string;
   urlSlug: string;
@@ -21,8 +21,9 @@ export type TNewsHetOneDto = {
   isLikedByUser: boolean;
 };
 
-// Автор поста.
+// Автор поста для публичного доступа.
 export type TAuthor = {
+  _id: string;
   id: number;
   provider: {
     image?: string;

@@ -3,35 +3,11 @@ import { getServerSession } from 'next-auth';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import NewsShort from '@/components/NewsShort/NewsShort';
 import BlockNews from '@/components/BlockNews/BlockNews';
-import { News } from '@/services/news';
 import { authOptions } from './api/auth/[...nextauth]/auth-options';
-import type { TNews } from '@/types/models.interface';
 import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
-import { errorLogger } from '@/errors/error';
-
-async function getNews({ quantity, idUserDB }: { quantity: number; idUserDB?: string }) {
-  try {
-    const news = new News();
-    const response: {
-      data: (TNews & { isLikedByUser: boolean })[] | null;
-      ok: boolean;
-      message: string;
-    } = await news.getMany({
-      quantity,
-      idUserDB,
-    });
-
-    if (!response.ok) {
-      throw new Error(response.message);
-    }
-
-    return response.data;
-  } catch (error) {
-    errorLogger(error);
-  }
-}
+import { getNews } from '@/services/server_actions/news';
 
 /**
  * Главная (домашняя) страница сайта.

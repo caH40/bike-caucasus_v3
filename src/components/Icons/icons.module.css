@@ -4,7 +4,11 @@
 .interactive {
   cursor: pointer;
 }
-.interactive:hover svg {
+
+.interactive:hover svg,
+.interactive:hover svg line,
+.interactive:hover svg circle,
+.interactive:hover svg path {
   stroke: var(--color-orange);
 }
 .active svg {

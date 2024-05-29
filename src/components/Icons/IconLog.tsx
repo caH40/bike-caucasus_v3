@@ -1,6 +1,6 @@
 'use client';
 
-import cn from 'classnames';
+import cn from 'classnames/bind';
 
 import type { TIconProps } from '@/types/index.interface';
 import styles from './icon.module.css';

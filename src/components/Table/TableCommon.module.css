@@ -30,12 +30,14 @@
 }
 .tr {
   background-color: #ffffff30;
+}
+.tr__link {
   cursor: pointer;
 }
 .tr:nth-of-type(2n) {
   background-color: #ffffff20;
 }
-.tr:hover {
+.tr__link:hover {
   background-color: var(--white-50);
   transition: all 0.2s;
 }

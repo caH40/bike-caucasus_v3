@@ -21,7 +21,7 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
   },
   {
     id: 2,
-    name: 'Список всех новостей',
+    name: 'Список новостей',
     classes: [],
     href: '/moderation/news/list',
     permission: 'moderation.news.list',
