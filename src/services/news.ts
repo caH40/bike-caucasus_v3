@@ -54,7 +54,7 @@ export class News {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
 
-      // Сохранение изображения для профиля, если оно загружено.
+      // Сохранение изображения для Постера новости.
       news.poster = await this.saveImage({
         fileImage: news.poster as File,
         cloudName,
@@ -99,6 +99,79 @@ export class News {
       }
 
       return { data: null, ok: true, message: 'Новость сохранена в БД!' };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление отредактированной новости.
+   */
+  public async put(
+    formData: FormData,
+    { cloudName, bucketName, domainCloudName }: TCloudConnect
+  ): Promise<ResponseServer<null>> {
+    try {
+      // Десериализация данных, полученных с клиента.
+      const news = deserializeNewsCreate(formData);
+
+      // Обновление изображения для Постера новости, если оно загружено.
+      if (news.poster) {
+        news.poster = await this.saveImage({
+          fileImage: news.poster as File,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+      }
+      console.log(news);
+
+      // Инстанс сервиса работы с Облаком
+      const cloudService = new Cloud(cloudName);
+
+      // Удаление старого файла постера, если он был обновлён.
+      const suffix = `https://${bucketName}.${domainCloudName}/`;
+      if (news.poster && news.posterOldUrl) {
+        await cloudService.deleteFile(bucketName, news.posterOldUrl.replace(suffix, ''));
+      }
+
+      // Сохранение изображений из текстовых блоков.
+      let index = -1;
+      for (const block of news.blocks) {
+        index++;
+        // Если нет файла image, то присваиваем старый url этого изображения.
+        if (!block.image) {
+          news.blocks[index].image = block.imageOldUrl;
+          continue;
+        }
+
+        const urlSaved = await this.saveImage({
+          fileImage: block.image as File,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+
+        // Удаление старого файла изображения блока, если оно был обновлён.
+        if (block.imageOldUrl) {
+          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+        }
+
+        news.blocks[index].image = urlSaved;
+      }
+
+      // Замена строки на массив хэштегов.
+      news.hashtags = getHashtags(news.hashtags as string);
+
+      // Подключение к БД.
+      await this.dbConnection();
+      // console.log(news);
+
+      // slug не обновляется, остается старый для исключения проблем с индексацией.
+      await NewsModel.findOneAndUpdate({ urlSlug: news.urlSlug }, news);
+
+      return { data: null, ok: true, message: 'Данные новости обновлены!' };
     } catch (error) {
       this.errorLogger(error); // логирование
       return handlerErrorDB(error);
@@ -405,8 +478,6 @@ export class News {
       return handlerErrorDB(error);
     }
   }
-
-  async put() {}
 
   /**
    * Сохраняет изображение в облаке и возвращает URL сохраненного файла.

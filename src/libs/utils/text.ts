@@ -37,8 +37,8 @@ export const content = {
    * Замена символов <br> на символ CRLF перевода строк \n.
    */
   replaceBRtoCRLF: (text: string): string => {
-    const regex = /\r\n|\r|\n/g;
-    return text.replace(regex, '<br>');
+    const regex = /<br>/g;
+    return text.replace(regex, `\n`);
   },
 
   /**
@@ -46,6 +46,14 @@ export const content = {
    */
   stripHtmlTags: (input: string): string => {
     return input.replace(/<(?!\/?(a|br)(\s|\/?)[^>]*>)[^>]+>/gi, '');
+  },
+
+  /**
+   * Очистка текста от всех html тэгов кроме <a>, <br>.
+   */
+  stripAllHtmlTags: (input: string): string => {
+    const regex = /<\/?[^>]+(>|$)/g;
+    return input.replace(regex, '');
   },
 
   /**

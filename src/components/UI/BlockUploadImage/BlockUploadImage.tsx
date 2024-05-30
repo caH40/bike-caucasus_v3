@@ -11,7 +11,9 @@ type Props = {
   isLoading?: boolean;
   poster: File | null;
   setPoster: Dispatch<SetStateAction<File | null>>;
-  resetData: boolean; // триггер сброса изображения
+  resetData: boolean; // Триггер сброса изображения.
+  posterUrl: string | null; // Существует только при редактировании новости.
+  setPosterUrl: Dispatch<SetStateAction<string | null>>;
 };
 const noImage = '/images/icons/noimage.svg';
 
@@ -25,9 +27,12 @@ export default function BlockUploadImage({
   setPoster,
   isLoading,
   resetData,
+  posterUrl,
+  setPosterUrl,
 }: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
+  // Сброс отображаемого изображения после отправки формы.
   useEffect(() => {
     setImageTitle(noImage);
   }, [resetData]);
@@ -57,6 +62,7 @@ export default function BlockUploadImage({
         setImageTitle(dataUrl);
 
         // установка изображения File в poster для дальнейшей работы с ним
+        setPosterUrl(null);
         setPoster(file);
       }
     };
@@ -89,7 +95,8 @@ export default function BlockUploadImage({
       <div className={styles.relative}>
         {/* в данном случае компонент Image не нужен */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imageTitle} alt="title image" className={styles.img} />
+        <img src={posterUrl || imageTitle} alt="title image" className={styles.img} />
+
         {poster && (
           <>
             <ButtonClose getClick={deleteImage} />

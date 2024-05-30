@@ -1,6 +1,7 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TLogsErrorModel, TNews, TNewsBlock } from './models.interface';
+import { TLogsErrorModel } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
+import { TNewsBlockDto, TNewsGetOneDto } from './dto.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -150,10 +151,17 @@ export type TMenuOnPage = {
 };
 
 /**
- * типы с добавлением image типа File для отправки на сервер
+ * Данные новостных блоков для отправки на сервер для сохранения.
  */
-export type TNewsBlocksEdit = Omit<TNewsBlock, '_id'> & { imageFile: File | null };
-export type TNewsEdit = Omit<TNews, 'blocks'> & {
+export type TNewsBlocksEdit = TNewsBlockDto & {
+  imageFile: File | null;
+  imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
+};
+
+/**
+ * Данные новости для отправки на сервер для сохранения.
+ */
+export type TNewsEdit = Omit<TNewsGetOneDto, 'blocks'> & {
   posterFile: File | null;
   blocks: TNewsBlocksEdit[];
 };

@@ -17,6 +17,7 @@ type PropsInit = {
   setSubTitle: Dispatch<SetStateAction<string>>;
   setHashtags: Dispatch<SetStateAction<string>>;
   initialBlocks: TNewsBlocksEdit[];
+  isEditing: boolean; // Происходит редактирование или создание новости.
 };
 
 // Суффикс для локального хранилища.
@@ -81,21 +82,26 @@ export function useLSNewsInit({
   setTitle,
   setSubTitle,
   setHashtags,
+  isEditing,
   initialBlocks,
 }: PropsInit): void {
   useEffect(() => {
     // Получение данных с Локального хранилища браузера.
-    const blocksLS = localStorage.getItem(`${suffix}blocks`);
-    const blockParsed = blocksLS && JSON.parse(blocksLS);
-    // проверка, что blockParsed существует и является массивом в нулевом элементе которого
-    // есть свойство position, иначе возвращается initialBlocks
-    const initBlocks = blockParsed && blockParsed[0].position ? blockParsed : initialBlocks;
+    if (isEditing) {
+      setBlocks(initialBlocks);
+    } else {
+      const blocksLS = localStorage.getItem(`${suffix}blocks`);
+      const blockParsed = blocksLS && JSON.parse(blocksLS);
+      // проверка, что blockParsed существует и является массивом в нулевом элементе которого
+      // есть свойство position, иначе возвращается initialBlocks
+      const initBlocks = blockParsed && blockParsed[0].position ? blockParsed : initialBlocks;
+      setBlocks(initBlocks);
+    }
 
     const initTitle = localStorage.getItem(`${suffix}title`) || '';
     const initSubTitle = localStorage.getItem(`${suffix}subTitle`) || '';
     const initHashtags = localStorage.getItem(`${suffix}hashtags`) || '';
 
-    setBlocks(initBlocks);
     setTitle(initTitle);
     setSubTitle(initSubTitle);
     setHashtags(initHashtags);

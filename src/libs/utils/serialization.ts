@@ -6,6 +6,8 @@ type Params = {
   subTitle: string; // Подзаголовок новости.
   hashtags: string; // Хэштег новости.
   poster: File | null; // Изображение заголовка новости.
+  urlSlug?: string; // urlSlug редактируемой новости, если его нет, значит новость создаётся.
+  posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
 };
 
 /**
@@ -18,6 +20,8 @@ export function serializationNewsCreate({
   subTitle,
   hashtags,
   poster,
+  urlSlug,
+  posterOldUrl,
 }: Params): FormData {
   const formData = new FormData();
   formData.set('title', title);
@@ -26,18 +30,28 @@ export function serializationNewsCreate({
   if (poster) {
     formData.set('poster', poster);
   }
+  if (posterOldUrl) {
+    formData.set('posterOldUrl', posterOldUrl);
+  }
+  if (urlSlug) {
+    formData.set('urlSlug', urlSlug);
+  }
 
-  // Если заголовочное изображение присутствует, добавляем его в formData.
-  blocks.forEach((block) => {
-    if (block.imageFile) {
-      block.imageFile;
-    }
-  });
+  // // Если заголовочное изображение присутствует, добавляем его в formData.
+  // blocks.forEach((block) => {
+  //   if (block.imageFile) {
+  //     block.imageFile;
+  //   }
+  // });
 
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].imageFile) {
       formData.set(`blocks[${i}][image]`, blocks[i].imageFile as File);
+    }
+    const imageOldUrl = blocks[i].imageOldUrl;
+    if (imageOldUrl) {
+      formData.set(`blocks[${i}][imageOldUrl]`, imageOldUrl);
     }
     formData.set(`blocks[${i}][position]`, String(blocks[i].position));
     formData.set(`blocks[${i}][text]`, blocks[i].text);

@@ -1,9 +1,10 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import FormNewsCreate from '@/components/UI/Forms/FormNewsCreate/FormNewsCreate';
-
-import { News } from '@/services/news';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { News } from '@/services/news';
+import Wrapper from '@/components/Wrapper/Wrapper';
+import FormNewsEdit from '@/components/UI/Forms/FormNewsEdit/FormNewsEdit';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -18,6 +19,9 @@ export default async function NewsCreatePage() {
     throw new Error('Нет авторизации, нет idDB!');
   }
 
+  /**
+   * Отправка заполненной формы создания новости на сервер.
+   */
   const fetchNewsCreated = async (formData: FormData) => {
     'use server';
 
@@ -38,8 +42,8 @@ export default async function NewsCreatePage() {
   };
 
   return (
-    <div>
-      <FormNewsCreate fetchNewsCreated={fetchNewsCreated} />
-    </div>
+    <Wrapper title={'Создание новости'}>
+      <FormNewsEdit fetchNewsCreated={fetchNewsCreated} />
+    </Wrapper>
   );
 }

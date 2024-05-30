@@ -6,10 +6,12 @@ type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
     image?: File | string;
     imageTitle?: string;
     position: number;
+    imageOldUrl?: string;
   }[];
   poster?: File | string;
   hashtags: string | string[];
-  // hashtagsArray?: string[];
+  urlSlug?: string;
+  posterOldUrl?: string;
 };
 
 export function deserializeNewsCreate(formData: FormData) {
