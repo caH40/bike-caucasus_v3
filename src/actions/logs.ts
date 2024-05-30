@@ -1,6 +1,6 @@
-import { Logger } from '../logger';
-import { handlerErrorDB } from '../mongodb/error';
 import { errorLogger } from '@/errors/error';
+import { Logger } from '@/services/logger';
+import { handlerErrorDB } from '@/services/mongodb/error';
 import type { TGetErrorsDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 

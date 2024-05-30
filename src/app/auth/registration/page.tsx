@@ -8,7 +8,7 @@ import AuthBlock from '@/UI/AuthBlock/AuthBlock';
 import { useModalStore } from '@/store/modal';
 import FormRegistration from '@/components/UI/Forms/FormRegistration/FormRegistration';
 import { type IRegistrationForm } from '@/types/index.interface';
-import { errorHandlerClient } from '@/services/server_actions/error-handler';
+import { errorHandlerClient } from '@/actions/error-handler';
 import Modal from '@/components/UI/Modal/Modal';
 import { parseError } from '@/errors/parse';
 

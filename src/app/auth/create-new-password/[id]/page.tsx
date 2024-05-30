@@ -8,7 +8,7 @@ import { SubmitHandler } from 'react-hook-form';
 import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
 import FormNewPassword from '@/components/UI/Forms/FormNewPassword/FormNewPassword';
 import { parseError } from '@/errors/parse';
-import { errorHandlerClient } from '@/services/server_actions/error-handler';
+import { errorHandlerClient } from '@/actions/error-handler';
 import { type IRegistrationForm } from '@/types/index.interface';
 
 type Params = {

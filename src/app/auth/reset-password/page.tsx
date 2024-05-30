@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 import Modal from '@/components/UI/Modal/Modal';
 import { parseError } from '@/errors/parse';
-import { errorHandlerClient } from '@/services/server_actions/error-handler';
+import { errorHandlerClient } from '@/actions/error-handler';
 import { useModalStore } from '@/store/modal';
 import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
 import FormResetPassword from '@/components/UI/Forms/FormResetPassword/FormResetPassword';

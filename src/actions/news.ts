@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 
 import { News } from '@/services/news';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { handlerErrorDB } from '../mongodb/error';
+import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';

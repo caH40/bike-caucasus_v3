@@ -7,7 +7,7 @@ import IconEye from '@/components/Icons/IconEye';
 import styles from './InteractiveBlockNews.module.css';
 
 import { toast } from 'sonner';
-import { getInteractive, setLike } from '@/services/server_actions/news';
+import { getInteractive, setLike } from '@/actions/news';
 import { useEffect, useState } from 'react';
 
 type Props = {

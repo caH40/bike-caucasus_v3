@@ -7,7 +7,7 @@ import { authOptions } from './api/auth/[...nextauth]/auth-options';
 import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
-import { getNews } from '@/services/server_actions/news';
+import { getNews } from '@/actions/news';
 
 /**
  * Главная (домашняя) страница сайта.

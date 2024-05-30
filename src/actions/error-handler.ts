@@ -1,7 +1,7 @@
 'use server';
 
+import { Logger } from '@/services/logger';
 import type { TLogsErrorParsed } from '@/types/index.interface';
-import { Logger } from '../logger';
 
 /**
  * Серверный экшен обработки ошибок на клиентской стороне.

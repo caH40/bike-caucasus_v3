@@ -21,7 +21,7 @@ import IconEdit from '@/components/Icons/IconEdit';
 import BlockInteractive from '@/components/BlockInteractive/BlockInteractive';
 
 import styles from '../TableCommon.module.css';
-import { deleteNews } from '@/services/server_actions/news';
+import { deleteNews } from '@/actions/news';
 
 const cx = cn.bind(styles);
 

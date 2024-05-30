@@ -1,5 +1,5 @@
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { getLogError } from '@/services/server_actions/logs';
+import { getLogError } from '@/actions/logs';
 import ShowServerError from '@/components/UI/ShowServerError/ShowServerError';
 import styles from './LogErrorDescription.module.css';
 
