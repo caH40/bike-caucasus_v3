@@ -4,6 +4,7 @@ import { FormEvent, Fragment, useState } from 'react';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
+import { content } from '@/libs/utils/text';
 import { useLoadingStore } from '@/store/loading';
 import { serializationNewsCreate } from '@/libs/utils/serialization';
 import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
@@ -15,9 +16,8 @@ import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import { formateAndStripContent } from './utils';
 import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
-import styles from '../Form.module.css';
 import { TNewsBlockDto, TNewsGetOneDto } from '@/types/dto.types';
-import { content } from '@/libs/utils/text';
+import styles from '../Form.module.css';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -138,7 +138,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
     }
 
     if (response.ok) {
-      setBlocks(getInitialBlocks(newsForEdit?.blocks));
+      setBlocks(getInitialBlocks());
       setTitle('');
       setSubTitle('');
       setHashtags('');

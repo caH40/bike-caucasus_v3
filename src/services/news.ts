@@ -125,7 +125,6 @@ export class News {
           bucketName,
         });
       }
-      console.log(news);
 
       // Инстанс сервиса работы с Облаком
       const cloudService = new Cloud(cloudName);

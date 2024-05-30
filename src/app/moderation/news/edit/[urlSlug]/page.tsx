@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getNewsOne } from '@/app/news/[urlSlug]/page';
-import FormNewsEdit from '@/components/UI/Forms/FormNewsEdit/FormNewsEdit';
+import FormNews from '@/components/UI/Forms/FormNews/FormNews';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { News } from '@/services/news';
 import { TNewsGetOneDto } from '@/types/dto.types';
@@ -55,7 +55,7 @@ export default async function NewsEditPage({ params }: Props) {
   return (
     <Wrapper title="Редактирование новости">
       {news ? (
-        <FormNewsEdit fetchNewsEdited={fetchNewsEdited} newsForEdit={news} />
+        <FormNews fetchNewsEdited={fetchNewsEdited} newsForEdit={news} />
       ) : (
         <span>Не получены данные Новости для редактирования</span>
       )}
