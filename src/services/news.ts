@@ -16,6 +16,7 @@ import type { ResponseServer } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
 import { ObjectId } from 'mongoose';
+import { millisecondsIn3Days } from '@/constants/date';
 
 type TCloudConnect = {
   cloudName: 'vk';
@@ -116,6 +117,23 @@ export class News {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
 
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const newsDB: { createdAt: Date } | null = await NewsModel.findOne(
+        { urlSlug: news.urlSlug },
+        { createdAt: true, _id: false }
+      ).lean();
+
+      if (!newsDB) {
+        throw new Error(`Не найдена новость с urlSlug:${news.createdAt} для редактирования!`);
+      }
+
+      // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
+      if (Date.now() - new Date(newsDB?.createdAt).getTime() > millisecondsIn3Days) {
+        throw new Error('Нельзя удалить новость, которая была создана больше 3 дней назад!');
+      }
+
       // Обновление изображения для Постера новости, если оно загружено.
       if (news.poster) {
         news.poster = await this.saveImage({
@@ -162,10 +180,6 @@ export class News {
 
       // Замена строки на массив хэштегов.
       news.hashtags = getHashtags(news.hashtags as string);
-
-      // Подключение к БД.
-      await this.dbConnection();
-      // console.log(news);
 
       // slug не обновляется, остается старый для исключения проблем с индексацией.
       await NewsModel.findOneAndUpdate({ urlSlug: news.urlSlug }, news);
@@ -454,9 +468,9 @@ export class News {
         throw new Error('Не найдена новость или у вас нет прав на удаление данной новости!');
       }
 
-      const weekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-      if (Date.now() - new Date(newsDB?.createdAt).getTime() > weekInMilliseconds) {
-        throw new Error('Нельзя удалить новость, которая была создана больше 7ми дней назад!');
+      // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
+      if (Date.now() - new Date(newsDB?.createdAt).getTime() > millisecondsIn3Days) {
+        throw new Error('Нельзя удалить новость, которая была создана больше 3 дней назад!');
       }
 
       const newsDeleted = await NewsModel.findOneAndDelete(query);
