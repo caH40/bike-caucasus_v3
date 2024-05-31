@@ -37,7 +37,7 @@ export default function MenuOnPage({ buttons, needBack }: Props) {
   ]
     .filter((button) => button.id !== 100 || (button.id === 100 && needBack))
     .map((button) => {
-      if (button.href && path === button.href && !button.classes.includes('active')) {
+      if (button.href && path.includes(button.href) && !button.classes.includes('active')) {
         // Выделение кнопки активной страницы.
         return { ...button, classes: [...button.classes, 'active'] };
       }
