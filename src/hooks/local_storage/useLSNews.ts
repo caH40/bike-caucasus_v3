@@ -9,6 +9,7 @@ type Props = {
   hashtags: string;
   blocks: TNewsBlocksEdit[];
   resetData: boolean;
+  target: 'edit' | 'create'; // указывает какая форма используется.
 };
 
 type PropsInit = {
@@ -18,6 +19,7 @@ type PropsInit = {
   setHashtags: Dispatch<SetStateAction<string>>;
   initialBlocks: TNewsBlocksEdit[];
   isEditing: boolean; // Происходит редактирование или создание новости.
+  target: 'edit' | 'create'; // указывает какая форма используется.
 };
 
 // Суффикс для локального хранилища.
@@ -25,27 +27,27 @@ type PropsInit = {
 /**
  * Хук сохраняет вводимые данные в форме создания Новости.
  */
-export function useLSNews({ title, subTitle, hashtags, blocks, resetData }: Props) {
+export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target }: Props) {
   useEffect(() => {
     if (!title) {
       return;
     }
-    localStorage.setItem(`${suffix}title`, title);
-  }, [title]);
+    localStorage.setItem(`${suffix}${target}-title`, title);
+  }, [title, target]);
 
   useEffect(() => {
     if (!subTitle) {
       return;
     }
-    localStorage.setItem(`${suffix}subTitle`, subTitle);
-  }, [subTitle]);
+    localStorage.setItem(`${suffix}${target}-subTitle`, subTitle);
+  }, [subTitle, target]);
 
   useEffect(() => {
     if (!hashtags) {
       return;
     }
-    localStorage.setItem(`${suffix}hashtags`, hashtags);
-  }, [hashtags]);
+    localStorage.setItem(`${suffix}${target}-hashtags`, hashtags);
+  }, [hashtags, target]);
 
   // сохранение данных блоков в Локальном хранилище при изменении blocks
   useEffect(() => {
@@ -60,18 +62,18 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData }: Prop
       imageTitle: block.imageTitle,
     }));
 
-    localStorage.setItem(`${suffix}blocks`, JSON.stringify(blocksWithoutImage));
-  }, [blocks]);
+    localStorage.setItem(`${suffix}${target}-blocks`, JSON.stringify(blocksWithoutImage));
+  }, [blocks, target]);
 
   useEffect(() => {
     if (!resetData) {
       return;
     }
-    localStorage.removeItem(`${suffix}title`);
-    localStorage.removeItem(`${suffix}subTitle`);
-    localStorage.removeItem(`${suffix}hashtags`);
-    localStorage.removeItem(`${suffix}blocks`);
-  }, [resetData]);
+    localStorage.removeItem(`${suffix}${target}-title`);
+    localStorage.removeItem(`${suffix}${target}-subTitle`);
+    localStorage.removeItem(`${suffix}${target}-hashtags`);
+    localStorage.removeItem(`${suffix}${target}-blocks`);
+  }, [resetData, target]);
 }
 
 /**
@@ -84,13 +86,14 @@ export function useLSNewsInit({
   setHashtags,
   isEditing,
   initialBlocks,
+  target,
 }: PropsInit): void {
   useEffect(() => {
     // Получение данных с Локального хранилища браузера.
     if (isEditing) {
       setBlocks(initialBlocks);
     } else {
-      const blocksLS = localStorage.getItem(`${suffix}blocks`);
+      const blocksLS = localStorage.getItem(`${suffix}${target}-blocks`);
       const blockParsed = blocksLS && JSON.parse(blocksLS);
       // проверка, что blockParsed существует и является массивом в нулевом элементе которого
       // есть свойство position, иначе возвращается initialBlocks
@@ -98,9 +101,9 @@ export function useLSNewsInit({
       setBlocks(initBlocks);
     }
 
-    const initTitle = localStorage.getItem(`${suffix}title`) || '';
-    const initSubTitle = localStorage.getItem(`${suffix}subTitle`) || '';
-    const initHashtags = localStorage.getItem(`${suffix}hashtags`) || '';
+    const initTitle = localStorage.getItem(`${suffix}${target}-title`) || '';
+    const initSubTitle = localStorage.getItem(`${suffix}${target}-subTitle`) || '';
+    const initHashtags = localStorage.getItem(`${suffix}${target}-hashtags`) || '';
 
     setTitle(initTitle);
     setSubTitle(initSubTitle);

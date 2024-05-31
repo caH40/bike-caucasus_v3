@@ -32,7 +32,6 @@ type Props = {
  * @returns
  */
 export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdit }: Props) {
-  // const idEditing = newsForEdit ? true : false;
   // Новостные блоки в новости.
   const [blocks, setBlocks] = useState<TNewsBlocksEdit[]>(() =>
     getInitialBlocks(newsForEdit?.blocks)
@@ -61,6 +60,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
 
   // инициализация данных полей при монтировании из Локального хранилища.
   useLSNewsInit({
+    target: newsForEdit ? 'edit' : 'create',
     setBlocks,
     setTitle,
     setSubTitle,
@@ -70,7 +70,14 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
   });
 
   // сохранение данных текстовых полей в Локальном хранилище.
-  useLSNews({ title, subTitle, hashtags, blocks, resetData });
+  useLSNews({
+    title,
+    subTitle,
+    hashtags,
+    blocks,
+    resetData,
+    target: newsForEdit ? 'edit' : 'create',
+  });
 
   // хэндлер отправки формы
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
