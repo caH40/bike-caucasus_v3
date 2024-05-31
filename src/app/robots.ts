@@ -19,6 +19,8 @@ export default function robots(): MetadataRoute.Robots {
           '/auth/*',
           '/account',
           '/account/*',
+          '/admin',
+          '/admin/*',
         ],
       },
     ],
