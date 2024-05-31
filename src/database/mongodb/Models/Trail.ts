@@ -29,7 +29,7 @@ const trailSchema = new Schema<TTrailDocument>(
     garminConnect: { type: String, trim: true }, // Url трека маршрута на GarminConnect.
     komoot: { type: String, trim: true }, // Url трека маршрута Komoot.
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment', default: [] }],
+    // comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment', default: [] }],
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
 
     count: {

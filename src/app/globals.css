@@ -24,6 +24,7 @@
   --info: blue;
   --success: green;
   --color-orange: #ec9c07;
+  --mtb: rgba(93, 32, 32, 0.6);
 
   --line: #979797; /* для разделительной линии hr */
   --white-12: rgba(255, 255, 255, 0.12);

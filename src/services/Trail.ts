@@ -12,8 +12,11 @@ import { handlerErrorDB } from './mongodb/error';
  */
 export class Trail {
   private dbConnection: () => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  private errorLogger: (error: unknown) => Promise<void>;
   constructor() {
     this.dbConnection = connectToMongo;
+    this.errorLogger = errorLogger;
   }
 
   /**
@@ -43,7 +46,7 @@ export class Trail {
               'image',
             ],
           }) // Получаем информацию об авторе маршрута
-          .populate({ path: 'comments' }) // Нет модели/описания типов.
+          // .populate({ path: 'comments' }) // Нет модели/описания типов.
           .lean();
 
       // Если маршрут не найден, генерируем исключение.
@@ -59,7 +62,7 @@ export class Trail {
       };
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
-      errorLogger(error);
+      this.errorLogger(error);
       return handlerErrorDB(error);
     }
   }
@@ -83,7 +86,7 @@ export class Trail {
               'image',
             ],
           }) // Получаем информацию об авторе маршрута
-          .populate({ path: 'comments' }) // Нет модели/описания типов.
+          // .populate({ path: 'comments' }) // Нет модели/описания типов.
           .lean();
 
       // Возвращаем информацию о маршруте и успешный статус.
@@ -94,7 +97,7 @@ export class Trail {
       };
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
-      errorLogger(error);
+      this.errorLogger(error);
       return handlerErrorDB(error);
     }
   }

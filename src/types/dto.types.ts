@@ -87,11 +87,11 @@ export type TBlockTrailDto = Omit<TBlockTrail, '_id'> & { _id: string };
 
 export type TTrailDto = Omit<
   TTrailDocument,
-  '_id' | 'author' | 'comments' | 'blocks' | 'comments' | 'likedBy'
+  '_id' | 'author' | 'comments' | 'blocks' | 'likedBy'
 > & {
   _id: string;
   blocks: TBlockTrailDto[];
-  comments: string[];
+  // comments: string[];
   likedBy: string[];
   author: TAuthor;
 };

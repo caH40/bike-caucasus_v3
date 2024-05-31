@@ -13,7 +13,7 @@ export function dtoTrail(
     ...trail,
     _id: String(trail._id),
     author,
-    comments: trail.comments?.map((comment) => String(comment)) || [],
+    // comments: trail.comments?.map((comment) => String(comment)) || [],
     likedBy: trail.likedBy?.map((like) => String(like)) || [],
     blocks: trail.blocks?.map((block) => ({ ...block, _id: String(block._id) })) || [],
   };

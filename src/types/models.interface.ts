@@ -190,7 +190,7 @@ export type TTrailDocument = Document & {
   garminConnect?: string;
   komoot?: string;
   author: ObjectId;
-  comments: ObjectId[];
+  // comments: ObjectId[];
   likedBy: ObjectId[];
   count: {
     views: number;
