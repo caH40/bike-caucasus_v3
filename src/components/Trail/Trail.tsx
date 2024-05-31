@@ -2,10 +2,9 @@ import Image from 'next/image';
 import cn from 'classnames';
 
 import styles from './Card.module.css';
-import { ICard } from '../../types/models.interface';
 
 type Props = {
-  trail: ICard;
+  trail: any;
 };
 
 const Card = ({ trail }: Props) => {

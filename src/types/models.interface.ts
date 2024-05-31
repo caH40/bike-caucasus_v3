@@ -1,31 +1,4 @@
-import { ObjectId } from 'mongoose';
-import { Types } from 'mongoose';
-
-/**
- * Интерфейс велосипедного маршрута
- */
-export interface ICard {
-  _id: Types.ObjectId | string;
-  nameRoute: string;
-  state: string;
-  bikeType: string;
-  start: string;
-  turn: string;
-  finish: string;
-  distance: string;
-  ascent: string;
-  descriptionArea: string;
-  cardPhoto: string;
-  fileTrekName: string;
-  urlVideo: string;
-  urlTrekGConnect: string;
-  // postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  // descPhotos: { type: mongoose.Schema.Types.ObjectId, ref: 'Photos' },
-  // comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-  // kudoses: { type: mongoose.Schema.Types.ObjectId, ref: 'Kudos' },
-  date: number;
-  dateEdit: number;
-}
+import { Document, ObjectId } from 'mongoose';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
@@ -169,3 +142,48 @@ export interface TLogsErrorModel {
   createdAt: Date;
   updatedAt: Date;
 }
+
+/**
+ * Блок описания маршрута.
+ */
+type TBlockTrail = {
+  text?: string;
+  image?: string;
+  title?: string;
+  imageTitle?: string;
+  position?: number;
+  video?: string;
+};
+
+/**
+ * Типизация документа Trail из mongoDB.
+ */
+export type TTrailDocument = Document & {
+  title: string; // Название маршрута
+  poster: string; // ССылка на изображение обложки Маршрута.
+  urlSlug: string; // Последняя часть url страницы с маршрутом.
+  state: string; // Регион в котором проходит маршрут.
+  bikeType: 'road' | 'mtb' | 'gravel' | 'dh'; // Тип велосипеда для маршрута.
+  startLocation: string; // Город или место у которого есть название.
+  turnLocation?: string; // Город или место у которого есть название.
+  finishLocation: string; // Город или место у которого есть название.
+  distance: number; // Расстояние в километрах.
+  ascent: number; // Набор высоты в метрах.
+  blocks?: TBlockTrail[];
+  garminConnect?: string;
+  komoot?: string;
+  author: ObjectId;
+  comments?: ObjectId[];
+  likedBy?: ObjectId[];
+  count: {
+    views: number;
+    likes: number;
+    shares: number;
+  }; // Счетчики.
+  difficultyLevel: 'Easy' | 'Moderate' | 'Hard';
+  rating?: number; // Поле для рейтинга маршрута.
+  hashtags?: string[];
+  isApproved: boolean; // Прошел ли проверку модератора
+  createdAt?: Date;
+  updatedAt?: Date;
+};
