@@ -1,6 +1,7 @@
 'use client';
 
 import cn from 'classnames/bind';
+import TextareaAutosize from 'react-textarea-autosize';
 
 import Checkmark from '@/components/Icons/Checkmark';
 import type { PropsBoxInputSimple } from '@/types/index.interface';
@@ -30,14 +31,14 @@ export default function BoxTextareaSimple({
         {showValidationText && <span className={styles.validate}>{validationText}</span>}
       </label>
       <div className={styles.wrapper__relative}>
-        <textarea
+        <TextareaAutosize
           {...props}
           value={value}
           name={name}
           onChange={(e) => handlerInput(e.target.value)}
           className={cx('textarea', { loading })}
           disabled={loading}
-          rows={5}
+          minRows={2}
           ref={refTextArea}
         />
         <div className={styles.checkmark}>

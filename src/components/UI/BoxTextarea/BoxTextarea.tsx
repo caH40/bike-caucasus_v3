@@ -1,5 +1,6 @@
 'use client';
 
+import TextareaAutosize from 'react-textarea-autosize';
 import cn from 'classnames/bind';
 
 import Checkmark from '@/components/Icons/Checkmark';
@@ -23,12 +24,12 @@ export default function BoxTextarea({
         <span className={styles.validate}>{validationText}</span>
       </label>
       <div className={styles.wrapper__relative}>
-        <textarea
+        <TextareaAutosize
           {...props}
           {...register}
           className={cx('textarea', { loading })}
           disabled={loading}
-          rows={5}
+          minRows={2} // Минимальное количество строк
         />
         <div className={styles.checkmark}>
           <Checkmark isCompleted={!validationText} />
