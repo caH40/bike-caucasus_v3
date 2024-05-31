@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import cn from 'classnames';
 
-import styles from './Card.module.css';
+import styles from './TrailCard.module.css';
 
 type Props = {
   trail: any;
 };
 
-const Card = ({ trail }: Props) => {
+export default function TrailCard({ trail }: Props) {
   return (
     <a
       href={String(trail._id)}
@@ -104,6 +104,4 @@ const Card = ({ trail }: Props) => {
       </div>
     </a>
   );
-};
-
-export default Card;
+}

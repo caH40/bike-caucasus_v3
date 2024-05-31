@@ -1,0 +1,22 @@
+.wrapper {
+  display: grid;
+  gap: 1rem 20px;
+  grid-template-columns: 1fr 468px;
+}
+.wrapper__main {
+  overflow: hidden;
+}
+.wrapper__aside {
+  overflow: hidden;
+}
+.wrapper__aside {
+  background-color: var(--white-12);
+  border-radius: 1rem;
+  height: 30vh;
+}
+/* ====================================================================== */
+@media (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+}
