@@ -18,6 +18,7 @@ type Props = {
  * Страница редактирования новости.
  */
 export default async function NewsEditCurrentPage({ params }: Props) {
+  revalidatePath(`/`);
   const session = await getServerSession(authOptions);
 
   const author = session?.user.idDB;

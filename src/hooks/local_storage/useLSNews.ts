@@ -29,6 +29,10 @@ type PropsInit = {
  */
 export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target }: Props) {
   useEffect(() => {
+    if (target === 'edit') {
+      return;
+    }
+
     if (!title) {
       return;
     }
@@ -36,6 +40,10 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target
   }, [title, target]);
 
   useEffect(() => {
+    if (target === 'edit') {
+      return;
+    }
+
     if (!subTitle) {
       return;
     }
@@ -43,6 +51,10 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target
   }, [subTitle, target]);
 
   useEffect(() => {
+    if (target === 'edit') {
+      return;
+    }
+
     if (!hashtags) {
       return;
     }
@@ -51,6 +63,10 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target
 
   // сохранение данных блоков в Локальном хранилище при изменении blocks
   useEffect(() => {
+    if (target === 'edit') {
+      return;
+    }
+
     if (!blocks.length || !blocks[0].text) {
       return;
     }
@@ -66,6 +82,10 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target
   }, [blocks, target]);
 
   useEffect(() => {
+    if (target === 'edit') {
+      return;
+    }
+
     if (!resetData) {
       return;
     }
@@ -92,6 +112,9 @@ export function useLSNewsInit({
     // Получение данных с Локального хранилища браузера.
     if (isEditing) {
       setBlocks(initialBlocks);
+      // Не использовать Локальное хранилище при редактировании новости,
+      // так как формы новости заполняются из БД.
+      return;
     } else {
       const blocksLS = localStorage.getItem(`${suffix}${target}-blocks`);
       const blockParsed = blocksLS && JSON.parse(blocksLS);
