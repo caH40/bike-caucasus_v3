@@ -51,4 +51,4 @@ trailSchema.index({ title: 1 });
 trailSchema.index({ state: 1 });
 trailSchema.index({ postedBy: 1 });
 
-export const TrailModel = models.TrailModel || model<TTrailDocument>('Trail', trailSchema);
+export const Trail = models.Trail || model<TTrailDocument>('Trail', trailSchema);

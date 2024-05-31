@@ -2,9 +2,10 @@ import Image from 'next/image';
 import cn from 'classnames';
 
 import styles from './TrailCard.module.css';
+import { TTrailDto } from '@/types/dto.types';
 
 type Props = {
-  trail: any;
+  trail: TTrailDto;
 };
 
 export default function TrailCard({ trail }: Props) {

@@ -11,11 +11,21 @@ export function dtoTrail(
 
   const dto: TTrailDto = {
     ...trail,
-    _id: String(trail),
+    _id: String(trail._id),
     author,
     comments: trail.comments?.map((comment) => String(comment)) || [],
     likedBy: trail.likedBy?.map((like) => String(like)) || [],
     blocks: trail.blocks?.map((block) => ({ ...block, _id: String(block._id) })) || [],
   };
+  return dto;
+}
+
+/**
+ * Дто для маршрута (trail) получаемого на клиенте.
+ */
+export function dtoTrails(
+  trails: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser })[]
+): TTrailDto[] {
+  const dto: TTrailDto[] = trails.map((trail) => dtoTrail(trail));
   return dto;
 }
