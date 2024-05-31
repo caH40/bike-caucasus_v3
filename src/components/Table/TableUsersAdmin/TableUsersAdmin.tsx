@@ -68,35 +68,37 @@ export default function TableUsersAdmin({ users }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <table className={styles.table}>
-        <caption className={styles.caption}>Таблица логов ошибок</caption>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr className={cx('trh')} key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th className={styles.th} key={header.id}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              className={cx('tr', 'tr__link')}
-              key={row.id}
-              // onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td className={styles.td} key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className={styles.wrapper__wide}>
+        <table className={styles.table}>
+          <caption className={styles.caption}>Таблица логов ошибок</caption>
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr className={cx('trh')} key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th className={styles.th} key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                className={cx('tr', 'tr__link')}
+                key={row.id}
+                // onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td className={styles.td} key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

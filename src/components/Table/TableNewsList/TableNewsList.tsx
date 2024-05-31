@@ -83,39 +83,40 @@ export default function TableNewsList({ news, idUserDB }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <table className={styles.table}>
-        <caption className={styles.caption}>
-          Таблица новостей, доступных для редактирования
-        </caption>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr className={cx('trh')} key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th className={styles.th} key={header.id}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              className={styles.tr}
-              key={row.id}
-              // onClick={() => getLink(String(row.getValue('title')))}
-              // onClick={() => getLink(String(row.original.urlSlug))}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td className={styles.td} key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
+      <div className={styles.wrapper__wide}>
+        <table className={styles.table}>
+          <caption className={styles.caption}>
+            Таблица новостей, доступных для редактирования
+          </caption>
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr className={cx('trh')} key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th className={styles.th} key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                className={styles.tr}
+                key={row.id}
+                // onClick={() => getLink(String(row.getValue('title')))}
+                // onClick={() => getLink(String(row.original.urlSlug))}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td className={styles.td} key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <Pagination
         isFirstPage={!table.getCanPreviousPage()}
         isLastPage={!table.getCanNextPage()}

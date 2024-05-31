@@ -8,12 +8,12 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useMemo } from 'react';
+import { toast } from 'sonner';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { TGetErrorsDto } from '@/types/dto.types';
-import styles from './TableLogsErrors.module.css';
-import { toast } from 'sonner';
 import Pagination from '@/components/UI/Pagination/Pagination';
+import { TGetErrorsDto } from '@/types/dto.types';
+import styles from '../TableCommon.module.css';
 
 type Props = {
   logs: TGetErrorsDto[];
@@ -72,37 +72,38 @@ export default function TableLogsErrors({ logs }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <table className={styles.table}>
-        <caption className={styles.caption}>Таблица логов ошибок</caption>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr className={styles.trh} key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th className={styles.th} key={header.id}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              className={styles.tr}
-              key={row.id}
-              onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td className={styles.td} key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className={styles.wrapper__wide}>
+        <table className={styles.table}>
+          <caption className={styles.caption}>Таблица логов ошибок</caption>
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr className={styles.trh} key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th className={styles.th} key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                className={styles.tr}
+                key={row.id}
+                onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td className={styles.td} key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {/* <select
+        {/* <select
         value={table.getState().pagination.pageSize}
         onChange={(e) => {
           table.setPageSize(Number(e.target.value));
@@ -114,7 +115,7 @@ export default function TableLogsErrors({ logs }: Props) {
           </option>
         ))}
       </select> */}
-
+      </div>
       <Pagination
         isFirstPage={!table.getCanPreviousPage()}
         isLastPage={!table.getCanNextPage()}

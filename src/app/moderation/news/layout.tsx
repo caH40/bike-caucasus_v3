@@ -13,12 +13,12 @@ export default function ModerationNewsLayout({
   return (
     <div className={styles.wrapper}>
       {/* левая боковая панель */}
-      <aside className={styles.aside__left}>
+      <aside className={styles.wrapper__aside}>
         <MenuOnPage buttons={buttonsMenuModerationNewsPage} />
       </aside>
 
       {/* основное тело страницы */}
-      <div className={styles.main}>{children}</div>
+      <div className={styles.wrapper__main}>{children}</div>
     </div>
   );
 }

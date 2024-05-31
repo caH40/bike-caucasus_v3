@@ -18,9 +18,9 @@ export default async function NewsListPage({}: Props) {
   const news = await getNews();
 
   return (
-    <div>
+    <>
       <TitleAndLine hSize={1} title="Список новостей, созданных пользователем" />
       {news && <TableNewsList news={news} idUserDB={session?.user.idDB} />}
-    </div>
+    </>
   );
 }
