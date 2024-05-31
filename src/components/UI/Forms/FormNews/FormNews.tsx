@@ -4,7 +4,7 @@ import { FormEvent, Fragment, useState } from 'react';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
-import { content } from '@/libs/utils/text';
+import { getInitialBlocks } from './initial-block';
 import { useLoadingStore } from '@/store/loading';
 import { serializationNewsCreate } from '@/libs/utils/serialization';
 import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
@@ -16,7 +16,7 @@ import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import { formateAndStripContent } from './utils';
 import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
-import { TNewsBlockDto, TNewsGetOneDto } from '@/types/dto.types';
+import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 
 type Props = {
@@ -25,27 +25,6 @@ type Props = {
   newsForEdit?: TNewsGetOneDto & { posterOldUrl?: string | null };
 };
 
-// Создания стартового блока, если создание новости, то blocks отсутствует,
-// а при редактировании blocks передается пропсами с сервера.
-function getInitialBlocks(blocks?: TNewsBlockDto[]): TNewsBlocksEdit[] {
-  if (!blocks) {
-    return [{ text: '', image: null, imageFile: null, imageTitle: '', position: 1 }];
-  }
-
-  return blocks.map((block) => {
-    const editedBlock: TNewsBlocksEdit = {
-      text: content.replaceBRtoCRLF(block.text),
-      image: block.image,
-      imageFile: null,
-      imageOldUrl: block.image,
-      imageTitle: content.stripAllHtmlTags(block.imageTitle),
-      position: block.position,
-    };
-    return editedBlock;
-  });
-}
-
-// const suffix = '__bc_moderation_news_create-';
 /**
  * Форма создания новости
  * Разделение новости на блоки осуществляется для добавления картинки к соответствующему блоку
@@ -144,6 +123,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
       setHashtags('');
       setPoster(null);
       setResetData(true);
+      setPosterUrl(null);
       toast.success(response.message);
     } else {
       toast.error(response.message);
