@@ -13,7 +13,7 @@ import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
 import { errorLogger } from '@/errors/error';
-import type { TNews } from '@/types/models.interface';
+import type { TNews, TNewsBlock } from '@/types/models.interface';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
@@ -448,7 +448,10 @@ export class News {
   /**
    * Удаление новости админом или модератором, который создал новость.
    */
-  public async delete({ urlSlug, idUserDB }: { urlSlug: string; idUserDB: string }) {
+  public async delete(
+    { urlSlug, idUserDB }: { urlSlug: string; idUserDB: string },
+    { cloudName, bucketName, domainCloudName }: TCloudConnect
+  ) {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -465,8 +468,15 @@ export class News {
       const isAdmin = user?.role.name === 'admin';
       const query = isAdmin ? { urlSlug } : { urlSlug, author: idUserDB };
 
-      const newsDB: { _id: ObjectId; createdAt: Date } | null = await NewsModel.findOne(query, {
+      const newsDB: {
+        _id: ObjectId;
+        createdAt: Date;
+        poster: string;
+        blocks: TNewsBlock[];
+      } | null = await NewsModel.findOne(query, {
         createdAt: true,
+        poster: true,
+        blocks: true,
       });
 
       if (!newsDB) {
@@ -476,6 +486,18 @@ export class News {
       // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
       if (Date.now() - new Date(newsDB?.createdAt).getTime() > millisecondsIn3Days) {
         throw new Error('Нельзя удалить новость, которая была создана больше 3 дней назад!');
+      }
+
+      // Инстанс сервиса работы с Облаком
+      const cloudService = new Cloud(cloudName);
+
+      // Удаление всех файлов новости с Облака.
+      const suffix = `https://${bucketName}.${domainCloudName}/`;
+      await cloudService.deleteFile(bucketName, newsDB.poster.replace(suffix, ''));
+      for (const block of newsDB.blocks) {
+        if (block.image) {
+          await cloudService.deleteFile(bucketName, block.image.replace(suffix, ''));
+        }
       }
 
       const newsDeleted = await NewsModel.findOneAndDelete(query);

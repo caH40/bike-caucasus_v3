@@ -18,6 +18,8 @@ type ParamsNews = {
   idUserDB?: string;
 };
 
+const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
+
 export async function getNews({ quantity, idUserDB }: ParamsNews = {}) {
   'use server';
   try {
@@ -108,7 +110,14 @@ export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>>
 
     const newsService = new News();
 
-    const response = await newsService.delete({ urlSlug, idUserDB });
+    const response = await newsService.delete(
+      { urlSlug, idUserDB },
+      {
+        cloudName: 'vk',
+        domainCloudName: 'hb.vkcs.cloud',
+        bucketName,
+      }
+    );
 
     return response;
   } catch (error) {
