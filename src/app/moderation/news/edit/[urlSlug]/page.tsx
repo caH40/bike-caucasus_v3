@@ -17,7 +17,7 @@ type Props = {
 /**
  * Страница редактирования новости.
  */
-export default async function NewsEditPage({ params }: Props) {
+export default async function NewsEditCurrentPage({ params }: Props) {
   const session = await getServerSession(authOptions);
 
   const author = session?.user.idDB;

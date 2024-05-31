@@ -141,7 +141,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
   // загрузка основного изображения
 
   return (
-    <Wrapper title={'Создание новости'}>
+    <Wrapper title={'Форма ввода данных'} hSize={2}>
       <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
         <BoxInputSimple
           id="title"
