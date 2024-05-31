@@ -18,6 +18,7 @@ import { formateAndStripContent } from './utils';
 import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -54,6 +55,8 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
 
   // Триггер очистки форм и Локального хранилища.
   const [resetData, setResetData] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -132,6 +135,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
       setResetData(true);
       setPosterUrl(null);
       toast.success(response.message);
+      router.push(`/`);
     } else {
       toast.error(response.message);
     }
