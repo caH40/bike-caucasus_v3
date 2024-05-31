@@ -47,6 +47,22 @@ export type IUserModel = {
   updatedAt: Date;
 };
 /**
+ * Автор поста для публичного доступа, получаемый из модели User путем проекции документа при запросе из БД.
+ */
+export type TAuthorFromUser = {
+  _id: ObjectId;
+  id: number;
+  provider: {
+    image?: string;
+  };
+  imageFromProvider: boolean;
+  image?: string;
+  person: {
+    firstName: string;
+    lastName: string;
+  };
+};
+/**
  * Типы модели подтверждения email.
  */
 export interface IUserConfirm {
@@ -146,12 +162,13 @@ export interface TLogsErrorModel {
 /**
  * Блок описания маршрута.
  */
-type TBlockTrail = {
-  text?: string;
+export type TBlockTrail = {
+  _id: ObjectId;
+  text: string;
+  position: number;
   image?: string;
+  imageTitle?: string; // Подпись для изображения.
   title?: string;
-  imageTitle?: string;
-  position?: number;
   video?: string;
 };
 
@@ -169,12 +186,12 @@ export type TTrailDocument = Document & {
   finishLocation: string; // Город или место у которого есть название.
   distance: number; // Расстояние в километрах.
   ascent: number; // Набор высоты в метрах.
-  blocks?: TBlockTrail[];
+  blocks: TBlockTrail[];
   garminConnect?: string;
   komoot?: string;
   author: ObjectId;
-  comments?: ObjectId[];
-  likedBy?: ObjectId[];
+  comments: ObjectId[];
+  likedBy: ObjectId[];
   count: {
     views: number;
     likes: number;
@@ -184,6 +201,6 @@ export type TTrailDocument = Document & {
   rating?: number; // Поле для рейтинга маршрута.
   hashtags?: string[];
   isApproved: boolean; // Прошел ли проверку модератора
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };

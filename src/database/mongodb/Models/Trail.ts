@@ -29,8 +29,8 @@ const trailSchema = new Schema<TTrailDocument>(
     garminConnect: { type: String, trim: true }, // Url трека маршрута на GarminConnect.
     komoot: { type: String, trim: true }, // Url трека маршрута Komoot.
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment', default: [] }],
+    likedBy: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
 
     count: {
       views: { type: Number, default: 0 }, // Счетчик просмотров
@@ -51,4 +51,4 @@ trailSchema.index({ title: 1 });
 trailSchema.index({ state: 1 });
 trailSchema.index({ postedBy: 1 });
 
-export const Trail = models.Trail || model<TTrailDocument>('Trail', trailSchema);
+export const TrailModel = models.TrailModel || model<TTrailDocument>('Trail', trailSchema);

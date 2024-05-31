@@ -1,4 +1,12 @@
-import { IUserModel, TLogsErrorModel, TNewsBlock, TRoleModel } from './models.interface';
+import {
+  IUserModel,
+  TAuthorFromUser,
+  TBlockTrail,
+  TLogsErrorModel,
+  TNewsBlock,
+  TRoleModel,
+  TTrailDocument,
+} from './models.interface';
 
 /**
  * Одна новость с сервера.
@@ -21,20 +29,10 @@ export type TNewsGetOneDto = {
   isLikedByUser: boolean;
 };
 
-// Автор поста для публичного доступа.
-export type TAuthor = {
-  _id: string;
-  id: number;
-  provider: {
-    image?: string;
-  };
-  imageFromProvider: boolean;
-  image?: string;
-  person: {
-    firstName: string;
-    lastName: string;
-  };
-};
+/**
+ * Дто автора поста для публичного доступа. !!! Изменить название с обозначением Dto.
+ */
+export type TAuthor = Omit<TAuthorFromUser, '_id'> & { _id: string };
 
 // Блок новости без _id.
 export type TNewsBlockDto = Omit<TNewsBlock, '_id'>;
@@ -83,4 +81,17 @@ export type TUserDtoPublic = Omit<TUserDto, 'provider' | 'email' | 'person'> & {
     gender: 'male' | 'female';
     bio: string;
   };
+};
+
+export type TBlockTrailDto = Omit<TBlockTrail, '_id'> & { _id: string };
+
+export type TTrailDto = Omit<
+  TTrailDocument,
+  '_id' | 'author' | 'comments' | 'blocks' | 'comments' | 'likedBy'
+> & {
+  _id: string;
+  blocks: TBlockTrailDto[];
+  comments: string[];
+  likedBy: string[];
+  author: TAuthor;
 };

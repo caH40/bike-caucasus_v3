@@ -14,21 +14,9 @@ import { News as NewsModel } from '@/Models/News';
 import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
 import { errorLogger } from '@/errors/error';
 import type { TNews, TNewsBlock } from '@/types/models.interface';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ResponseServer, TCloudConnect, TSaveImage } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
-
-type TCloudConnect = {
-  cloudName: 'vk';
-  bucketName: string;
-  domainCloudName: string;
-};
-type TSaveImage = {
-  fileImage: File;
-  cloudName: 'vk';
-  domainCloudName: string;
-  bucketName: string;
-};
 
 /**
  * Сервис работы с новостями (News) в БД

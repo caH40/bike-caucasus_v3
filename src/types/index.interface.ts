@@ -180,3 +180,22 @@ export type TIconProps = {
  * Инстанс Error после парсинга полей<div className=""></div>
  */
 export type TLogsErrorParsed = Omit<TLogsErrorModel, 'createdAt' | 'updatedAt' | '_id'>;
+
+/**
+ * Подключение к облаку.
+ */
+export type TCloudConnect = {
+  cloudName: 'vk';
+  bucketName: string;
+  domainCloudName: string;
+};
+
+/**
+ * Сохранение файла в облаке.
+ */
+export type TSaveImage = {
+  fileImage: File;
+  cloudName: 'vk';
+  domainCloudName: string;
+  bucketName: string;
+};
