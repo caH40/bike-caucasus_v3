@@ -1,11 +1,13 @@
+import { revalidatePath } from 'next/cache';
+import { ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
+import { Cloud } from './cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { handlerErrorDB } from './mongodb/error';
 import { getNextSequenceValue } from './sequence';
 import { deserializeNewsCreate } from '@/libs/utils/deserialization';
-import { Cloud } from './cloud';
 import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
@@ -14,8 +16,6 @@ import { errorLogger } from '@/errors/error';
 import type { TNews } from '@/types/models.interface';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
-import { revalidatePath } from 'next/cache';
-import { ObjectId } from 'mongoose';
 import { millisecondsIn3Days } from '@/constants/date';
 
 type TCloudConnect = {
@@ -157,9 +157,14 @@ export class News {
       let index = -1;
       for (const block of news.blocks) {
         index++;
-        // Если нет файла image, то присваиваем старый url этого изображения.
-        if (!block.image) {
+        // Если нет файла image и imageDeleted:false, то присваиваем старый url этого изображения.
+        if (!block.image && !block.imageDeleted) {
           news.blocks[index].image = block.imageOldUrl;
+          continue;
+        }
+        // Если нет файла image и imageDeleted:true, то удаляем старое изображение из Облака.
+        if (!block.image && block.imageDeleted && block.imageOldUrl) {
+          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
           continue;
         }
 
@@ -170,7 +175,7 @@ export class News {
           bucketName,
         });
 
-        // Удаление старого файла изображения блока, если оно был обновлён.
+        // Удаление старого файла изображения блока, если оно было обновлён.
         if (block.imageOldUrl) {
           await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
         }

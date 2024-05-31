@@ -156,6 +156,7 @@ export type TMenuOnPage = {
 export type TNewsBlocksEdit = TNewsBlockDto & {
   imageFile: File | null;
   imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
+  imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
 };
 
 /**

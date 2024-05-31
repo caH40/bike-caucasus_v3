@@ -37,13 +37,6 @@ export function serializationNewsCreate({
     formData.set('urlSlug', urlSlug);
   }
 
-  // // Если заголовочное изображение присутствует, добавляем его в formData.
-  // blocks.forEach((block) => {
-  //   if (block.imageFile) {
-  //     block.imageFile;
-  //   }
-  // });
-
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].imageFile) {
@@ -56,6 +49,11 @@ export function serializationNewsCreate({
     formData.set(`blocks[${i}][position]`, String(blocks[i].position));
     formData.set(`blocks[${i}][text]`, blocks[i].text);
     formData.set(`blocks[${i}][imageTitle]`, blocks[i].imageTitle);
+
+    const imageDeleted = blocks[i].imageDeleted;
+    if (imageDeleted) {
+      formData.set(`blocks[${i}][imageDeleted]`, String(imageDeleted));
+    }
   }
 
   return formData;

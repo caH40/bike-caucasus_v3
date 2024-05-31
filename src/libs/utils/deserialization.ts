@@ -7,6 +7,7 @@ type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
     imageTitle?: string;
     position: number;
     imageOldUrl?: string;
+    imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
   }[];
   poster?: File | string;
   hashtags: string | string[];
@@ -26,7 +27,21 @@ export function deserializeNewsCreate(formData: FormData) {
         // Если текущий индекс является последним, устанавливаем значение.
         // Последним значением передается value.
 
-        acc[cur] = cur === 'position' ? +value : value;
+        // Восстановление типа значения.
+        const handlerValue = (value: FormDataEntryValue) => {
+          switch (cur) {
+            // Если ключ position то возвращается число.
+            case 'position':
+              return +value;
+            // Если ключ imageDeleted то возвращается булево значение.
+            case 'imageDeleted':
+              return value === 'true' ? true : false;
+            default:
+              return value;
+          }
+        };
+
+        acc[cur] = handlerValue(value);
       } else {
         if (!acc[cur]) {
           // Если текущий ключ не существует в объекте, создаем либо пустой объект {},

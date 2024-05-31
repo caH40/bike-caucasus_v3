@@ -60,7 +60,13 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
         setBlocks((prev) => {
           const blocks = prev.map((elm) => {
             return elm.position === block.position
-              ? { ...block, image: dataUrl, imageFile, position: elm.position }
+              ? {
+                  ...block,
+                  image: dataUrl,
+                  imageFile,
+                  position: elm.position,
+                  imageDeleted: false,
+                }
               : elm;
           });
 
@@ -104,7 +110,14 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
     setBlocks((prev) => {
       const blocks = prev.map((elm) => {
         return elm.position === block.position
-          ? { ...block, image: null, imageFile: null, imageTitle: '', position: elm.position }
+          ? {
+              ...block,
+              image: null,
+              imageFile: null,
+              imageTitle: '',
+              imageDeleted: true,
+              position: elm.position,
+            }
           : elm;
       });
 
