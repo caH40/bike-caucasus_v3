@@ -11,7 +11,7 @@ const cx = cn.bind(styles);
 /**
  * Инпут без использования библиотеки react-hook-form
  */
-export default function BoxInputSimple({
+export default function BoxInputSimple<T>({
   label,
   value,
   handlerInput,
@@ -20,8 +20,9 @@ export default function BoxInputSimple({
   disabled,
   loading,
   name,
+  type,
   ...props
-}: PropsBoxInputSimple) {
+}: PropsBoxInputSimple<T>) {
   return (
     <div className={styles.wrapper}>
       <label className={styles.label} htmlFor={name}>
@@ -31,7 +32,9 @@ export default function BoxInputSimple({
       <div className={styles.wrapper__relative}>
         <input
           {...props}
-          onChange={(e) => handlerInput(e.target.value)}
+          onChange={(e) =>
+            handlerInput((type === 'number' ? +e.target.value : e.target.value) as T)
+          }
           value={value}
           className={cx('input', loading)}
           disabled={disabled || loading}

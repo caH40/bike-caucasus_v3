@@ -1,5 +1,5 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TLogsErrorModel } from './models.interface';
+import { TBlockTrail, TLogsErrorModel } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 import { TNewsBlockDto, TNewsGetOneDto } from './dto.types';
 
@@ -30,12 +30,24 @@ export type PropsBoxInput = {
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
 };
+export type PropsBoxSelectSimple = {
+  state: string;
+  setState: Dispatch<SetStateAction<string>>;
+  id?: string;
+  name: string;
+  label?: string;
+  disabled?: boolean;
+  validationText?: string;
+  showValidationText?: boolean;
+  defaultValue?: string;
+  loading?: boolean;
+  options: { id: number; translation: string; name: string }[];
+};
 /**
  * Пропсы для BoxInputSimple
  */
-export type PropsBoxInputSimple = Omit<PropsBoxInput, 'register' | 'setValue'> &
-  // eslint-disable-next-line no-unused-vars
-  TDispatchInput & { handlerInput: (value: string) => void };
+export type PropsBoxInputSimple<T> = Omit<PropsBoxInput, 'register' | 'setValue'> &
+  TDispatchInput & { handlerInput: (value: T) => void }; // eslint-disable-line no-unused-vars
 /**
  * Описание для инпута useState
  */
@@ -154,6 +166,16 @@ export type TMenuOnPage = {
  * Данные новостных блоков для отправки на сервер для сохранения.
  */
 export type TNewsBlocksEdit = TNewsBlockDto & {
+  imageFile: File | null;
+  imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
+  imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
+};
+
+/**
+ * Данные новостных блоков для отправки на сервер для сохранения.
+ */
+export type TBlockTrailEdit = Omit<TBlockTrail, '_id'> & {
+  // _id: string;
   imageFile: File | null;
   imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
   imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
