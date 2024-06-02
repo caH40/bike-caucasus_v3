@@ -30,12 +30,24 @@ export type PropsBoxInput = {
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
 };
+export type PropsBoxSelectSimple = {
+  state: string;
+  setState: Dispatch<SetStateAction<string>>;
+  id?: string;
+  name: string;
+  label?: string;
+  disabled?: boolean;
+  validationText?: string;
+  showValidationText?: boolean;
+  defaultValue?: string;
+  loading?: boolean;
+  options: { id: number; translation: string; name: string }[];
+};
 /**
  * Пропсы для BoxInputSimple
  */
-export type PropsBoxInputSimple = Omit<PropsBoxInput, 'register' | 'setValue'> &
-  // eslint-disable-next-line no-unused-vars
-  TDispatchInput & { handlerInput: (value: string) => void };
+export type PropsBoxInputSimple<T> = Omit<PropsBoxInput, 'register' | 'setValue'> &
+  TDispatchInput & { handlerInput: (value: T) => void }; // eslint-disable-line no-unused-vars
 /**
  * Описание для инпута useState
  */
@@ -160,6 +172,21 @@ export type TNewsBlocksEdit = TNewsBlockDto & {
 };
 
 /**
+ * Данные блоков для ввода информации, при создании новости, маршрутов и т.д..
+ */
+export type TBlockInputInfo = {
+  text: string;
+  position: number;
+  title?: string; // Заголовок у блока.
+  video?: string;
+  image?: string | null; // Ссылка на изображение.
+  imageTitle?: string; // Подпись для изображения.
+  imageFile: File | null; // Изображение в формате File/
+  imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
+  imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
+};
+
+/**
  * Данные новости для отправки на сервер для сохранения.
  */
 export type TNewsEdit = Omit<TNewsGetOneDto, 'blocks'> & {
@@ -195,6 +222,7 @@ export type TCloudConnect = {
  */
 export type TSaveImage = {
   fileImage: File;
+  suffix: string;
   cloudName: 'vk';
   domainCloudName: string;
   bucketName: string;

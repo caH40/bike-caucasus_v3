@@ -15,7 +15,7 @@ import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import { formateAndStripContent } from './utils';
-import type { ResponseServer, TNewsBlocksEdit } from '@/types/index.interface';
+import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import { useRouter } from 'next/navigation';
@@ -34,7 +34,7 @@ type Props = {
  */
 export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdit }: Props) {
   // Новостные блоки в новости.
-  const [blocks, setBlocks] = useState<TNewsBlocksEdit[]>(() =>
+  const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(newsForEdit?.blocks)
   );
 

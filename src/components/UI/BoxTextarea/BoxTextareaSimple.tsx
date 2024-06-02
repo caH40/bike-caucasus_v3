@@ -23,13 +23,15 @@ export default function BoxTextareaSimple({
   handlerInput,
   refTextArea,
   ...props
-}: PropsBoxInputSimple) {
+}: PropsBoxInputSimple<string>) {
   return (
     <div className={styles.wrapper}>
-      <label className={styles.label} htmlFor={name}>
-        {label}
-        {showValidationText && <span className={styles.validate}>{validationText}</span>}
-      </label>
+      {label && (
+        <label className={styles.label} htmlFor={name}>
+          {label}
+          {showValidationText && <span className={styles.validate}>{validationText}</span>}
+        </label>
+      )}
       <div className={styles.wrapper__relative}>
         <TextareaAutosize
           {...props}

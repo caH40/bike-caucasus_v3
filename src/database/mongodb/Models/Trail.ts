@@ -6,8 +6,8 @@ const trailSchema = new Schema<TTrailDocument>(
     title: { type: String, required: true, trim: true },
     poster: { type: String }, // ССылка на изображение обложки Маршрута.
     urlSlug: { type: String, required: true, unique: true }, // Последняя часть url страницы с маршрутом.
-    state: { type: String, trim: true }, // Регион в котором проходит маршрут.
-    bikeType: { type: String, enum: ['road', 'mtb', 'gravel', 'dh'], default: 'road' },
+    region: { type: String, trim: true }, // Регион в котором проходит маршрут.
+    bikeType: { type: String, default: 'road' },
     startLocation: { type: String, trim: true }, // Город или место у которого есть название.
     turnLocation: { type: String, trim: true }, // Город или место у которого есть название.
     finishLocation: { type: String, trim: true }, // Город или место у которого есть название.
@@ -38,7 +38,7 @@ const trailSchema = new Schema<TTrailDocument>(
       shares: { type: Number, default: 0 }, // Счетчик шеров
     },
 
-    difficultyLevel: { type: String, enum: ['Easy', 'Moderate', 'Hard'], default: 'Moderate' }, // Добавлено поле для уровня сложности
+    difficultyLevel: { type: String, default: 'Лёгкий' }, // Добавлено поле для уровня сложности
     rating: { type: Number, min: 0, max: 5 }, // Поле для рейтинга маршрута.
     hashtags: [String],
     isApproved: { type: Boolean, default: false }, // Прошел ли проверку модератора

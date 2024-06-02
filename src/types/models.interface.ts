@@ -116,7 +116,7 @@ export type TNews = {
 export type TNewsBlock = {
   _id: ObjectId;
   text: string;
-  image: string | null;
+  image?: string | null;
   imageTitle: string;
   position: number;
 };
@@ -166,7 +166,7 @@ export type TBlockTrail = {
   _id: ObjectId;
   text: string;
   position: number;
-  image?: string;
+  image?: string | null;
   imageTitle?: string; // Подпись для изображения.
   title?: string;
   video?: string;
@@ -179,7 +179,7 @@ export type TTrailDocument = Document & {
   title: string; // Название маршрута
   poster: string; // ССылка на изображение обложки Маршрута.
   urlSlug: string; // Последняя часть url страницы с маршрутом.
-  state: string; // Регион в котором проходит маршрут.
+  region: string; // Регион в котором проходит маршрут.
   bikeType: 'road' | 'mtb' | 'gravel' | 'dh'; // Тип велосипеда для маршрута.
   startLocation: string; // Город или место у которого есть название.
   turnLocation?: string; // Город или место у которого есть название.
@@ -197,7 +197,7 @@ export type TTrailDocument = Document & {
     likes: number;
     shares: number;
   }; // Счетчики.
-  difficultyLevel: 'Easy' | 'Moderate' | 'Hard';
+  difficultyLevel: 'Лёгкий' | 'Средний' | 'Сложный';
   rating?: number; // Поле для рейтинга маршрута.
   hashtags?: string[];
   isApproved: boolean; // Прошел ли проверку модератора

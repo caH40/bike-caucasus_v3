@@ -6,7 +6,7 @@ import BlockNews from '@/components/BlockNews/BlockNews';
 import { authOptions } from './api/auth/[...nextauth]/auth-options';
 import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
-import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getNews } from '@/actions/news';
 
 /**

@@ -1,22 +1,29 @@
+import slugify from 'slugify';
+
 import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { dtoTrail, dtoTrails } from '@/dto/trail';
 import { errorLogger } from '@/errors/error';
-import { TTrailDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
-import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
 import { handlerErrorDB } from './mongodb/error';
+import { deserializeTrailCreate } from '@/libs/utils/deserialization/trail';
+import { saveImage } from './save-image';
+import { getHashtags } from '@/libs/utils/text';
+import { getNextSequenceValue } from './sequence';
+import type { ResponseServer, TCloudConnect, TSaveImage } from '@/types/index.interface';
+import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
+import type { TTrailDto } from '@/types/dto.types';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
  */
 export class Trail {
   private dbConnection: () => Promise<void>;
-  // eslint-disable-next-line no-unused-vars
-  private errorLogger: (error: unknown) => Promise<void>;
+  private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
+  private saveImage: (params: TSaveImage) => Promise<string>; // eslint-disable-line no-unused-vars
   constructor() {
     this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
+    this.saveImage = saveImage;
   }
 
   /**
@@ -100,5 +107,76 @@ export class Trail {
       this.errorLogger(error);
       return handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Создание нового маршрута (trail).
+   */
+  public async post(
+    formData: FormData,
+    { cloudName, bucketName, domainCloudName }: TCloudConnect,
+    author: string
+  ): Promise<ResponseServer<null>> {
+    // Подключение к БД.
+    await this.dbConnection();
+
+    // Десериализация данных, полученных с клиента.
+    const trail = deserializeTrailCreate(formData);
+
+    const suffix = 'trail_image_poster-';
+    // Сохранение изображения для Постера новости.
+    const poster = await this.saveImage({
+      fileImage: trail.poster as File,
+      suffix,
+      cloudName,
+      domainCloudName,
+      bucketName,
+    });
+
+    // Сохранение изображений из текстовых блоков.
+    let index = -1;
+    for (const block of trail.blocks) {
+      index++;
+
+      // Если нет файла, то следующая итерация блоков.
+      if (!block.imageFile) {
+        continue;
+      }
+
+      const urlSaved = await this.saveImage({
+        fileImage: block.imageFile,
+        suffix,
+        cloudName,
+        domainCloudName,
+        bucketName,
+      });
+
+      trail.blocks[index].image = urlSaved;
+    }
+
+    // Замена строки на массив хэштегов.
+    const hashtagsArr = getHashtags(trail.hashtags);
+
+    // Создание slug из title для url страницы маршрута.
+    const sequenceValue = await getNextSequenceValue('trail');
+    const stringRaw = `${sequenceValue}-${trail.region}-${trail.title}`;
+    const urlSlug = slugify(stringRaw, { lower: true, strict: true });
+
+    // Подключение к БД.
+    await this.dbConnection();
+
+    const response = await TrailModel.create({
+      ...trail,
+      hashtags: hashtagsArr,
+      poster,
+      author,
+      urlSlug,
+    });
+
+    if (!response._id) {
+      throw new Error('Маршрут не сохранился в БД!');
+    }
+
+    return { data: null, ok: true, message: 'Маршрут сохранен в БД!' };
   }
 }

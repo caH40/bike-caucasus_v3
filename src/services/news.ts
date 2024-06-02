@@ -8,7 +8,6 @@ import { connectToMongo } from '@/database/mongodb/mongoose';
 import { handlerErrorDB } from './mongodb/error';
 import { getNextSequenceValue } from './sequence';
 import { deserializeNewsCreate } from '@/libs/utils/deserialization';
-import { generateFileName } from '@/libs/utils/filename';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
@@ -17,18 +16,20 @@ import type { TNews, TNewsBlock } from '@/types/models.interface';
 import type { ResponseServer, TCloudConnect, TSaveImage } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
+import { saveImage } from './save-image';
 
 /**
  * Сервис работы с новостями (News) в БД
  */
 export class News {
   private dbConnection: () => Promise<void>;
-  // eslint-disable-next-line no-unused-vars
-  private errorLogger: (error: unknown) => Promise<void>;
+  private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
+  private saveImage: (params: TSaveImage) => Promise<string>; // eslint-disable-line no-unused-vars
 
   constructor() {
     this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
+    this.saveImage = saveImage;
   }
 
   /**
@@ -43,9 +44,11 @@ export class News {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
 
+      const suffix = 'news_image_title-';
       // Сохранение изображения для Постера новости.
       news.poster = await this.saveImage({
         fileImage: news.poster as File,
+        suffix,
         cloudName,
         domainCloudName,
         bucketName,
@@ -62,6 +65,7 @@ export class News {
 
         const urlSaved = await this.saveImage({
           fileImage: block.image as File,
+          suffix,
           cloudName,
           domainCloudName,
           bucketName,
@@ -124,10 +128,12 @@ export class News {
         );
       }
 
+      const suffixForSave = 'news_image_title-';
       // Обновление изображения для Постера новости, если оно загружено.
       if (news.poster) {
         news.poster = await this.saveImage({
           fileImage: news.poster as File,
+          suffix: suffixForSave,
           cloudName,
           domainCloudName,
           bucketName,
@@ -160,6 +166,7 @@ export class News {
 
         const urlSaved = await this.saveImage({
           fileImage: block.image as File,
+          suffix: suffixForSave,
           cloudName,
           domainCloudName,
           bucketName,
@@ -507,32 +514,5 @@ export class News {
       this.errorLogger(error); // логирование
       return handlerErrorDB(error);
     }
-  }
-
-  /**
-   * Сохраняет изображение в облаке и возвращает URL сохраненного файла.
-   */
-  private async saveImage({
-    fileImage,
-    cloudName,
-    domainCloudName,
-    bucketName,
-  }: TSaveImage): Promise<string> {
-    if (!fileImage) {
-      throw new Error('Не получен файл изображения fileImage для сохранения в Облаке!');
-    }
-
-    let fileName = '';
-
-    if (!fileImage.type.startsWith('image/')) {
-      throw new Error(`Загружаемый файл ${fileImage.name} не является изображением`);
-    }
-    const suffix = 'news_image_title-';
-    fileName = generateFileName(fileImage, suffix);
-
-    const cloud = new Cloud(cloudName);
-    await cloud.saveFile(fileImage, bucketName, fileName);
-
-    return `https://${bucketName}.${domainCloudName}/${fileName}`;
   }
 }

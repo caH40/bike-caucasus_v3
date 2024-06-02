@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import cn from 'classnames/bind';
 
 import styles from './TitleAndLine.module.css';
+import LineSeparator from '../LineSeparator/LineSeparator';
 
 const cx = cn.bind(styles);
 
@@ -21,7 +22,7 @@ export default function TitleAndLine({ title, hSize }: Props): JSX.Element {
   return (
     <>
       {createElement(`h${hSize}`, { className: cx('title', `h${hSize}`) }, title)}
-      <hr className={styles.line} />
+      <LineSeparator />
     </>
   );
 }

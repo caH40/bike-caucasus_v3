@@ -28,6 +28,31 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
   },
 ];
 
+// Кнопки для меню на странице Модерация маршрута /moderation/trails
+export const buttonsMenuModerationTrailsPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Создание',
+    classes: [],
+    href: '/moderation/trails/create',
+    permission: 'moderation.trails.create',
+  },
+  {
+    id: 1,
+    name: 'Редактирование',
+    classes: [],
+    href: '/moderation/trails/edit',
+    permission: 'moderation.trails.edit',
+  },
+  {
+    id: 2,
+    name: 'Список новостей',
+    classes: [],
+    href: '/moderation/trails/list',
+    permission: 'moderation.trails.list',
+  },
+];
+
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationPage: TMenuOnPage[] = [
   {
@@ -41,8 +66,8 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     id: 1,
     name: 'Маршруты',
     classes: [],
-    href: '/moderation/routes/create',
-    permission: 'moderation.routes.create',
+    href: '/moderation/trails',
+    permission: 'moderation.trails',
   },
   {
     id: 2,

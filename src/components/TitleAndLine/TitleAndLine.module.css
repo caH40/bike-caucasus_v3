@@ -10,9 +10,3 @@
 .h3 {
   font-size: 18px;
 }
-
-.line {
-  border: none;
-  border-top: 1px solid var(--line);
-  margin-bottom: 1rem;
-}

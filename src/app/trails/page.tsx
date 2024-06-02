@@ -3,6 +3,10 @@ import { Trail } from '@/services/Trail';
 import TrailCard from '@/components/TrailCard/TrailCard';
 import styles from './TrailsPage.module.css';
 
+//!!!!!!!!!!!!!!!!!!!
+// export const dynamic = 'force-dynamic' делает страницу полностью динамичной!!!!!!!!
+// при использовании заголовков или куки, страница становится динамической
+
 type Props = {};
 
 export default async function TrailsPage({}: Props) {

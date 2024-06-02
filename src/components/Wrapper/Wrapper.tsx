@@ -1,4 +1,4 @@
-import TitleAndLine from '../UI/TitleAndLine/TitleAndLine';
+import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import styles from './Wrapper.module.css';
 
 type Props = {

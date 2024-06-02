@@ -1,23 +1,23 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { lcSuffixNewsCreate as suffix } from '@/constants/local-storage';
-import { TNewsBlocksEdit } from '@/types/index.interface';
+import { TBlockInputInfo } from '@/types/index.interface';
 
 type Props = {
   title: string;
   subTitle: string;
   hashtags: string;
-  blocks: TNewsBlocksEdit[];
+  blocks: TBlockInputInfo[];
   resetData: boolean;
   target: 'edit' | 'create'; // указывает какая форма используется.
 };
 
 type PropsInit = {
-  setBlocks: Dispatch<SetStateAction<TNewsBlocksEdit[]>>;
+  setBlocks: Dispatch<SetStateAction<TBlockInputInfo[]>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setSubTitle: Dispatch<SetStateAction<string>>;
   setHashtags: Dispatch<SetStateAction<string>>;
-  initialBlocks: TNewsBlocksEdit[];
+  initialBlocks: TBlockInputInfo[];
   isEditing: boolean; // Происходит редактирование или создание новости.
   target: 'edit' | 'create'; // указывает какая форма используется.
 };

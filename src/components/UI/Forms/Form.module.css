@@ -10,12 +10,9 @@
   display: flex;
   justify-content: flex-end;
 }
-.line {
-  border: none;
-  border-top: 1px solid var(--line);
-  margin-bottom: 1rem;
-  width: 100%;
-}
 .separators {
   gap: 2rem;
+}
+.block__info {
+  width: 100%;
 }

@@ -44,7 +44,11 @@ export const content = {
   /**
    * Очистка текста от всех html тэгов кроме <a>, <br>.
    */
-  stripHtmlTags: (input: string): string => {
+  stripHtmlTags: (input: string | undefined): string => {
+    if (!input) {
+      return '';
+    }
+
     return input.replace(/<(?!\/?(a|br)(\s|\/?)[^>]*>)[^>]+>/gi, '');
   },
 
