@@ -170,19 +170,19 @@ export default function FormTrail({
       return toast.error('Не передана ни функция обновления, ни создания новости!');
     }
 
-    // if (response.ok) {
-    //   setBlocks(getInitialBlocks());
-    //   setTitle('');
-    //   setSubTitle('');
-    //   setHashtags('');
-    //   setPoster(null);
-    //   setResetData(true);
-    //   setPosterUrl(null);
-    //   toast.success(response.message);
-    //   router.push(`/`);
-    // } else {
-    //   toast.error(response.message);
-    // }
+    if (response.ok) {
+      //   setBlocks(getInitialBlocks());
+      //   setTitle('');
+      //   setSubTitle('');
+      //   setHashtags('');
+      //   setPoster(null);
+      //   setResetData(true);
+      //   setPosterUrl(null);
+      //   toast.success(response.message);
+      //   router.push(`/`);
+    } else {
+      toast.error(response.message);
+    }
     setLoading(false);
   };
 
@@ -329,6 +329,19 @@ export default function FormTrail({
           setPosterUrl={setPosterUrl}
         />
 
+        {/* Блок добавления Хэштэгов */}
+        <BoxInputSimple
+          id="hashtag"
+          name="hashtag"
+          value={hashtags}
+          handlerInput={setHashtags}
+          type={'text'}
+          label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
+          loading={isLoading}
+          autoComplete={'off'}
+          validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
+        />
+
         {/* Блок добавления текста и изображения новости */}
         {blocks.map((block) => (
           <div className={styles.block__info} key={block.position}>
@@ -341,18 +354,6 @@ export default function FormTrail({
             />
           </div>
         ))}
-
-        <BoxInputSimple
-          id="hashtag"
-          name="hashtag"
-          value={hashtags}
-          handlerInput={setHashtags}
-          type={'text'}
-          label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
-        />
 
         <div className={styles.box__button}>
           <Button name="Опубликовать" theme="green" loading={isLoading} />

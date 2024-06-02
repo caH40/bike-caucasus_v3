@@ -44,12 +44,12 @@ export class Cloud {
   }
 
   /**
-   * Сохранение файла в облаке
+   * Отправка файла на сохранение в облаке
    * @param cloudName название облака ("vk")
    * @param file сохраняемый файл в формате File
    * @param fileName название файла с расширением, по умолчанию берется из входного параметра file
    */
-  public async saveFile(
+  public async postFile(
     file: File,
     bucketName: string,
     fileName?: string

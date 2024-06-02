@@ -176,7 +176,7 @@ export class UserService {
 
         const suffix = Date.now();
         fileNameFull = `${fileNamePrefix}-${suffix}.${extension}`;
-        await cloud.saveFile(file, bucketName, fileNameFull);
+        await cloud.postFile(file, bucketName, fileNameFull);
       }
 
       // Получение значения пола в нужной форме.

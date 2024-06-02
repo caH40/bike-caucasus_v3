@@ -222,6 +222,7 @@ export type TCloudConnect = {
  */
 export type TSaveImage = {
   fileImage: File;
+  suffix: string;
   cloudName: 'vk';
   domainCloudName: string;
   bucketName: string;

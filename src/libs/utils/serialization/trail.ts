@@ -66,7 +66,7 @@ export function serializationTrailCreate({
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].imageFile) {
-      formData.set(`blocks[${i}][image]`, blocks[i].imageFile as File);
+      formData.set(`blocks[${i}][imageFile]`, blocks[i].imageFile as File);
     }
     const imageOldUrl = blocks[i].imageOldUrl;
     if (imageOldUrl) {

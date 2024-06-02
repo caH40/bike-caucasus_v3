@@ -40,7 +40,7 @@ export function serializationNewsCreate({
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].imageFile) {
-      formData.set(`blocks[${i}][image]`, blocks[i].imageFile as File);
+      formData.set(`blocks[${i}][image]`, blocks[i].imageFile as File); // !!!!! изменить на imageFile, image пустой, дальше в него будет присваиватсья url
     }
     const imageOldUrl = blocks[i].imageOldUrl;
     if (imageOldUrl) {
