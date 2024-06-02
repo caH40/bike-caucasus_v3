@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getNews } from '@/actions/news';
-import TitleAndLine from '@/components/UI/TitleAndLine/TitleAndLine';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import TableNewsList from '@/components/Table/TableNewsList/TableNewsList';
 
 type Props = {};

@@ -1,5 +1,5 @@
 import NewsCard from '../NewsCard/NewsCard';
-import TitleAndLine from '../UI/TitleAndLine/TitleAndLine';
+import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './BlockNews.module.css';
 

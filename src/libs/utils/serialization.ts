@@ -1,7 +1,7 @@
-import type { TNewsBlocksEdit } from '@/types/index.interface';
+import type { TBlockInputInfo } from '@/types/index.interface';
 
 type Params = {
-  blocks: TNewsBlocksEdit[]; // Блоки новостей, содержащие текст и изображения.
+  blocks: TBlockInputInfo[]; // Блоки новостей, содержащие текст и изображения.
   title: string; // Заголовок новости.
   subTitle: string; // Подзаголовок новости.
   hashtags: string; // Хэштег новости.
@@ -48,7 +48,11 @@ export function serializationNewsCreate({
     }
     formData.set(`blocks[${i}][position]`, String(blocks[i].position));
     formData.set(`blocks[${i}][text]`, blocks[i].text);
-    formData.set(`blocks[${i}][imageTitle]`, blocks[i].imageTitle);
+
+    const imageTitle = blocks[i].imageTitle;
+    if (imageTitle) {
+      formData.set(`blocks[${i}][imageTitle]`, imageTitle);
+    }
 
     const imageDeleted = blocks[i].imageDeleted;
     if (imageDeleted) {

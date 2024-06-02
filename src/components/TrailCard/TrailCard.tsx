@@ -26,7 +26,7 @@ export default function TrailCard({ trail }: Props) {
       <div className={styles.description}>
         <div className={styles.block__title}>
           <h2 className={styles.title}>{trail.title}</h2>
-          <h3 className={cx('title', 'title_sub')}>{trail.state}</h3>
+          <h3 className={cx('title', 'title_sub')}>{trail.region}</h3>
         </div>
 
         <div className={styles.content}>

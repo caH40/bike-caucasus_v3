@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FormEvent, Fragment, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
@@ -13,7 +13,7 @@ import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
-import type { ResponseServer, TBlockTrailEdit } from '@/types/index.interface';
+import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
 import { TTrailDto } from '@/types/dto.types';
 import { useLSTrail, useLSTrailInit } from '@/hooks/local_storage/useLSTrail';
 import BoxSelectSimple from '../../BoxSelect/BoxSelectSimple';
@@ -41,12 +41,6 @@ export default function FormTrail({
   fetchTrailEdited,
   trailForEdit,
 }: Props) {
-  // Новостные блоки в новости.
-  const [blocks, setBlocks] = useState<TBlockTrailEdit[]>(() =>
-    getInitialBlocks(trailForEdit?.blocks)
-  );
-
-  // Заголовок новости.
   const [title, setTitle] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [difficultyLevel, setDifficultyLevel] = useState<string>('');
@@ -57,6 +51,10 @@ export default function FormTrail({
   const [ascent, setAscent] = useState<number>(0);
   const [garminConnect, setGarminConnect] = useState<string>('');
   const [komoot, setKomoot] = useState<string>('');
+  const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
+    getInitialBlocks(trailForEdit?.blocks)
+  );
+  // console.log(blocks);
 
   // Хэштэги новости.
   const [hashtags, setHashtags] = useState<string>('');
@@ -151,7 +149,7 @@ export default function FormTrail({
           label="Название:*"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={title.length > 10 ? '' : 'пустое!'} // необходима проверка?
+          validationText={title.length > 3 && title.length < 20 ? '' : 'пустое!'}
         />
 
         {/* Блок ввода Региона */}
@@ -174,19 +172,6 @@ export default function FormTrail({
           label="Сложность:*"
           loading={isLoading}
           validationText={difficultyLevel ? '' : 'нет данных'}
-        />
-
-        {/* Блок ввода Места старта */}
-        <BoxInputSimple
-          id="startLocation"
-          name="startLocation"
-          value={startLocation}
-          handlerInput={setStartLocation}
-          type={'text'}
-          label="Место старта:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={title.length > 10 ? '' : 'пустое!'} // !!! необходимо установить макс. количество символов.
         />
 
         {/* Блок ввода Места старта */}
@@ -268,7 +253,6 @@ export default function FormTrail({
           label="Ссылка на маршрут в Garmin Connect:"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={garminConnect.length > 10 ? '' : 'ошибка!'}
         />
 
         {/* Ссылка на маршрут в komoot */}
@@ -281,7 +265,6 @@ export default function FormTrail({
           label="Ссылка на маршрут в Komoot:"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={komoot.length > 10 ? '' : 'ошибка!'}
         />
 
         {/* Блок загрузки Главного изображения (обложки) */}
@@ -295,16 +278,17 @@ export default function FormTrail({
         />
 
         {/* Блок добавления текста и изображения новости */}
-        {/* {blocks.map((block) => (
-          <Fragment key={block.position}>
+        {blocks.map((block) => (
+          <div className={styles.block__info} key={block.position}>
+            {/* <LineSeparator /> */}
             <BlockNewsTextAdd
               block={block}
               blocks={blocks}
               setBlocks={setBlocks}
               isLoading={isLoading}
             />
-          </Fragment>
-        ))} */}
+          </div>
+        ))}
 
         <BoxInputSimple
           id="hashtag"

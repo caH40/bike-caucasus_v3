@@ -116,7 +116,7 @@ export type TNews = {
 export type TNewsBlock = {
   _id: ObjectId;
   text: string;
-  image: string | null;
+  image?: string | null;
   imageTitle: string;
   position: number;
 };
@@ -166,7 +166,7 @@ export type TBlockTrail = {
   _id: ObjectId;
   text: string;
   position: number;
-  image?: string;
+  image?: string | null;
   imageTitle?: string; // Подпись для изображения.
   title?: string;
   video?: string;

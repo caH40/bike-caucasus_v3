@@ -1,21 +1,21 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { lcSuffixTrailModeration as suffix } from '@/constants/local-storage';
-import { TBlockTrailEdit } from '@/types/index.interface';
+import { TBlockInputInfo } from '@/types/index.interface';
 
 type Props = {
   title: string;
   hashtags: string;
-  blocks: TBlockTrailEdit[];
+  blocks: TBlockInputInfo[];
   resetData: boolean;
   target: 'edit' | 'create'; // указывает какая форма используется.
 };
 
 type PropsInit = {
-  setBlocks: Dispatch<SetStateAction<TBlockTrailEdit[]>>;
+  setBlocks: Dispatch<SetStateAction<TBlockInputInfo[]>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setHashtags: Dispatch<SetStateAction<string>>;
-  initialBlocks: TBlockTrailEdit[];
+  initialBlocks: TBlockInputInfo[];
   isEditing: boolean; // Происходит редактирование или создание маршрута.
   target: 'edit' | 'create'; // указывает какая форма используется.
 };

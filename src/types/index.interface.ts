@@ -1,5 +1,5 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TBlockTrail, TLogsErrorModel } from './models.interface';
+import { TLogsErrorModel } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 import { TNewsBlockDto, TNewsGetOneDto } from './dto.types';
 
@@ -172,11 +172,16 @@ export type TNewsBlocksEdit = TNewsBlockDto & {
 };
 
 /**
- * Данные новостных блоков для отправки на сервер для сохранения.
+ * Данные блоков для ввода информации, при создании новости, маршрутов и т.д..
  */
-export type TBlockTrailEdit = Omit<TBlockTrail, '_id'> & {
-  // _id: string;
-  imageFile: File | null;
+export type TBlockInputInfo = {
+  text: string;
+  position: number;
+  title?: string; // Заголовок у блока.
+  video?: string;
+  image?: string | null; // Ссылка на изображение.
+  imageTitle?: string; // Подпись для изображения.
+  imageFile: File | null; // Изображение в формате File/
   imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
   imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
 };

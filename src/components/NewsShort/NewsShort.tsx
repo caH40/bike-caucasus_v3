@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-import TitleAndLine from '../UI/TitleAndLine/TitleAndLine';
+import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsShort.module.css';
 

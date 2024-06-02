@@ -1,13 +1,13 @@
 // Небольшие утилиты для компоненты FormNewsCreate
 
 import { content } from '@/libs/utils/text';
-import type { TNewsBlocksEdit } from '@/types/index.interface';
+import type { TBlockInputInfo } from '@/types/index.interface';
 
 type Params = {
   title: string;
   subTitle: string;
   hashtags: string;
-  blocks: TNewsBlocksEdit[];
+  blocks: TBlockInputInfo[];
 };
 
 // Очищает тексты Новости от тэгов html, кроме <a>, <br>.

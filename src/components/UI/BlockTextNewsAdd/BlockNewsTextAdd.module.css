@@ -8,15 +8,20 @@
   margin-bottom: 0.5rem;
 }
 .title {
-  font-size: 1rem;
   margin-bottom: 5px;
+}
+.wrapper__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .block__icons {
   display: flex;
   justify-content: space-between;
   gap: 0.7rem;
 }
-.block__icons__right {
+.block__icons_left,
+.block__icons_right {
   display: flex;
   gap: 0.7rem;
 }

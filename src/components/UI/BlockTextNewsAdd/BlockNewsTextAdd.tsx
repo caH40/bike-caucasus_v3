@@ -11,18 +11,18 @@ import { toast } from 'sonner';
 import InputFileIcon from '../InputFile/InputFileIcon';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import ButtonClose from '../ButtonClose/ButtonClose';
-import type { TNewsBlocksEdit } from '@/types/index.interface';
 import BoxTextareaSimple from '../BoxTextarea/BoxTextareaSimple';
 import useInsertLink from '@/hooks/link-insert';
 import styles from './BlockNewsTextAdd.module.css';
 import ModalSimple from '../Modal/ModalInput';
 import Button from '../Button/Button';
 import BoxInputSimple from '../BoxInput/BoxInputSimple';
+import type { TBlockInputInfo } from '@/types/index.interface';
 
 type Props = {
-  block: TNewsBlocksEdit; // новостной блок из новости, текст и изображение(не обязательно)
-  blocks: TNewsBlocksEdit[]; // новостной блок из новости, текст и изображение(не обязательно)
-  setBlocks: Dispatch<SetStateAction<TNewsBlocksEdit[]>>; // изменение массива blocks
+  block: TBlockInputInfo; // новостной блок из новости, текст и изображение(не обязательно)
+  blocks: TBlockInputInfo[]; // новостной блок из новости, текст и изображение(не обязательно)
+  setBlocks: Dispatch<SetStateAction<TBlockInputInfo[]>>; // изменение массива blocks
   isLoading: boolean;
 };
 
@@ -33,9 +33,10 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
   const { showModal, setShowModal, url, setUrl, handleInsertLink, handleSelection } =
     useInsertLink({
       refTextArea,
-      handlerInput,
+      handlerInput: handlerTextareaText,
       block,
     });
+
   // обработка загрузки изображения
   const getImage = async (event: ChangeEvent<HTMLInputElement>) => {
     const imageFile = event.target.files?.[0] || null;
@@ -78,12 +79,11 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
   };
 
   // функция получения и формирования данных с нужной структурой для setBlocks
-  // при вводе в Textarea для свойства text
-  function handlerInput(value: string) {
+  function handlerInputCommon(property: string, value: string) {
     setBlocks((prev) => {
       const blocks = prev.map((elm) => {
         return elm.position === block.position
-          ? { ...block, text: value, position: elm.position }
+          ? { ...block, position: elm.position, [property]: value }
           : elm;
       });
 
@@ -91,18 +91,24 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
     });
   }
 
-  // функция получения и формирования данных с нужной структурой для setBlocks
-  // при вводе в Input для свойства imageTitle
-  function handlerInputImage(value: string) {
-    setBlocks((prev) => {
-      const blocks = prev.map((elm) => {
-        return elm.position === block.position
-          ? { ...block, imageTitle: value, position: elm.position }
-          : elm;
-      });
+  // при вводе в Input для свойства Title
+  function handlerInputTitle(value: string) {
+    handlerInputCommon('title', value);
+  }
 
-      return blocks;
-    });
+  // при вводе в Textarea для свойства text
+  function handlerTextareaText(value: string) {
+    handlerInputCommon('text', value);
+  }
+
+  // при вводе в Input для свойства imageTitle
+  function handlerInputImageTitle(value: string) {
+    handlerInputCommon('imageTitle', value);
+  }
+
+  // при вводе в Input для свойства Video
+  function handlerInputVideo(value: string) {
+    handlerInputCommon('video', value);
   }
 
   // удаление загруженного изображения
@@ -174,89 +180,127 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
           />
         </ModalSimple>
       )}
+      <h3 className={styles.title}>{`Блок текста и изображения к нему №${block.position}`}</h3>
 
-      <h2 className={styles.title}>{`Блок текста и изображения к нему №${block.position}`}</h2>
-      <div className={styles.block__icons}>
-        <div className={styles.block__icons__right}>
-          <InputFileIcon
-            name="uploadImage"
-            icon={{
-              width: 26,
-              height: 22,
-              src: '/images/icons/image-upload.svg',
-              alt: 'Upload image',
-            }}
-            accept=".jpg, .jpeg, .png, .webp"
-            getChange={getImage}
+      <div className={styles.wrapper__inputs}>
+        <div>
+          {/* Иконки управления блоком */}
+          <div className={styles.block__icons}>
+            <div className={styles.block__icons_left}>
+              <InputFileIcon
+                name="uploadImage"
+                icon={{
+                  width: 26,
+                  height: 22,
+                  src: '/images/icons/image-upload.svg',
+                  alt: 'Upload image',
+                }}
+                accept=".jpg, .jpeg, .png, .webp"
+                getChange={getImage}
+              />
+              <button onClick={handleSelection} className={styles.btn}>
+                <Image
+                  width={26}
+                  height={22}
+                  src="/images/icons/link.svg"
+                  alt="Insert a link"
+                  className={styles.icon__img}
+                />
+              </button>
+            </div>
+
+            <div className={styles.block__icons_right}>
+              <button onClick={(e) => addBlock(e)} className={styles.btn}>
+                <Image
+                  width={26}
+                  height={22}
+                  src="/images/icons/add-square.svg"
+                  alt="Insert a link"
+                  className={styles.icon__img}
+                />
+              </button>
+              {block.position !== 1 && (
+                <button onClick={(e) => deleteBlock(e, block.position)} className={styles.btn}>
+                  <Image
+                    width={26}
+                    height={22}
+                    src="/images/icons/delete-square.svg"
+                    alt="Insert a link"
+                    className={styles.icon__img}
+                  />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Текст блока (новость, описание маршрута и т.д.) */}
+          <BoxTextareaSimple
+            value={block.text}
+            name={`block-${block.text}`}
+            id={`block-${block.text}`}
+            loading={isLoading}
+            autoComplete="off"
+            type="text"
+            handlerInput={handlerTextareaText}
+            validationText={block.text.length > 30 ? '' : 'пустое!'}
+            refTextArea={refTextArea}
           />
-
-          <button onClick={handleSelection} className={styles.btn}>
-            <Image
-              width={26}
-              height={22}
-              src="/images/icons/link.svg"
-              alt="Insert a link"
-              className={styles.icon__img}
-            />
-          </button>
-
-          <button onClick={(e) => addBlock(e)} className={styles.btn}>
-            <Image
-              width={26}
-              height={22}
-              src="/images/icons/add-square.svg"
-              alt="Insert a link"
-              className={styles.icon__img}
-            />
-          </button>
         </div>
 
-        <button onClick={(e) => deleteBlock(e, block.position)} className={styles.btn}>
-          <Image
-            width={26}
-            height={22}
-            src="/images/icons/delete-square.svg"
-            alt="Insert a link"
-            className={styles.icon__img}
-          />
-        </button>
+        {/* Заголовок текстового блока */}
+        <BoxInputSimple
+          id={`block-${block.title}`}
+          name={`block-${block.title}`}
+          value={block.title}
+          handlerInput={handlerInputTitle}
+          type={'text'}
+          label="Заголовок:"
+          loading={isLoading}
+          autoComplete={'off'}
+        />
+
+        {/* Блок отображения изображения и ввода описания к нему */}
+        {block.image && (
+          <>
+            <div className={styles.relative}>
+              {/* в данном случае компонент Image не нужен */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={block.image} alt="image for block" className={styles.img} />
+
+              <ButtonClose getClick={deleteImage} />
+              <div className={styles.top} />
+            </div>
+
+            {/* Заголовок текстового блока */}
+            <BoxInputSimple
+              id={`block-${block.imageTitle}`}
+              name={`block-${block.imageTitle}`}
+              value={block.imageTitle}
+              handlerInput={handlerInputImageTitle}
+              type={'text'}
+              label="Краткое описание изображения:*"
+              loading={isLoading}
+              autoComplete={'off'}
+              showValidationText={true}
+              validationText={
+                block.imageTitle && block.imageTitle?.length < 70 ? '' : 'не больше 70 символов'
+              }
+            />
+          </>
+        )}
+
+        {/* Ссылка на видео в Youtube */}
+        <BoxInputSimple
+          id={`block-${block.video}`}
+          name={`block-${block.video}`}
+          value={block.video}
+          handlerInput={handlerInputVideo}
+          type={'text'}
+          label="Ссылка на видео в Youtube:"
+          loading={isLoading}
+          autoComplete={'off'}
+        />
       </div>
-      <BoxTextareaSimple
-        value={block.text}
-        name={`block-${block.position}`}
-        id={`block-${block.position}`}
-        loading={isLoading}
-        autoComplete="off"
-        type="text"
-        handlerInput={handlerInput}
-        validationText={block.text.length > 30 ? '' : 'пустое!'}
-        refTextArea={refTextArea}
-      />
-
-      {block.image && (
-        <>
-          <div className={styles.relative}>
-            {/* в данном случае компонент Image не нужен */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={block.image} alt="image for block" className={styles.img} />
-
-            <ButtonClose getClick={deleteImage} />
-            <div className={styles.top} />
-          </div>
-          <BoxInputSimple
-            id={`block-${block.imageTitle}`}
-            name={`block-${block.imageTitle}`}
-            value={block.imageTitle}
-            handlerInput={handlerInputImage}
-            type={'text'}
-            label="Краткое описание изображения:"
-            loading={isLoading}
-            autoComplete={'off'}
-            showValidationText={true}
-            validationText={block.imageTitle?.length < 70 ? '' : 'не больше 70 символов'} // необходима проверка?
-          />
-        </>
-      )}
     </section>
   );
 }

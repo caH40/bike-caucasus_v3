@@ -1,13 +1,13 @@
 import { type MouseEvent, useState, RefObject } from 'react';
 import { toast } from 'sonner';
 
-import type { TNewsBlocksEdit } from '@/types/index.interface';
+import type { TBlockInputInfo } from '@/types/index.interface';
 
 type Props = {
   refTextArea: RefObject<HTMLTextAreaElement>;
   // eslint-disable-next-line no-unused-vars
   handlerInput: (value: string) => void;
-  block: TNewsBlocksEdit;
+  block: TBlockInputInfo;
 };
 
 /**
