@@ -96,6 +96,7 @@ export function useLSTrail({
     localStorage.setItem(`${suffix}${target}-blocks`, JSON.stringify(blocksWithoutImage));
   }, [blocks, target]);
 
+  // Удаление из Локального хранилища всех данных о Маршруте
   useEffect(() => {
     if (target === 'edit') {
       return;
@@ -105,6 +106,15 @@ export function useLSTrail({
       return;
     }
     localStorage.removeItem(`${suffix}${target}-title`);
+    localStorage.removeItem(`${suffix}${target}-region`);
+    localStorage.removeItem(`${suffix}${target}-difficultyLevel`);
+    localStorage.removeItem(`${suffix}${target}-startLocation`);
+    localStorage.removeItem(`${suffix}${target}-turnLocation`);
+    localStorage.removeItem(`${suffix}${target}-finishLocation`);
+    localStorage.removeItem(`${suffix}${target}-distance`);
+    localStorage.removeItem(`${suffix}${target}-ascent`);
+    localStorage.removeItem(`${suffix}${target}-garminConnect`);
+    localStorage.removeItem(`${suffix}${target}-komoot`);
     localStorage.removeItem(`${suffix}${target}-hashtags`);
     localStorage.removeItem(`${suffix}${target}-blocks`);
   }, [resetData, target]);

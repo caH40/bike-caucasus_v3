@@ -53,18 +53,14 @@ export default function FormTrail({
   const [ascent, setAscent] = useState<number>(0);
   const [garminConnect, setGarminConnect] = useState<string>('');
   const [komoot, setKomoot] = useState<string>('');
+  const [hashtags, setHashtags] = useState<string>('');
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );
-  // console.log({ difficultyLevel, region });
-
-  // Хэштэги новости.
-  const [hashtags, setHashtags] = useState<string>('');
   // Постер новости в формате File.
   const [poster, setPoster] = useState<File | null>(null);
   // Постер новости существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(null);
-
   // Триггер очистки форм и Локального хранилища.
   const [resetData, setResetData] = useState<boolean>(false);
 
@@ -155,8 +151,6 @@ export default function FormTrail({
       // posterOldUrl,
     });
 
-    formData.forEach((elm) => console.log(elm));
-
     let response = {
       data: null,
       ok: false,
@@ -171,15 +165,23 @@ export default function FormTrail({
     }
 
     if (response.ok) {
-      //   setBlocks(getInitialBlocks());
-      //   setTitle('');
-      //   setSubTitle('');
-      //   setHashtags('');
-      //   setPoster(null);
-      //   setResetData(true);
-      //   setPosterUrl(null);
-      //   toast.success(response.message);
-      //   router.push(`/`);
+      setBlocks(getInitialBlocks());
+      setTitle('');
+      setRegion('');
+      setDifficultyLevel('');
+      setStartLocation('');
+      setTurnLocation('');
+      setFinishLocation('');
+      setDistance(0);
+      setAscent(0);
+      setGarminConnect('');
+      setKomoot('');
+      setHashtags('');
+      setPoster(null);
+      setResetData(true);
+      setPosterUrl(null);
+      toast.success(response.message);
+      router.push(`/trails`);
     } else {
       toast.error(response.message);
     }
