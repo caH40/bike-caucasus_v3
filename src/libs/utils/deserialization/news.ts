@@ -1,18 +1,12 @@
+import type { TBlockInputInfo } from '@/types/index.interface';
 import type { TNews } from '@/types/models.interface';
 
-type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
-  blocks: {
-    text: string;
-    image?: File | string;
-    imageTitle?: string;
-    position: number;
-    imageOldUrl?: string;
-    imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
-  }[];
-  poster?: File | string;
-  hashtags: string | string[];
+export type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
+  poster: File | null;
+  hashtags: string;
   urlSlug?: string;
   posterOldUrl?: string;
+  blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
 };
 
 export function deserializeNewsCreate(formData: FormData) {

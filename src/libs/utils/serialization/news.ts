@@ -40,7 +40,7 @@ export function serializationNewsCreate({
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
   for (let i = 0; i < blocks.length; i++) {
     if (blocks[i].imageFile) {
-      formData.set(`blocks[${i}][image]`, blocks[i].imageFile as File); // !!!!! изменить на imageFile, image пустой, дальше в него будет присваиватсья url
+      formData.set(`blocks[${i}][imageFile]`, blocks[i].imageFile as File);
     }
     const imageOldUrl = blocks[i].imageOldUrl;
     if (imageOldUrl) {
@@ -57,6 +57,16 @@ export function serializationNewsCreate({
     const imageDeleted = blocks[i].imageDeleted;
     if (imageDeleted) {
       formData.set(`blocks[${i}][imageDeleted]`, String(imageDeleted));
+    }
+
+    const title = blocks[i].title;
+    if (title) {
+      formData.set(`blocks[${i}][video]`, title);
+    }
+
+    const video = blocks[i].video;
+    if (video) {
+      formData.set(`blocks[${i}][video]`, video);
     }
   }
 

@@ -15,7 +15,7 @@ type TTrailCreateFromClient = {
   poster: File | null; // Изображение заголовка маршрута.
   urlSlug?: string; // urlSlug редактируемого маршрута, если его нет, значит маршрут создаётся.
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
-  blocks: TBlockInputInfo[]; // Блоки новостей, содержащие текст и изображения.
+  blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
 };
 
 /**

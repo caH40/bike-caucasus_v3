@@ -155,7 +155,7 @@ export class Trail {
     }
 
     // Замена строки на массив хэштегов.
-    const hashtagsArr = getHashtags(trail.hashtags);
+    const hashtags = getHashtags(trail.hashtags);
 
     // Создание slug из title для url страницы маршрута.
     const sequenceValue = await getNextSequenceValue('trail');
@@ -167,7 +167,7 @@ export class Trail {
 
     const response = await TrailModel.create({
       ...trail,
-      hashtags: hashtagsArr,
+      hashtags,
       poster,
       author,
       urlSlug,

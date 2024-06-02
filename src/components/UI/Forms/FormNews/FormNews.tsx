@@ -6,7 +6,7 @@ import cn from 'classnames';
 
 import { getInitialBlocks } from './initial-block';
 import { useLoadingStore } from '@/store/loading';
-import { serializationNewsCreate } from '@/libs/utils/serialization';
+import { serializationNewsCreate } from '@/libs/utils/serialization/news';
 import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
 import Wrapper from '../../../Wrapper/Wrapper';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';

@@ -85,6 +85,11 @@ export function serializationTrailCreate({
       formData.set(`blocks[${i}][imageDeleted]`, String(imageDeleted));
     }
 
+    const title = blocks[i].title;
+    if (title) {
+      formData.set(`blocks[${i}][video]`, title);
+    }
+
     const video = blocks[i].video;
     if (video) {
       formData.set(`blocks[${i}][video]`, video);

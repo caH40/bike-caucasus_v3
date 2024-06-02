@@ -6,7 +6,17 @@ import { TBlockInputInfo } from '@/types/index.interface';
 // а при редактировании blocks передается пропсами с сервера.
 export function getInitialBlocks(blocks?: TNewsBlockDto[]): TBlockInputInfo[] {
   if (!blocks) {
-    return [{ text: '', image: null, imageFile: null, imageTitle: '', position: 1 }];
+    return [
+      {
+        text: '',
+        image: null,
+        imageFile: null,
+        imageTitle: '',
+        title: '',
+        video: '',
+        position: 1,
+      },
+    ];
   }
 
   return blocks.map((block) => {
@@ -15,8 +25,10 @@ export function getInitialBlocks(blocks?: TNewsBlockDto[]): TBlockInputInfo[] {
       image: block.image,
       imageFile: null,
       imageOldUrl: block.image,
-      imageTitle: content.stripAllHtmlTags(block.imageTitle),
+      imageTitle: content.stripAllHtmlTags(block.imageTitle || ''),
       position: block.position,
+      title: block.title,
+      video: block.video,
     };
     return editedBlock;
   });

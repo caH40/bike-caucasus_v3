@@ -7,7 +7,10 @@ import { User } from '@/database/mongodb/Models/User';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { handlerErrorDB } from './mongodb/error';
 import { getNextSequenceValue } from './sequence';
-import { deserializeNewsCreate } from '@/libs/utils/deserialization';
+import {
+  TNewsCreateFromClient,
+  deserializeNewsCreate,
+} from '@/libs/utils/deserialization/news';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
@@ -46,7 +49,7 @@ export class News {
 
       const suffix = 'news_image_title-';
       // Сохранение изображения для Постера новости.
-      news.poster = await this.saveImage({
+      const poster = await this.saveImage({
         fileImage: news.poster as File,
         suffix,
         cloudName,
@@ -59,12 +62,12 @@ export class News {
       for (const block of news.blocks) {
         index++;
         // Если нет файла, то следующая итерация блоков.
-        if (!block.image) {
+        if (!block.imageFile) {
           continue;
         }
 
         const urlSaved = await this.saveImage({
-          fileImage: block.image as File,
+          fileImage: block.imageFile,
           suffix,
           cloudName,
           domainCloudName,
@@ -75,7 +78,7 @@ export class News {
       }
 
       // Замена строки на массив хэштегов.
-      news.hashtags = getHashtags(news.hashtags as string);
+      const hashtags = getHashtags(news.hashtags);
 
       // Подключение к БД.
       await this.dbConnection();
@@ -85,7 +88,7 @@ export class News {
       const title = `${sequenceValue}-${news.title}`;
       const urlSlug = slugify(title, { lower: true, strict: true });
 
-      const response = await NewsModel.create({ ...news, author, urlSlug });
+      const response = await NewsModel.create({ ...news, hashtags, poster, author, urlSlug });
 
       if (!response._id) {
         throw new Error('Новость не сохранилась в БД!');
@@ -130,8 +133,9 @@ export class News {
 
       const suffixForSave = 'news_image_title-';
       // Обновление изображения для Постера новости, если оно загружено.
+      let poster = '';
       if (news.poster) {
-        news.poster = await this.saveImage({
+        poster = await this.saveImage({
           fileImage: news.poster as File,
           suffix: suffixForSave,
           cloudName,
@@ -154,10 +158,11 @@ export class News {
       for (const block of news.blocks) {
         index++;
         // Если нет файла image и imageDeleted:false, то присваиваем старый url этого изображения.
-        if (!block.image && !block.imageDeleted) {
+        if (!block.imageFile && !block.imageDeleted) {
           news.blocks[index].image = block.imageOldUrl;
           continue;
         }
+
         // Если нет файла image и imageDeleted:true, то удаляем старое изображение из Облака.
         if (!block.image && block.imageDeleted && block.imageOldUrl) {
           await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
@@ -165,7 +170,7 @@ export class News {
         }
 
         const urlSaved = await this.saveImage({
-          fileImage: block.image as File,
+          fileImage: block.imageFile!, // !!!! попробовать разобраться!
           suffix: suffixForSave,
           cloudName,
           domainCloudName,
@@ -181,10 +186,18 @@ export class News {
       }
 
       // Замена строки на массив хэштегов.
-      news.hashtags = getHashtags(news.hashtags as string);
+      const hashtags = getHashtags(news.hashtags);
+
+      const updateData: Omit<TNewsCreateFromClient, 'hashtags' | 'poster'> & {
+        poster: File | null | string;
+        hashtags: string[];
+      } = { ...news, hashtags };
+      if (poster) {
+        updateData.poster = poster;
+      }
 
       // slug не обновляется, остается старый для исключения проблем с индексацией.
-      await NewsModel.findOneAndUpdate({ urlSlug: news.urlSlug }, news);
+      await NewsModel.findOneAndUpdate({ urlSlug: news.urlSlug }, updateData);
 
       return { data: null, ok: true, message: 'Данные новости обновлены!' };
     } catch (error) {

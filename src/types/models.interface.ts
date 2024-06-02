@@ -119,6 +119,8 @@ export type TNewsBlock = {
   image?: string | null;
   imageTitle: string;
   position: number;
+  title?: string;
+  video?: string;
 };
 
 /**

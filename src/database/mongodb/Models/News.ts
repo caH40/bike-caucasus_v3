@@ -12,8 +12,10 @@ const NewsSchema = new Schema<TNews>(
       {
         text: { type: String },
         image: { type: String },
+        title: { type: String, trim: true },
         imageTitle: { type: String },
         position: { type: Number },
+        video: { type: String, trim: true }, // Url видео с ютуба.
       },
     ],
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Ссылка на автора новости
