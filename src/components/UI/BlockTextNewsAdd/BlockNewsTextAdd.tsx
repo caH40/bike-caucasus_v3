@@ -143,6 +143,8 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
         image: null,
         imageFile: null,
         imageTitle: '',
+        title: '',
+        video: '',
         position: positionLast ? positionLast + 1 : 1,
       },
     ]);
@@ -180,6 +182,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
           />
         </ModalSimple>
       )}
+
       <h3 className={styles.title}>{`Блок текста и изображения к нему №${block.position}`}</h3>
 
       <div className={styles.wrapper__inputs}>

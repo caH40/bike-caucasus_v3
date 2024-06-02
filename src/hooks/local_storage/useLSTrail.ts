@@ -1,22 +1,22 @@
-import { type Dispatch, type SetStateAction, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { lcSuffixTrailModeration as suffix } from '@/constants/local-storage';
 import { TBlockInputInfo } from '@/types/index.interface';
 
 type Props = {
   title: string;
+  region: string;
+  difficultyLevel: string;
+  startLocation: string;
+  turnLocation: string;
+  finishLocation: string;
+  distance: number;
+  ascent: number;
+  garminConnect: string;
+  komoot: string;
   hashtags: string;
   blocks: TBlockInputInfo[];
   resetData: boolean;
-  target: 'edit' | 'create'; // указывает какая форма используется.
-};
-
-type PropsInit = {
-  setBlocks: Dispatch<SetStateAction<TBlockInputInfo[]>>;
-  setTitle: Dispatch<SetStateAction<string>>;
-  setHashtags: Dispatch<SetStateAction<string>>;
-  initialBlocks: TBlockInputInfo[];
-  isEditing: boolean; // Происходит редактирование или создание маршрута.
   target: 'edit' | 'create'; // указывает какая форма используется.
 };
 
@@ -25,28 +25,54 @@ type PropsInit = {
 /**
  * Хук сохраняет вводимые данные в форме создания Маршрута.
  */
-export function useLSTrail({ title, hashtags, blocks, resetData, target }: Props) {
-  useEffect(() => {
-    if (target === 'edit') {
-      return;
-    }
+export function useLSTrail({
+  title,
+  region,
+  difficultyLevel,
+  startLocation,
+  turnLocation,
+  finishLocation,
+  distance,
+  ascent,
+  garminConnect,
+  komoot,
+  hashtags,
+  blocks,
+  resetData,
+  target,
+}: Props) {
+  // Сохранение заголовка (title).
+  useSaveToLC('title', title, target);
 
-    if (!title) {
-      return;
-    }
-    localStorage.setItem(`${suffix}${target}-title`, title);
-  }, [title, target]);
+  // Сохранение региона (region).
+  useSaveToLC('region', region, target);
 
-  useEffect(() => {
-    if (target === 'edit') {
-      return;
-    }
+  // Сохранение уровня сложности (difficultyLevel).
+  useSaveToLC('difficultyLevel', difficultyLevel, target);
 
-    if (!hashtags) {
-      return;
-    }
-    localStorage.setItem(`${suffix}${target}-hashtags`, hashtags);
-  }, [hashtags, target]);
+  // Сохранение места старта (startLocation).
+  useSaveToLC('startLocation', startLocation, target);
+
+  // Сохранение места разворота (turnLocation).
+  useSaveToLC('turnLocation', turnLocation, target);
+
+  // Сохранение места разворота (finishLocation).
+  useSaveToLC('finishLocation', finishLocation, target);
+
+  // Сохранение общей дистанции в метрах (distance).
+  useSaveToLC('distance', distance, target);
+
+  // Сохранение общего набора в метрах (ascent).
+  useSaveToLC('ascent', ascent, target);
+
+  // Сохранение ссылки на маршрут в garminConnect (garminConnect).
+  useSaveToLC('garminConnect', garminConnect, target);
+
+  // Сохранение ссылки на маршрут в komoot (komoot).
+  useSaveToLC('komoot', komoot, target);
+
+  // Сохранение Хэштэгов (hashtags).
+  useSaveToLC('hashtags', hashtags, target);
 
   // сохранение данных блоков в Локальном хранилище при изменении blocks
   useEffect(() => {
@@ -85,37 +111,18 @@ export function useLSTrail({ title, hashtags, blocks, resetData, target }: Props
 }
 
 /**
- * Хук инициализирует данные в форме создания Маршрута (trail) из Локального хранилища.
+ *Сохраняет простые данные String или Number в Локальное хранилище.
  */
-export function useLSTrailInit({
-  setBlocks,
-  setTitle,
-  setHashtags,
-  isEditing,
-  initialBlocks,
-  target,
-}: PropsInit): void {
+function useSaveToLC(property: string, value: string | number, target: string) {
   useEffect(() => {
-    // Получение данных с Локального хранилища браузера.
-    if (isEditing) {
-      setBlocks(initialBlocks);
-      // Не использовать Локальное хранилище при редактировании новости,
-      // так как формы новости заполняются из БД.
+    if (target === 'edit') {
       return;
-    } else {
-      const blocksLS = localStorage.getItem(`${suffix}${target}-blocks`);
-      const blockParsed = blocksLS && JSON.parse(blocksLS);
-      // проверка, что blockParsed существует и является массивом в нулевом элементе которого
-      // есть свойство position, иначе возвращается initialBlocks
-      const initBlocks = blockParsed && blockParsed[0].position ? blockParsed : initialBlocks;
-      setBlocks(initBlocks);
     }
 
-    const initTitle = localStorage.getItem(`${suffix}${target}-title`) || '';
-    const initHashtags = localStorage.getItem(`${suffix}${target}-hashtags`) || '';
+    if (!value) {
+      return;
+    }
 
-    setTitle(initTitle);
-    setHashtags(initHashtags);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    localStorage.setItem(`${suffix}${target}-${property}`, String(value));
+  }, [value, target, property]);
 }

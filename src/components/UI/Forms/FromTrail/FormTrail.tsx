@@ -7,20 +7,20 @@ import cn from 'classnames';
 
 import { getInitialBlocks } from './initial-block';
 import { useLoadingStore } from '@/store/loading';
-
+import { useLSTrail } from '@/hooks/local_storage/useLSTrail';
+import { useLSTrailInit } from '@/hooks/local_storage/useLSTrailInit';
+import {
+  regions as regionsOptions,
+  difficultyLevel as difficultyLevelOptions,
+} from '@/constants/trail';
 import Wrapper from '../../../Wrapper/Wrapper';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
-import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
-import { TTrailDto } from '@/types/dto.types';
-import { useLSTrail, useLSTrailInit } from '@/hooks/local_storage/useLSTrail';
 import BoxSelectSimple from '../../BoxSelect/BoxSelectSimple';
-import {
-  regions as regionsOptions,
-  difficultyLevel as difficultyLevelOptions,
-} from '@/constants/trail';
+import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
+import type { TTrailDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 
 type Props = {
@@ -54,7 +54,7 @@ export default function FormTrail({
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );
-  // console.log(blocks);
+  // console.log({ difficultyLevel, region });
 
   // Хэштэги новости.
   const [hashtags, setHashtags] = useState<string>('');
@@ -76,6 +76,15 @@ export default function FormTrail({
     target: trailForEdit ? 'edit' : 'create',
     setBlocks,
     setTitle,
+    setRegion,
+    setDifficultyLevel,
+    setStartLocation,
+    setTurnLocation,
+    setFinishLocation,
+    setDistance,
+    setAscent,
+    setGarminConnect,
+    setKomoot,
     setHashtags,
     isEditing: trailForEdit ? true : false,
     initialBlocks: getInitialBlocks(trailForEdit?.blocks),
@@ -84,6 +93,15 @@ export default function FormTrail({
   // сохранение данных текстовых полей в Локальном хранилище.
   useLSTrail({
     title,
+    region,
+    difficultyLevel,
+    startLocation,
+    turnLocation,
+    finishLocation,
+    distance,
+    ascent,
+    garminConnect,
+    komoot,
     hashtags,
     blocks,
     resetData,
@@ -100,7 +118,7 @@ export default function FormTrail({
     }
 
     // Отображения спинера загрузки.
-    // setLoading(true);
+    setLoading(true);
 
     // Очищает текст от тэгов html, кроме <a>, <br>.
     // Заменяет символы CRLF перевода строк на html тэг <br>.
