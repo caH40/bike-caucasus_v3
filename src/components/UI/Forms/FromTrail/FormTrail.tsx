@@ -22,6 +22,8 @@ import BoxSelectSimple from '../../BoxSelect/BoxSelectSimple';
 import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
+import { formateAndStripContent } from './utils';
+import { serializationTrailCreate } from '@/libs/utils/serialization/trail';
 
 type Props = {
   fetchTrailCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -122,19 +124,51 @@ export default function FormTrail({
 
     // Очищает текст от тэгов html, кроме <a>, <br>.
     // Заменяет символы CRLF перевода строк на html тэг <br>.
+    const { blockFormatted, flatData } = formateAndStripContent({
+      title,
+      startLocation,
+      turnLocation,
+      finishLocation,
+      distance,
+      ascent,
+      garminConnect,
+      komoot,
+      hashtags,
+      blocks,
+    });
 
-    // let response = {
-    //   data: null,
-    //   ok: false,
-    //   message: 'Не передана ни функция обновления, ни создания новости!',
-    // };
-    // if (fetchNewsCreated) {
-    //   response = await fetchNewsCreated(formData);
-    // } else if (fetchNewsEdited) {
-    //   response = await fetchNewsEdited(formData);
-    // } else {
-    //   return toast.error('Не передана ни функция обновления, ни создания новости!');
-    // }
+    const formData = serializationTrailCreate({
+      blocks: blockFormatted,
+      title: flatData.title,
+      region,
+      difficultyLevel,
+      startLocation: flatData.startLocation,
+      turnLocation: flatData.turnLocation,
+      finishLocation: flatData.finishLocation,
+      distance: flatData.distance,
+      ascent: flatData.ascent,
+      garminConnect: flatData.garminConnect,
+      komoot: flatData.komoot,
+      hashtags: flatData.hashtags,
+      poster,
+      // urlSlug
+      // posterOldUrl,
+    });
+
+    formData.forEach((elm) => console.log(elm));
+
+    let response = {
+      data: null,
+      ok: false,
+      message: 'Не передана ни функция обновления, ни создания новости!',
+    };
+    if (fetchTrailCreated) {
+      response = await fetchTrailCreated(formData);
+    } else if (fetchTrailEdited) {
+      response = await fetchTrailEdited(formData);
+    } else {
+      return toast.error('Не передана ни функция обновления, ни создания новости!');
+    }
 
     // if (response.ok) {
     //   setBlocks(getInitialBlocks());
@@ -149,7 +183,7 @@ export default function FormTrail({
     // } else {
     //   toast.error(response.message);
     // }
-    // setLoading(false);
+    setLoading(false);
   };
 
   // загрузка основного изображения

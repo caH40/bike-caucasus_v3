@@ -48,6 +48,7 @@ export const content = {
     if (!input) {
       return '';
     }
+
     return input.replace(/<(?!\/?(a|br)(\s|\/?)[^>]*>)[^>]+>/gi, '');
   },
 
