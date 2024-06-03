@@ -15,6 +15,7 @@ type Props = {
   garminConnect: string;
   komoot: string;
   hashtags: string;
+  bikeType: string;
   blocks: TBlockInputInfo[];
   resetData: boolean;
   target: 'edit' | 'create'; // указывает какая форма используется.
@@ -37,6 +38,7 @@ export function useLSTrail({
   garminConnect,
   komoot,
   hashtags,
+  bikeType,
   blocks,
   resetData,
   target,
@@ -73,6 +75,9 @@ export function useLSTrail({
 
   // Сохранение Хэштэгов (hashtags).
   useSaveToLC('hashtags', hashtags, target);
+
+  // Сохранение Типа велосипеда (bikeType).
+  useSaveToLC('bikeType', bikeType, target);
 
   // сохранение данных блоков в Локальном хранилище при изменении blocks
   useEffect(() => {
@@ -116,6 +121,7 @@ export function useLSTrail({
     localStorage.removeItem(`${suffix}${target}-garminConnect`);
     localStorage.removeItem(`${suffix}${target}-komoot`);
     localStorage.removeItem(`${suffix}${target}-hashtags`);
+    localStorage.removeItem(`${suffix}${target}-bikeType`);
     localStorage.removeItem(`${suffix}${target}-blocks`);
   }, [resetData, target]);
 }

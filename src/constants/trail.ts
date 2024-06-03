@@ -18,3 +18,11 @@ export const difficultyLevel = [
   { id: 3, translation: 'Сложный', name: 'hard' },
   { id: 4, translation: 'Невыполнимый', name: 'impossible' },
 ];
+
+// Уровни сложности маршрута.
+export const bikeTypes = [
+  { id: 0, translation: 'Шоссейный', name: 'road' },
+  { id: 1, translation: 'Горный', name: 'mtb' },
+  { id: 3, translation: 'Грэвел', name: 'gravel' },
+  { id: 4, translation: 'Скоростной спуск', name: 'dh' },
+];

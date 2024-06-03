@@ -219,6 +219,7 @@ export type TTrailCreateFromClient = {
   garminConnect: string;
   komoot: string;
   hashtags: string;
+  bikeType: string;
   poster: File | null; // Изображение заголовка маршрута.
   urlSlug?: string; // urlSlug редактируемого маршрута, если его нет, значит маршрут создаётся.
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.

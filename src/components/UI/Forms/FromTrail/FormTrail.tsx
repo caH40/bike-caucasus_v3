@@ -11,6 +11,7 @@ import { useLSTrail } from '@/hooks/local_storage/useLSTrail';
 import { useLSTrailInit } from '@/hooks/local_storage/useLSTrailInit';
 import {
   regions as regionsOptions,
+  bikeTypes as bikeTypesOptions,
   difficultyLevel as difficultyLevelOptions,
 } from '@/constants/trail';
 import Wrapper from '../../../Wrapper/Wrapper';
@@ -54,6 +55,7 @@ export default function FormTrail({
   const [garminConnect, setGarminConnect] = useState<string>('');
   const [komoot, setKomoot] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
+  const [bikeType, setBikeType] = useState<string>('');
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );
@@ -84,6 +86,7 @@ export default function FormTrail({
     setGarminConnect,
     setKomoot,
     setHashtags,
+    setBikeType,
     isEditing: trailForEdit ? true : false,
     initialBlocks: getInitialBlocks(trailForEdit?.blocks),
   });
@@ -101,6 +104,7 @@ export default function FormTrail({
     garminConnect,
     komoot,
     hashtags,
+    bikeType,
     blocks,
     resetData,
     target: trailForEdit ? 'edit' : 'create',
@@ -116,6 +120,7 @@ export default function FormTrail({
       !(hashtags.length >= 3) ||
       !region ||
       !difficultyLevel ||
+      !bikeType ||
       !(startLocation.length > 2 && startLocation.length < 20) ||
       !(finishLocation.length > 2 && finishLocation.length < 20) ||
       !(distance > 100) ||
@@ -162,6 +167,7 @@ export default function FormTrail({
       garminConnect: flatData.garminConnect,
       komoot: flatData.komoot,
       hashtags: flatData.hashtags,
+      bikeType,
       poster,
       // urlSlug
       // posterOldUrl,
@@ -194,6 +200,7 @@ export default function FormTrail({
       setGarminConnect('');
       setKomoot('');
       setHashtags('');
+      setBikeType('');
       setPoster(null);
       setResetData(true);
       setPosterUrl(null);
@@ -233,6 +240,17 @@ export default function FormTrail({
           label="Регион:*"
           loading={isLoading}
           validationText={region ? '' : 'нет данных'}
+        />
+
+        {/* Блок ввода Типа велосипеда */}
+        <BoxSelectSimple
+          state={bikeType}
+          setState={setBikeType}
+          name="state"
+          options={bikeTypesOptions}
+          label="Тип велосипеда:*"
+          loading={isLoading}
+          validationText={bikeType ? '' : 'нет данных'}
         />
 
         {/* Блок ввода Сложности */}

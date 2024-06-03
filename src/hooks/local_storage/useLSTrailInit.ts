@@ -16,6 +16,7 @@ type PropsInit = {
   setAscent: Dispatch<SetStateAction<number>>;
   setGarminConnect: Dispatch<SetStateAction<string>>;
   setKomoot: Dispatch<SetStateAction<string>>;
+  setBikeType: Dispatch<SetStateAction<string>>;
   initialBlocks: TBlockInputInfo[];
   isEditing: boolean; // Происходит редактирование или создание маршрута.
   target: 'edit' | 'create'; // указывает какая форма используется.
@@ -37,6 +38,7 @@ export function useLSTrailInit({
   setGarminConnect,
   setKomoot,
   setHashtags,
+  setBikeType,
   isEditing,
   initialBlocks,
   target,
@@ -69,6 +71,7 @@ export function useLSTrailInit({
     const initGarminConnect = localStorage.getItem(`${suffix}${target}-garminConnect`) || '';
     const initKomoot = localStorage.getItem(`${suffix}${target}-komoot`) || '';
     const initHashtags = localStorage.getItem(`${suffix}${target}-hashtags`) || '';
+    const initBikeType = localStorage.getItem(`${suffix}${target}-bikeType`) || 'road';
 
     setTitle(initTitle);
     setRegion(initRegion);
@@ -81,6 +84,7 @@ export function useLSTrailInit({
     setGarminConnect(initGarminConnect);
     setKomoot(initKomoot);
     setHashtags(initHashtags);
+    setBikeType(initBikeType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

@@ -6,6 +6,7 @@ import { TTrailDto } from '@/types/dto.types';
 import Link from 'next/link';
 import IconEye from '../Icons/IconEye';
 import IconHandThumbUp from '../Icons/IconHandThumbUp';
+import { bikeTypes, regions } from '@/constants/trail';
 
 type Props = {
   trail: TTrailDto;
@@ -15,7 +16,10 @@ const cx = cn.bind(styles);
 
 export default function TrailCard({ trail }: Props) {
   return (
-    <Link href={String(trail._id)} className={cx('card', { mtb: trail.bikeType === 'mtb' })}>
+    <Link
+      href={String(trail.urlSlug)}
+      className={cx('card', { mtb: trail.bikeType === 'mtb' })}
+    >
       <Image
         width={308}
         height={184}
@@ -26,7 +30,9 @@ export default function TrailCard({ trail }: Props) {
       <div className={styles.description}>
         <div className={styles.block__title}>
           <h2 className={styles.title}>{trail.title}</h2>
-          <h3 className={cx('title', 'title_sub')}>{trail.region}</h3>
+          <h3 className={cx('title', 'title_sub')}>
+            {regions.find((region) => region.name === trail.region)?.translation || 'не задан'}
+          </h3>
         </div>
 
         <div className={styles.content}>
@@ -99,7 +105,9 @@ export default function TrailCard({ trail }: Props) {
               alt="bike"
             />
             <span className={styles.names}>Тип:</span>
-            <span className={styles.names_data}>{trail.bikeType}</span>
+            <span className={styles.names_data}>
+              {bikeTypes.find((bt) => bt.name === trail.bikeType)?.translation || 'не задан'}
+            </span>
           </div>
         </div>
       </div>

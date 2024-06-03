@@ -16,6 +16,7 @@ export function serializationTrailCreate({
   garminConnect,
   komoot,
   hashtags,
+  bikeType,
   blocks,
   poster,
   urlSlug,
@@ -35,6 +36,7 @@ export function serializationTrailCreate({
   formData.set('garminConnect', garminConnect);
   formData.set('komoot', komoot);
   formData.set('hashtags', hashtags);
+  formData.set('bikeType', bikeType);
   if (poster) {
     formData.set('poster', poster);
   }
