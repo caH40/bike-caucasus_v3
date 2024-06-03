@@ -302,6 +302,14 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
           label="Ссылка на видео в Youtube:"
           loading={isLoading}
           autoComplete={'off'}
+          showValidationText={true}
+          validationText={
+            block.video
+              ? block.video.startsWith('https://yout')
+                ? ''
+                : 'начало с https://yout'
+              : ''
+          } // Необязательный, но если есть, то должен начинаться с https://yout
         />
       </div>
     </section>

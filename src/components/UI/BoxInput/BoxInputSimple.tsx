@@ -21,6 +21,7 @@ export default function BoxInputSimple<T>({
   loading,
   name,
   type,
+
   ...props
 }: PropsBoxInputSimple<T>) {
   return (

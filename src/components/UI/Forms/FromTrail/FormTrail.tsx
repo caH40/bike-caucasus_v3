@@ -57,9 +57,9 @@ export default function FormTrail({
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );
-  // Постер новости в формате File.
+  // Постер Маршрута в формате File.
   const [poster, setPoster] = useState<File | null>(null);
-  // Постер новости существует при редактировании, url на изображение.
+  // Постер Маршрута существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(null);
   // Триггер очистки форм и Локального хранилища.
   const [resetData, setResetData] = useState<boolean>(false);
@@ -110,8 +110,24 @@ export default function FormTrail({
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!(poster || posterUrl) || !title || !hashtags) {
-      toast.error('Не заполнены все обязательные поля!');
+    if (
+      !(poster || posterUrl) ||
+      !(title.length > 2 && title.length < 30) ||
+      !(hashtags.length >= 3) ||
+      !region ||
+      !difficultyLevel ||
+      !(startLocation.length > 2 && startLocation.length < 20) ||
+      !(finishLocation.length > 2 && finishLocation.length < 20) ||
+      !(distance > 100) ||
+      !(ascent > 0) ||
+      !(komoot ? (komoot.startsWith('https://www.komoot.com/') ? true : false) : true) ||
+      !(garminConnect
+        ? garminConnect.startsWith('https://connect.garmin.com/')
+          ? true
+          : false
+        : true)
+    ) {
+      toast.error('Присутствуют ошибки в заполнении формы!');
       return;
     }
 
@@ -151,17 +167,18 @@ export default function FormTrail({
       // posterOldUrl,
     });
 
+    const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
     let response = {
       data: null,
       ok: false,
-      message: 'Не передана ни функция обновления, ни создания новости!',
+      message: messageErr,
     };
     if (fetchTrailCreated) {
       response = await fetchTrailCreated(formData);
     } else if (fetchTrailEdited) {
       response = await fetchTrailEdited(formData);
     } else {
-      return toast.error('Не передана ни функция обновления, ни создания новости!');
+      return toast.error(messageErr);
     }
 
     if (response.ok) {
@@ -203,7 +220,8 @@ export default function FormTrail({
           label="Название:*"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={title.length > 3 && title.length < 20 ? '' : 'пустое!'}
+          showValidationText={true}
+          validationText={title.length > 2 && title.length < 30 ? '' : 'от 3 до 30 символов!'}
         />
 
         {/* Блок ввода Региона */}
@@ -238,9 +256,10 @@ export default function FormTrail({
           label="Место старта:*"
           loading={isLoading}
           autoComplete={'off'}
+          showValidationText={true}
           validationText={
-            startLocation.length > 2 && startLocation.length < 20 ? '' : 'ошибка!'
-          } // !!! необходимо установить макс. количество символов.
+            startLocation.length > 2 && startLocation.length < 20 ? '' : 'от 3 до 20 символов!'
+          }
         />
 
         {/* Блок ввода Места разворота */}
@@ -253,7 +272,8 @@ export default function FormTrail({
           label="Место разворота:*"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={turnLocation.length > 2 && turnLocation.length < 20 ? '' : 'ошибка!'} // !!! необходимо установить макс. количество символов.
+          showValidationText={true}
+          validationText={''}
         />
 
         {/* Блок ввода Места финиша */}
@@ -266,9 +286,12 @@ export default function FormTrail({
           label="Место финиша:*"
           loading={isLoading}
           autoComplete={'off'}
+          showValidationText={true}
           validationText={
-            finishLocation.length > 2 && finishLocation.length < 20 ? '' : 'ошибка!'
-          } // !!! необходимо установить макс. количество символов.
+            finishLocation.length > 2 && finishLocation.length < 20
+              ? ''
+              : 'от 3 до 20 символов!'
+          }
         />
 
         {/* Блок ввода общей дистанции в метрах */}
@@ -307,6 +330,14 @@ export default function FormTrail({
           label="Ссылка на маршрут в Garmin Connect:"
           loading={isLoading}
           autoComplete={'off'}
+          showValidationText={true}
+          validationText={
+            garminConnect
+              ? garminConnect.startsWith('https://connect.garmin.com/')
+                ? ''
+                : 'начало с https://connect.garmin.com/'
+              : ''
+          } // Необязательный, но если есть, то должен начинаться с https://connect.garmin.com/
         />
 
         {/* Ссылка на маршрут в komoot */}
@@ -319,6 +350,14 @@ export default function FormTrail({
           label="Ссылка на маршрут в Komoot:"
           loading={isLoading}
           autoComplete={'off'}
+          showValidationText={true}
+          validationText={
+            komoot
+              ? komoot.startsWith('https://www.komoot.com/')
+                ? ''
+                : 'начало с https://www.komoot.com/'
+              : ''
+          } // Необязательный, но если есть, то должен начинаться с https://www.komoot.com
         />
 
         {/* Блок загрузки Главного изображения (обложки) */}
@@ -344,7 +383,7 @@ export default function FormTrail({
           validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
         />
 
-        {/* Блок добавления текста и изображения новости */}
+        {/* Блок добавления текста и изображения Маршрута */}
         {blocks.map((block) => (
           <div className={styles.block__info} key={block.position}>
             {/* <LineSeparator /> */}
