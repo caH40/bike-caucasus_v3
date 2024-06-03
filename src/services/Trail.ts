@@ -32,7 +32,7 @@ export class Trail {
    * @param idDB - Идентификатор маршрута в базе данных.
    * @returns Объект с данными маршрута или сообщением об ошибке.
    */
-  public async getOne(idDB: string): Promise<ResponseServer<TTrailDto | null>> {
+  public async getOne(urlSlug: string): Promise<ResponseServer<TTrailDto | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -40,7 +40,7 @@ export class Trail {
       // Получаем информацию о маршруте из БД.
       const trailDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser }) | null =
         await TrailModel.findOne({
-          _id: idDB,
+          urlSlug,
         })
           .populate({
             path: 'author',
@@ -58,14 +58,14 @@ export class Trail {
 
       // Если маршрут не найден, генерируем исключение.
       if (!trailDB) {
-        throw new Error(`Не найден маршрут с _id:${idDB}`);
+        throw new Error(`Не найден маршрут с urlSlug:${urlSlug}`);
       }
 
       // Возвращаем информацию о маршруте и успешный статус.
       return {
         data: dtoTrail(trailDB),
         ok: true,
-        message: `Данные маршрута с id${idDB}`,
+        message: `Данные маршрута с urlSlug:${urlSlug}`,
       };
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
