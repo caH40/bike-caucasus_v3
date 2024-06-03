@@ -3,13 +3,13 @@ import cn from 'classnames/bind';
 
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { Trail } from '@/services/Trail';
-import styles from './TrailPage.module.css';
 import { errorLogger } from '@/errors/error';
-import { TTrailDto } from '@/types/dto.types';
-import Author from '@/components/Author/Author';
 import { regions } from '@/constants/trail';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import LineSeparator from '@/components/LineSeparator/LineSeparator';
+import TrailTotal from '@/components/TrailTotal/TrailTotal';
+import type { TTrailDto } from '@/types/dto.types';
+import styles from './TrailPage.module.css';
 
 const cx = cn.bind(styles);
 
@@ -38,7 +38,6 @@ async function getTrail(urlSlug: string): Promise<TTrailDto | null | undefined> 
 
 export default async function TrailPage({ params }: Props) {
   const trail = await getTrail(params.urlSlug);
-  // console.log(trail);
 
   return (
     <>
@@ -84,9 +83,8 @@ export default async function TrailPage({ params }: Props) {
                   )}
                 </article>
               ))}
-              <div className={styles.author}>
-                <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
-              </div>
+
+              <TrailTotal trail={trail} />
             </div>
             <LineSeparator />
             <BlockShare title={'Поделиться'} />

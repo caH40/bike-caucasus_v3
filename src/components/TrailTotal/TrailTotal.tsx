@@ -1,0 +1,85 @@
+import { TTrailDto } from '@/types/dto.types';
+
+import styles from './TrailTotal.module.css';
+import Link from 'next/link';
+import Author from '../Author/Author';
+
+type Props = {
+  trail: TTrailDto;
+};
+
+export default function TrailTotal({ trail }: Props) {
+  return (
+    <div className={styles.wrapper}>
+      <h3 className={styles.title}>Сводные данные по маршруту:</h3>
+      <dl className={styles.list}>
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Старт</dt>
+          <dd className={styles.description}>{trail.startLocation}</dd>
+        </div>
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Разворот</dt>
+          <dd className={styles.description}>{trail.turnLocation}</dd>
+        </div>
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Финиш</dt>
+          <dd className={styles.description}>{trail.finishLocation}</dd>
+        </div>
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Дистанция</dt>
+          <dd className={styles.description}>
+            {trail.distance}
+            {'км'}
+          </dd>
+        </div>
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Набор высоты</dt>
+          <dd className={styles.description}>
+            {trail.ascent}
+            {'м'}
+          </dd>
+        </div>
+
+        {trail.garminConnect && (
+          <div className={styles.box__list}>
+            <dt className={styles.term}>Garmin Connect</dt>
+            <dd className={styles.description}>
+              <Link
+                className={styles.link}
+                target="blank"
+                href={trail.garminConnect}
+                rel="noreferrer"
+              >
+                Ссылка на маршрут
+              </Link>
+            </dd>
+          </div>
+        )}
+
+        {trail.komoot && (
+          <div className={styles.box__list}>
+            <dt className={styles.term}>Komoot</dt>
+            <dd className={styles.description}>
+              <Link className={styles.link} target="blank" href={trail.komoot} rel="noreferrer">
+                Ссылка на маршрут
+              </Link>
+            </dd>
+          </div>
+        )}
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Создан</dt>
+          <dd className={styles.description}>
+            <div className={styles.author}>
+              <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
+            </div>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
