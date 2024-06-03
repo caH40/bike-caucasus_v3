@@ -1,22 +1,4 @@
-import { TBlockInputInfo } from '@/types/index.interface';
-
-type TTrailCreateFromClient = {
-  title: string; // Заголовок новости.
-  region: string;
-  difficultyLevel: string;
-  startLocation: string;
-  turnLocation: string;
-  finishLocation: string;
-  distance: number;
-  ascent: number;
-  garminConnect: string;
-  komoot: string;
-  hashtags: string;
-  poster: File | null; // Изображение заголовка маршрута.
-  urlSlug?: string; // urlSlug редактируемого маршрута, если его нет, значит маршрут создаётся.
-  posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
-  blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
-};
+import { TTrailCreateFromClient } from '@/types/index.interface';
 
 /**
  *

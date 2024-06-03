@@ -1,9 +1,8 @@
 import {
   IUserModel,
   TAuthorFromUser,
-  TBlockTrail,
   TLogsErrorModel,
-  TNewsBlock,
+  TNewsBlockInfo,
   TRoleModel,
   TTrailDocument,
 } from './models.interface';
@@ -35,7 +34,7 @@ export type TNewsGetOneDto = {
 export type TAuthor = Omit<TAuthorFromUser, '_id'> & { _id: string };
 
 // Блок новости без _id.
-export type TNewsBlockDto = Omit<TNewsBlock, '_id'>;
+export type TNewsBlockDto = Omit<TNewsBlockInfo, '_id'>;
 
 // Интерактивный блок новостей
 export type TNewsInteractiveDto = {
@@ -83,7 +82,7 @@ export type TUserDtoPublic = Omit<TUserDto, 'provider' | 'email' | 'person'> & {
   };
 };
 
-export type TBlockTrailDto = Omit<TBlockTrail, '_id'> & { _id: string };
+export type TBlockTrailDto = Omit<TNewsBlockInfo, '_id'> & { _id: string };
 
 export type TTrailDto = Omit<
   TTrailDocument,

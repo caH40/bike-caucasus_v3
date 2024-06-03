@@ -1,22 +1,4 @@
-import type { TBlockInputInfo } from '@/types/index.interface';
-
-type Params = {
-  title: string; // Заголовок новости.
-  region: string;
-  difficultyLevel: string;
-  startLocation: string;
-  turnLocation: string;
-  finishLocation: string;
-  distance: number;
-  ascent: number;
-  garminConnect: string;
-  komoot: string;
-  hashtags: string;
-  poster: File | null; // Изображение заголовка маршрута.
-  urlSlug?: string; // urlSlug редактируемого маршрута, если его нет, значит маршрут создаётся.
-  posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
-  blocks: TBlockInputInfo[]; // Блоки новостей, содержащие текст и изображения.
-};
+import { TTrailCreateFromClient } from '@/types/index.interface';
 
 /**
  * Функция для сериализации данных при создании новостей.
@@ -38,7 +20,7 @@ export function serializationTrailCreate({
   poster,
   urlSlug,
   posterOldUrl,
-}: Params): FormData {
+}: TTrailCreateFromClient): FormData {
   const formData = new FormData();
   formData.set('title', title);
   formData.set('region', region);

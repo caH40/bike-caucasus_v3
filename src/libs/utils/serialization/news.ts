@@ -1,14 +1,4 @@
-import type { TBlockInputInfo } from '@/types/index.interface';
-
-type Params = {
-  blocks: TBlockInputInfo[]; // Блоки новостей, содержащие текст и изображения.
-  title: string; // Заголовок новости.
-  subTitle: string; // Подзаголовок новости.
-  hashtags: string; // Хэштег новости.
-  poster: File | null; // Изображение заголовка новости.
-  urlSlug?: string; // urlSlug редактируемой новости, если его нет, значит новость создаётся.
-  posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
-};
+import type { TNewsCreateFromClient } from '@/types/index.interface';
 
 /**
  * Функция для сериализации данных при создании новостей.
@@ -22,7 +12,7 @@ export function serializationNewsCreate({
   poster,
   urlSlug,
   posterOldUrl,
-}: Params): FormData {
+}: TNewsCreateFromClient): FormData {
   const formData = new FormData();
   formData.set('title', title);
   formData.set('subTitle', subTitle);

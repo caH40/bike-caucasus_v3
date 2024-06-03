@@ -7,16 +7,18 @@ import { User } from '@/database/mongodb/Models/User';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { handlerErrorDB } from './mongodb/error';
 import { getNextSequenceValue } from './sequence';
-import {
-  TNewsCreateFromClient,
-  deserializeNewsCreate,
-} from '@/libs/utils/deserialization/news';
+import { deserializeNewsCreate } from '@/libs/utils/deserialization/news';
 import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
 import { errorLogger } from '@/errors/error';
-import type { TNews, TNewsBlock } from '@/types/models.interface';
-import type { ResponseServer, TCloudConnect, TSaveImage } from '@/types/index.interface';
+import type { TNews, TNewsBlockInfo } from '@/types/models.interface';
+import type {
+  ResponseServer,
+  TCloudConnect,
+  TNewsCreateFromClient,
+  TSaveImage,
+} from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
 import { saveImage } from './save-image';
@@ -121,7 +123,7 @@ export class News {
       ).lean();
 
       if (!newsDB) {
-        throw new Error(`Не найдена новость с urlSlug:${news.createdAt} для редактирования!`);
+        throw new Error(`Не найдена новость с urlSlug:${news.urlSlug} для редактирования!`);
       }
 
       // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
@@ -482,7 +484,7 @@ export class News {
         _id: ObjectId;
         createdAt: Date;
         poster: string;
-        blocks: TNewsBlock[];
+        blocks: TNewsBlockInfo[];
       } | null = await NewsModel.findOne(query, {
         createdAt: true,
         poster: true,

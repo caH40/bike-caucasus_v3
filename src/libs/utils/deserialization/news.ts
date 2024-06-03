@@ -1,13 +1,4 @@
-import type { TBlockInputInfo } from '@/types/index.interface';
-import type { TNews } from '@/types/models.interface';
-
-export type TNewsCreateFromClient = Omit<TNews, 'blocks' | 'poster' | 'hashtags'> & {
-  poster: File | null;
-  hashtags: string;
-  urlSlug?: string;
-  posterOldUrl?: string;
-  blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
-};
+import { TNewsCreateFromClient } from '@/types/index.interface';
 
 export function deserializeNewsCreate(formData: FormData) {
   const news = {} as TNewsCreateFromClient & { [key: string]: any };

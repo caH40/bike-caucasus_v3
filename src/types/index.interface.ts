@@ -1,7 +1,6 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TLogsErrorModel } from './models.interface';
+import { TLogsErrorModel, TNewsBlockInfo } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
-import { TNewsBlockDto, TNewsGetOneDto } from './dto.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -163,35 +162,12 @@ export type TMenuOnPage = {
 };
 
 /**
- * Данные новостных блоков для отправки на сервер для сохранения.
- */
-export type TNewsBlocksEdit = TNewsBlockDto & {
-  imageFile: File | null;
-  imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
-  imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
-};
-
-/**
  * Данные блоков для ввода информации, при создании новости, маршрутов и т.д..
  */
-export type TBlockInputInfo = {
-  text: string;
-  position: number;
-  title?: string; // Заголовок у блока.
-  video?: string;
-  image?: string | null; // Ссылка на изображение.
-  imageTitle?: string; // Подпись для изображения.
+export type TBlockInputInfo = Omit<TNewsBlockInfo, '_id'> & {
   imageFile: File | null; // Изображение в формате File/
   imageOldUrl?: string | null; // Старый Url изображения в блоке, возвращаем для удаления изображения из облака.
   imageDeleted?: boolean; // true - изображение было удалено, новое не установленно.
-};
-
-/**
- * Данные новости для отправки на сервер для сохранения.
- */
-export type TNewsEdit = Omit<TNewsGetOneDto, 'blocks'> & {
-  posterFile: File | null;
-  blocks: TNewsBlocksEdit[];
 };
 
 /**
@@ -226,4 +202,38 @@ export type TSaveImage = {
   cloudName: 'vk';
   domainCloudName: string;
   bucketName: string;
+};
+
+/**
+ * Данные с клиента при создании/редактировании Маршрута.
+ */
+export type TTrailCreateFromClient = {
+  title: string; // Заголовок новости.
+  region: string;
+  difficultyLevel: string;
+  startLocation: string;
+  turnLocation: string;
+  finishLocation: string;
+  distance: number;
+  ascent: number;
+  garminConnect: string;
+  komoot: string;
+  hashtags: string;
+  poster: File | null; // Изображение заголовка маршрута.
+  urlSlug?: string; // urlSlug редактируемого маршрута, если его нет, значит маршрут создаётся.
+  posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
+  blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
+};
+
+/**
+ * Данные с клиента при создании/редактировании Новости.
+ */
+export type TNewsCreateFromClient = {
+  blocks: TBlockInputInfo[]; // Блоки новостей, содержащие текст и изображения.
+  title: string; // Заголовок новости.
+  subTitle: string; // Подзаголовок новости.
+  hashtags: string; // Хэштег новости.
+  poster: File | null; // Изображение заголовка новости.
+  urlSlug?: string; // urlSlug редактируемой новости, если его нет, значит новость создаётся.
+  posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
 };

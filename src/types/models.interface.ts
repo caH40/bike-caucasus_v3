@@ -97,7 +97,7 @@ export type TNews = {
   title: string;
   urlSlug: string;
   subTitle: string;
-  blocks: TNewsBlock[];
+  blocks: TNewsBlockInfo[];
   content: string;
   author: ObjectId;
   poster: string;
@@ -111,16 +111,16 @@ export type TNews = {
 };
 
 /**
- * Типы модели блока новости.
+ * Типы модели блока новости и маршрута.
  */
-export type TNewsBlock = {
+export type TNewsBlockInfo = {
   _id: ObjectId;
-  text: string;
-  image?: string | null;
-  imageTitle: string;
-  position: number;
-  title?: string;
-  video?: string;
+  text: string; // Текст блока.
+  image?: string | null; // Ссылка на изображение (в облаке).
+  imageTitle: string; // Заголовок(подпись) изображения.
+  position: number; // Порядковый номер блока.
+  title?: string; // Заголовок блока
+  video?: string; // Ссылка на видео с Youtube.
 };
 
 /**
@@ -162,19 +162,6 @@ export interface TLogsErrorModel {
 }
 
 /**
- * Блок описания маршрута.
- */
-export type TBlockTrail = {
-  _id: ObjectId;
-  text: string;
-  position: number;
-  image?: string | null;
-  imageTitle?: string; // Подпись для изображения.
-  title?: string;
-  video?: string;
-};
-
-/**
  * Типизация документа Trail из mongoDB.
  */
 export type TTrailDocument = Document & {
@@ -188,7 +175,7 @@ export type TTrailDocument = Document & {
   finishLocation: string; // Город или место у которого есть название.
   distance: number; // Расстояние в километрах.
   ascent: number; // Набор высоты в метрах.
-  blocks: TBlockTrail[];
+  blocks: TNewsBlockInfo[];
   garminConnect?: string;
   komoot?: string;
   author: ObjectId;
