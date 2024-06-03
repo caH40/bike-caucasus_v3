@@ -324,17 +324,17 @@ export default function FormTrail({
           }
         />
 
-        {/* Блок ввода общей дистанции в метрах */}
+        {/* Блок ввода общей дистанции в километрах */}
         <BoxInputSimple
           id="distance"
           name="distance"
           value={distance}
           handlerInput={setDistance}
           type={'number'}
-          label="Общая дистанция в метрах:*"
+          label="Общая дистанция в километрах:*"
           loading={isLoading}
           autoComplete={'off'}
-          validationText={distance > 100 ? '' : 'ошибка!'}
+          validationText={distance > 5 ? '' : 'ошибка!'}
         />
 
         {/* Блок ввода общего набора в метрах */}

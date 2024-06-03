@@ -3,6 +3,7 @@ import { TTrailDto } from '@/types/dto.types';
 import styles from './TrailTotal.module.css';
 import Link from 'next/link';
 import Author from '../Author/Author';
+import { difficultyLevel, regions } from '@/constants/trail';
 
 type Props = {
   trail: TTrailDto;
@@ -41,6 +42,22 @@ export default function TrailTotal({ trail }: Props) {
           <dd className={styles.description}>
             {trail.ascent}
             {'м'}
+          </dd>
+        </div>
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Уровень сложности</dt>
+          <dd className={styles.description}>
+            {difficultyLevel.find((level) => level.name === trail.difficultyLevel)
+              ?.translation || 'нет данных'}
+          </dd>
+        </div>
+
+        <div className={styles.box__list}>
+          <dt className={styles.term}>Регион</dt>
+          <dd className={styles.description}>
+            {regions.find((region) => region.name === trail.region)?.translation ||
+              'нет данных'}
           </dd>
         </div>
 
