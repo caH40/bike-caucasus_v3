@@ -114,7 +114,19 @@ export default function FormTrail({
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    function verifyDataBlock(blocksInfo: TBlockInputInfo[]) {
+      let isCorrect = false;
+      blocksInfo.forEach((elm) => {
+        if (elm.text.length > 200 && elm.text.length < 400) {
+          isCorrect = true;
+        }
+      });
+
+      return isCorrect;
+    }
+
     if (
+      !verifyDataBlock(blocks) ||
       !(poster || posterUrl) ||
       !(title.length > 2 && title.length < 30) ||
       !(hashtags.length >= 3) ||
