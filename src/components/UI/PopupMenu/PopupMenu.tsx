@@ -14,23 +14,27 @@ export default function PopupMenu() {
 
   return (
     isVisible && (
-      <div className={styles.wrapper} onClick={() => setMenu(false)}>
-        <div className={styles.popup}>
-          <ul className={styles.list}>
-            {getNavLinksUserPopup(session?.user.id).map((link) => (
-              <PermissionCheck permission={link.permission} key={link.id}>
-                <li className={styles.item} key={link.id}>
-                  <Link href={link.href} className={styles.link}>
-                    {link.icon && <link.icon squareSize={22} />}
+      // <div className={styles.wrapper} onClick={() => setMenu(false)}>
+      <div
+        className={styles.popup}
+        onClick={() => setMenu(false)}
+        onMouseLeave={() => setMenu(false)}
+      >
+        <ul className={styles.list}>
+          {getNavLinksUserPopup(session?.user.id).map((link) => (
+            <PermissionCheck permission={link.permission} key={link.id}>
+              <li className={styles.item} key={link.id}>
+                <Link href={link.href} className={styles.link}>
+                  {link.icon && <link.icon squareSize={22} />}
 
-                    {link.name}
-                  </Link>
-                </li>
-              </PermissionCheck>
-            ))}
-          </ul>
-        </div>
+                  {link.name}
+                </Link>
+              </li>
+            </PermissionCheck>
+          ))}
+        </ul>
       </div>
+      // </div>
     )
   );
 }

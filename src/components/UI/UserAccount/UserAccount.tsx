@@ -8,6 +8,7 @@ import cn from 'classnames/bind';
 import { useMobileMenuStore } from '@/store/mobile';
 import { usePopupUserStore } from '@/store/popup-user';
 import styles from './UserAccount.module.css';
+import PopupMenu from '../PopupMenu/PopupMenu';
 
 const cx = cn.bind(styles);
 
@@ -29,23 +30,26 @@ const UserAccount = () => {
       return;
     }
     if (status === 'authenticated') {
-      setMenu(true);
+      setMenu(!isVisible);
       // setMobileMenu(false);
     } else {
       toast.info('Необходима авторизация');
     }
   };
   return (
-    <button className={cx('btn', { focus: isVisible })} onClick={getClick}>
-      <Image
-        width={30}
-        height={30}
-        className={styles.img}
-        src={avatar}
-        alt="avatar"
-        quality={100}
-      />
-    </button>
+    <>
+      <button className={cx('btn', { focus: isVisible })} onClick={getClick}>
+        <Image
+          width={30}
+          height={30}
+          className={styles.img}
+          src={avatar}
+          alt="avatar"
+          quality={100}
+        />
+      </button>
+      <PopupMenu />
+    </>
   );
 };
 

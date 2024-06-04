@@ -13,7 +13,6 @@ import './globals.css';
 import Script from 'next/script';
 import { Suspense } from 'react';
 import YandexMetrika from '@/components/YandexMetrika/YandexMetrika';
-import PopupMenu from '@/components/UI/PopupMenu/PopupMenu';
 
 export const metadata: Metadata = metadataHomePage;
 
@@ -48,7 +47,6 @@ export default function RootLayout({
 
         {/* <!-- /Yandex.Metrika counter --> */}
         <Providers>
-          <PopupMenu />
           <div className="container">
             <Header />
             <main className="main">
