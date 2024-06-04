@@ -88,7 +88,7 @@ export default function TrailTotal({ trail }: Props) {
           </div>
         )}
 
-        {trail.komoot && (
+        {trail.trackGPX && (
           <div className={styles.box__list}>
             <dt className={styles.term}>Трэк GPX</dt>
             <dd className={styles.description}>
@@ -103,15 +103,6 @@ export default function TrailTotal({ trail }: Props) {
             </dd>
           </div>
         )}
-
-        {/* <div className={styles.box__list}>
-          <dt className={styles.term}>Создан</dt>
-          <dd className={styles.description}>
-            <div className={styles.author}>
-              <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
-            </div>
-          </dd>
-        </div> */}
       </dl>
       <div className={styles.author}>
         <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
