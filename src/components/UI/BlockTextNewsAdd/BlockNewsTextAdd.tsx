@@ -246,11 +246,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
             type="text"
             handlerInput={handlerTextareaText}
             showValidationText={true}
-            validationText={
-              block.text.length > 200 && block.text.length < 400
-                ? ''
-                : 'от 200 до 400 символов!'
-            }
+            validationText={block.text.length > 200 ? '' : 'от 200 символов!'}
             refTextArea={refTextArea}
           />
         </div>
@@ -310,9 +306,9 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
           showValidationText={true}
           validationText={
             block.video
-              ? block.video.startsWith('https://yout')
+              ? block.video.startsWith('https://www.yout')
                 ? ''
-                : 'начало с https://yout'
+                : 'начало с https://www.yout'
               : ''
           } // Необязательный, но если есть, то должен начинаться с https://yout
         />

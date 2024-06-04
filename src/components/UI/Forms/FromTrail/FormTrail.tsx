@@ -118,10 +118,11 @@ export default function FormTrail({
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Контрольная проверка блоков на правильность заполнения.
     function verifyDataBlock(blocksInfo: TBlockInputInfo[]) {
       let isCorrect = false;
       blocksInfo.forEach((elm) => {
-        if (elm.text.length > 200 && elm.text.length < 400) {
+        if (elm.text.length > 200) {
           isCorrect = true;
         }
       });
