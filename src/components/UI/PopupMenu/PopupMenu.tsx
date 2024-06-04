@@ -6,9 +6,10 @@ import { useSession } from 'next-auth/react';
 import styles from './PopupMenu.module.css';
 import { getNavLinksUserPopup } from '@/constants/navigation';
 import { usePopupUserStore } from '@/store/popup-user';
+import PermissionCheck from '@/hoc/permission-check';
 
 export default function PopupMenu() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const { isVisible, setMenu } = usePopupUserStore();
 
   return (
@@ -16,16 +17,17 @@ export default function PopupMenu() {
       <div className={styles.wrapper} onClick={() => setMenu(false)}>
         <div className={styles.popup}>
           <ul className={styles.list}>
-            {status === 'authenticated' &&
-              getNavLinksUserPopup(session?.user.id).map((nav) => (
-                <li className={styles.item} key={nav.id}>
-                  <Link href={nav.href} className={styles.link}>
-                    {nav.icon && <nav.icon squareSize={22} />}
+            {getNavLinksUserPopup(session?.user.id).map((link) => (
+              <PermissionCheck permission={link.permission} key={link.id}>
+                <li className={styles.item} key={link.id}>
+                  <Link href={link.href} className={styles.link}>
+                    {link.icon && <link.icon squareSize={22} />}
 
-                    {nav.name}
+                    {link.name}
                   </Link>
                 </li>
-              ))}
+              </PermissionCheck>
+            ))}
           </ul>
         </div>
       </div>

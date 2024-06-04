@@ -22,7 +22,7 @@ export const getNavLinksMobile = (userId: string | undefined) => [
     id: 3,
     name: 'Профиль',
     href: userId ? `/profile/${userId}` : '/',
-    permission: 'user',
+    permission: 'authorized',
     icon: IconUser,
   },
   { id: 4, name: 'Управление', href: '/moderation', permission: 'moderation' },
@@ -37,7 +37,7 @@ export const getNavLinksUserPopup = (userId: string | undefined) => [
     id: 0,
     name: 'Профиль',
     href: userId ? `/profile/${userId}` : '/',
-    permission: 'user',
+    permission: '',
     icon: IconUser,
   },
   {
