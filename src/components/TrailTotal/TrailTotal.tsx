@@ -104,15 +104,18 @@ export default function TrailTotal({ trail }: Props) {
           </div>
         )}
 
-        <div className={styles.box__list}>
+        {/* <div className={styles.box__list}>
           <dt className={styles.term}>Создан</dt>
           <dd className={styles.description}>
             <div className={styles.author}>
               <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
             </div>
           </dd>
-        </div>
+        </div> */}
       </dl>
+      <div className={styles.author}>
+        <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
+      </div>
     </div>
   );
 }

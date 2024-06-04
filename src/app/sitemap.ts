@@ -1,6 +1,7 @@
 import { UserService } from '@/services/user';
 import { News } from '@/services/news';
 import { MetadataRoute } from 'next';
+import { Trail } from '@/services/Trail';
 
 const host = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -18,6 +19,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Генерация sitemap данных для страниц Новость.
   const newsSitemap = await generateSitemapNewsPages();
 
+  // Генерация sitemap данных для страниц описание Маршрута.
+  const trailsSitemap = await generateSitemapTrailPages();
+
   return [
     {
       url: host,
@@ -30,8 +34,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${host}/trails`,
+      changeFrequency: 'daily',
+      priority: 0.6,
+    },
     ...profilesSitemap, // profile
     ...newsSitemap, // news
+    ...trailsSitemap, // trails
   ];
 }
 
@@ -72,6 +82,27 @@ async function generateSitemapNewsPages(): Promise<MetadataRoute.Sitemap> {
     }));
 
     return newsSitemap;
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Генерирует sitemap данных для страниц Маршрут /trails/urlSlug
+ */
+async function generateSitemapTrailPages(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const trailService = new Trail();
+    const trails = await trailService.getMany();
+
+    const trailsSitemap: MetadataRoute.Sitemap = (trails.data || []).map((trail) => ({
+      url: `${host}/trails/${trail.urlSlug}`,
+      lastModified: trail.updatedAt,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    }));
+
+    return trailsSitemap;
   } catch (error) {
     return [];
   }
