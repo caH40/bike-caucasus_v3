@@ -26,6 +26,9 @@
 .active {
   color: #39a034;
 }
+.link:focus {
+  outline: solid 3px var(--btn-bg-hover);
+}
 /* ====================================================================== */
 @media (max-width: 992px) {
   .list {

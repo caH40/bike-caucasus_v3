@@ -162,6 +162,17 @@ export type TMenuOnPage = {
 };
 
 /**
+ * Навигационные линки.
+ */
+export type TNavLink = {
+  id: number;
+  name: string;
+  href?: string;
+  permission: string | null; // правило доступа
+  icon?: React.ComponentType<TIconProps>;
+};
+
+/**
  * Данные блоков для ввода информации, при создании новости, маршрутов и т.д..
  */
 export type TBlockInputInfo = Omit<TNewsBlockInfo, '_id'> & {

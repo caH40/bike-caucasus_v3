@@ -2,6 +2,10 @@
   width: 30px;
   height: 30px;
   border-radius: 7px;
+  background: none;
+}
+.btn:focus {
+  outline: solid 3px var(--btn-bg-hover);
 }
 .img {
   width: 100%;
@@ -12,6 +16,6 @@
   border-radius: 7px;
   object-fit: cover;
 }
-.btn {
-  background: none;
+.focus {
+  outline: solid 3px var(--btn-bg-hover);
 }

@@ -1,12 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import styles from './LogoMain.module.css';
+
 /**
  * Главное лого сайта
  */
 export default function LogoMain() {
   return (
-    <Link href={'/'}>
+    <Link href={'/'} className={styles.link}>
       <Image
         priority={true}
         width={'199'}
