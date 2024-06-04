@@ -245,7 +245,12 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
             autoComplete="off"
             type="text"
             handlerInput={handlerTextareaText}
-            validationText={block.text.length > 30 ? '' : 'пустое!'}
+            showValidationText={true}
+            validationText={
+              block.text.length > 200 && block.text.length < 400
+                ? ''
+                : 'от 200 до 400 символов!'
+            }
             refTextArea={refTextArea}
           />
         </div>

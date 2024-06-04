@@ -17,11 +17,11 @@ import type {
   ResponseServer,
   TCloudConnect,
   TNewsCreateFromClient,
-  TSaveImage,
+  TSaveFile,
 } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
-import { saveImage } from './save-image';
+import { saveFile } from './save-file';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -29,12 +29,12 @@ import { saveImage } from './save-image';
 export class News {
   private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
-  private saveImage: (params: TSaveImage) => Promise<string>; // eslint-disable-line no-unused-vars
+  private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
 
   constructor() {
     this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
-    this.saveImage = saveImage;
+    this.saveFile = saveFile;
   }
 
   /**
@@ -51,8 +51,9 @@ export class News {
 
       const suffix = 'news_image_title-';
       // Сохранение изображения для Постера новости.
-      const poster = await this.saveImage({
-        fileImage: news.poster as File,
+      const poster = await this.saveFile({
+        file: news.poster as File,
+        type: 'image',
         suffix,
         cloudName,
         domainCloudName,
@@ -68,8 +69,9 @@ export class News {
           continue;
         }
 
-        const urlSaved = await this.saveImage({
-          fileImage: block.imageFile,
+        const urlSaved = await this.saveFile({
+          file: block.imageFile,
+          type: 'image',
           suffix,
           cloudName,
           domainCloudName,
@@ -137,8 +139,9 @@ export class News {
       // Обновление изображения для Постера новости, если оно загружено.
       let poster = '';
       if (news.poster) {
-        poster = await this.saveImage({
-          fileImage: news.poster as File,
+        poster = await this.saveFile({
+          file: news.poster as File,
+          type: 'image',
           suffix: suffixForSave,
           cloudName,
           domainCloudName,
@@ -171,8 +174,9 @@ export class News {
           continue;
         }
 
-        const urlSaved = await this.saveImage({
-          fileImage: block.imageFile!, // !!!! попробовать разобраться!
+        const urlSaved = await this.saveFile({
+          file: block.imageFile!, // !!!! попробовать разобраться!
+          type: 'image',
           suffix: suffixForSave,
           cloudName,
           domainCloudName,

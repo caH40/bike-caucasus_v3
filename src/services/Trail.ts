@@ -6,10 +6,10 @@ import { dtoTrail, dtoTrails } from '@/dto/trail';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { deserializeTrailCreate } from '@/libs/utils/deserialization/trail';
-import { saveImage } from './save-image';
+import { saveFile } from './save-file';
 import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
-import type { ResponseServer, TCloudConnect, TSaveImage } from '@/types/index.interface';
+import type { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
 import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
 import type { TTrailDto } from '@/types/dto.types';
 
@@ -19,11 +19,11 @@ import type { TTrailDto } from '@/types/dto.types';
 export class Trail {
   private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
-  private saveImage: (params: TSaveImage) => Promise<string>; // eslint-disable-line no-unused-vars
+  private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   constructor() {
     this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
-    this.saveImage = saveImage;
+    this.saveFile = saveFile;
   }
 
   /**
@@ -32,7 +32,7 @@ export class Trail {
    * @param idDB - Идентификатор маршрута в базе данных.
    * @returns Объект с данными маршрута или сообщением об ошибке.
    */
-  public async getOne(idDB: string): Promise<ResponseServer<TTrailDto | null>> {
+  public async getOne(urlSlug: string): Promise<ResponseServer<TTrailDto | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -40,7 +40,7 @@ export class Trail {
       // Получаем информацию о маршруте из БД.
       const trailDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser }) | null =
         await TrailModel.findOne({
-          _id: idDB,
+          urlSlug,
         })
           .populate({
             path: 'author',
@@ -58,14 +58,14 @@ export class Trail {
 
       // Если маршрут не найден, генерируем исключение.
       if (!trailDB) {
-        throw new Error(`Не найден маршрут с _id:${idDB}`);
+        throw new Error(`Не найден маршрут с urlSlug:${urlSlug}`);
       }
 
       // Возвращаем информацию о маршруте и успешный статус.
       return {
         data: dtoTrail(trailDB),
         ok: true,
-        message: `Данные маршрута с id${idDB}`,
+        message: `Данные маршрута с urlSlug:${urlSlug}`,
       };
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
@@ -123,11 +123,23 @@ export class Trail {
     // Десериализация данных, полученных с клиента.
     const trail = deserializeTrailCreate(formData);
 
-    const suffix = 'trail_image_poster-';
-    // Сохранение изображения для Постера новости.
-    const poster = await this.saveImage({
-      fileImage: trail.poster as File,
-      suffix,
+    const suffixTrack = 'trail_track_gpx-';
+    // Сохранение файла трэка.
+    const trackGPX = await this.saveFile({
+      file: trail.track as File,
+      type: 'GPX',
+      suffix: suffixTrack,
+      cloudName,
+      domainCloudName,
+      bucketName,
+    });
+
+    const suffixImage = 'trail_image_poster-';
+    // Сохранение изображения для Постера маршрута.
+    const poster = await this.saveFile({
+      file: trail.poster as File,
+      type: 'image',
+      suffix: suffixImage,
       cloudName,
       domainCloudName,
       bucketName,
@@ -143,9 +155,11 @@ export class Trail {
         continue;
       }
 
-      const urlSaved = await this.saveImage({
-        fileImage: block.imageFile,
-        suffix,
+      // Вызов метода сохранения файла изображения.
+      const urlSaved = await this.saveFile({
+        file: block.imageFile,
+        type: 'image',
+        suffix: suffixImage,
         cloudName,
         domainCloudName,
         bucketName,
@@ -171,6 +185,7 @@ export class Trail {
       poster,
       author,
       urlSlug,
+      trackGPX,
     });
 
     if (!response._id) {

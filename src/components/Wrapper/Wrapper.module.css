@@ -7,7 +7,7 @@
 .gaps {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  /* gap: 1.4rem; */
 }
 /* ====================================================================== */
 @media (max-width: 576px) {

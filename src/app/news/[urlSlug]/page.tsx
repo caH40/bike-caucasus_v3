@@ -1,18 +1,17 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { getServerSession } from 'next-auth';
 
 import InteractiveBlockNews from '@/components/UI/InteractiveBlockNews/InteractiveBlockNews';
 import { News } from '@/services/news';
-import { getTimerLocal } from '@/libs/utils/date-local';
-import { getLogoProfile } from '@/libs/utils/profile';
+
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import styles from './NewsPage.module.css';
-import { generateMetadataNews } from '@/constants/meta';
+import { generateMetadataNews } from '@/meta/meta';
 import { Metadata } from 'next';
 import { errorLogger } from '@/errors/error';
+import Author from '@/components/Author/Author';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -86,33 +85,7 @@ export default async function NewsPage({ params }: Props) {
             <h1 className={styles.title}>{newsOne.title}</h1>
 
             {/*Блок об авторе новости и дате создания. */}
-            <div className={styles.author}>
-              <Link href={`/profile/${newsOne.author?.id}`} className={styles.author__name}>
-                <Image
-                  width={24}
-                  height={24}
-                  alt={'Постер новости'}
-                  src={getLogoProfile(
-                    newsOne.author?.imageFromProvider,
-                    newsOne.author?.provider.image,
-                    newsOne.author?.image
-                  )}
-                  className={styles.author__img}
-                  priority={true}
-                />
-              </Link>
-              {newsOne.author ? (
-                <Link href={`/profile/${newsOne.author?.id}`} className={styles.author__name}>
-                  {newsOne.author?.person.firstName} {newsOne.author?.person.lastName}
-                </Link>
-              ) : (
-                <span>Неизвестный</span>
-              )}
-
-              <span className={styles.author__date}>
-                {getTimerLocal(newsOne.createdAt, 'DDMMYYHm')}
-              </span>
-            </div>
+            <Author data={{ author: newsOne.author, createdAt: newsOne.createdAt }} />
 
             {/* Изображение-обложка новости. */}
             <div className={styles.box__img}>

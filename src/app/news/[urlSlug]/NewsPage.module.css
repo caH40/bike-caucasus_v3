@@ -13,29 +13,7 @@
 .title {
   margin-bottom: 1rem;
 }
-.author {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  font-size: 0.9rem;
-  margin-bottom: 1.2rem;
-}
-.author__img {
-  border-radius: 0.5rem;
-}
-.author__name {
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-}
-.author__name:hover {
-  transition: 0.2s;
-  text-decoration-color: inherit;
-}
-.author__date {
-  color: var(--white-50);
-}
+
 .box__img {
   position: relative;
   width: 100%;

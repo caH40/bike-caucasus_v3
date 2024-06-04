@@ -162,6 +162,17 @@ export type TMenuOnPage = {
 };
 
 /**
+ * Навигационные линки.
+ */
+export type TNavLink = {
+  id: number;
+  name: string;
+  href?: string;
+  permission: string | null; // правило доступа
+  icon?: React.ComponentType<TIconProps>;
+};
+
+/**
  * Данные блоков для ввода информации, при создании новости, маршрутов и т.д..
  */
 export type TBlockInputInfo = Omit<TNewsBlockInfo, '_id'> & {
@@ -196,8 +207,9 @@ export type TCloudConnect = {
 /**
  * Сохранение файла в облаке.
  */
-export type TSaveImage = {
-  fileImage: File;
+export type TSaveFile = {
+  file: File;
+  type: 'image' | 'GPX';
   suffix: string;
   cloudName: 'vk';
   domainCloudName: string;
@@ -224,6 +236,7 @@ export type TTrailCreateFromClient = {
   urlSlug?: string; // urlSlug редактируемого маршрута, если его нет, значит маршрут создаётся.
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
   blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
+  track: File | null; // Трэк маршрута в GPX.
 };
 
 /**

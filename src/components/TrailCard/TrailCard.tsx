@@ -17,7 +17,7 @@ const cx = cn.bind(styles);
 export default function TrailCard({ trail }: Props) {
   return (
     <Link
-      href={String(trail.urlSlug)}
+      href={`/trails/${trail.urlSlug}`}
       className={cx('card', { mtb: trail.bikeType === 'mtb' })}
     >
       <Image

@@ -8,7 +8,6 @@ import { getInitialBlocks } from './initial-block';
 import { useLoadingStore } from '@/store/loading';
 import { serializationNewsCreate } from '@/libs/utils/serialization/news';
 import { useLSNews, useLSNewsInit } from '@/hooks/local_storage/useLSNews';
-import Wrapper from '../../../Wrapper/Wrapper';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
@@ -19,6 +18,7 @@ import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import { useRouter } from 'next/navigation';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -145,7 +145,8 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
   // загрузка основного изображения
 
   return (
-    <Wrapper title={'Форма ввода данных'} hSize={2}>
+    <>
+      <TitleAndLine title={'Форма ввода данных'} hSize={2} />
       <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
         <BoxInputSimple
           id="title"
@@ -208,6 +209,6 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
           <Button name="Опубликовать" theme="green" loading={isLoading} />
         </div>
       </form>
-    </Wrapper>
+    </>
   );
 }
