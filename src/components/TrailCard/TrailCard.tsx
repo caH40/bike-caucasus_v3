@@ -1,12 +1,13 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import cn from 'classnames/bind';
 
-import styles from './TrailCard.module.css';
-import { TTrailDto } from '@/types/dto.types';
-import Link from 'next/link';
 import IconEye from '../Icons/IconEye';
 import IconHandThumbUp from '../Icons/IconHandThumbUp';
 import { bikeTypes, regions } from '@/constants/trail';
+import { getBlur } from '@/libs/utils/blur';
+import type { TTrailDto } from '@/types/dto.types';
+import styles from './TrailCard.module.css';
 
 type Props = {
   trail: TTrailDto;
@@ -14,7 +15,8 @@ type Props = {
 
 const cx = cn.bind(styles);
 
-export default function TrailCard({ trail }: Props) {
+export default async function TrailCard({ trail }: Props) {
+  const posterWithBlur = await getBlur(trail?.poster);
   return (
     <Link
       href={`/trails/${trail.urlSlug}`}
@@ -26,6 +28,8 @@ export default function TrailCard({ trail }: Props) {
         className={styles.img}
         src={trail.poster}
         alt={`Poster ${trail.title}`}
+        placeholder="blur"
+        blurDataURL={posterWithBlur}
       />
       <div className={styles.description}>
         <div className={styles.block__title}>

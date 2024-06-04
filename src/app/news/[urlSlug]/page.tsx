@@ -1,17 +1,17 @@
+import { Metadata } from 'next';
 import Image from 'next/image';
 import { getServerSession } from 'next-auth';
 
 import InteractiveBlockNews from '@/components/UI/InteractiveBlockNews/InteractiveBlockNews';
-import { News } from '@/services/news';
-
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import type { TNewsGetOneDto } from '@/types/dto.types';
-import BlockShare from '@/components/BlockShare/BlockShare';
-import styles from './NewsPage.module.css';
-import { generateMetadataNews } from '@/meta/meta';
-import { Metadata } from 'next';
-import { errorLogger } from '@/errors/error';
 import Author from '@/components/Author/Author';
+import BlockShare from '@/components/BlockShare/BlockShare';
+import { News } from '@/services/news';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { generateMetadataNews } from '@/meta/meta';
+import { errorLogger } from '@/errors/error';
+import { getBlur } from '@/libs/utils/blur';
+import type { TNewsGetOneDto } from '@/types/dto.types';
+import styles from './NewsPage.module.css';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -74,6 +74,8 @@ export default async function NewsPage({ params }: Props) {
     idUserDB: session?.user.idDB,
   });
 
+  const posterWithBlur = await getBlur(newsOne?.poster);
+
   const idNews = newsOne?._id ? String(newsOne._id) : undefined;
   await countView(newsOne?._id);
 
@@ -85,7 +87,9 @@ export default async function NewsPage({ params }: Props) {
             <h1 className={styles.title}>{newsOne.title}</h1>
 
             {/*Блок об авторе новости и дате создания. */}
-            <Author data={{ author: newsOne.author, createdAt: newsOne.createdAt }} />
+            <div className={styles.author}>
+              <Author data={{ author: newsOne.author, createdAt: newsOne.createdAt }} />
+            </div>
 
             {/* Изображение-обложка новости. */}
             <div className={styles.box__img}>
@@ -96,6 +100,8 @@ export default async function NewsPage({ params }: Props) {
                 alt={`image ${newsOne.title}`}
                 className={styles.img}
                 priority={true}
+                placeholder="blur"
+                blurDataURL={posterWithBlur}
               />
             </div>
 
@@ -104,29 +110,34 @@ export default async function NewsPage({ params }: Props) {
 
             {/* Тело новости состоящее из блоков текста и изображения к нему. */}
             <article className={styles.content}>
-              {newsOne.blocks.map((block) => (
-                <section className={styles.article__block} key={block.position}>
-                  <div
-                    className={styles.content__text}
-                    dangerouslySetInnerHTML={{ __html: block.text }}
-                  />
+              {newsOne.blocks.map(async (block) => {
+                const imageWithBlur = await getBlur(block?.image);
+                return (
+                  <section className={styles.article__block} key={block.position}>
+                    <div
+                      className={styles.content__text}
+                      dangerouslySetInnerHTML={{ __html: block.text }}
+                    />
 
-                  {block.image && (
-                    <div className={styles.block__img}>
-                      <div className={styles.content__box__img}>
-                        <Image
-                          fill={true}
-                          src={block.image}
-                          alt={`Картинка к блоку ${block.position}`}
-                          sizes="(max-width: 992px) 100vw, 50vw"
-                          className={styles.content__img}
-                        />
+                    {block.image && (
+                      <div className={styles.block__img}>
+                        <div className={styles.content__box__img}>
+                          <Image
+                            fill={true}
+                            src={block.image}
+                            alt={`Картинка к блоку ${block.position}`}
+                            sizes="(max-width: 992px) 100vw, 50vw"
+                            className={styles.content__img}
+                            placeholder="blur"
+                            blurDataURL={imageWithBlur}
+                          />
+                        </div>
+                        <h4 className={styles.img__title}>{block.imageTitle}</h4>
                       </div>
-                      <h4 className={styles.img__title}>{block.imageTitle}</h4>
-                    </div>
-                  )}
-                </section>
-              ))}
+                    )}
+                  </section>
+                );
+              })}
             </article>
 
             {/* Блок хэштегов. */}

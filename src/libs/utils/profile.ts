@@ -5,7 +5,7 @@
  */
 
 export const getLogoProfile = (
-  isLogoProvider: boolean,
+  isLogoProvider: boolean | undefined,
   imageProvider: string | undefined,
   image: string | undefined
 ): string => {

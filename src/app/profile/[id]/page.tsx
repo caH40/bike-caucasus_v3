@@ -3,8 +3,9 @@ import Image from 'next/image';
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/user';
-import { blurDataURL } from '@/libs/image';
+
 import { getLogoProfile } from '@/libs/utils/profile';
+import { getBlur } from '@/libs/utils/blur';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
 
@@ -15,6 +16,12 @@ const userService = new UserService();
  */
 export default async function ProfilePage({ params }: ParamsWithId) {
   const { data: profile } = await userService.getProfile({ id: +params.id });
+  const profileImage = getLogoProfile(
+    profile?.imageFromProvider,
+    profile?.provider?.image,
+    profile?.image
+  );
+  const posterWithBlur = await getBlur(profileImage);
 
   return (
     <div className={styles.wrapper}>
@@ -23,17 +30,12 @@ export default async function ProfilePage({ params }: ParamsWithId) {
           <Image
             width={300}
             height={300}
-            src={getLogoProfile(
-              profile.imageFromProvider,
-              profile.provider?.image,
-              profile.image
-            )}
+            src={profileImage}
             alt="vk"
             className={styles.profile__image}
-            placeholder="blur"
-            blurDataURL={blurDataURL}
             priority={true}
-            quality={90}
+            placeholder="blur"
+            blurDataURL={posterWithBlur}
           />
         ) : (
           <div className={styles.empty}></div>

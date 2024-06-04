@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import InteractiveBlockNews from '../UI/InteractiveBlockNews/InteractiveBlockNews';
 import { getTimerLocal } from '@/libs/utils/date-local';
+import { getBlur } from '@/libs/utils/blur';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsCard.module.css';
 
@@ -10,9 +11,9 @@ type Props = {
   newsOne: TNewsGetOneDto;
 };
 
-export default function NewsCard({ newsOne }: Props) {
+export default async function NewsCard({ newsOne }: Props) {
   const idNews = newsOne?._id ? String(newsOne._id) : undefined;
-
+  const posterWithBlur = await getBlur(newsOne.poster);
   return (
     <div className={styles.wrapper}>
       <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
@@ -24,6 +25,8 @@ export default function NewsCard({ newsOne }: Props) {
             alt={`image ${newsOne.title}`}
             className={styles.img}
             priority={true}
+            placeholder="blur"
+            blurDataURL={posterWithBlur}
           />
         </div>
       </Link>

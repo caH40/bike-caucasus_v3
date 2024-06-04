@@ -4,10 +4,10 @@ import { toast } from 'sonner';
 
 import Checkbox from '../Checkbox/Checkbox';
 import InputFile from '../InputFile/InputFile';
-import { blurDataURL } from '@/libs/image';
 import type { TUserDto } from '@/types/dto.types';
 import styles from './BlockUploadLogoProfile.module.css';
 import { convertBytesTo } from '@/libs/utils/handler-data';
+import { blurBase64 } from '@/libs/image';
 
 /**
  * Компонент для загрузки логотипа профиля.
@@ -82,7 +82,7 @@ export default function BlockUploadLogoProfile({
         }
         className={styles.img}
         placeholder="blur"
-        blurDataURL={blurDataURL}
+        blurDataURL={blurBase64}
       />
 
       <div className={styles.image__control}>

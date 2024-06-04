@@ -2,13 +2,12 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 .author__img {
   border-radius: 0.5rem;
 }
 .author__name {
-  font-weight: 700;
   cursor: pointer;
   text-decoration: underline;
   text-decoration-color: transparent;

@@ -13,7 +13,11 @@
 .title {
   margin-bottom: 1rem;
 }
-
+.author {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.3rem;
+}
 .box__img {
   position: relative;
   width: 100%;
