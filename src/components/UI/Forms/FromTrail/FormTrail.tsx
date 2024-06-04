@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { FormEvent, Fragment, useState } from 'react';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
@@ -14,7 +14,6 @@ import {
   bikeTypes as bikeTypesOptions,
   difficultyLevel as difficultyLevelOptions,
 } from '@/constants/trail';
-import Wrapper from '../../../Wrapper/Wrapper';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
@@ -25,6 +24,9 @@ import type { TTrailDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import { formateAndStripContent } from './utils';
 import { serializationTrailCreate } from '@/libs/utils/serialization/trail';
+import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
+import LineSeparator from '@/components/LineSeparator/LineSeparator';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   fetchTrailCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -59,6 +61,8 @@ export default function FormTrail({
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );
+  // Трэк в формате gpx.
+  const [track, setTrack] = useState<File | null>(null);
   // Постер Маршрута в формате File.
   const [poster, setPoster] = useState<File | null>(null);
   // Постер Маршрута существует при редактировании, url на изображение.
@@ -131,6 +135,7 @@ export default function FormTrail({
       !(title.length > 2 && title.length < 30) ||
       !(hashtags.length >= 3) ||
       !region ||
+      !track ||
       !difficultyLevel ||
       !bikeType ||
       !(startLocation.length > 2 && startLocation.length < 20) ||
@@ -179,6 +184,7 @@ export default function FormTrail({
       garminConnect: flatData.garminConnect,
       komoot: flatData.komoot,
       hashtags: flatData.hashtags,
+      track,
       bikeType,
       poster,
       // urlSlug
@@ -227,7 +233,9 @@ export default function FormTrail({
   // загрузка основного изображения
 
   return (
-    <Wrapper title={'Форма ввода данных'} hSize={2}>
+    <>
+      <TitleAndLine title={'Форма ввода данных'} hSize={2} />
+
       <form onSubmit={onSubmit} className={cn(styles.form)}>
         {/* Блок ввода Названия */}
         <BoxInputSimple
@@ -390,6 +398,8 @@ export default function FormTrail({
           } // Необязательный, но если есть, то должен начинаться с https://www.komoot.com
         />
 
+        <LineSeparator theme="orange" />
+
         {/* Блок загрузки Главного изображения (обложки) */}
         <BlockUploadImage
           title={'Главное изображение (обложка):*'}
@@ -399,6 +409,8 @@ export default function FormTrail({
           posterUrl={posterUrl}
           setPosterUrl={setPosterUrl}
         />
+
+        <LineSeparator theme="orange" />
 
         {/* Блок добавления Хэштэгов */}
         <BoxInputSimple
@@ -412,24 +424,35 @@ export default function FormTrail({
           autoComplete={'off'}
           validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
         />
+        <LineSeparator theme="orange" />
+
+        {/* Блок загрузки Трэка маршрута в формате GPX */}
+        <BlockUploadTrack
+          title={'Загрузка трэка в формате GPX:*'}
+          setTrack={setTrack}
+          resetData={resetData}
+        />
+        <LineSeparator theme="orange" />
 
         {/* Блок добавления текста и изображения Маршрута */}
         {blocks.map((block) => (
-          <div className={styles.block__info} key={block.position}>
-            {/* <LineSeparator /> */}
-            <BlockNewsTextAdd
-              block={block}
-              blocks={blocks}
-              setBlocks={setBlocks}
-              isLoading={isLoading}
-            />
-          </div>
+          <Fragment key={block.position}>
+            <div className={styles.block__info}>
+              <BlockNewsTextAdd
+                block={block}
+                blocks={blocks}
+                setBlocks={setBlocks}
+                isLoading={isLoading}
+              />
+            </div>
+            <LineSeparator theme="orange" />
+          </Fragment>
         ))}
 
         <div className={styles.box__button}>
           <Button name="Опубликовать" theme="green" loading={isLoading} />
         </div>
       </form>
-    </Wrapper>
+    </>
   );
 }

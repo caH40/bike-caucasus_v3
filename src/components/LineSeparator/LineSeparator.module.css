@@ -4,3 +4,7 @@
   border-top: 1px solid var(--line);
   margin-bottom: 1rem;
 }
+
+.orange {
+  border-top: 1px solid var(--color-orange);
+}

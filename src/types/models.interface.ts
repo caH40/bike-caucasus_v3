@@ -189,7 +189,8 @@ export type TTrailDocument = Document & {
   difficultyLevel: 'Лёгкий' | 'Средний' | 'Сложный';
   rating?: number; // Поле для рейтинга маршрута.
   hashtags?: string[];
-  isApproved: boolean; // Прошел ли проверку модератора
+  isApproved: boolean; // Прошел ли проверку модератора.
+  trackGPX: string; // Файл трэка gps в формате GPX.
   createdAt: Date;
   updatedAt: Date;
 };

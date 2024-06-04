@@ -88,6 +88,22 @@ export default function TrailTotal({ trail }: Props) {
           </div>
         )}
 
+        {trail.komoot && (
+          <div className={styles.box__list}>
+            <dt className={styles.term}>Трэк GPX</dt>
+            <dd className={styles.description}>
+              <Link
+                className={styles.link}
+                target="blank"
+                href={trail.trackGPX}
+                rel="noreferrer"
+              >
+                Скачать GPX
+              </Link>
+            </dd>
+          </div>
+        )}
+
         <div className={styles.box__list}>
           <dt className={styles.term}>Создан</dt>
           <dd className={styles.description}>

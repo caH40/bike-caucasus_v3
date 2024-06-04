@@ -42,6 +42,7 @@ const trailSchema = new Schema<TTrailDocument>(
     rating: { type: Number, min: 0, max: 5 }, // Поле для рейтинга маршрута.
     hashtags: [String],
     isApproved: { type: Boolean, default: false }, // Прошел ли проверку модератора
+    trackGPX: String, // Файл трэка gps в формате GPX.
   },
   { timestamps: true }
 );

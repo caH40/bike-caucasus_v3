@@ -21,6 +21,7 @@ export function serializationTrailCreate({
   poster,
   urlSlug,
   posterOldUrl,
+  track,
 }: TTrailCreateFromClient): FormData {
   const formData = new FormData();
   formData.set('title', title);
@@ -45,6 +46,9 @@ export function serializationTrailCreate({
   }
   if (urlSlug) {
     formData.set('urlSlug', urlSlug);
+  }
+  if (track) {
+    formData.set('track', track);
   }
 
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.
