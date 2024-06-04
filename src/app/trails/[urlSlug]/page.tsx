@@ -52,7 +52,7 @@ export default async function TrailPage({ params }: Props) {
                 placeholder="blur"
               />
             </div>
-            <div className={styles.context}>
+            <div className={styles.content}>
               {trail.blocks.map(async (block) => {
                 const imageWithBlur = await getBlur(block?.image);
                 return (

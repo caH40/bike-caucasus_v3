@@ -12,7 +12,7 @@
   width: 100%;
   margin-bottom: 20px;
 }
-.context {
+.content {
   padding: 0rem 5rem;
 }
 .block__text {
@@ -46,7 +46,7 @@
 /* ====================================================================== */
 
 @media (max-width: 1400px) {
-  .context {
+  .content {
     padding: 0rem 2rem;
   }
 }
@@ -59,7 +59,7 @@
   .block__text {
     font-size: 1rem;
   }
-  .context {
+  .content {
     padding: 0rem 1rem;
   }
 }
