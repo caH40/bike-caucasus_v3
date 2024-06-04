@@ -8,7 +8,7 @@ import { roboto, montserrat_Alternates } from '../libs/fonts';
 import Footer from '@/components/Footer/Footer';
 import ModalLoading from '@/components/ModalLoading/ModalLoading';
 import MobileMenu from '@/components/UI/MobileMenu/MobileMenu';
-import { metadataHomePage } from '@/constants/meta';
+import { metadataHomePage } from '@/meta/meta';
 import './globals.css';
 import Script from 'next/script';
 import { Suspense } from 'react';

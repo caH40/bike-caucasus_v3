@@ -1,40 +1,29 @@
+import { type Metadata } from 'next';
 import Image from 'next/image';
 import cn from 'classnames/bind';
 
 import Wrapper from '@/components/Wrapper/Wrapper';
-import { Trail } from '@/services/Trail';
-import { errorLogger } from '@/errors/error';
 import { regions } from '@/constants/trail';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import LineSeparator from '@/components/LineSeparator/LineSeparator';
 import TrailTotal from '@/components/TrailTotal/TrailTotal';
-import type { TTrailDto } from '@/types/dto.types';
+import { getTrail } from '@/actions/trail';
+import { generateMetadataTrail } from '@/meta/meta';
+
 import styles from './TrailPage.module.css';
 
 const cx = cn.bind(styles);
+
+// Создание динамических meta данных
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataTrail(props);
+}
 
 type Props = {
   params: {
     urlSlug: string;
   };
 };
-/**
- * Получение данных маршрута с БД.
- */
-async function getTrail(urlSlug: string): Promise<TTrailDto | null | undefined> {
-  try {
-    const trailsService = new Trail();
-    const response = await trailsService.getOne(urlSlug);
-
-    if (!response.ok) {
-      throw new Error(response.message);
-    }
-
-    return response.data;
-  } catch (error) {
-    errorLogger(error);
-  }
-}
 
 export default async function TrailPage({ params }: Props) {
   const trail = await getTrail(params.urlSlug);
@@ -43,7 +32,7 @@ export default async function TrailPage({ params }: Props) {
     <>
       {trail && (
         <Wrapper
-          title={`Велосипедный маршрут  ${trail.title} по региону ${
+          title={`${trail.title} - велосипедный маршрут в регионе ${
             regions.find((region) => region.name === trail.region)?.translation || ''
           }`}
         >

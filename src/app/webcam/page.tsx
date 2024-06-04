@@ -3,7 +3,7 @@ import { type Metadata } from 'next';
 import Webcam from '@/components/Webcam/Webcam';
 
 import styles from './WebcamPage.module.css';
-import { generateMetadataWebcam } from '@/constants/meta';
+import { generateMetadataWebcam } from '@/meta/meta';
 import Wrapper from '@/components/Wrapper/Wrapper';
 
 // Создание динамических meta данных

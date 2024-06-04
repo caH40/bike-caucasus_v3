@@ -8,7 +8,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import styles from './NewsPage.module.css';
-import { generateMetadataNews } from '@/constants/meta';
+import { generateMetadataNews } from '@/meta/meta';
 import { Metadata } from 'next';
 import { errorLogger } from '@/errors/error';
 import Author from '@/components/Author/Author';
