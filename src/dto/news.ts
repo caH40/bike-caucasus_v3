@@ -21,7 +21,7 @@ export function dtoNewsGetOne(
     position: block.position,
   }));
 
-  const author = { ...news.author, _id: String(news.author._id) };
+  const author = { ...news.author, _id: String(news.author?._id) };
 
   return {
     _id: news._id.toString(),

@@ -9,6 +9,11 @@
 .welcome {
   font-size: 1.1rem;
 }
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 @media screen and (max-width: 992px) {
   .webcam__title__mobile {
     display: block;
