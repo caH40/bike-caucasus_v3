@@ -8,10 +8,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import styles from './ButtonLogin.module.css';
 import { useMobileMenuStore } from '@/store/mobile';
 
+type Props = {
+  size?: 'medium';
+};
+
 /**
  * Кнопка "иконка" логина/разлогина на сайт
  */
-const Login = () => {
+const Login = ({ size }: Props) => {
   const { status } = useSession();
   const router = useRouter();
   const pathUrl = usePathname();
@@ -34,8 +38,8 @@ const Login = () => {
     <button className={styles.btn} onClick={getClick}>
       <Image
         className={styles.img}
-        width={21}
-        height={28}
+        width={size === 'medium' ? 35 : 21}
+        height={size === 'medium' ? 45 : 28}
         src={isAuthenticated ? '/images/icons/logout.svg' : '/images/icons/login.svg'}
         alt="login"
       />

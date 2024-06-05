@@ -2,8 +2,8 @@
   background: none;
   margin: 0;
   padding: 0;
-  width: 24px;
-  height: 28px;
+  /* width: 24px;
+  height: 28px; */
 }
 .img {
   object-fit: fill;

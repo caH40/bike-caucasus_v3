@@ -56,7 +56,7 @@ export default function MobileMenu() {
           ))}
         </ul>
 
-        <Login />
+        <Login size="medium" />
       </nav>
     </div>
   );

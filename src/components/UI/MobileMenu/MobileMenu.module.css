@@ -17,11 +17,12 @@
 .nav {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 }
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 .link {
   font-family: var(--font-montserrat_Alternates);
