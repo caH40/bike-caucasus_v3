@@ -13,6 +13,7 @@ import { generateMetadataTrail } from '@/meta/meta';
 import styles from './TrailPage.module.css';
 import { notFound } from 'next/navigation';
 import { blurBase64 } from '@/libs/image';
+import { Trail } from '@/services/Trail';
 
 const cx = cn.bind(styles);
 
@@ -34,6 +35,10 @@ export default async function TrailPage({ params }: Props) {
   if (!trail) {
     notFound();
   }
+
+  // Подсчет просмотров Маршрута.
+  const trailService = new Trail();
+  await trailService.countView(params.urlSlug);
 
   return (
     <Wrapper

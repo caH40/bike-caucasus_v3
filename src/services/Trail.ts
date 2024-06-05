@@ -61,7 +61,7 @@ export class Trail {
       if (!trailDB) {
         throw new ErrorCustom(`Не найден маршрут с urlSlug:${urlSlug}`, 404);
       }
-      await this.countView(urlSlug);
+
       // Возвращаем информацию о маршруте и успешный статус.
       return {
         data: dtoTrail(trailDB),
@@ -79,7 +79,7 @@ export class Trail {
    * Подсчет просмотров Маршрута.
    * @param urlSlug - Последняя часть url страницы с маршрутом
    */
-  private async countView(urlSlug: string): Promise<void> {
+  public async countView(urlSlug: string): Promise<void> {
     try {
       await TrailModel.findOneAndUpdate<TTrailDocument>(
         { urlSlug },
