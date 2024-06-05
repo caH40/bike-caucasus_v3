@@ -1,4 +1,4 @@
 /**
- * Игнорируются ошибки с message которые перечислены в массив ignoreList
+ * Игнорируются ошибки со statusCode которые перечислены в массив ignoreList
  */
-export const ignoreList: string[] = [];
+export const ignoreList: number[] = [404];

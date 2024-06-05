@@ -145,6 +145,7 @@ export type ResponseServer<T> = {
   data: T | null;
   ok: boolean;
   message: string;
+  statusCode?: number;
 };
 
 /**

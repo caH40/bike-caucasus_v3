@@ -22,6 +22,7 @@ import type {
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
 import { saveFile } from './save-file';
+import { ErrorCustom } from './Error';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -300,7 +301,7 @@ export class News {
         .lean();
 
       if (!newsDB) {
-        throw new Error(`Не найдена запрашиваемая новость с адресом ${urlSlug}`);
+        throw new ErrorCustom(`Не найдена запрашиваемая новость с адресом ${urlSlug}`, 404);
       }
 
       // isLikedByUser поставил или нет пользователь лайк данной новости

@@ -12,6 +12,7 @@ import { getNextSequenceValue } from './sequence';
 import type { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
 import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
 import type { TTrailDto } from '@/types/dto.types';
+import { ErrorCustom } from './Error';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -58,7 +59,7 @@ export class Trail {
 
       // Если маршрут не найден, генерируем исключение.
       if (!trailDB) {
-        throw new Error(`Не найден маршрут с urlSlug:${urlSlug}`);
+        throw new ErrorCustom(`Не найден маршрут с urlSlug:${urlSlug}`, 404);
       }
 
       // Возвращаем информацию о маршруте и успешный статус.

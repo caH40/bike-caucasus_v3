@@ -10,24 +10,25 @@ import { Logger } from '@/services/logger';
  */
 export const errorLogger = async (error: unknown): Promise<void> => {
   try {
-    // Выход, если ошибка из списка игнорируемых.
-    if (ignoreError(error)) {
-      return;
-    }
-
     const isDevelopment = process.env.NODE_ENV === 'development';
 
     if (isDevelopment) {
       // Если разработка, то выводить ошибку в консоль.
       console.error(error); // eslint-disable-line
-    } else {
-      // логирование ошибки в БД
-      const logger = new Logger();
-      const errorParsed = parseError(error);
-      await logger.saveError(errorParsed);
-
-      revalidatePath('/admin/logs/errors');
+      return;
     }
+
+    // Выход, если ошибка из списка игнорируемых.
+    if (ignoreError(error)) {
+      return;
+    }
+
+    // логирование ошибки в БД
+    const logger = new Logger();
+    const errorParsed = parseError(error);
+    await logger.saveError(errorParsed);
+
+    revalidatePath('/admin/logs/errors');
   } catch (error) {
     console.error(error); // eslint-disable-line
   }

@@ -1,3 +1,4 @@
+import { ErrorCustom } from '@/services/Error';
 import { ignoreList } from './ignore-list';
 
 /**
@@ -7,11 +8,11 @@ import { ignoreList } from './ignore-list';
  */
 export const ignoreError = (error: unknown): boolean => {
   // Проверка, является ли ошибка экземпляром класса Error.
-  if (error instanceof Error) {
+  if (error instanceof ErrorCustom) {
     // Возвращает true, если сообщение об ошибке находится в списке игнорируемых сообщений.
-    return ignoreList.includes(error.message);
+    return ignoreList.includes(error.statusCode);
   }
 
-  // Если ошибка не является экземпляром класса Error, возвращаем false.
+  // Если ошибка не является экземпляром класса ErrorCustom, возвращаем false.
   return false;
 };

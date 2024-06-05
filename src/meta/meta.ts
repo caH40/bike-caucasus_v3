@@ -4,6 +4,7 @@ import { getTrail } from '@/actions/trail';
 import { getNewsOne } from '@/app/news/[urlSlug]/page';
 import { ResolvingMetadata, type Metadata } from 'next';
 import { bikeTypes, regions } from '../constants/trail';
+import { metadata404Page } from './meta404';
 
 type Props = {
   params: {
@@ -22,7 +23,7 @@ const server = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru
 export const metadataHomePage = {
   metadataBase: new URL(server),
   title:
-    'Новости велоспорта на Северном Кавказе | Соревнования, совместные тренировки, маршруты и события.',
+    'Новости велоспорта на Северном Кавказе. Соревнования, совместные тренировки, маршруты и события.',
   description:
     'Оставайтесь в курсе новостей велоспорта на Северном Кавказе! Соревнования, результаты, маршруты и совместные выезды для шоссейных и горных велосипедов.',
   alternates: {
@@ -65,7 +66,7 @@ export async function generateMetadataNews({ params }: Props): Promise<Metadata>
 
   const news = await getNewsOne({ urlSlug });
   if (!news) {
-    return metadataHomePage;
+    return metadata404Page;
   }
 
   return {
@@ -129,8 +130,9 @@ export async function generateMetadataTrail({ params }: Props): Promise<Metadata
   const urlSlug = params.urlSlug;
 
   const trail = await getTrail(urlSlug);
+
   if (!trail) {
-    return metadataHomePage;
+    return metadata404Page;
   }
 
   const region = regions.find((region) => region.name === trail.region)?.translation || '';
