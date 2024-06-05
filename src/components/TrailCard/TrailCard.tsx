@@ -5,9 +5,9 @@ import cn from 'classnames/bind';
 import IconEye from '../Icons/IconEye';
 import IconHandThumbUp from '../Icons/IconHandThumbUp';
 import { bikeTypes, regions } from '@/constants/trail';
-import { getBlur } from '@/libs/utils/blur';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from './TrailCard.module.css';
+import { blurBase64 } from '@/libs/image';
 
 type Props = {
   trail: TTrailDto;
@@ -16,7 +16,6 @@ type Props = {
 const cx = cn.bind(styles);
 
 export default async function TrailCard({ trail }: Props) {
-  const posterWithBlur = await getBlur(trail?.poster);
   return (
     <Link
       href={`/trails/${trail.urlSlug}`}
@@ -29,7 +28,7 @@ export default async function TrailCard({ trail }: Props) {
         src={trail.poster}
         alt={`Poster ${trail.title}`}
         placeholder="blur"
-        blurDataURL={posterWithBlur}
+        blurDataURL={blurBase64}
       />
       <div className={styles.description}>
         <div className={styles.block__title}>
@@ -47,6 +46,8 @@ export default async function TrailCard({ trail }: Props) {
               className={styles.ico}
               src="/images/icons/start-flag.svg"
               alt="start"
+              placeholder="blur"
+              blurDataURL={blurBase64}
             />
             <span className={styles.names}>Старт:</span>
             <span className={styles.names_data}>{trail.startLocation}</span>
@@ -59,6 +60,8 @@ export default async function TrailCard({ trail }: Props) {
               className={styles.ico}
               src="/images/icons/turn-arrow.svg"
               alt="turn"
+              placeholder="blur"
+              blurDataURL={blurBase64}
             />
             <span className={styles.names}>Разворот:</span>
             <span className={styles.names_data}>{trail.turnLocation}</span>
@@ -71,6 +74,8 @@ export default async function TrailCard({ trail }: Props) {
               className={styles.ico}
               src="/images/icons/route-line.svg"
               alt="route"
+              placeholder="blur"
+              blurDataURL={blurBase64}
             />
             <span className={styles.names}>Дистанция:</span>
             <span className={styles.names_data}>{trail.distance}км</span>
@@ -83,6 +88,8 @@ export default async function TrailCard({ trail }: Props) {
               className={styles.ico}
               src="/images/icons/mountain.svg"
               alt="ascent"
+              placeholder="blur"
+              blurDataURL={blurBase64}
             />
             <span className={styles.names}>Набор высоты:</span>
             <span className={styles.names_data}>{trail.ascent}м</span>
@@ -95,6 +102,8 @@ export default async function TrailCard({ trail }: Props) {
               className={styles.ico}
               src="/images/icons/finish-flag.svg"
               alt="finish"
+              placeholder="blur"
+              blurDataURL={blurBase64}
             />
             <span className={styles.names}>Финиш:</span>
             <span className={styles.names_data}>{trail.finishLocation}</span>
@@ -107,6 +116,8 @@ export default async function TrailCard({ trail }: Props) {
               className={styles.ico}
               src="/images/icons/bike.svg"
               alt="bike"
+              placeholder="blur"
+              blurDataURL={blurBase64}
             />
             <span className={styles.names}>Тип:</span>
             <span className={styles.names_data}>

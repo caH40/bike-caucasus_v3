@@ -1,30 +1,33 @@
-import { errorLogger } from '@/errors/error';
-import { getPlaiceholder } from 'plaiceholder';
-import { blurBase64 } from '../image';
+// import { errorLogger } from '@/errors/error';
+// import { getPlaiceholder } from 'plaiceholder';
+// import { blurBase64 } from '../image';
 
-/**
- * Делает размытие изображения для placeholder Image (nextjs).
- * @param url - Ссылка на изображение на удаленном сервере.
- * @returns - Размытое изображение в формате base64.
- */
-export async function getBlur(url: string | undefined | null): Promise<string> {
-  try {
-    if (!url) {
-      return blurBase64;
-    }
+// // !!!!!! Временно не используется, из-за слишком долгого получения
+// // blur с изображений на удаленный серверах.
 
-    const res = await fetch(url);
+// /**
+//  * Делает размытие изображения для placeholder Image (nextjs).
+//  * @param url - Ссылка на изображение на удаленном сервере.
+//  * @returns - Размытое изображение в формате base64.
+//  */
+// export async function getBlur(url: string | undefined | null): Promise<string> {
+//   try {
+//     if (!url) {
+//       return blurBase64;
+//     }
 
-    if (!res.ok) {
-      throw new Error(`Не получено изображение с url:${url}`);
-    }
+//     const res = await fetch(url);
 
-    const buffer = await res.arrayBuffer();
-    const { base64 } = await getPlaiceholder(Buffer.from(buffer));
+//     if (!res.ok) {
+//       throw new Error(`Не получено изображение с url:${url}`);
+//     }
 
-    return base64;
-  } catch (error) {
-    errorLogger(error);
-    return blurBase64;
-  }
-}
+//     const buffer = await res.arrayBuffer();
+//     const { base64 } = await getPlaiceholder(Buffer.from(buffer));
+
+//     return base64;
+//   } catch (error) {
+//     errorLogger(error);
+//     return blurBase64;
+//   }
+// }

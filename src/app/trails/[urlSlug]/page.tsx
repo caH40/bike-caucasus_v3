@@ -11,8 +11,8 @@ import { getTrail } from '@/actions/trail';
 import { generateMetadataTrail } from '@/meta/meta';
 
 import styles from './TrailPage.module.css';
-import { getBlur } from '@/libs/utils/blur';
 import { notFound } from 'next/navigation';
+import { blurBase64 } from '@/libs/image';
 
 const cx = cn.bind(styles);
 
@@ -35,8 +35,6 @@ export default async function TrailPage({ params }: Props) {
     notFound();
   }
 
-  const posterWithBlur = await getBlur(trail?.poster);
-
   return (
     <Wrapper
       title={`${trail.title} - велосипедный маршрут в регионе ${
@@ -53,39 +51,36 @@ export default async function TrailPage({ params }: Props) {
             alt={`image ${trail.title}`}
             className={styles.img}
             priority={true}
-            blurDataURL={posterWithBlur}
+            blurDataURL={blurBase64}
             placeholder="blur"
           />
         </div>
         <div className={styles.content}>
-          {trail.blocks.map(async (block) => {
-            const imageWithBlur = await getBlur(block?.image);
-            return (
-              <article className={cx('wrapper__block')} key={block._id}>
-                <div
-                  className={cx('block__text', { full: !block.image })}
-                  dangerouslySetInnerHTML={{ __html: block.text }}
-                />
+          {trail.blocks.map(async (block) => (
+            <article className={cx('wrapper__block')} key={block._id}>
+              <div
+                className={cx('block__text', { full: !block.image })}
+                dangerouslySetInnerHTML={{ __html: block.text }}
+              />
 
-                {block.image && (
-                  <div className={styles.column__img}>
-                    <div className={styles.block__box__img}>
-                      <Image
-                        src={block.image}
-                        fill={true}
-                        sizes="(max-width: 992px) 100vw 33vw"
-                        alt={`image ${block.imageTitle}`}
-                        className={styles.block__img}
-                        blurDataURL={imageWithBlur}
-                        placeholder="blur"
-                      />
-                    </div>
-                    <h4 className={styles.img__title}>{block.imageTitle}</h4>
+              {block.image && (
+                <div className={styles.column__img}>
+                  <div className={styles.block__box__img}>
+                    <Image
+                      src={block.image}
+                      fill={true}
+                      sizes="(max-width: 992px) 100vw 33vw"
+                      alt={`image ${block.imageTitle}`}
+                      className={styles.block__img}
+                      blurDataURL={blurBase64}
+                      placeholder="blur"
+                    />
                   </div>
-                )}
-              </article>
-            );
-          })}
+                  <h4 className={styles.img__title}>{block.imageTitle}</h4>
+                </div>
+              )}
+            </article>
+          ))}
 
           <TrailTotal trail={trail} />
         </div>

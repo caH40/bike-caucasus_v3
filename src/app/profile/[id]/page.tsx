@@ -5,9 +5,10 @@ import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/user';
 
 import { getLogoProfile } from '@/libs/utils/profile';
-import { getBlur } from '@/libs/utils/blur';
+
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
+import { blurBase64 } from '@/libs/image';
 
 const userService = new UserService();
 
@@ -21,7 +22,6 @@ export default async function ProfilePage({ params }: ParamsWithId) {
     profile?.provider?.image,
     profile?.image
   );
-  const posterWithBlur = await getBlur(profileImage);
 
   return (
     <div className={styles.wrapper}>
@@ -35,7 +35,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
             className={styles.profile__image}
             priority={true}
             placeholder="blur"
-            blurDataURL={posterWithBlur}
+            blurDataURL={blurBase64}
           />
         ) : (
           <div className={styles.empty}></div>
