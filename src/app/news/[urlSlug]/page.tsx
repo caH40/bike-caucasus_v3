@@ -12,6 +12,7 @@ import { errorLogger } from '@/errors/error';
 import { getBlur } from '@/libs/utils/blur';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsPage.module.css';
+import { notFound } from 'next/navigation';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -44,7 +45,7 @@ export async function getNewsOne({
 
     return response.data;
   } catch (error) {
-    errorLogger(error);
+    notFound();
   }
 }
 

@@ -9,6 +9,7 @@ export const regions = [
   { id: 8, translation: 'Чеченская Республика', name: 'chechenRepublic' },
   { id: 9, translation: 'Краснодарский край', name: 'krasnodarKrai' },
   { id: 10, translation: 'Республика Адыгея', name: 'republicOfAdygea' },
+  { id: 11, translation: 'Республика Ингушетия', name: 'republicOfIngushetia' },
 ];
 
 // Уровни сложности маршрута.
