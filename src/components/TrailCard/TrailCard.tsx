@@ -21,15 +21,17 @@ export default async function TrailCard({ trail }: Props) {
       href={`/trails/${trail.urlSlug}`}
       className={cx('card', { mtb: trail.bikeType === 'mtb' })}
     >
-      <Image
-        width={308}
-        height={184}
-        className={styles.img}
-        src={trail.poster}
-        alt={`Poster ${trail.title}`}
-        placeholder="blur"
-        blurDataURL={blurBase64}
-      />
+      <div className={styles.box__img}>
+        <Image
+          fill={true}
+          sizes="310px"
+          className={styles.img}
+          src={trail.poster}
+          alt={`Poster ${trail.title}`}
+          placeholder="blur"
+          blurDataURL={blurBase64}
+        />
+      </div>
       <div className={styles.description}>
         <div className={styles.block__title}>
           <h2 className={styles.title}>{trail.title}</h2>

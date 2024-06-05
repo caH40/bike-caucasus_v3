@@ -6,6 +6,7 @@
 /* ====================================================================== */
 @media (max-width: 576px) {
   .wrapper__trails {
+    grid-template-columns: minmax(308px, 340px);
     justify-content: center;
   }
 }
