@@ -9,6 +9,8 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 //!!!!!!!!!!!!!!!!!!!
 // export const dynamic = 'force-dynamic' делает страницу полностью динамичной!!!!!!!!
 // при использовании заголовков или куки, страница становится динамической
+export const dynamic = 'force-dynamic'
+// export const revalidate = 60;
 
 // Создание динамических meta данных
 export async function generateMetadata(): Promise<Metadata> {
