@@ -25,7 +25,7 @@
   margin-bottom: 1rem;
 }
 .img {
-  object-fit: cover;
+  object-fit: fill;
   border-radius: 0.5rem 0.5rem 0 0;
 }
 .subtitle {

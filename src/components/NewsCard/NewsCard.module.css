@@ -25,7 +25,7 @@
   transition: all 0.3s;
 }
 .img {
-  object-fit: cover;
+  object-fit: fill;
   object-position: center;
   border-radius: 0.5rem 0 0 0.5rem;
 }
