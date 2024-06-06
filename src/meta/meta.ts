@@ -29,6 +29,11 @@ export const metadataHomePage = {
   alternates: {
     canonical: './',
   },
+  // Добавляем метаданные для Яндекс
+  other: {
+    'yandex-verification': 'bccbba4d470fdd1c',
+  },
+
   openGraph: {
     title: 'Новости велоспорта на Северном Кавказе | Соревнования, маршруты и события',
     description:
