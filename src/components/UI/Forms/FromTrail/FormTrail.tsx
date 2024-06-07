@@ -141,7 +141,7 @@ export default function FormTrail({
       !bikeType ||
       !(startLocation.length > 2 && startLocation.length < 20) ||
       !(finishLocation.length > 2 && finishLocation.length < 20) ||
-      !(distance > 100) ||
+      !(distance > 0) ||
       !(ascent > 0) ||
       !(komoot ? (komoot.startsWith('https://www.komoot.com/') ? true : false) : true) ||
       !(garminConnect
