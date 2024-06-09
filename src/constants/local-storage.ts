@@ -18,3 +18,9 @@ export const lcWebcamShadzhatmaz = `${suffixSite}webcam_shadzhatmaz`;
  * После суффикса следует название соответствующего поля вводя информации.
  */
 export const lcSuffixTrailModeration = `${suffixSite}moderation_trail-`;
+
+/**
+ * Суффикс для localStorage при фильтрации Маршрутов.
+ * После суффикса следует название соответствующего поля вводя информации.
+ */
+export const lcSuffixTrailsFilters = `${suffixSite}trails_filters-`;
