@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+import { useLSTrails } from '@/hooks/local_storage/useLSTrails';
+import { useLSTrailsInit } from '@/hooks/local_storage/useLSTrailsInit';
 import BlockFilterTrails from '../BlockFilterTrails/BlockFilterTrails';
 import TrailCard from '../TrailCard/TrailCard';
-import styles from './Trails.module.css';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TTrailDto } from '@/types/dto.types';
+import styles from './Trails.module.css';
 
 type Props = {
   getTrails: ({
@@ -23,6 +26,9 @@ export default function Trails({ getTrails }: Props) {
   const [trails, setTrails] = useState<TTrailDto[] | null | undefined>(null);
   const [bikeType, setBikeType] = useState<string>(''); // Маршрут для какого типа велосипедов.
 
+  useLSTrailsInit({ setBikeType });
+  useLSTrails({ bikeType });
+
   useEffect(() => {
     getTrails({ bikeType }).then((res) => {
       setTrails(res?.data);
@@ -33,15 +39,7 @@ export default function Trails({ getTrails }: Props) {
     <>
       <BlockFilterTrails bikeType={bikeType} setBikeType={setBikeType} />
       <div className={styles.wrapper}>
-        {trails ? (
-          <>
-            {trails.map((trail) => (
-              <TrailCard trail={trail} key={trail._id} />
-            ))}
-          </>
-        ) : (
-          <div>Нет данных с сервера</div>
-        )}
+        {trails && trails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}
       </div>
     </>
   );
