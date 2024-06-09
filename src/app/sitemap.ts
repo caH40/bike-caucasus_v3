@@ -93,7 +93,7 @@ async function generateSitemapNewsPages(): Promise<MetadataRoute.Sitemap> {
 async function generateSitemapTrailPages(): Promise<MetadataRoute.Sitemap> {
   try {
     const trailService = new Trail();
-    const trails = await trailService.getMany();
+    const trails = await trailService.getMany({});
 
     const trailsSitemap: MetadataRoute.Sitemap = (trails.data || []).map((trail) => ({
       url: `${host}/trails/${trail.urlSlug}`,

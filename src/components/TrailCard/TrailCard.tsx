@@ -15,7 +15,7 @@ type Props = {
 
 const cx = cn.bind(styles);
 
-export default async function TrailCard({ trail }: Props) {
+export default function TrailCard({ trail }: Props) {
   return (
     <Link
       href={`/trails/${trail.urlSlug}`}

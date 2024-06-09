@@ -90,14 +90,23 @@ export class Trail {
     }
   }
 
-  public async getMany(): Promise<ResponseServer<TTrailDto[] | null>> {
+  public async getMany({
+    bikeType,
+  }: {
+    bikeType?: string | null;
+  }): Promise<ResponseServer<TTrailDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
+      const query = {} as { bikeType?: string };
+      if (bikeType) {
+        query.bikeType = bikeType;
+      }
+
       // Получаем информацию о маршруте из БД.
       const trailsDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser })[] =
-        await TrailModel.find()
+        await TrailModel.find(query)
           .populate({
             path: 'author',
             select: [

@@ -1,0 +1,12 @@
+.wrapper {
+  display: grid;
+  grid-gap: 1rem 2rem;
+  grid-template-columns: repeat(auto-fit, 308px);
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .wrapper {
+    grid-template-columns: minmax(308px, 340px);
+    justify-content: center;
+  }
+}

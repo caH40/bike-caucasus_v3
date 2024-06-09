@@ -42,6 +42,19 @@ export type PropsBoxSelectSimple = {
   loading?: boolean;
   options: { id: number; translation: string; name: string }[];
 };
+export type PropsSelect = {
+  state: string;
+  setState: Dispatch<SetStateAction<string>>;
+  id?: string;
+  name: string;
+  label?: string;
+  disabled?: boolean;
+  validationText?: string;
+  showValidationText?: boolean;
+  defaultValue?: string;
+  loading?: boolean;
+  options: { id: number; translation: string; name: string }[];
+};
 /**
  * Пропсы для BoxInputSimple
  */
