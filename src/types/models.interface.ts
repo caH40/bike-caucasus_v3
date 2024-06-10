@@ -164,7 +164,9 @@ export interface TLogsErrorModel {
 /**
  * Типизация документа Trail из mongoDB.
  */
-export type TTrailDocument = Document & {
+export type TTrailDocument = Document & TTrail;
+
+export type TTrail = {
   title: string; // Название маршрута
   poster: string; // ССылка на изображение обложки Маршрута.
   urlSlug: string; // Последняя часть url страницы с маршрутом.

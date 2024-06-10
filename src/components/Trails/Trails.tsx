@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useActiveFiltersTrails } from '@/hooks/useActiveFiltersTrails';
 import { useLSTrails } from '@/hooks/local_storage/useLSTrails';
@@ -34,6 +34,8 @@ export default function Trails({ getTrails }: Props) {
   const [bikeType, setBikeType] = useState<string>(''); // Маршрут для какого типа велосипедов.
   const [region, setRegion] = useState<string>('');
   const [difficultyLevel, setDifficultyLevel] = useState<string>('');
+  const [sortDirection, setSortDirection] = useState<string>('');
+  const [sortTarget, setSortTarget] = useState<string>('');
 
   const hasFilters = useActiveFiltersTrails({
     bikeType,
@@ -41,10 +43,47 @@ export default function Trails({ getTrails }: Props) {
     difficultyLevel,
   });
 
-  useLSTrailsInit({ setBikeType, setRegion, setDifficultyLevel });
-  useLSTrails({ bikeType, region, difficultyLevel });
+  useLSTrailsInit({
+    setBikeType,
+    setRegion,
+    setDifficultyLevel,
+    setSortDirection,
+    setSortTarget,
+  });
+  useLSTrails({ bikeType, region, difficultyLevel, sortDirection, sortTarget });
 
-  // Проверка наличия включенных фильтров.
+  // Сортировка маршрутов.
+  const sortedTrails = useMemo(() => {
+    if (!trails) {
+      return [];
+    }
+
+    return [...trails].sort((a, b) => {
+      const target = sortTarget as keyof TTrailDto;
+
+      const aValue = a[target];
+      const bValue = b[target];
+
+      if (aValue === undefined || bValue === undefined) {
+        return 0; // или другое значение по умолчанию, если одно из значений undefined
+      }
+
+      if (sortDirection === 'down') {
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return bValue - aValue;
+        } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return bValue.localeCompare(aValue);
+        }
+      } else if (sortDirection === 'up') {
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return aValue - bValue;
+        } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return aValue.localeCompare(bValue);
+        }
+      }
+      return 0;
+    });
+  }, [trails, sortTarget, sortDirection]);
 
   useEffect(() => {
     const query = {
@@ -76,10 +115,15 @@ export default function Trails({ getTrails }: Props) {
         setDifficultyLevel={setDifficultyLevel}
         hasFilters={hasFilters}
         resetFilters={resetFilters}
-        quantityTrails={trails?.length}
+        quantityTrails={sortedTrails?.length}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+        sortTarget={sortTarget}
+        setSortTarget={setSortTarget}
       />
       <div className={styles.wrapper}>
-        {trails && trails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}
+        {sortedTrails &&
+          sortedTrails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}
       </div>
     </>
   );

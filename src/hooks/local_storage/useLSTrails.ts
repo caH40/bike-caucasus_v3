@@ -6,12 +6,20 @@ type Props = {
   region: string;
   difficultyLevel: string;
   bikeType: string;
+  sortDirection: string;
+  sortTarget: string;
 };
 
 /**
  * Хук сохраняет Фильтры для отображения Маршрутов.
  */
-export function useLSTrails({ region, difficultyLevel, bikeType }: Props) {
+export function useLSTrails({
+  region,
+  difficultyLevel,
+  bikeType,
+  sortDirection,
+  sortTarget,
+}: Props) {
   // // Сохранение региона (region).
   useSaveToLC('region', region);
 
@@ -20,6 +28,12 @@ export function useLSTrails({ region, difficultyLevel, bikeType }: Props) {
 
   // Сохранение Типа велосипеда (bikeType).
   useSaveToLC('bikeType', bikeType);
+
+  // Сохранение Типа велосипеда (bikeType).
+  useSaveToLC('sortDirection', sortDirection);
+
+  // Сохранение Типа велосипеда (bikeType).
+  useSaveToLC('sortTarget', sortTarget);
 }
 
 /**

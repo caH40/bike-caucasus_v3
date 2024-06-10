@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import IconChevronDown from '@/components/Icons/IconChevronDown';
 
 type Props = {
+  defaultValue?: string;
   state: string;
   setState: Dispatch<SetStateAction<string>>;
   label?: string;
@@ -11,7 +12,7 @@ type Props = {
   // icon?: React.ComponentType<TIconProps>;
 };
 
-export default function SelectCustom({ state, setState, options, label }: Props) {
+export default function SelectCustom({ state, setState, options, label, defaultValue }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const Icon = options.find((elm) => elm.name === state)?.icon || null;
@@ -22,7 +23,9 @@ export default function SelectCustom({ state, setState, options, label }: Props)
         <button className={styles.select} onClick={() => setIsOpen(true)}>
           <div className={styles.select__name}>
             {Icon && <Icon squareSize={20} />}
-            {options.find((elm) => elm.name === state)?.translation || 'нет фильтров'}
+            {options.find((elm) => elm.name === state)?.translation ||
+              defaultValue ||
+              'нет фильтров'}
           </div>
 
           {/* Шеврон иконка */}
@@ -33,17 +36,20 @@ export default function SelectCustom({ state, setState, options, label }: Props)
 
         {isOpen && (
           <ul className={styles.list} onMouseLeave={() => setIsOpen(false)}>
-            <li
-              key={1000}
-              className={styles.item}
-              onClick={() => {
-                setState('нет фильтров');
-                setIsOpen(false);
-              }}
-            >
-              {/* {option.icon && <option.icon />} */}
-              {'нет фильтров'}
-            </li>
+            {/* если есть Дефолтное значение, значит заглушки в виде пустого значения не показывать */}
+            {!defaultValue && (
+              <li
+                key={1000}
+                className={styles.item}
+                onClick={() => {
+                  setState('нет фильтров');
+                  setIsOpen(false);
+                }}
+              >
+                {/* {option.icon && <option.icon />} */}
+                {'нет фильтров'}
+              </li>
+            )}
             {options.map((option) => (
               <li
                 key={option.id}

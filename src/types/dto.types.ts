@@ -4,7 +4,7 @@ import {
   TLogsErrorModel,
   TNewsBlockInfo,
   TRoleModel,
-  TTrailDocument,
+  TTrail,
 } from './models.interface';
 
 /**
@@ -84,10 +84,7 @@ export type TUserDtoPublic = Omit<TUserDto, 'provider' | 'email' | 'person'> & {
 
 export type TBlockTrailDto = Omit<TNewsBlockInfo, '_id'> & { _id: string };
 
-export type TTrailDto = Omit<
-  TTrailDocument,
-  '_id' | 'author' | 'comments' | 'blocks' | 'likedBy'
-> & {
+export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 'likedBy'> & {
   _id: string;
   blocks: TBlockTrailDto[];
   // comments: string[];
