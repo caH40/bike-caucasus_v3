@@ -49,12 +49,12 @@ export default function RootLayout({
             __html: `window.yaContextCb = window.yaContextCb || [];
           window.yaContextCb.push(() => {
             Ya.Context.AdvManager.render({
-              "blockId": "R-A-5165832-1",
+              "blockId": "R-A-5213436-4",
               "type": "floorAd",
               "platform": "desktop"
             });
             Ya.Context.AdvManager.render({
-              "blockId": "R-A-5165832-2",
+              "blockId": "R-A-5213436-3",
               "type": "floorAd",
               "platform": "touch"
             });
