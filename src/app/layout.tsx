@@ -41,6 +41,33 @@ export default function RootLayout({
                     webvisor:true
               });`}
         </Script>
+
+        <Script
+          id="yandex-ads-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.yaContextCb = window.yaContextCb || [];
+          window.yaContextCb.push(() => {
+            Ya.Context.AdvManager.render({
+              "blockId": "R-A-5165832-1",
+              "type": "floorAd",
+              "platform": "desktop"
+            });
+            Ya.Context.AdvManager.render({
+              "blockId": "R-A-5165832-2",
+              "type": "floorAd",
+              "platform": "touch"
+            });
+          });`,
+          }}
+        />
+        <Script
+          id="yandex-ads-script"
+          src="https://yandex.ru/ads/system/context.js"
+          strategy="afterInteractive"
+          async
+        />
+
         <Suspense fallback={<></>}>
           <YandexMetrika />
         </Suspense>
