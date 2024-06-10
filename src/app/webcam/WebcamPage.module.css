@@ -1,13 +1,15 @@
 .wrapper {
   display: grid;
   grid-template-columns: 1fr 468px;
+  align-items: start;
   gap: 1rem 20px;
   letter-spacing: 0.08rem;
 }
 .wrapper__aside {
   background-color: var(--white-12);
   border-radius: 1rem;
-  height: 30vh;
+  overflow: hidden;
+  padding: 1rem;
 }
 
 .title__h2 {

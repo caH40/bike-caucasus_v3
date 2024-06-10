@@ -1,0 +1,9 @@
+.block {
+  overflow: hidden;
+  margin: 0 auto;
+}
+.test {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-color: blueviolet;
+}

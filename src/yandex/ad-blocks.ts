@@ -1,10 +1,15 @@
 import { adBlocks } from './blocks';
 
+type RenderOptions = {
+  renderTo: string;
+  blockId: string;
+  type?: string;
+};
 /**
  * Рекомендательный виджет
  * @param {number} number номер блока присвоенный РСЯ, диапазон  4-8 (создаются блоки на сайте РСЯ)
  */
-export const adBlockRecommendation = (number) => {
+export const adBlockRecommendation = (number: number) => {
   const label = adBlocks.find((block) => block.id === number);
 
   if (!label) {
@@ -12,7 +17,7 @@ export const adBlockRecommendation = (number) => {
   }
 
   window.yaContextCb.push(() => {
-    const renderOptions = {
+    const renderOptions: RenderOptions = {
       renderTo: `yandex_rtb_${label.label}`,
       blockId: label.label,
     };
