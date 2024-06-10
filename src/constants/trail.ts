@@ -1,5 +1,11 @@
+import IconBikeDH from '@/components/Icons/IconBikeDH';
+import IconBikeGravel from '@/components/Icons/IconBikeGravel';
+import IconBikeMTB from '@/components/Icons/IconBikeMTB';
+import IconBikeRoad from '@/components/Icons/IconBikeRoad';
+import { TOptions } from '@/types/index.interface';
+
 // Регион по которому проходит маршрут.
-export const regions = [
+export const regions: TOptions[] = [
   { id: 0, translation: 'Ставропольский край', name: 'stavropolKrai' },
   { id: 1, translation: 'Карачаево-Черкесия', name: 'karachayCherkessia' },
   { id: 3, translation: 'Кабардино-Балкария', name: 'kabardinoBalkaria' },
@@ -13,7 +19,7 @@ export const regions = [
 ];
 
 // Уровни сложности маршрута.
-export const difficultyLevel = [
+export const difficultyLevel: TOptions[] = [
   { id: 0, translation: 'Лёгкий', name: 'easy' },
   { id: 1, translation: 'Средний', name: 'medium' },
   { id: 3, translation: 'Сложный', name: 'hard' },
@@ -21,9 +27,9 @@ export const difficultyLevel = [
 ];
 
 // Уровни сложности маршрута.
-export const bikeTypes = [
-  { id: 0, translation: 'Шоссейный', name: 'road' },
-  { id: 1, translation: 'Горный', name: 'mtb' },
-  { id: 3, translation: 'Грэвел', name: 'gravel' },
-  { id: 4, translation: 'Скоростной спуск', name: 'dh' },
+export const bikeTypes: TOptions[] = [
+  { id: 0, translation: 'Шоссейный', name: 'road', icon: IconBikeRoad },
+  { id: 1, translation: 'Горный', name: 'mtb', icon: IconBikeMTB },
+  { id: 3, translation: 'Грэвел', name: 'gravel', icon: IconBikeGravel },
+  { id: 4, translation: 'Скоростной спуск', name: 'dh', icon: IconBikeDH },
 ];

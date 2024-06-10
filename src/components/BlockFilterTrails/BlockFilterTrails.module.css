@@ -14,6 +14,7 @@
   height: 34px;
   display: flex;
   align-items: center;
+  gap: 1rem;
   font-family: inherit;
   color: inherit;
   background-color: var(--white-12);
@@ -24,4 +25,8 @@
 }
 .adjustments__text {
   margin-right: 1rem;
+}
+.box__adjustments:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
 }

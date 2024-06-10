@@ -32,7 +32,7 @@ export default function Trails({ getTrails }: Props) {
 
   // Проверка наличия включенных фильтров.
   useEffect(() => {
-    if (bikeType !== '') {
+    if (bikeType !== '' && bikeType !== 'нет фильтров') {
       setHasFilters(true);
     } else {
       setHasFilters(false);
@@ -40,7 +40,8 @@ export default function Trails({ getTrails }: Props) {
   }, [bikeType]);
 
   useEffect(() => {
-    getTrails({ bikeType }).then((res) => {
+    // Если приходит значение 'нет фильтров', то запрашивать все данные, то есть ''.
+    getTrails({ bikeType: bikeType === 'нет фильтров' ? '' : bikeType }).then((res) => {
       setTrails(res?.data);
     });
   }, [getTrails, bikeType]);

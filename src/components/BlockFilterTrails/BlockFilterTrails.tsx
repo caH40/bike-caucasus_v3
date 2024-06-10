@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
-import styles from './BlockFilterTrails.module.css';
+
 import { bikeTypes as optionsBikeType } from '@/constants/trail';
-import Select from '../UI/Select/Select';
 import IconAdjustmentsHorizontal from '../Icons/IconAdjustmentsHorizontal';
+import SelectCustom from '../UI/SelectCustom/SelectCustom';
+import styles from './BlockFilterTrails.module.css';
 
 type Props = {
   bikeType: string;
@@ -15,17 +16,12 @@ export default function BlockFilterTrails({ bikeType, setBikeType, hasFilters }:
     <div className={styles.wrapper}>
       <div>
         <div className={styles.type}>
-          <Select
-            state={bikeType}
-            setState={setBikeType}
-            name="bikeType"
-            options={optionsBikeType}
-          />
+          <SelectCustom state={bikeType} setState={setBikeType} options={optionsBikeType} />
         </div>
       </div>
       <button className={styles.box__adjustments}>
-        <span className={styles.adjustments__text}>Фильтры</span>
         <IconAdjustmentsHorizontal colors={{ active: '#ec9c07' }} isActive={hasFilters} />
+        <span className={styles.adjustments__text}>Фильтры</span>
       </button>
     </div>
   );

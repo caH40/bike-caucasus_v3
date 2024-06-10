@@ -55,6 +55,12 @@ export type PropsSelect = {
   loading?: boolean;
   options: { id: number; translation: string; name: string }[];
 };
+export type TOptions = {
+  id: number;
+  translation: string;
+  name: string;
+  icon?: React.ComponentType<TIconProps>;
+};
 /**
  * Пропсы для BoxInputSimple
  */

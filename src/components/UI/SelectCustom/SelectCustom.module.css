@@ -1,0 +1,59 @@
+/* высота кнопки-select не должна изменять, так как присутствует абсолютное позиционирование */
+.wrapper {
+  position: relative;
+  min-width: 200px;
+}
+.select {
+  position: relative;
+  min-width: 200px;
+  height: 34px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-12);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  cursor: pointer;
+}
+.select__name {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  white-space: nowrap;
+}
+.list {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--green-dark);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  z-index: 10;
+}
+.item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  height: 32px;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0 1rem;
+  color: inherit;
+  cursor: pointer;
+}
+.item:hover {
+  background-color: var(--white-50);
+}
+.select:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
+}
