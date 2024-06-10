@@ -1,5 +1,10 @@
 /* высота кнопки-select не должна изменять, так как присутствует абсолютное позиционирование */
-.wrapper {
+.label {
+  font-size: 0.9rem;
+  color: inherit;
+  margin-bottom: 5px;
+}
+.wrapper__select {
   position: relative;
   min-width: 200px;
 }

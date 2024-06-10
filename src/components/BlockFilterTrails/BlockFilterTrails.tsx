@@ -37,7 +37,7 @@ export default function BlockFilterTrails({
   return (
     <div className={styles.wrapper}>
       {/* Блок показывает количество найденных маршрутов и кнопку отображения фильтров */}
-      <div className={styles.control}>
+      <div className={styles.wrapper__control}>
         <div className={styles.box__quantity}>
           <span className={styles.adjustments__text}>{`Маршруты: ${
             quantityTrails ? quantityTrails : 0
@@ -56,29 +56,44 @@ export default function BlockFilterTrails({
 
       {/* Блок фильтров */}
       {isVisibleFilters && (
-        <div className={styles.block__filters}>
-          <div className={styles.type}>
-            <SelectCustom state={bikeType} setState={setBikeType} options={optionsBikeType} />
+        <div className={styles.wrapper__filters}>
+          <div className={styles.block__filters}>
+            <div className={styles.type}>
+              <SelectCustom
+                state={bikeType}
+                setState={setBikeType}
+                options={optionsBikeType}
+                label="Тип велосипеда"
+              />
+            </div>
+
+            <div className={styles.type}>
+              <SelectCustom
+                state={region}
+                setState={setRegion}
+                options={optionsRegions}
+                label="Регион"
+              />
+            </div>
+
+            <div className={styles.type}>
+              <SelectCustom
+                state={difficultyLevel}
+                setState={setDifficultyLevel}
+                options={optionsDifficultyLevel}
+                label="Уровень сложности"
+              />
+            </div>
           </div>
 
-          <div className={styles.type}>
-            <SelectCustom state={region} setState={setRegion} options={optionsRegions} />
+          <div className={styles.block__reset}>
+            <button
+              className={cn(styles.box__adjustments, styles.box__reset)}
+              onClick={() => resetFilters()}
+            >
+              <span className={styles.adjustments__text}>Сброс</span>
+            </button>
           </div>
-
-          <div className={styles.type}>
-            <SelectCustom
-              state={difficultyLevel}
-              setState={setDifficultyLevel}
-              options={optionsDifficultyLevel}
-            />
-          </div>
-
-          <button
-            className={cn(styles.box__adjustments, styles.box__reset)}
-            onClick={() => resetFilters()}
-          >
-            <span className={styles.adjustments__text}>Сброс</span>
-          </button>
         </div>
       )}
     </div>
