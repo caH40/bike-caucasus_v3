@@ -35,7 +35,7 @@ export default function AdContainer({
       style={{ marginBottom, maxHeight, maxWidth, height }}
       id={`yandex_rtb_${adBlock}`}
     >
-      {/* <div className={styles.test} /> */}
+      <div className={styles.test} />
     </div>
   ) : null;
 }

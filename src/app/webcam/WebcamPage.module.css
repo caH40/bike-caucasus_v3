@@ -5,13 +5,8 @@
   gap: 1rem 20px;
   letter-spacing: 0.08rem;
 }
-.wrapper__aside {
-  background-color: var(--white-12);
-  border-radius: 1rem;
-  overflow: hidden;
-  padding: 1rem;
-}
-
+/* .wrapper__aside {
+} */
 .title__h2 {
   margin-bottom: 3px;
 }
