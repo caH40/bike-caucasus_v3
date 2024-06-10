@@ -1,6 +1,10 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
-import { bikeTypes as optionsBikeType, regions as optionsRegions } from '@/constants/trail';
+import {
+  bikeTypes as optionsBikeType,
+  regions as optionsRegions,
+  difficultyLevel as optionsDifficultyLevel,
+} from '@/constants/trail';
 import IconAdjustmentsHorizontal from '../Icons/IconAdjustmentsHorizontal';
 import SelectCustom from '../UI/SelectCustom/SelectCustom';
 import styles from './BlockFilterTrails.module.css';
@@ -10,6 +14,8 @@ type Props = {
   setBikeType: Dispatch<SetStateAction<string>>;
   region: string;
   setRegion: Dispatch<SetStateAction<string>>;
+  difficultyLevel: string;
+  setDifficultyLevel: Dispatch<SetStateAction<string>>;
   hasFilters?: boolean;
 };
 
@@ -18,6 +24,8 @@ export default function BlockFilterTrails({
   setBikeType,
   region,
   setRegion,
+  difficultyLevel,
+  setDifficultyLevel,
   hasFilters,
 }: Props) {
   const [isVisibleFilters, setIsVisibleFilters] = useState<boolean>(false);
@@ -31,6 +39,14 @@ export default function BlockFilterTrails({
 
           <div className={styles.type}>
             <SelectCustom state={region} setState={setRegion} options={optionsRegions} />
+          </div>
+
+          <div className={styles.type}>
+            <SelectCustom
+              state={difficultyLevel}
+              setState={setDifficultyLevel}
+              options={optionsDifficultyLevel}
+            />
           </div>
         </div>
       )}

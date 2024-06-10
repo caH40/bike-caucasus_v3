@@ -4,7 +4,7 @@ import { lcSuffixTrailsFilters as suffix } from '@/constants/local-storage';
 
 type Props = {
   region: string;
-  difficultyLevel?: string;
+  difficultyLevel: string;
   bikeType: string;
 };
 
@@ -16,7 +16,7 @@ export function useLSTrails({ region, difficultyLevel, bikeType }: Props) {
   useSaveToLC('region', region);
 
   // // Сохранение уровня сложности (difficultyLevel).
-  // useSaveToLC('difficultyLevel', difficultyLevel);
+  useSaveToLC('difficultyLevel', difficultyLevel);
 
   // Сохранение Типа велосипеда (bikeType).
   useSaveToLC('bikeType', bikeType);

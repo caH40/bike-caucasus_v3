@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { useActiveFiltersTrails } from '@/hooks/useActiveFiltersTrails';
 import { useLSTrails } from '@/hooks/local_storage/useLSTrails';
 import { useLSTrailsInit } from '@/hooks/local_storage/useLSTrailsInit';
 import BlockFilterTrails from '../BlockFilterTrails/BlockFilterTrails';
@@ -16,9 +17,12 @@ type Props = {
     bikeType,
     // eslint-disable-next-line no-unused-vars
     region,
+    // eslint-disable-next-line no-unused-vars
+    difficultyLevel,
   }: {
     bikeType: string;
     region: string;
+    difficultyLevel: string;
   }) => Promise<ResponseServer<TTrailDto[] | null> | undefined>;
 };
 
@@ -29,34 +33,31 @@ export default function Trails({ getTrails }: Props) {
   const [trails, setTrails] = useState<TTrailDto[] | null | undefined>(null);
   const [bikeType, setBikeType] = useState<string>(''); // Маршрут для какого типа велосипедов.
   const [region, setRegion] = useState<string>('');
-  const [hasFilters, setHasFilters] = useState<boolean>(false);
+  const [difficultyLevel, setDifficultyLevel] = useState<string>('');
 
-  useLSTrailsInit({ setBikeType, setRegion });
-  useLSTrails({ bikeType, region });
+  const { hasFilters, setHasFilters } = useActiveFiltersTrails({
+    bikeType,
+    region,
+    difficultyLevel,
+  });
+
+  useLSTrailsInit({ setBikeType, setRegion, setDifficultyLevel });
+  useLSTrails({ bikeType, region, difficultyLevel });
 
   // Проверка наличия включенных фильтров.
-  useEffect(() => {
-    if (
-      (bikeType !== '' && bikeType !== 'нет фильтров') ||
-      (region !== '' && region !== 'нет фильтров')
-    ) {
-      setHasFilters(true);
-    } else {
-      setHasFilters(false);
-    }
-  }, [bikeType, region]);
 
   useEffect(() => {
     const query = {
       bikeType: bikeType === 'нет фильтров' ? '' : bikeType,
       region: region === 'нет фильтров' ? '' : region,
+      difficultyLevel: difficultyLevel === 'нет фильтров' ? '' : difficultyLevel,
     };
 
     // Если приходит значение 'нет фильтров', то запрашивать все данные, то есть ''.
     getTrails(query).then((res) => {
       setTrails(res?.data);
     });
-  }, [getTrails, bikeType, region]);
+  }, [getTrails, bikeType, region, difficultyLevel]);
 
   // const resetFilters = () => {
   //   setBikeType('');
@@ -69,6 +70,8 @@ export default function Trails({ getTrails }: Props) {
         setBikeType={setBikeType}
         region={region}
         setRegion={setRegion}
+        difficultyLevel={difficultyLevel}
+        setDifficultyLevel={setDifficultyLevel}
         hasFilters={hasFilters}
       />
       <div className={styles.wrapper}>

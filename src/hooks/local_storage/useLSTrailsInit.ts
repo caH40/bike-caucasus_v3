@@ -4,7 +4,7 @@ import { lcSuffixTrailsFilters as suffix } from '@/constants/local-storage';
 
 type PropsInit = {
   setRegion: Dispatch<SetStateAction<string>>;
-  // setDifficultyLevel: Dispatch<SetStateAction<string>>;
+  setDifficultyLevel: Dispatch<SetStateAction<string>>;
   setBikeType: Dispatch<SetStateAction<string>>;
 };
 
@@ -13,16 +13,16 @@ type PropsInit = {
  */
 export function useLSTrailsInit({
   setRegion,
-  // setDifficultyLevel,
+  setDifficultyLevel,
   setBikeType,
 }: PropsInit): void {
   useEffect(() => {
     const initRegion = localStorage.getItem(`${suffix}region`) || '';
-    // const initDifficultyLevel = localStorage.getItem(`${suffix}$-difficultyLevel`) || 'easy';
+    const initDifficultyLevel = localStorage.getItem(`${suffix}difficultyLevel`) || '';
     const initBikeType = localStorage.getItem(`${suffix}bikeType`) || '';
 
     setRegion(initRegion);
-    // setDifficultyLevel(initDifficultyLevel);
+    setDifficultyLevel(initDifficultyLevel);
     setBikeType(initBikeType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
