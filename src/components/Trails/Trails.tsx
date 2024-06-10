@@ -35,7 +35,7 @@ export default function Trails({ getTrails }: Props) {
   const [region, setRegion] = useState<string>('');
   const [difficultyLevel, setDifficultyLevel] = useState<string>('');
 
-  const { hasFilters, setHasFilters } = useActiveFiltersTrails({
+  const hasFilters = useActiveFiltersTrails({
     bikeType,
     region,
     difficultyLevel,
@@ -76,6 +76,7 @@ export default function Trails({ getTrails }: Props) {
         setDifficultyLevel={setDifficultyLevel}
         hasFilters={hasFilters}
         resetFilters={resetFilters}
+        quantityTrails={trails?.length}
       />
       <div className={styles.wrapper}>
         {trails && trails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}

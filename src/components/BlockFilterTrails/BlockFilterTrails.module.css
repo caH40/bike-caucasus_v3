@@ -1,8 +1,10 @@
 .wrapper {
+  margin-bottom: 1rem;
+}
+.control {
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 1rem 2rem;
+  justify-content: space-between;
+  gap: 1rex;
   margin-bottom: 1rem;
 }
 .type {
@@ -14,6 +16,23 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+.box__quantity {
+  width: auto;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-12);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  white-space: nowrap;
+}
+.box__quantity span {
+  margin-right: 0;
 }
 .box__adjustments {
   width: auto;

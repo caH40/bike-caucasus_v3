@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Определение типа Props для параметров функции
 type Props = {
@@ -13,14 +13,9 @@ type Props = {
  * @param props.bikeType - Тип велосипеда.
  * @param props.region - Регион.
  * @param props.difficultyLevel - Уровень сложности.
- * @returns Объект, содержащий состояние фильтров и функцию для его обновления.
- * @returns returns.hasFilters - Указывает, активны ли фильтры.
- * @returns returns.setHasFilters - Функция для обновления состояния фильтров.
+ * @returns hasFilters - Указывает, активны ли фильтры.
  */
-export function useActiveFiltersTrails({ bikeType, region, difficultyLevel }: Props): {
-  hasFilters: boolean;
-  setHasFilters: Dispatch<SetStateAction<boolean>>;
-} {
+export function useActiveFiltersTrails({ bikeType, region, difficultyLevel }: Props) {
   const [hasFilters, setHasFilters] = useState<boolean>(false);
 
   useEffect(() => {
@@ -35,5 +30,5 @@ export function useActiveFiltersTrails({ bikeType, region, difficultyLevel }: Pr
     }
   }, [bikeType, region, difficultyLevel]);
 
-  return { hasFilters, setHasFilters };
+  return hasFilters;
 }

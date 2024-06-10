@@ -19,6 +19,7 @@ type Props = {
   setDifficultyLevel: Dispatch<SetStateAction<string>>;
   hasFilters?: boolean;
   resetFilters: () => void;
+  quantityTrails: number | undefined;
 };
 
 export default function BlockFilterTrails({
@@ -30,10 +31,30 @@ export default function BlockFilterTrails({
   setDifficultyLevel,
   hasFilters,
   resetFilters,
+  quantityTrails,
 }: Props) {
   const [isVisibleFilters, setIsVisibleFilters] = useState<boolean>(false);
   return (
     <div className={styles.wrapper}>
+      {/* Блок показывает количество найденных маршрутов и кнопку отображения фильтров */}
+      <div className={styles.control}>
+        <div className={styles.box__quantity}>
+          <span className={styles.adjustments__text}>{`Маршруты: ${
+            quantityTrails ? quantityTrails : 0
+          }`}</span>
+        </div>
+
+        {/* Кнопка отображения фильтров */}
+        <button
+          className={styles.box__adjustments}
+          onClick={() => setIsVisibleFilters((prev) => !prev)}
+        >
+          <IconAdjustmentsHorizontal colors={{ active: '#ec9c07' }} isActive={hasFilters} />
+          <span className={styles.adjustments__text}>Фильтры</span>
+        </button>
+      </div>
+
+      {/* Блок фильтров */}
       {isVisibleFilters && (
         <div className={styles.block__filters}>
           <div className={styles.type}>
@@ -60,15 +81,6 @@ export default function BlockFilterTrails({
           </button>
         </div>
       )}
-
-      {/* Кнопка отображения фильтров */}
-      <button
-        className={styles.box__adjustments}
-        onClick={() => setIsVisibleFilters((prev) => !prev)}
-      >
-        <IconAdjustmentsHorizontal colors={{ active: '#ec9c07' }} isActive={hasFilters} />
-        <span className={styles.adjustments__text}>Фильтры</span>
-      </button>
     </div>
   );
 }
