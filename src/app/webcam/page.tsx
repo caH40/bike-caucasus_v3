@@ -4,7 +4,7 @@ import Webcam from '@/components/Webcam/Webcam';
 import { generateMetadataWebcam } from '@/meta/meta';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import styles from './WebcamPage.module.css';
-import Banner from './ads/Banner';
+import AdContainer from '@/components/AdContainer/AdContainer';
 
 // Создание динамических meta данных
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,7 +32,7 @@ export default function WebcamPage() {
 
       {/* Боковая панель. */}
       <aside className={styles.wrapper__aside}>
-        <Banner />
+        <AdContainer adsNumber={5} />
       </aside>
     </div>
   );

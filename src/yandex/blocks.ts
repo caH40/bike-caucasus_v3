@@ -24,6 +24,16 @@ export const adBlocks: AdsBlock[] = [
     label: 'R-A-5213436-5',
     description: 'Баннер, webcam page',
   },
+  {
+    id: 6,
+    label: 'R-A-5213436-6',
+    description: 'Баннер, trails page',
+  },
+  {
+    id: 7,
+    label: 'R-A-5213436-7',
+    description: 'Баннер, trail page',
+  },
 ];
 // {
 //   id: 16,

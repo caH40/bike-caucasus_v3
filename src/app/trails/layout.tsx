@@ -1,3 +1,4 @@
+import AdContainer from '@/components/AdContainer/AdContainer';
 import styles from './layout.module.css';
 
 /**
@@ -14,7 +15,9 @@ export default function TrailsLayout({
       <div className={styles.wrapper__main}>{children}</div>
 
       {/* левая боковая панель */}
-      <aside className={styles.wrapper__aside}></aside>
+      <aside className={styles.wrapper__aside}>
+        <AdContainer adsNumber={6} />
+      </aside>
     </div>
   );
 }
