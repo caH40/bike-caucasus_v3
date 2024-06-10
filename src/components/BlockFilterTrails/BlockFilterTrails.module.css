@@ -29,12 +29,28 @@
   padding: 0 1rem;
   cursor: pointer;
 }
+.box__adjustments:hover {
+  transition: all 0.3s;
+  background-color: var(--green-dark);
+  border: 1px solid var(--color-orange);
+}
 .adjustments__text {
   margin-right: 1rem;
 }
 .box__adjustments:focus {
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
   outline: none;
+}
+.box__reset {
+  justify-content: center;
+}
+.box__reset span {
+  margin-right: 0;
+}
+
+.box__reset:active {
+  background-color: var(--white-12);
+  border: 1px solid var(--line);
 }
 /* ====================================================================== */
 @media (max-width: 992px) {

@@ -59,9 +59,11 @@ export default function Trails({ getTrails }: Props) {
     });
   }, [getTrails, bikeType, region, difficultyLevel]);
 
-  // const resetFilters = () => {
-  //   setBikeType('');
-  // };
+  const resetFilters = () => {
+    setBikeType('нет фильтров');
+    setRegion('нет фильтров');
+    setDifficultyLevel('нет фильтров');
+  };
 
   return (
     <>
@@ -73,6 +75,7 @@ export default function Trails({ getTrails }: Props) {
         difficultyLevel={difficultyLevel}
         setDifficultyLevel={setDifficultyLevel}
         hasFilters={hasFilters}
+        resetFilters={resetFilters}
       />
       <div className={styles.wrapper}>
         {trails && trails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}

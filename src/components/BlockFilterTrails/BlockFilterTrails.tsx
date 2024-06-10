@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
+import cn from 'classnames';
 
 import {
   bikeTypes as optionsBikeType,
@@ -17,6 +18,7 @@ type Props = {
   difficultyLevel: string;
   setDifficultyLevel: Dispatch<SetStateAction<string>>;
   hasFilters?: boolean;
+  resetFilters: () => void;
 };
 
 export default function BlockFilterTrails({
@@ -27,6 +29,7 @@ export default function BlockFilterTrails({
   difficultyLevel,
   setDifficultyLevel,
   hasFilters,
+  resetFilters,
 }: Props) {
   const [isVisibleFilters, setIsVisibleFilters] = useState<boolean>(false);
   return (
@@ -48,6 +51,13 @@ export default function BlockFilterTrails({
               options={optionsDifficultyLevel}
             />
           </div>
+
+          <button
+            className={cn(styles.box__adjustments, styles.box__reset)}
+            onClick={() => resetFilters()}
+          >
+            <span className={styles.adjustments__text}>Сброс</span>
+          </button>
         </div>
       )}
 
