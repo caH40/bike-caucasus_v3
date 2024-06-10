@@ -20,13 +20,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 type TGetTrails = {
   bikeType: string | null;
+  region: string | null;
 };
 
-async function getTrails({ bikeType }: TGetTrails) {
+async function getTrails({ bikeType, region }: TGetTrails) {
   'use server';
   try {
     const trailService = new Trail();
-    const trails = await trailService.getMany({ bikeType });
+    const trails = await trailService.getMany({ bikeType, region });
     return trails;
   } catch (error) {
     errorHandlerClient(parseError(error));

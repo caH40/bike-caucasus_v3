@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { lcSuffixTrailsFilters as suffix } from '@/constants/local-storage';
 
 type Props = {
-  region?: string;
+  region: string;
   difficultyLevel?: string;
   bikeType: string;
 };
@@ -13,7 +13,7 @@ type Props = {
  */
 export function useLSTrails({ region, difficultyLevel, bikeType }: Props) {
   // // Сохранение региона (region).
-  // useSaveToLC('region', region);
+  useSaveToLC('region', region);
 
   // // Сохранение уровня сложности (difficultyLevel).
   // useSaveToLC('difficultyLevel', difficultyLevel);

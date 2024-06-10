@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
-import { bikeTypes as optionsBikeType } from '@/constants/trail';
+import { bikeTypes as optionsBikeType, regions as optionsRegions } from '@/constants/trail';
 import IconAdjustmentsHorizontal from '../Icons/IconAdjustmentsHorizontal';
 import SelectCustom from '../UI/SelectCustom/SelectCustom';
 import styles from './BlockFilterTrails.module.css';
@@ -8,18 +8,38 @@ import styles from './BlockFilterTrails.module.css';
 type Props = {
   bikeType: string;
   setBikeType: Dispatch<SetStateAction<string>>;
+  region: string;
+  setRegion: Dispatch<SetStateAction<string>>;
   hasFilters?: boolean;
 };
 
-export default function BlockFilterTrails({ bikeType, setBikeType, hasFilters }: Props) {
+export default function BlockFilterTrails({
+  bikeType,
+  setBikeType,
+  region,
+  setRegion,
+  hasFilters,
+}: Props) {
+  const [isVisibleFilters, setIsVisibleFilters] = useState<boolean>(false);
   return (
     <div className={styles.wrapper}>
-      <div>
-        <div className={styles.type}>
-          <SelectCustom state={bikeType} setState={setBikeType} options={optionsBikeType} />
+      {isVisibleFilters && (
+        <div className={styles.block__filters}>
+          <div className={styles.type}>
+            <SelectCustom state={bikeType} setState={setBikeType} options={optionsBikeType} />
+          </div>
+
+          <div className={styles.type}>
+            <SelectCustom state={region} setState={setRegion} options={optionsRegions} />
+          </div>
         </div>
-      </div>
-      <button className={styles.box__adjustments}>
+      )}
+
+      {/* Кнопка отображения фильтров */}
+      <button
+        className={styles.box__adjustments}
+        onClick={() => setIsVisibleFilters((prev) => !prev)}
+      >
         <IconAdjustmentsHorizontal colors={{ active: '#ec9c07' }} isActive={hasFilters} />
         <span className={styles.adjustments__text}>Фильтры</span>
       </button>

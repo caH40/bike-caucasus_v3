@@ -92,16 +92,21 @@ export class Trail {
 
   public async getMany({
     bikeType,
+    region,
   }: {
     bikeType?: string | null;
+    region?: string | null;
   }): Promise<ResponseServer<TTrailDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
-      const query = {} as { bikeType?: string };
+      const query = {} as { bikeType?: string; region?: string };
       if (bikeType) {
         query.bikeType = bikeType;
+      }
+      if (region) {
+        query.region = region;
       }
 
       // Получаем информацию о маршруте из БД.
