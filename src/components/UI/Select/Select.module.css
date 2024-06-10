@@ -10,17 +10,19 @@
   align-items: flex-end;
 }
 .select {
+  width: 100%;
+  height: 34px;
+  display: flex;
+  align-items: center;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-
   font-family: inherit;
   color: inherit;
   background-color: var(--white-12);
   border: 1px solid var(--line);
   border-radius: 0.5rem;
-  padding: 0.6rem 1rem 0.6rem;
-  width: 100%;
+  padding: 0 1rem;
 }
 .option {
   font-size: inherit;

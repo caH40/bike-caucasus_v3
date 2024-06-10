@@ -202,6 +202,10 @@ export type TIconProps = {
   squareSize?: number;
   isActive?: boolean; // нажатое состояние
   getClick?: () => void;
+  // Наборы цветов под разные случаи.
+  colors?: {
+    active: string;
+  };
 };
 
 /**

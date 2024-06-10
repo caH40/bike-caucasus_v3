@@ -1,9 +1,27 @@
 .wrapper {
   display: flex;
-  gap: 2rem;
+  justify-content: space-between;
   align-items: center;
+  gap: 2rem;
   margin-bottom: 1rem;
 }
 .type {
   width: 150px;
+}
+
+.box__adjustments {
+  width: auto;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-12);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  cursor: pointer;
+}
+.adjustments__text {
+  margin-right: 1rem;
 }

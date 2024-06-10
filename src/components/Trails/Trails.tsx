@@ -25,9 +25,19 @@ type Props = {
 export default function Trails({ getTrails }: Props) {
   const [trails, setTrails] = useState<TTrailDto[] | null | undefined>(null);
   const [bikeType, setBikeType] = useState<string>(''); // Маршрут для какого типа велосипедов.
+  const [hasFilters, setHasFilters] = useState<boolean>(false);
 
   useLSTrailsInit({ setBikeType });
   useLSTrails({ bikeType });
+
+  // Проверка наличия включенных фильтров.
+  useEffect(() => {
+    if (bikeType !== '') {
+      setHasFilters(true);
+    } else {
+      setHasFilters(false);
+    }
+  }, [bikeType]);
 
   useEffect(() => {
     getTrails({ bikeType }).then((res) => {
@@ -35,9 +45,17 @@ export default function Trails({ getTrails }: Props) {
     });
   }, [getTrails, bikeType]);
 
+  const resetFilters = () => {
+    setBikeType('');
+  };
+
   return (
     <>
-      <BlockFilterTrails bikeType={bikeType} setBikeType={setBikeType} />
+      <BlockFilterTrails
+        bikeType={bikeType}
+        setBikeType={setBikeType}
+        hasFilters={hasFilters}
+      />
       <div className={styles.wrapper}>
         {trails && trails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}
       </div>

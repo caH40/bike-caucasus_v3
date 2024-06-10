@@ -19,9 +19,11 @@ export default function Select({
 }: PropsSelect) {
   return (
     <div className={styles.wrapper}>
-      <label className={styles.label} htmlFor={id}>
-        {label}
-      </label>
+      {label && (
+        <label className={styles.label} htmlFor={id}>
+          {label}
+        </label>
+      )}
       <div className={styles.wrapper__relative}>
         <select
           className={cx('select')}
@@ -33,7 +35,7 @@ export default function Select({
           onChange={(e) => setState(e.target.value)}
         >
           {/* Если приходит value='' то показывается данный Лэйбл */}
-          <option value="" className={styles.option} disabled>
+          <option value="" className={styles.option}>
             Все
           </option>
           {options.map((elm) => (
