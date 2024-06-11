@@ -19,6 +19,15 @@
   border-radius: 0.5rem;
   transition: all 0.4s;
 }
+.title {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  padding: 1rem;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(to bottom, rgba(5, 24, 9, 0.4) 0%, rgba(5, 24, 9, 1) 100%);
+}
 .box__poster:hover .img {
   transition: all 0.4s;
   transform: scale(1.03);

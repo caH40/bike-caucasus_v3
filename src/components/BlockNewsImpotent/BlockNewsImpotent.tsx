@@ -25,6 +25,7 @@ export default async function BlockNewsImpotent({}: Props) {
             alt={newsOne.title}
             className={styles.img}
           />
+          <h3 className={styles.title}>{newsOne.title}</h3>
         </Link>
       ))}
     </div>
