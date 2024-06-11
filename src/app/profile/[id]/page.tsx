@@ -9,6 +9,7 @@ import { getLogoProfile } from '@/libs/utils/profile';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
 import { blurBase64 } from '@/libs/image';
+import { notFound } from 'next/navigation';
 
 const userService = new UserService();
 
@@ -23,54 +24,52 @@ export default async function ProfilePage({ params }: ParamsWithId) {
     profile?.image
   );
 
+  if (!profile) {
+    notFound();
+  }
+
   return (
     <div className={styles.wrapper}>
       <aside className={styles.wrapper__aside}>
-        {profile ? (
-          <Image
-            width={300}
-            height={300}
-            src={profileImage}
-            alt="vk"
-            className={styles.profile__image}
-            priority={true}
-            placeholder="blur"
-            blurDataURL={blurBase64}
-          />
-        ) : (
-          <div className={styles.empty}></div>
-        )}
+        <Image
+          width={300}
+          height={300}
+          src={profileImage}
+          alt="vk"
+          className={styles.profile__image}
+          priority={true}
+          placeholder="blur"
+          blurDataURL={blurBase64}
+        />
 
-        {profile && (
-          <section className={styles.wrapper__details}>
-            <h1
-              className={styles.title}
-            >{`${profile.person.lastName} ${profile.person.firstName}`}</h1>
-            <dl className={styles.list}>
-              <dt className={styles.desc__title}>Город</dt>
-              <dd className={styles.desc__detail}>{profile.city ?? 'нет данных'}</dd>
+        <section className={styles.wrapper__details}>
+          <h1
+            className={styles.title}
+          >{`${profile.person.lastName} ${profile.person.firstName}`}</h1>
+          <dl className={styles.list}>
+            <dt className={styles.desc__title}>Город</dt>
+            <dd className={styles.desc__detail}>{profile.city ?? 'нет данных'}</dd>
 
-              <dt className={styles.desc__title}>Возраст</dt>
-              <dd className={styles.desc__detail}>
-                {'ageCategory' in profile.person ? profile.person.ageCategory : 'нет данных'}
-              </dd>
+            <dt className={styles.desc__title}>Возраст</dt>
+            <dd className={styles.desc__detail}>
+              {'ageCategory' in profile.person ? profile.person.ageCategory : 'нет данных'}
+            </dd>
 
-              <dt className={styles.desc__title}>Пол</dt>
-              <dd className={styles.desc__detail}>
-                {profile.person.gender === 'female' ? 'женский' : 'мужской'}
-              </dd>
+            <dt className={styles.desc__title}>Пол</dt>
+            <dd className={styles.desc__detail}>
+              {profile.person.gender === 'female' ? 'женский' : 'мужской'}
+            </dd>
 
-              <dt className={styles.desc__title}>Команда</dt>
-              <dd className={styles.desc__detail}>{profile.team?.name ?? 'нет данных'}</dd>
+            <dt className={styles.desc__title}>Команда</dt>
+            <dd className={styles.desc__detail}>{profile.team?.name ?? 'нет данных'}</dd>
 
-              <dt className={styles.desc__title}>Контакты</dt>
-              <dd className={styles.desc__detail}>
-                <BlockSocial social={profile.social} />
-              </dd>
-            </dl>
-            {profile.person.bio && <p>{profile.person.bio}</p>}
-          </section>
-        )}
+            <dt className={styles.desc__title}>Контакты</dt>
+            <dd className={styles.desc__detail}>
+              <BlockSocial social={profile.social} />
+            </dd>
+          </dl>
+          {profile.person.bio && <p>{profile.person.bio}</p>}
+        </section>
 
         {/* меню профиля */}
         <div className={styles.menu}>
