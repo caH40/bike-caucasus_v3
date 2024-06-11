@@ -26,7 +26,7 @@ export type TNewsGetOneDto = {
   updatedAt: Date;
   author: TAuthor;
   isLikedByUser: boolean;
-  impotent?: boolean;
+  important: boolean;
 };
 
 /**

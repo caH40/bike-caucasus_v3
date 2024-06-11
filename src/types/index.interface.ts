@@ -273,6 +273,7 @@ export type TNewsCreateFromClient = {
   hashtags: string; // Хэштег новости.
   poster: File | null; // Изображение заголовка новости.
   urlSlug?: string; // urlSlug редактируемой новости, если его нет, значит новость создаётся.
+  important: boolean; // important Важная новость?
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
 };
 

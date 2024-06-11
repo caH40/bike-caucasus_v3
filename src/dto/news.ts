@@ -38,6 +38,7 @@ export function dtoNewsGetOne(
     createdAt: news.createdAt,
     updatedAt: news.updatedAt,
     isLikedByUser: news.isLikedByUser,
+    important: news.important,
     author,
   };
 }

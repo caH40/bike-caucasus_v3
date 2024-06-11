@@ -7,6 +7,7 @@ type Props = {
   title: string;
   subTitle: string;
   hashtags: string;
+  important: boolean;
   blocks: TBlockInputInfo[];
   resetData: boolean;
   target: 'edit' | 'create'; // указывает какая форма используется.
@@ -17,6 +18,7 @@ type PropsInit = {
   setTitle: Dispatch<SetStateAction<string>>;
   setSubTitle: Dispatch<SetStateAction<string>>;
   setHashtags: Dispatch<SetStateAction<string>>;
+  setImportant: Dispatch<SetStateAction<boolean>>;
   initialBlocks: TBlockInputInfo[];
   isEditing: boolean; // Происходит редактирование или создание новости.
   target: 'edit' | 'create'; // указывает какая форма используется.
@@ -27,7 +29,15 @@ type PropsInit = {
 /**
  * Хук сохраняет вводимые данные в форме создания Новости.
  */
-export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target }: Props) {
+export function useLSNews({
+  title,
+  subTitle,
+  hashtags,
+  important,
+  blocks,
+  resetData,
+  target,
+}: Props) {
   useEffect(() => {
     if (target === 'edit') {
       return;
@@ -61,6 +71,17 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target
     localStorage.setItem(`${suffix}${target}-hashtags`, hashtags);
   }, [hashtags, target]);
 
+  useEffect(() => {
+    if (target === 'edit') {
+      return;
+    }
+
+    if (!important) {
+      return;
+    }
+    localStorage.setItem(`${suffix}${target}-important`, String(important));
+  }, [important, target]);
+
   // сохранение данных блоков в Локальном хранилище при изменении blocks
   useEffect(() => {
     if (target === 'edit') {
@@ -92,6 +113,7 @@ export function useLSNews({ title, subTitle, hashtags, blocks, resetData, target
     localStorage.removeItem(`${suffix}${target}-title`);
     localStorage.removeItem(`${suffix}${target}-subTitle`);
     localStorage.removeItem(`${suffix}${target}-hashtags`);
+    localStorage.removeItem(`${suffix}${target}-important`);
     localStorage.removeItem(`${suffix}${target}-blocks`);
   }, [resetData, target]);
 }
@@ -106,6 +128,7 @@ export function useLSNewsInit({
   setHashtags,
   isEditing,
   initialBlocks,
+  setImportant,
   target,
 }: PropsInit): void {
   useEffect(() => {
@@ -127,10 +150,12 @@ export function useLSNewsInit({
     const initTitle = localStorage.getItem(`${suffix}${target}-title`) || '';
     const initSubTitle = localStorage.getItem(`${suffix}${target}-subTitle`) || '';
     const initHashtags = localStorage.getItem(`${suffix}${target}-hashtags`) || '';
+    const iniImportant = localStorage.getItem(`${suffix}${target}-important`) || 'false';
 
     setTitle(initTitle);
     setSubTitle(initSubTitle);
     setHashtags(initHashtags);
+    setImportant(iniImportant === 'true' ? true : false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

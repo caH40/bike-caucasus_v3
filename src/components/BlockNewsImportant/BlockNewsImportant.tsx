@@ -1,15 +1,15 @@
-import { getNews } from '@/actions/news';
-import styles from './BlockNewsImpotent.module.css';
-
 import Image from 'next/image';
 import Link from 'next/link';
-type Props = {};
+
+import { blurBase64 } from '@/libs/image';
+import { getNews } from '@/actions/news';
+import styles from './BlockNewsImportant.module.css';
 
 /**
  * Блок отображения важных новостей (новость с свойством impotent:true).
  */
-export default async function BlockNewsImpotent({}: Props) {
-  const newsLast = await getNews({ docsOnPage: 2, query: { impotent: true } });
+export default async function BlockNewsImpotent() {
+  const newsLast = await getNews({ docsOnPage: 2, query: { important: true } });
   return (
     <div className={styles.wrapper}>
       {newsLast?.news.map((newsOne) => (
@@ -24,6 +24,9 @@ export default async function BlockNewsImpotent({}: Props) {
             sizes="(max-width: 576px 100wv) 33wv"
             alt={newsOne.title}
             className={styles.img}
+            priority={true}
+            placeholder="blur"
+            blurDataURL={blurBase64}
           />
           <h3 className={styles.title}>{newsOne.title}</h3>
         </Link>

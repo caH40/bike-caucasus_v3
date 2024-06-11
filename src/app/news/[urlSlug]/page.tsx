@@ -14,7 +14,7 @@ import styles from './NewsPage.module.css';
 import { notFound } from 'next/navigation';
 import { blurBase64 } from '@/libs/image';
 import AdContainer from '@/components/AdContainer/AdContainer';
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import Wrapper from '@/components/Wrapper/Wrapper';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -84,9 +84,7 @@ export default async function NewsPage({ params }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <>
-          <TitleAndLine title={newsOne.title} hSize={1} />
-
+        <Wrapper title={newsOne.title} hSize={1}>
           {/*Блок об авторе новости и дате создания. */}
           <div className={styles.author}>
             <Author data={{ author: newsOne.author, createdAt: newsOne.createdAt }} />
@@ -156,7 +154,7 @@ export default async function NewsPage({ params }: Props) {
           </div>
           <hr className={styles.line} />
           <BlockShare title={'Поделиться'} />
-        </>
+        </Wrapper>
       </div>
       <aside className={styles.wrapper__aside}>
         <AdContainer adsNumber={7} />

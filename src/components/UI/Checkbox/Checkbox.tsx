@@ -22,7 +22,7 @@ export default function Checkbox({ label, value, setValue, id }: Props) {
           className={styles.input}
           type={'checkbox'}
           checked={value}
-          onChange={() => setValue((prev) => !prev)} // без ругается, что якобы неконтролируемый компонент
+          onChange={(e) => setValue(e.target.checked)} // без ругается, что якобы неконтролируемый компонент
           name={id}
           id={id}
         />

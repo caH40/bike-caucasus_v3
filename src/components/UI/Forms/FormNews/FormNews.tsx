@@ -19,6 +19,7 @@ import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import { useRouter } from 'next/navigation';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import Checkbox from '../../Checkbox/Checkbox';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -42,6 +43,9 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
   const [title, setTitle] = useState<string>(newsForEdit ? newsForEdit.title : '');
   // Подзаголовок новости.
   const [subTitle, setSubTitle] = useState<string>(newsForEdit ? newsForEdit.subTitle : '');
+  const [important, setImportant] = useState<boolean>(
+    newsForEdit ? !!newsForEdit.important : false
+  );
   // Хэштэги новости.
   const [hashtags, setHashtags] = useState<string>(
     newsForEdit ? newsForEdit.hashtags.join(' ') : ''
@@ -68,6 +72,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
     setTitle,
     setSubTitle,
     setHashtags,
+    setImportant,
     isEditing: newsForEdit ? true : false,
     initialBlocks: getInitialBlocks(newsForEdit?.blocks),
   });
@@ -79,6 +84,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
     hashtags,
     blocks,
     resetData,
+    important,
     target: newsForEdit ? 'edit' : 'create',
   });
 
@@ -108,6 +114,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
       title: titleStripedHtmlTags,
       subTitle: subTitleStripedHtmlTags,
       hashtags: hashtagsStripedHtmlTags,
+      important,
       poster,
       urlSlug: newsForEdit?.urlSlug,
       posterOldUrl: newsForEdit?.posterOldUrl,
@@ -203,6 +210,13 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
           loading={isLoading}
           autoComplete={'off'}
           validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
+        />
+
+        <Checkbox
+          value={important}
+          setValue={setImportant}
+          label={`Важная новость - ${important ? 'вкл' : 'выкл'}:`}
+          id="important"
         />
 
         <div className={styles.box__button}>

@@ -9,6 +9,7 @@ export function serializationNewsCreate({
   title,
   subTitle,
   hashtags,
+  important,
   poster,
   urlSlug,
   posterOldUrl,
@@ -17,6 +18,7 @@ export function serializationNewsCreate({
   formData.set('title', title);
   formData.set('subTitle', subTitle);
   formData.set('hashtags', hashtags);
+  formData.set('important', important ? 'true' : 'false');
   if (poster) {
     formData.set('poster', poster);
   }
