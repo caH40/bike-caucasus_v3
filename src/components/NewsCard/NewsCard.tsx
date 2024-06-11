@@ -3,15 +3,15 @@ import Link from 'next/link';
 
 import InteractiveBlockNews from '../UI/InteractiveBlockNews/InteractiveBlockNews';
 import { getTimerLocal } from '@/libs/utils/date-local';
+import { blurBase64 } from '@/libs/image';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsCard.module.css';
-import { blurBase64 } from '@/libs/image';
 
 type Props = {
   newsOne: TNewsGetOneDto;
 };
 
-export default async function NewsCard({ newsOne }: Props) {
+export default function NewsCard({ newsOne }: Props) {
   const idNews = newsOne?._id ? String(newsOne._id) : undefined;
   return (
     <div className={styles.wrapper}>

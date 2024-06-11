@@ -25,7 +25,6 @@ const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
  * Серверный экшен получения новостей с БД.
  */
 export async function getNews({ idUserDB, page, docsOnPage }: ParamsNews = {}) {
-  'use server';
   try {
     const news = new News();
     const response: ResponseServer<null | {

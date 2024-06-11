@@ -29,7 +29,7 @@ export default async function Home() {
               горных велосипедов.
             </p>
             <NewsShort idUserDB={session?.user.idDB} />
-            <BlockNews idUserDB={session?.user.idDB} />
+            <BlockNews />
           </div>
         </Wrapper>
       </div>
