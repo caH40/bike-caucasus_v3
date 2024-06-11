@@ -32,7 +32,12 @@ export const adBlocks: AdsBlock[] = [
   {
     id: 7,
     label: 'R-A-5213436-7',
-    description: 'Баннер, trail page',
+    description: 'Баннер, newsOne page',
+  },
+  {
+    id: 8,
+    label: 'R-A-5213436-8',
+    description: 'Баннер, Home page',
   },
 ];
 // {

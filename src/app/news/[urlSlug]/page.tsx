@@ -13,6 +13,8 @@ import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsPage.module.css';
 import { notFound } from 'next/navigation';
 import { blurBase64 } from '@/libs/image';
+import AdContainer from '@/components/AdContainer/AdContainer';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -83,7 +85,7 @@ export default async function NewsPage({ params }: Props) {
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
         <>
-          <h1 className={styles.title}>{newsOne.title}</h1>
+          <TitleAndLine title={newsOne.title} hSize={1} />
 
           {/*Блок об авторе новости и дате создания. */}
           <div className={styles.author}>
@@ -156,7 +158,9 @@ export default async function NewsPage({ params }: Props) {
           <BlockShare title={'Поделиться'} />
         </>
       </div>
-      <aside className={styles.wrapper__aside}></aside>
+      <aside className={styles.wrapper__aside}>
+        <AdContainer adsNumber={7} />
+      </aside>
     </div>
   );
 }

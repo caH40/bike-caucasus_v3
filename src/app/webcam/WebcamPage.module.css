@@ -5,8 +5,9 @@
   gap: 1rem 20px;
   letter-spacing: 0.08rem;
 }
-/* .wrapper__aside {
-} */
+.wrapper__aside {
+  margin-top: 39px;
+}
 .title__h2 {
   margin-bottom: 3px;
 }
@@ -28,5 +29,8 @@
 @media (max-width: 992px) {
   .wrapper {
     grid-template-columns: 1fr;
+  }
+  .wrapper__aside {
+    margin-top: 0;
   }
 }

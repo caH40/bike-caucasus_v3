@@ -8,6 +8,7 @@ import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getNews } from '@/actions/news';
+import AdContainer from '@/components/AdContainer/AdContainer';
 
 /**
  * Главная (домашняя) страница сайта.
@@ -15,7 +16,7 @@ import { getNews } from '@/actions/news';
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  const news = await getNews({ quantity: 6, idUserDB: session?.user.idDB });
+  const news = await getNews({ quantity: 10, idUserDB: session?.user.idDB });
 
   return (
     <div className={styles.wrapper}>
@@ -38,7 +39,11 @@ export default async function Home() {
         <div className={styles.webcam__title__mobile}>
           <TitleAndLine hSize={2} title="Вебкамеры на горе Шаджатмаз" />
         </div>
-        <Webcam />
+        <div className={styles.box__webcam}>
+          <Webcam />
+        </div>
+
+        <AdContainer adsNumber={8} />
       </aside>
     </div>
   );

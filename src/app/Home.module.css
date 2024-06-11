@@ -6,6 +6,10 @@
 .webcam__title__mobile {
   display: none;
 }
+.box__webcam {
+  margin-bottom: 1rem;
+}
+
 .welcome {
   font-size: 1.1rem;
 }
@@ -14,12 +18,13 @@
   flex-direction: column;
   gap: 1rem;
 }
+
+/* ====================================================================== */
 @media screen and (max-width: 992px) {
   .webcam__title__mobile {
     display: block;
   }
 }
-
 @media (max-width: 1100px) {
   .wrapper {
     grid-template-columns: 1fr;
