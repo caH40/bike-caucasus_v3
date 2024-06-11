@@ -17,6 +17,7 @@ type ParamsNews = {
   idUserDB?: string;
   page?: number;
   docsOnPage?: number;
+  query?: Partial<{ [K in keyof TNewsGetOneDto]: TNewsGetOneDto[K] }>;
 };
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
@@ -24,7 +25,7 @@ const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 /**
  * Серверный экшен получения новостей с БД.
  */
-export async function getNews({ idUserDB, page, docsOnPage }: ParamsNews = {}) {
+export async function getNews({ idUserDB, page, docsOnPage, query }: ParamsNews = {}) {
   try {
     const news = new News();
     const response: ResponseServer<null | {
@@ -35,6 +36,7 @@ export async function getNews({ idUserDB, page, docsOnPage }: ParamsNews = {}) {
       idUserDB,
       page,
       docsOnPage,
+      query,
     });
 
     if (!response.ok) {

@@ -106,6 +106,7 @@ export type TNews = {
   likesCount: number; // Счетчик лайков
   sharesCount: number; // Счетчик шеров
   likedBy: ObjectId[]; // Массив идентификаторов пользователей, которые лайкнули
+  impotent: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

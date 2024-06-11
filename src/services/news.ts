@@ -223,10 +223,12 @@ export class News {
     idUserDB,
     page = 1,
     docsOnPage = 10,
+    query = {},
   }: {
     idUserDB?: string;
     page?: number;
     docsOnPage?: number;
+    query?: Partial<{ [K in keyof TNewsGetOneDto]: TNewsGetOneDto[K] }>;
   }): Promise<
     ResponseServer<null | {
       news: TNewsGetOneDto[];
@@ -240,7 +242,7 @@ export class News {
 
       const newsDB: (Omit<TNews, 'author'> & { author: TAuthor } & {
         isLikedByUser: boolean;
-      })[] = await NewsModel.find()
+      })[] = await NewsModel.find(query)
         .sort({ createdAt: -1 })
         .populate({
           path: 'author',

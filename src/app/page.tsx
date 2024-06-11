@@ -9,6 +9,7 @@ import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 import AdContainer from '@/components/AdContainer/AdContainer';
+import BlockNewsImpotent from '@/components/BlockNewsImpotent/BlockNewsImpotent';
 
 /**
  * Главная (домашняя) страница сайта.
@@ -29,6 +30,7 @@ export default async function Home() {
               горных велосипедов.
             </p>
             <NewsShort idUserDB={session?.user.idDB} />
+            <BlockNewsImpotent />
             <BlockNews />
           </div>
         </Wrapper>

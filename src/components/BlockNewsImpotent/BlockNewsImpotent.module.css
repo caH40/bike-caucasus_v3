@@ -1,0 +1,25 @@
+.wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  cursor: pointer;
+}
+.box__poster {
+  position: relative;
+  aspect-ratio: 16/10;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.img {
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  transition: all 0.4s;
+}
+.box__poster:hover .img {
+  transition: all 0.4s;
+  transform: scale(1.03);
+}
