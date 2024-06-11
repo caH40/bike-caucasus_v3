@@ -73,13 +73,15 @@ async function generateSitemapNewsPages(): Promise<MetadataRoute.Sitemap> {
   try {
     const newsService = new News();
 
-    const newsDB = await newsService.getMany({ quantity: 100 }); // Последние 100 новости.
-    const newsSitemap: MetadataRoute.Sitemap = (newsDB.data || []).map((newsOne) => ({
-      url: `${host}/news/${newsOne.urlSlug}`,
-      lastModified: newsOne.updatedAt,
-      changeFrequency: 'hourly',
-      priority: 1,
-    }));
+    const responseWithNews = await newsService.getMany({ docsOnPage: 100 }); // Последние 100 новости.
+    const newsSitemap: MetadataRoute.Sitemap = (responseWithNews.data?.news || []).map(
+      (newsOne) => ({
+        url: `${host}/news/${newsOne.urlSlug}`,
+        lastModified: newsOne.updatedAt,
+        changeFrequency: 'hourly',
+        priority: 1,
+      })
+    );
 
     return newsSitemap;
   } catch (error) {

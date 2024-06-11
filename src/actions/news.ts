@@ -14,19 +14,28 @@ type ParamsSetLike = {
 };
 
 type ParamsNews = {
-  quantity?: number;
   idUserDB?: string;
+  page?: number;
+  docsOnPage?: number;
 };
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
-export async function getNews({ quantity, idUserDB }: ParamsNews = {}) {
+/**
+ * Серверный экшен получения новостей с БД.
+ */
+export async function getNews({ idUserDB, page, docsOnPage }: ParamsNews = {}) {
   'use server';
   try {
     const news = new News();
-    const response: ResponseServer<null | TNewsGetOneDto[]> = await news.getMany({
-      quantity,
+    const response: ResponseServer<null | {
+      news: TNewsGetOneDto[];
+      currentPage: number;
+      quantityPages: number;
+    }> = await news.getMany({
       idUserDB,
+      page,
+      docsOnPage,
     });
 
     if (!response.ok) {

@@ -23,6 +23,7 @@ import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.t
 import { millisecondsIn3Days } from '@/constants/date';
 import { saveFile } from './save-file';
 import { ErrorCustom } from './Error';
+import { getCurrentDocsOnPage } from '@/libs/utils/pagination';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -219,12 +220,20 @@ export class News {
    * @returns
    */
   public async getMany({
-    quantity,
     idUserDB,
+    page = 1,
+    docsOnPage = 10,
   }: {
-    quantity?: number;
     idUserDB?: string;
-  }): Promise<ResponseServer<null | TNewsGetOneDto[]>> {
+    page?: number;
+    docsOnPage?: number;
+  }): Promise<
+    ResponseServer<null | {
+      news: TNewsGetOneDto[];
+      currentPage: number;
+      quantityPages: number;
+    }>
+  > {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -233,7 +242,6 @@ export class News {
         isLikedByUser: boolean;
       })[] = await NewsModel.find()
         .sort({ createdAt: -1 })
-        .limit(quantity ? quantity : 0)
         .populate({
           path: 'author',
           select: [
@@ -247,7 +255,13 @@ export class News {
         })
         .lean();
 
-      for (const newsOne of newsDB) {
+      const { currentDocs, currentPage, quantityPages } = getCurrentDocsOnPage(
+        newsDB,
+        page,
+        docsOnPage
+      );
+
+      for (const newsOne of currentDocs) {
         if (idUserDB) {
           // isLikedByUser поставил или нет пользователь лайк данной новости
           newsOne.isLikedByUser =
@@ -258,9 +272,13 @@ export class News {
       }
 
       return {
-        data: newsDB.map((newsOne) => dtoNewsGetOne(newsOne)),
+        data: {
+          news: currentDocs.map((newsOne) => dtoNewsGetOne(newsOne)),
+          currentPage,
+          quantityPages,
+        },
         ok: true,
-        message: `Последние новости в количестве ${quantity} шт. `,
+        message: `Массив новостей.`,
       };
     } catch (error) {
       this.errorLogger(error); // логирование

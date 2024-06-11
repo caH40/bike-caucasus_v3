@@ -7,7 +7,7 @@ import { authOptions } from './api/auth/[...nextauth]/auth-options';
 import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { getNews } from '@/actions/news';
+
 import AdContainer from '@/components/AdContainer/AdContainer';
 
 /**
@@ -15,8 +15,6 @@ import AdContainer from '@/components/AdContainer/AdContainer';
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
-
-  const news = await getNews({ quantity: 10, idUserDB: session?.user.idDB });
 
   return (
     <div className={styles.wrapper}>
@@ -30,8 +28,8 @@ export default async function Home() {
               совместных выездах, а также обзоры лучших велосипедных маршрутов для шоссейных и
               горных велосипедов.
             </p>
-            <NewsShort news={news} />
-            <BlockNews news={news} />
+            <NewsShort idUserDB={session?.user.idDB} />
+            <BlockNews idUserDB={session?.user.idDB} />
           </div>
         </Wrapper>
       </div>

@@ -15,12 +15,14 @@ type Props = {};
 export default async function NewsListPage({}: Props) {
   const session = await getServerSession(authOptions);
 
-  const news = await getNews();
+  const responseWithNews = await getNews();
 
   return (
     <>
       <TitleAndLine hSize={1} title="Список новостей, созданных пользователем" />
-      {news && <TableNewsList news={news} idUserDB={session?.user.idDB} />}
+      {responseWithNews && (
+        <TableNewsList news={responseWithNews.news} idUserDB={session?.user.idDB} />
+      )}
     </>
   );
 }

@@ -2,11 +2,11 @@ import Link from 'next/link';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
 import TitleAndLine from '../TitleAndLine/TitleAndLine';
-import { TNewsGetOneDto } from '@/types/dto.types';
+import { getNews } from '@/actions/news';
 import styles from './NewsShort.module.css';
 
 type Props = {
-  news: TNewsGetOneDto[] | null | undefined;
+  idUserDB: string | undefined;
 };
 
 /**
@@ -16,13 +16,16 @@ type Props = {
  * @param props.news - Массив новостей или null/undefined, если новости отсутствуют.
  * @returns - JSX элемент списка новостей или null, если новости отсутствуют.
  */
-export default async function NewsShort({ news }: Props): Promise<false | JSX.Element> {
+export default async function NewsShort({ idUserDB }: Props): Promise<false | JSX.Element> {
+  // Получение последних новостей в количестве docsOnPage.
+  const newsLast = await getNews({ idUserDB, docsOnPage: 10 });
+
   return (
-    !!news?.length && (
+    !!newsLast?.news.length && (
       <article className={styles.wrapper}>
         <TitleAndLine hSize={2} title="Последние новости" />
         <ul className={styles.list}>
-          {news.map((elm) => (
+          {newsLast.news.map((elm) => (
             <li className={styles.item} key={String(elm._id)}>
               <span className={styles.date}>{getTimerLocal(elm.createdAt, 'DDMMYY')}</span>
               <Link href={`/news/${elm.urlSlug}`} className={styles.link}>

@@ -275,3 +275,12 @@ export type TNewsCreateFromClient = {
   urlSlug?: string; // urlSlug редактируемой новости, если его нет, значит новость создаётся.
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
 };
+
+/**
+ * Возвращение документов для текущей страницы пагинации
+ */
+export interface DocsAfterPagination<T> {
+  currentDocs: Array<T>;
+  currentPage: number;
+  quantityPages: number;
+}
