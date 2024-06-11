@@ -7,7 +7,7 @@ import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import { getNews } from '@/actions/news';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './BlockNews.module.css';
-import Pagination from '../UI/Pagination/Pagination';
+import Pagination from '../UI/PaginationCurrent/Pagination';
 
 type Props = {
   idUserDB?: string | undefined;

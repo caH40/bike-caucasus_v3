@@ -1,0 +1,38 @@
+.navigation {
+  margin-top: 10px;
+  display: block;
+}
+.list {
+  display: flex;
+  gap: 0 3px;
+  justify-content: center;
+  align-items: center;
+}
+.btn {
+  width: 28px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
+  padding: 4px 2px;
+  transition: ease-in-out 0.4s;
+  user-select: none;
+  cursor: pointer;
+}
+.btn:hover {
+  background-color: #44bb3d;
+  transition: ease-in-out 0.4s;
+}
+.btn:active {
+  background-color: #ec9c07;
+  transition: ease-in-out 0.4s;
+}
+.active {
+  background-color: #30832b;
+}
+.btn:disabled {
+  background-color: transparent;
+  color: var(--white-20);
+}
