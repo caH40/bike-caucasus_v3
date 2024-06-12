@@ -1,8 +1,8 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
 }
 .box__date {
   flex: 1 1 auto;
@@ -15,7 +15,6 @@
   text-transform: uppercase;
 }
 .wrapper__table {
-  max-width: 1072px;
   display: grid;
   grid-template-columns: repeat(7, minmax(46px, 1fr));
   grid-template-rows: 24px;
@@ -29,7 +28,7 @@
   color: var(--dark-gray);
   font-size: 15px;
   line-height: 135%;
-  border-bottom: 1px solid var(--line);
+  /* border-bottom: 1px solid var(--line); */
 }
 .cell {
   border-right: 1px solid var(--line);
@@ -43,6 +42,16 @@
 .cell:nth-child(7n + 1) {
   border-left: 1px solid var(--line);
 }
+.cell:nth-child(n + 8):nth-child(-n + 14) {
+  border-top: 1px solid var(--line);
+}
+.cell:nth-child(8) {
+  border-top: 1px solid var(--line);
+  border-radius: 0.5rem 0 0 0;
+}
+.cell:nth-child(14) {
+  border-radius: 0 0.5rem 0 0;
+}
 .wrapper__cards {
   width: 100%;
   display: flex;
@@ -50,10 +59,10 @@
   gap: 2px;
 }
 .roundedBottomLeft {
-  border-radius: 0 0 0 2px;
+  border-radius: 0 0 0 0.5rem;
 }
 .roundedBottomRight {
-  border-radius: 0 0 2px 0;
+  border-radius: 0 0 0.5rem;
 }
 .cell__active {
   background-color: var(--green-dark);
