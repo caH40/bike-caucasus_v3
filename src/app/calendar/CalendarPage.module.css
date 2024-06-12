@@ -1,0 +1,19 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 468px;
+  align-items: start;
+  gap: 2rem 20px;
+  letter-spacing: 0.08rem;
+}
+.wrapper__aside {
+  margin-top: 39px;
+}
+/* ====================================================================== */
+@media (max-width: 1300px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+  .wrapper__aside {
+    margin-top: 0;
+  }
+}

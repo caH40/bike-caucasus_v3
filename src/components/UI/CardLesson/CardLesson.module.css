@@ -1,0 +1,34 @@
+.wrapper {
+  width: 100%;
+  height: 34px;
+  padding: 1px;
+  border-radius: 2px;
+}
+.inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2px;
+  overflow: hidden;
+  border: 0.5px solid;
+  color: var(--dark);
+  height: 30px;
+  border-radius: 2px;
+}
+.time {
+  font-size: 12px;
+  line-height: 14px;
+}
+.lesson {
+  font-size: 10px;
+  line-height: 8px;
+}
+.icon {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  right: 0;
+}
