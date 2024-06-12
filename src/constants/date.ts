@@ -25,3 +25,5 @@ export const dateBefore90Days = Date.now() - millisecondsIn90Days;
 export const secondsInMinute = 60;
 export const secondsInHour = 24 * secondsInMinute;
 export const secondsIn6Hours = 6 * secondsInHour;
+
+export const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];

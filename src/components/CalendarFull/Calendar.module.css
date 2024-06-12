@@ -1,0 +1,23 @@
+/* Calendar.module.css */
+
+.dayHeader {
+  background-color: #cfa4a4;
+  color: #333;
+  font-weight: bold;
+  text-align: right;
+}
+
+.event {
+  background-color: #3788d8;
+  color: #fff;
+  border: 1px solid #265a88;
+  border-radius: 3px;
+  padding: 2px 5px;
+}
+
+.today {
+  background-color: #ffeb3b;
+}
+.cell {
+  /* border: none; */
+}

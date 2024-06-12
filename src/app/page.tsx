@@ -10,6 +10,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 import AdContainer from '@/components/AdContainer/AdContainer';
 import BlockNewsImportant from '@/components/BlockNewsImportant/BlockNewsImportant';
+import Calendar from '@/components/UI/Calendar/Calendar';
 
 /**
  * Главная (домашняя) страница сайта.
@@ -43,7 +44,14 @@ export default async function Home() {
           <Webcam />
         </div>
 
-        <AdContainer adsNumber={8} />
+        <div className={styles.gap__aside}>
+          <AdContainer adsNumber={8} />
+        </div>
+
+        <div className={styles.gap__aside}>
+          <TitleAndLine hSize={2} title="Календарь событий" />
+        </div>
+        <Calendar />
       </aside>
     </div>
   );
