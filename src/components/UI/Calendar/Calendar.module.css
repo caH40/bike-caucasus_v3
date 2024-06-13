@@ -72,10 +72,12 @@
 .cell__active {
   background-color: var(--green-dark);
 }
-/* .cell:hover {
-  background-color: var(--white-12);
-} */
 .day {
   font-size: 1rem;
   color: var(--white-50);
+}
+.box__legend {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
 }

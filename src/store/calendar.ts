@@ -48,7 +48,6 @@ function getCalendar(year: number, month: number): DateDay[] {
 
 /**
  * Создает хранилище состояния для отслеживания загрузки.
- * @returns {TLoadingStore} Созданное хранилище состояния для загрузки.
  */
 export const useCalendarStore = create<TCalendarStore>((set) => ({
   month,

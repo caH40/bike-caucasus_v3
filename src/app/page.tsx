@@ -1,17 +1,16 @@
 import { getServerSession } from 'next-auth';
 
+import { authOptions } from './api/auth/[...nextauth]/auth-options';
+import { getCalendarEvents } from '@/actions/calendar';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import NewsShort from '@/components/NewsShort/NewsShort';
 import BlockNews from '@/components/BlockNews/BlockNews';
-import { authOptions } from './api/auth/[...nextauth]/auth-options';
-import styles from './Home.module.css';
 import Webcam from '@/components/Webcam/Webcam';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-
 import AdContainer from '@/components/AdContainer/AdContainer';
 import BlockNewsImportant from '@/components/BlockNewsImportant/BlockNewsImportant';
 import Calendar from '@/components/UI/Calendar/Calendar';
-import { getCalendarEvents } from '@/actions/calendar';
+import styles from './Home.module.css';
 
 /**
  * Главная (домашняя) страница сайта.

@@ -1,0 +1,22 @@
+.legend__item {
+  display: grid;
+  grid-template-columns: 20px 150px;
+  align-items: center;
+  gap: 0.5rem;
+}
+.legend__term {
+  width: 1rem;
+  height: 1rem;
+}
+.mtb {
+  background-color: var(--mtb);
+}
+.road {
+  background-color: var(--road);
+}
+.gravel {
+  background-color: var(--gravel);
+}
+.dh {
+  background-color: var(--dh);
+}

@@ -10,6 +10,8 @@ import { useCalendarStore } from '@/store/calendar';
 import BlockControlCalendar from '../BlockControlCalendar/BlockControlCalendar';
 import CardEvent from '../CardEvent/CardEvent';
 import { TDtoCalendarEvents } from '@/types/dto.types';
+import LegendCalendar from '@/components/LegendCalendar/LegendCalendar';
+import { bikeTypes } from '@/constants/trail';
 
 type Props = {
   events?: TDtoCalendarEvents[];
@@ -48,7 +50,7 @@ export default function Calendar({ events = [] }: Props) {
               roundedBottomRight: index + 1 === calendar.length,
               cell__active:
                 calendarDay.day === getDateTime().day &&
-                calendarDay.month === getDateTime().month,
+                calendarDay.month === getDateTime().month, // Подсветка ячейки сегодняшнего дня.
             })}
           >
             {/* Хэдер в ячейки дня. */}
@@ -71,6 +73,10 @@ export default function Calendar({ events = [] }: Props) {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className={styles.box__legend}>
+        <LegendCalendar eventTypes={bikeTypes} />
       </div>
     </div>
   );

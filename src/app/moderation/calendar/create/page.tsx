@@ -3,13 +3,13 @@ import { revalidatePath } from 'next/cache';
 
 import { errorHandlerClient } from '@/actions/error-handler';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import Wrapper from '@/components/Wrapper/Wrapper';
 import { parseError } from '@/errors/parse';
 import { ResponseServer } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import FormCalendar from '@/components/UI/Forms/FormCalendar/FormCalendar';
 import { getNews } from '@/actions/news';
 import { CalendarService } from '@/services/Calendar';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 async function fetchCalendarCreated(formData: FormData): Promise<ResponseServer<null>> {
   'use server';
@@ -50,8 +50,9 @@ export default async function CalendarCreatePage() {
   const news = await getNews({ docsOnPage: 50 });
 
   return (
-    <Wrapper title="Добавление нового События в календарь">
+    <>
+      <TitleAndLine title="Добавление нового События в календарь" hSize={1} />
       <FormCalendar fetchTrailCreated={fetchCalendarCreated} news={news} />
-    </Wrapper>
+    </>
   );
 }

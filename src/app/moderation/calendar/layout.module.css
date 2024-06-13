@@ -7,8 +7,11 @@
   max-width: 300px;
 }
 /* .wrapper__main {
-  overflow: hidden;
+  
 } */
+.wrapper__calendar {
+  margin-top: 2rem;
+}
 
 .content {
   letter-spacing: 0.08rem;
