@@ -40,10 +40,15 @@ export const adBlocks: AdsBlock[] = [
     description: 'Баннер, Home page',
   },
   {
-    id: 8,
+    id: 9,
     label: 'R-A-5213436-9',
     description: 'Лента, Календарь',
     type: 'feed',
+  },
+  {
+    id: 10,
+    label: 'R-A-5213436-10',
+    description: 'Баннер, calendar page',
   },
 ];
 // {

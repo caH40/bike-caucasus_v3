@@ -27,7 +27,7 @@ export default async function CalendarPage() {
 
       {/* Боковая панель. */}
       <aside className={styles.wrapper__aside}>
-        <AdContainer adsNumber={5} />
+        <AdContainer adsNumber={10} />
       </aside>
     </div>
   );
