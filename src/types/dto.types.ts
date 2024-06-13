@@ -92,3 +92,15 @@ export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 
   likedBy: string[];
   author: TAuthor;
 };
+
+/**
+ * Событие календаря для клиента.
+ */
+export type TDtoCalendarEvents = {
+  _id: string;
+  id: number;
+  title: string;
+  date: string;
+  urlSlug: string;
+  author: string;
+};

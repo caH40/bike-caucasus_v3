@@ -1,5 +1,5 @@
 import {
-  getCurrentDateTime,
+  getDateTime,
   getMonthDaysWithOverflow,
   getMonthNameInRussian,
   getPrevOrNextMonth,
@@ -19,7 +19,7 @@ interface TCalendarStore {
 }
 
 // Месяц и год для инициализации данных.
-const { year, month } = getCurrentDateTime();
+const { year, month } = getDateTime();
 
 // Тип описания дня.
 type DateDay = {
@@ -27,6 +27,7 @@ type DateDay = {
   day: number;
   month: number;
   year: number;
+  isoDate: string; // Дата ISO 8601 в формате.
 };
 
 /**
@@ -39,6 +40,9 @@ function getCalendar(year: number, month: number): DateDay[] {
     day: day.day,
     month: day.month,
     year: day.year,
+    isoDate: `${day.year}-${day.month.toString().padStart(2, '0')}-${day.day
+      .toString()
+      .padStart(2, '0')}`,
   }));
 }
 
@@ -73,7 +77,7 @@ export const useCalendarStore = create<TCalendarStore>((set) => ({
    * Получение данных календаря текущего месяца.
    */
   getCurrentMonth: () => {
-    const { year, month } = getCurrentDateTime();
+    const { year, month } = getDateTime();
     set({
       dateStr: `${getMonthNameInRussian(year, month)} ${year}`,
       calendar: getCalendar(year, month),

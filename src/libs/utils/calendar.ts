@@ -74,21 +74,34 @@ type CurrentDateTime = {
   minute: number;
   second: number;
   milliseconds: number;
+  isoDate: string;
 };
 
 /**
- * Возвращает текущий год, месяц, число, часы, минуты, секунды и дату в форме миллисекунд.
+ * Возвращает год, месяц, число, часы, минуты, секунды и дату в форме миллисекунд.
  */
-export function getCurrentDateTime(): CurrentDateTime {
-  const now = DateTime.local();
+export function getDateTime(date?: Date): CurrentDateTime {
+  let dateCurrent = {} as DateTime<true | false>;
+  if (date) {
+    dateCurrent = DateTime.fromJSDate(date);
+  } else {
+    dateCurrent = DateTime.local();
+  }
+
+  // Проверка на валидность объекта DateTime
+  if (!dateCurrent.isValid) {
+    throw new Error('Invalid DateTime');
+  }
 
   return {
-    year: now.year,
-    month: now.month,
-    day: now.day,
-    hour: now.hour,
-    minute: now.minute,
-    second: now.second,
-    milliseconds: now.toMillis(),
+    year: dateCurrent.year,
+    month: dateCurrent.month,
+    day: dateCurrent.day,
+    hour: dateCurrent.hour,
+    minute: dateCurrent.minute,
+    second: dateCurrent.second,
+    milliseconds: dateCurrent.toMillis(),
+    isoDate:
+      dateCurrent.toISODate() || `${dateCurrent.year}-${dateCurrent.month}-${dateCurrent.day}`,
   };
 }

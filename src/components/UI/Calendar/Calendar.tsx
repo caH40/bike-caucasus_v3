@@ -4,31 +4,20 @@ import cn from 'classnames/bind';
 
 import styles from './Calendar.module.css';
 
-import { getCurrentDateTime } from '@/libs/utils/calendar';
+import { getDateTime } from '@/libs/utils/calendar';
 import { weekDays } from '@/constants/date';
 import { useCalendarStore } from '@/store/calendar';
 import BlockControlCalendar from '../BlockControlCalendar/BlockControlCalendar';
 import CardEvent from '../CardEvent/CardEvent';
+import { TDtoCalendarEvents } from '@/types/dto.types';
+
+type Props = {
+  events?: TDtoCalendarEvents[];
+};
 
 const cx = cn.bind(styles);
 
-const events = [
-  {
-    id: 0,
-    title: 'Бермамыт',
-    bgColor: 'orange',
-
-    dateStart: '2024-6-20',
-  },
-  {
-    id: 2,
-    title: 'Бермамыт',
-    bgColor: 'orange',
-    dateStart: '2024-6-25',
-  },
-];
-
-export default function Calendar() {
+export default function Calendar({ events = [] }: Props) {
   const { dateStr, calendar } = useCalendarStore();
 
   return (
@@ -44,40 +33,35 @@ export default function Calendar() {
 
       {/* Календарь. */}
       <div className={styles.wrapper__table}>
-        {weekDays.map((day) => (
-          <div key={day} className={styles.table__header}>
-            {day}
+        {weekDays.map((weekDay) => (
+          <div key={weekDay} className={styles.table__header}>
+            {weekDay}
           </div>
         ))}
 
         {/* Ячейки дней. */}
-        {calendar.map((day, index) => (
+        {calendar.map((calendarDay, index) => (
           <div
             key={index}
             className={cx('cell', {
               roundedBottomLeft: index + 1 === calendar.length - 6,
               roundedBottomRight: index + 1 === calendar.length,
               cell__active:
-                day.day === getCurrentDateTime().day &&
-                day.month === getCurrentDateTime().month,
+                calendarDay.day === getDateTime().day &&
+                calendarDay.month === getDateTime().month,
             })}
           >
             {/* Хэдер в ячейки дня. */}
             <div className={styles.cell__top}>
-              <div className={styles.day}>{day.day}</div>
+              <div className={styles.day}>{calendarDay.day}</div>
             </div>
 
             {/* Карточки (плашки) с названиями событий в соответствующей дате. */}
             <div className={styles.wrapper__cards}>
               {events
-                .filter((event) => {
-                  // console.log(event.dateStart);
-                  // console.log(`${day.year}-${day.month}-${day.day}`);
-
-                  return event.dateStart === `${day.year}-${day.month}-${day.day}`;
-                })
+                .filter((event) => event.date === calendarDay.isoDate)
                 .map((event) => (
-                  <CardEvent title={event.title} bgColor={event.bgColor} key={event.id} />
+                  <CardEvent title={event.title} bgColor={'green'} key={event.id} />
                 ))}
             </div>
           </div>
