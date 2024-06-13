@@ -102,5 +102,6 @@ export type TDtoCalendarEvents = {
   title: string;
   date: string;
   urlSlug: string;
+  bikeType: string;
   author: string;
 };

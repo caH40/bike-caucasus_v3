@@ -17,8 +17,8 @@
 .wrapper__table {
   display: grid;
   grid-template-columns: repeat(7, minmax(46px, 1fr));
-  grid-template-rows: 24px;
-  grid-auto-rows: 101px;
+  grid-template-rows: 24px; /* высота хедера с названиями дней недели */
+  grid-auto-rows: minmax(101px, auto);
 }
 .table__header {
   display: flex;
@@ -28,7 +28,6 @@
   color: var(--dark-gray);
   font-size: 15px;
   line-height: 135%;
-  /* border-bottom: 1px solid var(--line); */
 }
 .cell {
   border-right: 1px solid var(--line);
@@ -43,6 +42,7 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  margin-bottom: 3px;
 }
 .cell:nth-child(7n + 1) {
   border-left: 1px solid var(--line);
@@ -72,9 +72,9 @@
 .cell__active {
   background-color: var(--green-dark);
 }
-.cell:hover {
+/* .cell:hover {
   background-color: var(--white-12);
-}
+} */
 .day {
   font-size: 1rem;
   color: var(--white-50);

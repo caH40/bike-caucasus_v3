@@ -61,7 +61,12 @@ export default function Calendar({ events = [] }: Props) {
               {events
                 .filter((event) => event.date === calendarDay.isoDate)
                 .map((event) => (
-                  <CardEvent title={event.title} bgColor={'green'} key={event.id} />
+                  <CardEvent
+                    title={event.title}
+                    bikeType={event.bikeType}
+                    urlSlug={event.urlSlug}
+                    key={event.id}
+                  />
                 ))}
             </div>
           </div>

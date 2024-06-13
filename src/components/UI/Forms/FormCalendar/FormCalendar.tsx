@@ -13,6 +13,7 @@ import SelectCustom from '../../SelectCustom/SelectCustom';
 import BoxInput from '../../BoxInput/BoxInput';
 import styles from '../Form.module.css';
 import { serializationCalendarCreate } from '@/libs/utils/serialization/calendar';
+import { bikeTypes as optionsBikeTypes } from '@/constants/trail';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
@@ -95,8 +96,8 @@ export default function FormCalendar({ fetchTrailCreated, news }: Props) {
           required: 'Это обязательное поле для заполнения',
           minLength: { value: 2, message: 'Название события должно быть больше 1х символа' },
           maxLength: {
-            value: 10,
-            message: 'Название события не может быть больше 10 символов',
+            value: 15,
+            message: 'Название события не может быть больше 15 символов',
           },
         })}
         validationText={errors.title ? errors.title.message : ''}
@@ -134,6 +135,26 @@ export default function FormCalendar({ fetchTrailCreated, news }: Props) {
               label="Выберите новость анонса события:*"
               defaultValue="нет фильтров"
               validationText={errors.urlSlug && errors.urlSlug.message}
+            />
+          )}
+        />
+      </div>
+
+      {/* Блок выбора новости Анонса события, для прикрепления url новости к Событию в календаре */}
+      <div className={styles.full__width}>
+        <Controller
+          name="bikeType"
+          control={control}
+          defaultValue=""
+          rules={{ required: 'Обязательно к заполнению' }}
+          render={({ field }) => (
+            <SelectCustom
+              state={field.value}
+              setState={field.onChange}
+              options={optionsBikeTypes}
+              label="Выберите тип велосипеда:*"
+              defaultValue="нет фильтров"
+              validationText={errors.bikeType && errors.bikeType.message}
             />
           )}
         />

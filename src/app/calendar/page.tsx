@@ -1,25 +1,10 @@
 import AdContainer from '@/components/AdContainer/AdContainer';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-
-import styles from './CalendarPage.module.css';
 import Calendar from '@/components/UI/Calendar/Calendar';
-import { CalendarService } from '@/services/Calendar';
+import { getCalendarEvents } from '@/actions/calendar';
+import styles from './CalendarPage.module.css';
 
 export const dynamic = 'force-dynamic';
-
-const getCalendarEvents = async () => {
-  'use server';
-  try {
-    const calendarService = new CalendarService();
-    const events = await calendarService.getMany();
-
-    return events.data || [];
-  } catch (error) {
-    // В случае ошибки возвращаем пустой массив. Нет нужды в обработке ошибки.
-    // Если была ошибка, то она сохраняется в логах сервера.
-    return [];
-  }
-};
 
 /**
  * Страница Календаря событий.

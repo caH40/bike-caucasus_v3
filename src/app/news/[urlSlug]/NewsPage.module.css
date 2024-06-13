@@ -87,9 +87,6 @@
 @media (max-width: 992px) {
 }
 @media (max-width: 576px) {
-  .wrapper__main {
-    padding: 1rem 0.5rem 1.4rem;
-  }
   .subtitle {
     font-size: 1.2rem;
   }

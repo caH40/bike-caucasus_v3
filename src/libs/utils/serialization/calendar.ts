@@ -9,6 +9,7 @@ export function serializationCalendarCreate(dataForm: TFormCalendar): FormData {
   formData.set('title', dataForm.title);
   formData.set('date', dataForm.date); // Передается в формате yyyy-mm-dd.
   formData.set('urlSlug', dataForm.urlSlug);
+  formData.set('bikeType', dataForm.bikeType);
 
   return formData;
 }

@@ -1,7 +1,10 @@
-.wrapper {
+.link {
   width: 100%;
   padding: 1px;
   border-radius: 2px;
+}
+.link:hover {
+  outline: 1px solid var(--color-orange);
 }
 .inner {
   position: relative;
@@ -9,17 +12,31 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 2px;
+  padding: 4px 2px;
   overflow: hidden;
   border: none;
   color: var(--dark);
 }
-.time {
-  font-size: 12px;
-  line-height: 14px;
-}
 .title {
-  font-size: 10px;
+  font-size: 0.9rem;
   line-height: 1;
   letter-spacing: 0;
+}
+.mtb {
+  background-color: var(--mtb);
+}
+.road {
+  background-color: var(--road);
+}
+.gravel {
+  background-color: var(--gravel);
+}
+.dh {
+  background-color: var(--dh);
+}
+/* ====================================================================== */
+@media (max-width: 768px) {
+  .title {
+    font-size: 0.7rem;
+  }
 }

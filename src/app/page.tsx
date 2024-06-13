@@ -11,13 +11,14 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import BlockNewsImportant from '@/components/BlockNewsImportant/BlockNewsImportant';
 import Calendar from '@/components/UI/Calendar/Calendar';
+import { getCalendarEvents } from '@/actions/calendar';
 
 /**
  * Главная (домашняя) страница сайта.
  */
 export default async function Home() {
   const session = await getServerSession(authOptions);
-
+  const events = await getCalendarEvents();
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
@@ -51,7 +52,7 @@ export default async function Home() {
         <div className={styles.gap__aside}>
           <TitleAndLine hSize={2} title="Календарь событий" />
         </div>
-        <Calendar />
+        <Calendar events={events} />
       </aside>
     </div>
   );

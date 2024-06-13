@@ -14,6 +14,7 @@ export function dtoCalendarEvents(events: TCalendarEventDocument[]): TDtoCalenda
     title: event.title,
     date: getDateTime(event.date).isoDate,
     urlSlug: event.urlSlug,
+    bikeType: event.bikeType,
     author: String(event.author),
   }));
 }

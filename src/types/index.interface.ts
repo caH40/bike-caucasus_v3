@@ -112,6 +112,7 @@ export type TFormCalendar = {
   title: string;
   date: string;
   urlSlug: string;
+  bikeType: string;
 };
 
 /**
