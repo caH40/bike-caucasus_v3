@@ -19,14 +19,15 @@ export const getNavLinksMobile = (userId: string | undefined) => [
   { id: 0, name: 'Главная', href: '/', permission: null },
   { id: 1, name: 'Вебкамеры', href: '/webcam', permission: null },
   { id: 2, name: 'Маршруты', href: '/trails', permission: null },
+  { id: 3, name: 'Календарь', href: '/calendar', permission: null },
   {
-    id: 3,
+    id: 4,
     name: 'Профиль',
     href: userId ? `/profile/${userId}` : '/',
     permission: 'authorized',
     icon: IconUser,
   },
-  { id: 4, name: 'Управление', href: '/moderation', permission: 'moderation' },
+  { id: 5, name: 'Управление', href: '/moderation', permission: 'moderation' },
   { id: 6, name: 'Админ', href: '/admin', permission: 'admin' },
 ];
 
