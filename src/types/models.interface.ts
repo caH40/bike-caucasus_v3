@@ -1,4 +1,5 @@
 import { Document, ObjectId } from 'mongoose';
+import { TFormCalendar } from './index.interface';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
@@ -197,3 +198,9 @@ export type TTrail = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Событие в Календаре.
+ */
+export type TCalendarEventDocument = Document &
+  Omit<TFormCalendar, 'date'> & { date: Date; author: ObjectId };

@@ -9,16 +9,30 @@ type Props = {
   setState: Dispatch<SetStateAction<string>>;
   label?: string;
   options: TOptions[];
+  validationText?: string;
   // icon?: React.ComponentType<TIconProps>;
 };
 
-export default function SelectCustom({ state, setState, options, label, defaultValue }: Props) {
+/**
+ * Кастомный селект.
+ */
+export default function SelectCustom({
+  state,
+  setState,
+  options,
+  label,
+  defaultValue,
+  validationText,
+}: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const Icon = options.find((elm) => elm.name === state)?.icon || null;
   return (
     <div className={styles.wrapper} role="select">
-      <div className={styles.label}>{label}</div>
+      <div className={styles.label}>
+        {label}
+        {validationText && <span className={styles.validate}>{validationText}</span>}
+      </div>
       <div className={styles.wrapper__select}>
         <button className={styles.select} onClick={() => setIsOpen(true)}>
           <div className={styles.select__name}>

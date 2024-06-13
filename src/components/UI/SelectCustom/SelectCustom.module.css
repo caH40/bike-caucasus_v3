@@ -3,12 +3,16 @@
   font-size: 0.9rem;
   color: inherit;
   margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 .wrapper__select {
   position: relative;
   min-width: 200px;
+  width: 100%;
 }
 .select {
+  width: 100%;
   position: relative;
   min-width: 200px;
   height: 34px;
@@ -61,4 +65,9 @@
 .select:focus {
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
   outline: none;
+}
+.validate {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--error);
 }

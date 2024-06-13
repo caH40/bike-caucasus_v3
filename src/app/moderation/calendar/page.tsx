@@ -1,6 +1,7 @@
 import Wrapper from '@/components/Wrapper/Wrapper';
 
 import styles from './layout.module.css';
+import Calendar from '@/components/UI/Calendar/Calendar';
 
 export default function ModerationCalendarPage() {
   return (
@@ -11,6 +12,7 @@ export default function ModerationCalendarPage() {
           <h3>Календарь</h3>
           <p>Календарь.</p>
         </div>
+        <Calendar />
       </Wrapper>
     </div>
   );

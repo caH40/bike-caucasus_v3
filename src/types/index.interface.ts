@@ -105,6 +105,14 @@ export type TFormProfile = {
   imageFromProvider?: boolean | string;
   [key: string]: any;
 };
+/**
+ * Данные профиля для изменения в account/profile
+ */
+export type TFormCalendar = {
+  title: string;
+  date: string;
+  urlSlug: string;
+};
 
 /**
  * Данные профиля (аккаунта) для изменения в account/details
@@ -212,9 +220,9 @@ export type TIconProps = {
   colors?: IconColors;
 };
 type IconColors = {
-  default: string;
-  active: string;
-  hover: string;
+  default?: string;
+  active?: string;
+  hover?: string;
 };
 export type CSSVariables = {
   '--color-icon-default'?: string;

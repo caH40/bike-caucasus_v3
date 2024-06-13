@@ -71,8 +71,8 @@ export default function Calendar() {
             <div className={styles.wrapper__cards}>
               {events
                 .filter((event) => {
-                  console.log(event.dateStart);
-                  console.log(`${day.year}-${day.month}-${day.day}`);
+                  // console.log(event.dateStart);
+                  // console.log(`${day.year}-${day.month}-${day.day}`);
 
                   return event.dateStart === `${day.year}-${day.month}-${day.day}`;
                 })

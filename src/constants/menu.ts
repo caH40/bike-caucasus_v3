@@ -80,7 +80,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     id: 3,
     name: 'Календарь',
     classes: [],
-    href: '/moderation/c',
+    href: '/moderation/calendar',
     permission: 'moderation.calendar',
   },
 ];
@@ -142,7 +142,7 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
 export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
   {
     id: 0,
-    name: 'Создание',
+    name: 'Добавление события',
     classes: [],
     href: '/moderation/calendar/create',
     permission: 'moderation.calendar.create',
@@ -156,7 +156,7 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
   },
   {
     id: 2,
-    name: 'Список новостей',
+    name: 'Список событий',
     classes: [],
     href: '/moderation/calendar/list',
     permission: 'moderation.calendar.list',

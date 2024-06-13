@@ -7,10 +7,9 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import { parseError } from '@/errors/parse';
 import { ResponseServer } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
-import { Trail } from '@/services/Trail';
 import FormCalendar from '@/components/UI/Forms/FormCalendar/FormCalendar';
-
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
+import { getNews } from '@/actions/news';
+import { CalendarService } from '@/services/Calendar';
 
 async function fetchCalendarCreated(formData: FormData): Promise<ResponseServer<null>> {
   'use server';
@@ -31,17 +30,9 @@ async function fetchCalendarCreated(formData: FormData): Promise<ResponseServer<
     ) {
       throw new Error('У вас нет прав для добавления событий в Календарь!');
     }
+    const calendarService = new CalendarService();
 
-    const trailService = new Trail();
-    const response = await trailService.post(
-      formData,
-      {
-        cloudName: 'vk',
-        domainCloudName: 'hb.vkcs.cloud',
-        bucketName,
-      },
-      author
-    );
+    const response = await calendarService.addEvent(formData, author);
 
     revalidatePath(`/calendar`);
 
@@ -52,10 +43,15 @@ async function fetchCalendarCreated(formData: FormData): Promise<ResponseServer<
   }
 }
 
-export default function CalendarCreatePage() {
+/**
+ * Страница добавления события в Календарь.
+ */
+export default async function CalendarCreatePage() {
+  const news = await getNews({ docsOnPage: 50 });
+
   return (
     <Wrapper title="Добавление нового События в календарь">
-      <FormCalendar fetchTrailCreated={fetchCalendarCreated} />
+      <FormCalendar fetchTrailCreated={fetchCalendarCreated} news={news} />
     </Wrapper>
   );
 }

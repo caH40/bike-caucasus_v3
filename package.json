@@ -12,12 +12,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.572.0",
-    "@fullcalendar/core": "^6.1.14",
-    "@fullcalendar/daygrid": "^6.1.14",
-    "@fullcalendar/interaction": "^6.1.14",
-    "@fullcalendar/list": "^6.1.14",
-    "@fullcalendar/react": "^6.1.14",
-    "@fullcalendar/timegrid": "^6.1.14",
     "@tanstack/react-table": "^8.17.3",
     "aws-sdk": "^2.1617.0",
     "bcrypt": "^5.1.1",

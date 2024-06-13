@@ -6,9 +6,9 @@
 .wrapper__aside {
   max-width: 300px;
 }
-.wrapper__main {
+/* .wrapper__main {
   overflow: hidden;
-}
+} */
 
 .content {
   letter-spacing: 0.08rem;
