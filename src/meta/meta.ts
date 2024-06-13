@@ -159,3 +159,23 @@ export async function generateMetadataTrail({ params }: Props): Promise<Metadata
     },
   };
 }
+
+/**
+ * Метаданные для страницы Новость "/calendar".
+ */
+export function generateMetadataCalendar(): Metadata {
+  const title = `Календарь соревнований на Кавказе по велоспорту в дисциплинах: кросскантри, шоссе и грэвел`;
+  const description = `Календарь велосоревнований на Кавказе: кросскантри, горный, шоссейный и грэвел. Узнайте о событиях в Ставрополье, Краснодаре, КЧР, КБР и Северной Осетии и не пропустите важные события!`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: ['/images/og/calendar.JPG'],
+      type: 'website',
+    },
+  };
+}

@@ -1,10 +1,17 @@
+import { type Metadata } from 'next';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import Calendar from '@/components/UI/Calendar/Calendar';
+import { generateMetadataCalendar } from '@/meta/meta';
 import { getCalendarEvents } from '@/actions/calendar';
 import styles from './CalendarPage.module.css';
 
 export const dynamic = 'force-dynamic';
+
+// Создание meta данных
+export function generateMetadata(): Metadata {
+  return generateMetadataCalendar();
+}
 
 /**
  * Страница Календаря событий.
