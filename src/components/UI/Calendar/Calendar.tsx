@@ -8,8 +8,25 @@ import { getCurrentDateTime } from '@/libs/utils/calendar';
 import { weekDays } from '@/constants/date';
 import { useCalendarStore } from '@/store/calendar';
 import BlockControlCalendar from '../BlockControlCalendar/BlockControlCalendar';
+import CardEvent from '../CardEvent/CardEvent';
 
 const cx = cn.bind(styles);
+
+const events = [
+  {
+    id: 0,
+    title: 'Бермамыт',
+    bgColor: 'orange',
+
+    dateStart: '2024-6-20',
+  },
+  {
+    id: 2,
+    title: 'Бермамыт',
+    bgColor: 'orange',
+    dateStart: '2024-6-25',
+  },
+];
 
 export default function Calendar() {
   const { dateStr, calendar } = useCalendarStore();
@@ -45,26 +62,24 @@ export default function Calendar() {
                 day.month === getCurrentDateTime().month,
             })}
           >
-            <div className={styles.day}>{day.day}</div>
+            {/* Хэдер в ячейки дня. */}
+            <div className={styles.cell__top}>
+              <div className={styles.day}>{day.day}</div>
+            </div>
 
-            {/* Карточки уроков.
+            {/* Карточки (плашки) с названиями событий в соответствующей дате. */}
             <div className={styles.wrapper__cards}>
-              {scheduleLessons
-                .find((lesson) => lesson.month === day.month && lesson.day === day.day)
-                ?.lessons.filter((lesson) => lesson.lessonName === lessonCurrent)
-                .map((lesson) => (
-                  <CardLesson
-                    lessonName={lesson.lessonName}
-                    time={lesson.time}
-                    borderColorOutside={lesson.borderColorOutside}
-                    borderColorInside={lesson.borderColorInside}
-                    bgColor={lesson.bgColor}
-                    notPaid={lesson.notPaid}
-                    isLineThrough={lesson.isLineThrough}
-                    key={lesson.id}
-                  />
+              {events
+                .filter((event) => {
+                  console.log(event.dateStart);
+                  console.log(`${day.year}-${day.month}-${day.day}`);
+
+                  return event.dateStart === `${day.year}-${day.month}-${day.day}`;
+                })
+                .map((event) => (
+                  <CardEvent title={event.title} bgColor={event.bgColor} key={event.id} />
                 ))}
-            </div> */}
+            </div>
           </div>
         ))}
       </div>

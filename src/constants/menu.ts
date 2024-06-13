@@ -53,7 +53,7 @@ export const buttonsMenuModerationTrailsPage: TMenuOnPage[] = [
   },
 ];
 
-// Кнопки для меню на странице Модерация новости /moderation/news
+// Кнопки для меню на странице Модерация (Главная) /moderation/
 export const buttonsMenuModerationPage: TMenuOnPage[] = [
   {
     id: 0,
@@ -75,6 +75,13 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/championship',
     permission: 'moderation.championship',
+  },
+  {
+    id: 3,
+    name: 'Календарь',
+    classes: [],
+    href: '/moderation/c',
+    permission: 'moderation.calendar',
   },
 ];
 
@@ -128,5 +135,30 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     href: '/admin/logs/errors',
     permission: 'admin', // Для администратора сайта.
     // icon: IconLog,
+  },
+];
+
+// Кнопки для меню на странице Модерация календаря /moderation/calendar
+export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Создание',
+    classes: [],
+    href: '/moderation/calendar/create',
+    permission: 'moderation.calendar.create',
+  },
+  {
+    id: 1,
+    name: 'Редактирование',
+    classes: [],
+    href: '/moderation/calendar/edit',
+    permission: 'moderation.calendar.edit',
+  },
+  {
+    id: 2,
+    name: 'Список новостей',
+    classes: [],
+    href: '/moderation/calendar/list',
+    permission: 'moderation.calendar.list',
   },
 ];

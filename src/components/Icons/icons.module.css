@@ -4,21 +4,23 @@
 .interactive {
   cursor: pointer;
 }
-
-.interactive:hover svg,
-.interactive:hover svg line,
-.interactive:hover svg circle,
-.interactive:hover svg path {
+.interactive:hover .box {
   stroke: var(--color-orange);
-}
-.active svg {
-  fill: var(--white-50);
 }
 .box svg {
   width: 100%;
   height: 100%;
 }
-
+.box {
+  color: var(--color-icon-default);
+}
+.box:hover {
+  color: var(--color-icon-hover);
+}
+.box:active {
+  transition: all 0.3s;
+  color: var(--color-icon-active);
+}
 /* ====================================================================== */
 .icon__custom {
   width: 100%;

@@ -119,3 +119,4 @@ const paths = [
   //   permission: ['products.edit', 'products.view', 'products.delete', 'products.all'],
   // },
 ];
+// moderation.calendar разрешение на модерацию календаря

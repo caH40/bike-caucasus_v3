@@ -209,9 +209,17 @@ export type TIconProps = {
   isActive?: boolean; // нажатое состояние
   getClick?: () => void;
   // Наборы цветов под разные случаи.
-  colors?: {
-    active: string;
-  };
+  colors?: IconColors;
+};
+type IconColors = {
+  default: string;
+  active: string;
+  hover: string;
+};
+export type CSSVariables = {
+  '--color-icon-default'?: string;
+  '--color-icon-active'?: string;
+  '--color-icon-hover'?: string;
 };
 
 /**

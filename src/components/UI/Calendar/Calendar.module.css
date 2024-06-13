@@ -33,11 +33,16 @@
 .cell {
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 4px;
+  padding: 4px 2px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
+}
+.cell__top {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 .cell:nth-child(7n + 1) {
   border-left: 1px solid var(--line);
@@ -71,8 +76,6 @@
   background-color: var(--white-12);
 }
 .day {
-  font-size: 12px;
-  line-height: 12px;
-  font-weight: 300;
+  font-size: 1rem;
   color: var(--white-50);
 }

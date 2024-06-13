@@ -1,6 +1,5 @@
 .wrapper {
   width: 100%;
-  height: 34px;
   padding: 1px;
   border-radius: 2px;
 }
@@ -12,23 +11,15 @@
   align-items: flex-start;
   padding: 2px;
   overflow: hidden;
-  border: 0.5px solid;
+  border: none;
   color: var(--dark);
-  height: 30px;
-  border-radius: 2px;
 }
 .time {
   font-size: 12px;
   line-height: 14px;
 }
-.lesson {
+.title {
   font-size: 10px;
-  line-height: 8px;
-}
-.icon {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  top: 0;
-  right: 0;
+  line-height: 1;
+  letter-spacing: 0;
 }

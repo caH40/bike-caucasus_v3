@@ -1,0 +1,21 @@
+.wrapper {
+  display: grid;
+  gap: 1rem 20px;
+  grid-template-columns: 300px 1fr;
+}
+.wrapper__aside {
+  max-width: 300px;
+}
+.wrapper__main {
+  overflow: hidden;
+}
+
+.content {
+  letter-spacing: 0.08rem;
+}
+/* ====================================================================== */
+@media (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+}

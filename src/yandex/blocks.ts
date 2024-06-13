@@ -39,6 +39,12 @@ export const adBlocks: AdsBlock[] = [
     label: 'R-A-5213436-8',
     description: 'Баннер, Home page',
   },
+  {
+    id: 8,
+    label: 'R-A-5213436-9',
+    description: 'Лента, Календарь',
+    type: 'feed',
+  },
 ];
 // {
 //   id: 16,
