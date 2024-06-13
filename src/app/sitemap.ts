@@ -39,6 +39,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 0.6,
     },
+    {
+      url: `${host}/calendar`,
+      changeFrequency: 'daily',
+      priority: 0.5,
+    },
     ...profilesSitemap, // profile
     ...newsSitemap, // news
     ...trailsSitemap, // trails
