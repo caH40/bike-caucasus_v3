@@ -31,12 +31,7 @@ export default function Calendar({ events = [] }: Props) {
   });
 
   return (
-    <div
-      className={styles.wrapper}
-      onTouchStart={handlerTouchStart}
-      onTouchMove={handlerTouchMove}
-      onTouchEnd={handlerTouchEnd}
-    >
+    <div className={styles.wrapper}>
       <div className={styles.header}>
         <div className={styles.box__date}>
           <div className={styles.date}>{dateStr}</div>
@@ -47,7 +42,12 @@ export default function Calendar({ events = [] }: Props) {
       </div>
 
       {/* Календарь. */}
-      <div className={styles.wrapper__table}>
+      <div
+        className={styles.wrapper__table}
+        onTouchStart={handlerTouchStart}
+        onTouchMove={handlerTouchMove}
+        onTouchEnd={handlerTouchEnd}
+      >
         {weekDays.map((weekDay) => (
           <div key={weekDay} className={styles.table__header}>
             {weekDay}

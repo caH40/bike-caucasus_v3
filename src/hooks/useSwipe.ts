@@ -11,8 +11,8 @@ type Props = {
  * Вправо: выполняется функция getSwipeRight
  */
 export function useSwipe({ getSwipeLeft, getSwipeRight }: Props) {
-  const [touchStart, setTouchStart] = useState<number>(0); // Начало прикосновение к экрану.
-  const [touchEnd, setTouchEnd] = useState<number>(0); // Конец прикосновение к экрану.
+  const [touchStart, setTouchStart] = useState<number | null>(null); // Начало прикосновение к экрану.
+  const [touchEnd, setTouchEnd] = useState<number | null>(null); // Конец прикосновение к экрану.
 
   // Обработчик начала касания, сохраняет начальную позицию касания по оси X.
   const handlerTouchStart = (e: TouchEvent<HTMLDivElement>) => {
@@ -26,10 +26,13 @@ export function useSwipe({ getSwipeLeft, getSwipeRight }: Props) {
 
   // Обработчик окончания касания, вычисляет дистанцию и вызывает соответствующую функцию.
   const handlerTouchEnd = () => {
+    if (!touchStart || !touchEnd) {
+      return;
+    }
     // Вычисление дистанции свайпа.
     const distanceX = touchStart - touchEnd;
     // Минимальная дистанция для распознавания свайпа.
-    const distanceMinXForSwipe = 50;
+    const distanceMinXForSwipe = 100;
 
     if (distanceX > distanceMinXForSwipe) {
       getSwipeLeft(); // Свайп влево
