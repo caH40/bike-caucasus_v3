@@ -188,7 +188,7 @@ export function generateMetadataCalendar(): Metadata {
 export async function generateMetadataProfile({ params }: ParamsWithId): Promise<Metadata> {
   const userService = new UserService();
 
-  const { data: profile } = await await userService.getProfile({ id: +params.id });
+  const { data: profile } = await userService.getProfile({ id: +params.id });
   if (!profile) {
     return metadata404Page;
   }
