@@ -1,15 +1,20 @@
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/user';
-
 import { getLogoProfile } from '@/libs/utils/profile';
-
+import { blurBase64 } from '@/libs/image';
 import type { ParamsWithId } from '@/types/index.interface';
 import styles from './ProfilePage.module.css';
-import { blurBase64 } from '@/libs/image';
-import { notFound } from 'next/navigation';
+import { generateMetadataProfile } from '@/meta/meta';
+
+// Создание динамических meta данных
+export async function generateMetadata(props: ParamsWithId): Promise<Metadata> {
+  return await generateMetadataProfile(props);
+}
 
 const userService = new UserService();
 

@@ -5,6 +5,8 @@ import { getNewsOne } from '@/app/news/[urlSlug]/page';
 import { ResolvingMetadata, type Metadata } from 'next';
 import { bikeTypes, regions } from '../constants/trail';
 import { metadata404Page } from './meta404';
+import { ParamsWithId } from '@/types/index.interface';
+import { UserService } from '@/services/user';
 
 type Props = {
   params: {
@@ -175,6 +177,33 @@ export function generateMetadataCalendar(): Metadata {
       description,
       url: './',
       images: ['/images/og/calendar.JPG'],
+      type: 'website',
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Профиль "/profile/[id]".
+ */
+export async function generateMetadataProfile({ params }: ParamsWithId): Promise<Metadata> {
+  const userService = new UserService();
+
+  const { data: profile } = await await userService.getProfile({ id: +params.id });
+  if (!profile) {
+    return metadata404Page;
+  }
+
+  const title = `Профиль спортсмена ${profile.person.lastName} ${profile.person.firstName} | Велосипедные маршруты и соревнования на Кавказе.`;
+  const description = `Откройте профиль спортсмена ${profile.person.lastName} ${profile.person.firstName} для вдохновения и советов по велоспорту, соревнованиям и маршрутам на Кавказе.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: [profile.image],
       type: 'website',
     },
   };

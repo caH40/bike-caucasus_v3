@@ -162,7 +162,7 @@ export type ProfileProvider = {
  */
 export type ParamsWithId = {
   params: {
-    id: string; // id профиля пользователя на сайте
+    id: string;
   };
 };
 
