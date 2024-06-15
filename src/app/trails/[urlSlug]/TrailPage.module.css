@@ -43,6 +43,18 @@
   justify-content: flex-end;
   margin-bottom: 1rem;
 }
+.gconnect {
+  width: 100%;
+  height: 548px;
+  border: none;
+}
+.komoot {
+  width: 100%;
+  height: 700px;
+  border: none;
+  margin-bottom: 1rem;
+}
+
 /* ====================================================================== */
 
 @media (max-width: 1400px) {

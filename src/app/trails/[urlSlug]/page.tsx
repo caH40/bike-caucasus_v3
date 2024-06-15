@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
 import Image from 'next/image';
 import cn from 'classnames/bind';
+import { notFound } from 'next/navigation';
 
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { regions } from '@/constants/trail';
@@ -9,11 +10,9 @@ import LineSeparator from '@/components/LineSeparator/LineSeparator';
 import TrailTotal from '@/components/TrailTotal/TrailTotal';
 import { getTrail } from '@/actions/trail';
 import { generateMetadataTrail } from '@/meta/meta';
-
-import styles from './TrailPage.module.css';
-import { notFound } from 'next/navigation';
 import { blurBase64 } from '@/libs/image';
 import { Trail } from '@/services/Trail';
+import styles from './TrailPage.module.css';
 
 const cx = cn.bind(styles);
 
@@ -39,6 +38,9 @@ export default async function TrailPage({ params }: Props) {
   // Подсчет просмотров Маршрута.
   const trailService = new Trail();
   await trailService.countView(params.urlSlug);
+
+  const trackGConnectId = trail.garminConnect?.split('/').at(-1);
+  const trackKomootId = trail.komoot?.split('/').at(-1);
 
   return (
     <Wrapper
@@ -86,9 +88,23 @@ export default async function TrailPage({ params }: Props) {
               )}
             </article>
           ))}
-
-          <TrailTotal trail={trail} />
         </div>
+
+        {trackKomootId ? (
+          <iframe
+            src={`https://www.komoot.com/tour/${trackKomootId}/embed?share_token=aF9xgz5VStLwQYo3CvhKR7u2jBIobjQs1V2aVbqODPWgn1vQ5N&profile=1`}
+            className={styles.komoot}
+          ></iframe>
+        ) : (
+          trackGConnectId && (
+            <iframe
+              src={`https://connect.garmin.com/modern/course/embed/${trackGConnectId}`}
+              className={styles.gconnect}
+            />
+          )
+        )}
+
+        <TrailTotal trail={trail} />
         <LineSeparator />
         <BlockShare title={'Поделиться'} />
       </div>
