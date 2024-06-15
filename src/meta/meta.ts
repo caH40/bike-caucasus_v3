@@ -104,7 +104,7 @@ export function generateMetadataWebcam(): Metadata {
       title: title,
       description: description,
       url: './',
-      images: '/images/og/Webcam.jpg',
+      images: '/images/og/webcam.jpg',
       type: 'website',
     },
   };
