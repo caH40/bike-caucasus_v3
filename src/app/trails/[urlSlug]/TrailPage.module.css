@@ -43,15 +43,8 @@
   justify-content: flex-end;
   margin-bottom: 1rem;
 }
-.gconnect {
+.box__map {
   width: 100%;
-  height: 548px;
-  border: none;
-}
-.komoot {
-  width: 100%;
-  height: 700px;
-  border: none;
   margin-bottom: 1rem;
 }
 

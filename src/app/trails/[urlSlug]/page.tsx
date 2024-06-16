@@ -13,6 +13,9 @@ import { generateMetadataTrail } from '@/meta/meta';
 import { blurBase64 } from '@/libs/image';
 import { Trail } from '@/services/Trail';
 import styles from './TrailPage.module.css';
+import dynamic from 'next/dynamic';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 
 const cx = cn.bind(styles);
 
@@ -38,9 +41,6 @@ export default async function TrailPage({ params }: Props) {
   // Подсчет просмотров Маршрута.
   const trailService = new Trail();
   await trailService.countView(params.urlSlug);
-
-  const trackGConnectId = trail.garminConnect?.split('/').at(-1);
-  const trackKomootId = trail.komoot?.split('/').at(-1);
 
   return (
     <Wrapper
@@ -90,19 +90,10 @@ export default async function TrailPage({ params }: Props) {
           ))}
         </div>
 
-        {trackKomootId ? (
-          <iframe
-            src={`https://www.komoot.com/tour/${trackKomootId}/embed?share_token=aF9xgz5VStLwQYo3CvhKR7u2jBIobjQs1V2aVbqODPWgn1vQ5N&profile=1`}
-            className={styles.komoot}
-          ></iframe>
-        ) : (
-          trackGConnectId && (
-            <iframe
-              src={`https://connect.garmin.com/modern/course/embed/${trackGConnectId}`}
-              className={styles.gconnect}
-            />
-          )
-        )}
+        <TitleAndLine hSize={2} title={`Карта и профиль высоты маршрута ${trail.title}`} />
+        <div className={styles.box__map}>
+          <MapWithElevation url={trail.trackGPX} />
+        </div>
 
         <TrailTotal trail={trail} />
         <LineSeparator />
