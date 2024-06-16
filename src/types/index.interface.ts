@@ -302,3 +302,52 @@ export interface DocsAfterPagination<T> {
   currentPage: number;
   quantityPages: number;
 }
+
+/**
+ * Данные трэка после парсинга GPX файла.
+ */
+export type GPX = {
+  gpx: {
+    $: {
+      creator: string;
+      version: string;
+      'xsi:schemaLocation': string;
+      'xmlns:ns3': string;
+      xmlns: string;
+      'xmlns:xsi': string;
+      'xmlns:ns2': string;
+    };
+    metadata: GpxMetadata[];
+    trk: GpxTrk[];
+  };
+};
+type GpxLink = {
+  $: {
+    href: string;
+  };
+  text: string[];
+};
+type GpxMetadata = {
+  name: string[];
+  link: GpxLink[];
+  time: string[];
+};
+type GpxTrackPoint = {
+  $: {
+    lat: string;
+    lon: string;
+  };
+  ele: string[];
+  time: string[];
+};
+type GpxTrackSegment = {
+  trkpt: GpxTrackPoint[];
+};
+type GpxTrk = {
+  name: string[];
+  trkseg: GpxTrackSegment[];
+};
+export type ElevationData = {
+  distance: number;
+  elevation: number;
+};
