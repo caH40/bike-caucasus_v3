@@ -13,6 +13,7 @@
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1rem;
+  transform: scale(0);
 }
 .type {
   min-width: 150px;
@@ -80,6 +81,27 @@
 .box__reset:active {
   background-color: var(--white-12);
   border: 1px solid var(--line);
+}
+/* ====================================================================== */
+.wrapper__filters.entering {
+  opacity: 1;
+  transition: ease-in-out 0.3s;
+  transform: scale(1);
+}
+.wrapper__filters.entered {
+  opacity: 1;
+  transition: ease-in-out 0.3s;
+  transform: scale(1);
+}
+.wrapper__filters.exiting {
+  transition: ease-in-out 0.3s;
+  transform: scale(1);
+  opacity: 0;
+}
+.wrapper__filters.exited {
+  transition: ease-in-out 0.3s;
+  opacity: 0;
+  transform: scale(0);
 }
 /* ====================================================================== */
 @media (max-width: 992px) {

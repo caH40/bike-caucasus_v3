@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import cn from 'classnames';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import cn from 'classnames/bind';
 
 import {
   bikeTypes as optionsBikeType,
@@ -12,6 +12,7 @@ import SelectCustom from '../UI/SelectCustom/SelectCustom';
 import styles from './BlockFilterTrails.module.css';
 import IconArrowTrendingUp from '../Icons/IconArrowTrendingUp';
 import IconArrowTrendingDown from '../Icons/IconArrowTrendingDown';
+import { Transition } from 'react-transition-group';
 
 type Props = {
   bikeType: string;
@@ -29,6 +30,8 @@ type Props = {
   quantityTrails: number | undefined;
 };
 
+const cx = cn.bind(styles);
+
 export default function BlockFilterTrails({
   bikeType,
   setBikeType,
@@ -45,6 +48,7 @@ export default function BlockFilterTrails({
   setSortTarget,
 }: Props) {
   const [isVisibleFilters, setIsVisibleFilters] = useState<boolean>(false);
+  const nodeRef = useRef(null);
 
   return (
     <div className={styles.wrapper}>
@@ -67,66 +71,80 @@ export default function BlockFilterTrails({
       </div>
 
       {/* Блок фильтров */}
-      {isVisibleFilters && (
-        <div className={styles.wrapper__filters}>
-          <div className={styles.block__filters}>
-            <div className={styles.type}>
-              <SelectCustom
-                state={bikeType}
-                setState={setBikeType}
-                options={optionsBikeType}
-                label="Тип велосипеда"
-              />
-            </div>
-
-            <div className={styles.type}>
-              <SelectCustom
-                state={region}
-                setState={setRegion}
-                options={optionsRegions}
-                label="Регион"
-              />
-            </div>
-
-            <div className={styles.type}>
-              <SelectCustom
-                state={difficultyLevel}
-                setState={setDifficultyLevel}
-                options={optionsDifficultyLevel}
-                label="Уровень сложности"
-              />
-            </div>
-          </div>
-
-          <div className={styles.block__filters}>
-            <div className={styles.type}>
-              <SelectCustom
-                defaultValue={'Дистанция'}
-                state={sortTarget}
-                setState={setSortTarget}
-                options={optionsSortCategories}
-                label="Сортировка"
-              />
-            </div>
-
-            <button
-              className={cn(styles.box__adjustments, styles.box__reset)}
-              onClick={() => setSortDirection(sortDirection === 'up' ? 'down' : 'up')}
+      <Transition
+        in={isVisibleFilters}
+        timeout={300}
+        nodeRef={nodeRef}
+        unmountOnExit={true}
+        mountOnEnter={true}
+      >
+        {(state) => {
+          return (
+            <div
+              className={cx('wrapper__filters', state)}
+              onMouseLeave={() => setIsVisibleFilters(false)}
+              ref={nodeRef}
             >
-              {sortDirection === 'up' ? <IconArrowTrendingUp /> : <IconArrowTrendingDown />}
-            </button>
-          </div>
+              <div className={styles.block__filters}>
+                <div className={styles.type}>
+                  <SelectCustom
+                    state={bikeType}
+                    setState={setBikeType}
+                    options={optionsBikeType}
+                    label="Тип велосипеда"
+                  />
+                </div>
 
-          <div className={styles.block__reset}>
-            <button
-              className={cn(styles.box__adjustments, styles.box__reset)}
-              onClick={() => resetFilters()}
-            >
-              <span className={styles.adjustments__text}>Сброс</span>
-            </button>
-          </div>
-        </div>
-      )}
+                <div className={styles.type}>
+                  <SelectCustom
+                    state={region}
+                    setState={setRegion}
+                    options={optionsRegions}
+                    label="Регион"
+                  />
+                </div>
+
+                <div className={styles.type}>
+                  <SelectCustom
+                    state={difficultyLevel}
+                    setState={setDifficultyLevel}
+                    options={optionsDifficultyLevel}
+                    label="Уровень сложности"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.block__filters}>
+                <div className={styles.type}>
+                  <SelectCustom
+                    defaultValue={'Дистанция'}
+                    state={sortTarget}
+                    setState={setSortTarget}
+                    options={optionsSortCategories}
+                    label="Сортировка"
+                  />
+                </div>
+
+                <button
+                  className={cx('box__adjustments', 'box__reset')}
+                  onClick={() => setSortDirection(sortDirection === 'up' ? 'down' : 'up')}
+                >
+                  {sortDirection === 'up' ? <IconArrowTrendingUp /> : <IconArrowTrendingDown />}
+                </button>
+              </div>
+
+              <div className={styles.block__reset}>
+                <button
+                  className={cx('box__adjustments', 'box__reset')}
+                  onClick={() => resetFilters()}
+                >
+                  <span className={styles.adjustments__text}>Сброс</span>
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </Transition>
     </div>
   );
 }
