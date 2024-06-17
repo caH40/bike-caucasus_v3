@@ -26,11 +26,13 @@ export function useParseGPX(url: string) {
 
         const metadataParsed: MetadataParsed = {
           name: data.gpx.metadata[0].name[0],
-          time: new Date(data.gpx.metadata[0].time[0]),
-          link: {
-            href: data.gpx.metadata[0].link[0].$.href,
-            text: data.gpx.metadata[0].link[0].text[0],
-          },
+          time: data.gpx.metadata[0].time ? new Date(data.gpx.metadata[0].time[0]) : null,
+          link: data.gpx.metadata[0].link
+            ? {
+                href: data.gpx.metadata[0].link[0].$.href,
+                text: data.gpx.metadata[0].link[0].text[0],
+              }
+            : null,
         };
         setTrackData({ positions: positionsParsed, metadata: metadataParsed });
       } catch (error) {
@@ -47,9 +49,9 @@ export function useParseGPX(url: string) {
 
 type MetadataParsed = {
   name: string; // Название трэка.
-  time: Date; // Дата создания трэка.
+  time: Date | null; // Дата создания трэка.
   link: {
     href: string; // Сервис, на котором создан трэк.
     text: string; // Название сервиса, на котором создан трэк.
-  };
+  } | null;
 };

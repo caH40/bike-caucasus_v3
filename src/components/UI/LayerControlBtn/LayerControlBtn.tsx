@@ -25,7 +25,7 @@ const mapViewFormatObj = {
 export default function LayerControlBtn() {
   return (
     <LayersControl position="topright">
-      <LayersControl.BaseLayer name="OpenStreetMap">
+      <LayersControl.BaseLayer checked name="OpenStreetMap">
         <TileLayer
           attribution={mapViewFormatObj.OpenStreetMapMapnik.attribution}
           url={mapViewFormatObj.OpenStreetMapMapnik.url}
@@ -39,7 +39,7 @@ export default function LayerControlBtn() {
         />
       </LayersControl.BaseLayer>
 
-      <LayersControl.BaseLayer checked name="OpenTopoMap">
+      <LayersControl.BaseLayer name="OpenTopoMap">
         <TileLayer
           attribution={mapViewFormatObj.OpenTopoMap.attribution}
           url={mapViewFormatObj.OpenTopoMap.url}
