@@ -24,6 +24,7 @@
   --info: blue;
   --success: green;
   --color-orange: #ec9c07;
+  --purple: #5c288a;
 
   /* цвета типов велосипедов */
   --mtb: rgba(114, 39, 39, 0.6);

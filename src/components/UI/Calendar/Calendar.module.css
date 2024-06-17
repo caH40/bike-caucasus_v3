@@ -70,7 +70,7 @@
   border-radius: 0 0 0.5rem;
 }
 .cell__active {
-  background-color: var(--green-dark);
+  background-color: var(--purple);
 }
 .day {
   font-size: 1rem;
