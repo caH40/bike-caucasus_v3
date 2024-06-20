@@ -360,4 +360,5 @@ export type InteractiveBlockProps = {
   viewsCount?: number; // Количество просмотров.
   idDocument: string; // id новости или маршрута.
   isLikedByUser: boolean;
+  target: 'news' | 'trail';
 };

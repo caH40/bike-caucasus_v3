@@ -13,8 +13,8 @@ import { generateMetadataTrail } from '@/meta/meta';
 import { blurBase64 } from '@/libs/image';
 import { Trail } from '@/services/Trail';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import InteractiveBlockTrail from '@/components/UI/InteractiveBlockTrail/InteractiveBlockTrail';
 import styles from './TrailPage.module.css';
+import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 
 const cx = cn.bind(styles);
@@ -99,11 +99,12 @@ export default async function TrailPage({ params }: Props) {
 
         {/* Интерактивный блок. */}
         <div className={styles.interactive}>
-          <InteractiveBlockTrail
+          <InteractiveBlock
             likesCount={trail.count.likes}
             isLikedByUser={trail.isLikedByUser}
             viewsCount={trail.count.views}
             idDocument={trail._id}
+            target="trail"
           />
         </div>
 

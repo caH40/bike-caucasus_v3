@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import { getServerSession } from 'next-auth';
 
-import InteractiveBlockNews from '@/components/UI/InteractiveBlockNews/InteractiveBlockNews';
 import Author from '@/components/Author/Author';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import { News } from '@/services/news';
@@ -15,6 +14,7 @@ import { notFound } from 'next/navigation';
 import { blurBase64 } from '@/libs/image';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import Wrapper from '@/components/Wrapper/Wrapper';
+import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -50,7 +50,7 @@ export async function getNewsOne({
 /**
  * Подсчет просмотра новости с _id:idNews.
  */
-async function countView(idNews: string | undefined): Promise<void> {
+async function countView(idNews: string): Promise<void> {
   try {
     if (!idNews) {
       return;
@@ -78,8 +78,8 @@ export default async function NewsPage({ params }: Props) {
     notFound();
   }
 
-  const idNews = newsOne?._id ? String(newsOne._id) : undefined;
-  await countView(newsOne?._id);
+  const idNews = String(newsOne._id);
+  await countView(idNews);
 
   return (
     <div className={styles.wrapper}>
@@ -145,11 +145,12 @@ export default async function NewsPage({ params }: Props) {
 
           {/* Интерактивный блок. */}
           <div className={styles.interactive}>
-            <InteractiveBlockNews
+            <InteractiveBlock
               likesCount={newsOne.likesCount}
               isLikedByUser={newsOne.isLikedByUser}
-              idNews={idNews}
+              idDocument={idNews}
               viewsCount={newsOne.viewsCount}
+              target="news"
             />
           </div>
           <hr className={styles.line} />

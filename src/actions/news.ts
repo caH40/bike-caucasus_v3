@@ -9,10 +9,6 @@ import { errorLogger } from '@/errors/error';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 
-type ParamsSetLike = {
-  idNews: string | undefined;
-};
-
 type ParamsNews = {
   idUserDB?: string;
   page?: number;
@@ -49,7 +45,7 @@ export async function getNews({ idUserDB, page, docsOnPage, query }: ParamsNews 
   }
 }
 
-export async function setLike({ idNews }: ParamsSetLike): Promise<ResponseServer<null>> {
+export async function setLike(idNews: string): Promise<ResponseServer<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -74,17 +70,12 @@ export async function setLike({ idNews }: ParamsSetLike): Promise<ResponseServer
   }
 }
 
-type ParamsGetInteractive = {
-  idNews: string | undefined;
-  idUserDB?: string | undefined;
-};
-
 /**
  * Серверный экшен, получает данные для интерактивного блока новости idNews.TNewsInteractiveDto
  */
-export async function getInteractive({
-  idNews,
-}: ParamsGetInteractive): Promise<ResponseServer<null> | ResponseServer<TNewsInteractiveDto>> {
+export async function getInteractive(
+  idNews: string
+): Promise<ResponseServer<null> | ResponseServer<TNewsInteractiveDto>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

@@ -50,17 +50,12 @@ export async function setLike(idDocument: string): Promise<ResponseServer<null>>
   }
 }
 
-type ParamsGetInteractive = {
-  idDocument: string;
-  idUserDB?: string | undefined;
-};
-
 /**
  * Серверный экшен, получает данные для интерактивного блока маршрута idNews.TNewsInteractiveDto
  */
-export async function getInteractive({
-  idDocument,
-}: ParamsGetInteractive): Promise<ResponseServer<null> | ResponseServer<TNewsInteractiveDto>> {
+export async function getInteractive(
+  idDocument: string
+): Promise<ResponseServer<null> | ResponseServer<TNewsInteractiveDto>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

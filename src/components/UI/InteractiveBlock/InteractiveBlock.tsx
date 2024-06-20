@@ -1,30 +1,32 @@
 'use client';
 
-import IconHandThumbUp from '@/components/Icons/IconHandThumbUp';
-import IconChatBubble from '@/components/Icons/IconChatBubble';
-
-import IconEye from '@/components/Icons/IconEye';
-import styles from './InteractiveBlockNews.module.css';
-
-import { toast } from 'sonner';
-import { getInteractive, setLike } from '@/actions/news';
 import { useEffect, useState } from 'react';
 
-type Props = {
-  likesCount?: number; // Количество лайков.
-  messages?: number; // Количество сообщений.
-  viewsCount?: number; // Количество просмотров.
-  idNews: string | undefined;
-  isLikedByUser: boolean;
-};
+import IconHandThumbUp from '@/components/Icons/IconHandThumbUp';
+import IconChatBubble from '@/components/Icons/IconChatBubble';
+import IconEye from '@/components/Icons/IconEye';
+import {
+  getInteractive as getInteractiveForTrail,
+  setLike as setLikeForTrail,
+} from '@/actions/trail';
+import {
+  getInteractive as getInteractiveForNews,
+  setLike as setLikeForNews,
+} from '@/actions/news';
+import { InteractiveBlockProps } from '@/types/index.interface';
+import styles from './InteractiveBlock.module.css';
 
-export default function InteractiveNewsCard({
+/**
+ * Интерактивный блок, отображение количества лайков, просмотров, фиксация лайка.
+ */
+export default function InteractiveBlock({
   likesCount,
   isLikedByUser,
   messages,
-  idNews,
+  idDocument,
   viewsCount,
-}: Props) {
+  target,
+}: InteractiveBlockProps) {
   // Данные интерактивного блока
   const [interData, setInterData] = useState({
     likesCount,
@@ -35,10 +37,12 @@ export default function InteractiveNewsCard({
   const [updateInter, setUpdateInter] = useState(false);
   // Обработка клика лайка.
   const getLike = async () => {
-    const response = await setLike({ idNews });
-    setUpdateInter(true);
-    if (!response.ok) {
-      toast.error(response.message);
+    if (target === 'news') {
+      await setLikeForNews(idDocument);
+      setUpdateInter(true);
+    } else if (target === 'trail') {
+      await setLikeForTrail(idDocument);
+      setUpdateInter(true);
     }
   };
 
@@ -49,18 +53,34 @@ export default function InteractiveNewsCard({
       return;
     }
 
-    getInteractive({ idNews }).then((res) => {
-      if (!res.data) {
-        return;
-      }
-      setInterData({
-        likesCount: res.data.likesCount,
-        viewsCount: res.data.viewsCount,
-        isLikedByUser: res.data.isLikedByUser,
+    if (target === 'news') {
+      getInteractiveForNews(idDocument).then((res) => {
+        if (!res.data) {
+          return;
+        }
+
+        setInterData({
+          likesCount: res.data.likesCount,
+          viewsCount: res.data.viewsCount,
+          isLikedByUser: res.data.isLikedByUser,
+        });
+        setUpdateInter(false);
       });
-      setUpdateInter(false);
-    });
-  }, [idNews, updateInter]);
+    } else if (target === 'trail') {
+      getInteractiveForTrail(idDocument).then((res) => {
+        if (!res.data) {
+          return;
+        }
+
+        setInterData({
+          likesCount: res.data.likesCount,
+          viewsCount: res.data.viewsCount,
+          isLikedByUser: res.data.isLikedByUser,
+        });
+        setUpdateInter(false);
+      });
+    }
+  }, [idDocument, updateInter, target]);
 
   return (
     <div className={styles.wrapper}>

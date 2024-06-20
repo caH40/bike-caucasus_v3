@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import InteractiveBlockNews from '../UI/InteractiveBlockNews/InteractiveBlockNews';
+import InteractiveBlock from '../UI/InteractiveBlock/InteractiveBlock';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { blurBase64 } from '@/libs/image';
 import type { TNewsGetOneDto } from '@/types/dto.types';
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function NewsCard({ newsOne }: Props) {
-  const idNews = newsOne?._id ? String(newsOne._id) : undefined;
+  const idNews = newsOne._id;
 
   return (
     <div className={styles.wrapper}>
@@ -39,11 +39,12 @@ export default function NewsCard({ newsOne }: Props) {
         </Link>
         <div className={styles.bottom}>
           <span>{getTimerLocal(newsOne.createdAt, 'DDMMYYHm')}</span>
-          <InteractiveBlockNews
+          <InteractiveBlock
             likesCount={newsOne.likesCount}
             isLikedByUser={newsOne.isLikedByUser}
-            idNews={idNews}
+            idDocument={idNews}
             viewsCount={newsOne.viewsCount}
+            target="news"
           />
         </div>
       </div>
