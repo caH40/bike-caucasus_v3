@@ -11,8 +11,11 @@ import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
 import type { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
 import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
-import type { TTrailDto } from '@/types/dto.types';
+import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
 import { ErrorCustom } from './Error';
+import { User } from '@/database/mongodb/Models/User';
+import mongoose, { ObjectId } from 'mongoose';
+import { serviceGetInteractiveToDto } from '@/dto/news';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -33,33 +36,43 @@ export class Trail {
    * @param idDB - Идентификатор маршрута в базе данных.
    * @returns Объект с данными маршрута или сообщением об ошибке.
    */
-  public async getOne(urlSlug: string): Promise<ResponseServer<TTrailDto | null>> {
+  public async getOne(
+    urlSlug: string,
+    idUserDB: string | undefined
+  ): Promise<ResponseServer<TTrailDto | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
       // Получаем информацию о маршруте из БД.
-      const trailDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser }) | null =
-        await TrailModel.findOne({
-          urlSlug,
-        })
-          .populate({
-            path: 'author',
-            select: [
-              'id',
-              'person.firstName',
-              'person.lastName',
-              'provider.image',
-              'imageFromProvider',
-              'image',
-            ],
-          }) // Получаем информацию об авторе маршрута
-          // .populate({ path: 'comments' }) // Нет модели/описания типов.
-          .lean();
+      const trailDB:
+        | (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
+            isLikedByUser: boolean;
+          })
+        | null = await TrailModel.findOne({
+        urlSlug,
+      })
+        .populate({
+          path: 'author',
+          select: [
+            'id',
+            'person.firstName',
+            'person.lastName',
+            'provider.image',
+            'imageFromProvider',
+            'image',
+          ],
+        }) // Получаем информацию об авторе маршрута
+        // .populate({ path: 'comments' }) // Нет модели/описания типов.
+        .lean();
 
       // Если маршрут не найден, генерируем исключение.
       if (!trailDB) {
         throw new ErrorCustom(`Не найден маршрут с urlSlug:${urlSlug}`, 404);
+      }
+
+      if (idUserDB) {
+        trailDB.isLikedByUser = trailDB.likedBy.some((like) => String(like) === idUserDB);
       }
 
       // Возвращаем информацию о маршруте и успешный статус.
@@ -94,10 +107,12 @@ export class Trail {
     bikeType,
     region,
     difficultyLevel,
+    idUserDB,
   }: {
     bikeType?: string | null;
     region?: string | null;
     difficultyLevel?: string | null;
+    idUserDB?: string;
   }): Promise<ResponseServer<TTrailDto[] | null>> {
     try {
       // Подключение к БД.
@@ -115,21 +130,30 @@ export class Trail {
       }
 
       // Получаем информацию о маршруте из БД.
-      const trailsDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser })[] =
-        await TrailModel.find(query)
-          .populate({
-            path: 'author',
-            select: [
-              'id',
-              'person.firstName',
-              'person.lastName',
-              'provider.image',
-              'imageFromProvider',
-              'image',
-            ],
-          }) // Получаем информацию об авторе маршрута
-          // .populate({ path: 'comments' }) // Нет модели/описания типов.
-          .lean();
+      const trailsDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
+        isLikedByUser: boolean;
+      })[] = await TrailModel.find(query)
+        .populate({
+          path: 'author',
+          select: [
+            'id',
+            'likedBy',
+            'person.firstName',
+            'person.lastName',
+            'provider.image',
+            'imageFromProvider',
+            'image',
+          ],
+        }) // Получаем информацию об авторе маршрута
+        // .populate({ path: 'comments' }) // Нет модели/описания типов.
+        .lean();
+
+      if (idUserDB) {
+        trailsDB.forEach((trail) => {
+          trail.isLikedByUser = trail.likedBy.some((like) => String(like) === idUserDB);
+          trail.likedBy = [];
+        });
+      }
 
       // Возвращаем информацию о маршруте и успешный статус.
       return {
@@ -228,5 +252,105 @@ export class Trail {
     }
 
     return { data: null, ok: true, message: 'Маршрут сохранен в БД!' };
+  }
+
+  /**
+   * Обрабатывает лайк или снятие лайка Маршрута пользователем.
+   * @param {Object} params - Объект с параметрами.
+   * @param {string} params.idUserDB - Идентификатор пользователя в базе данных.
+   * @param {string} params.idNews - Идентификатор новости в базе данных.
+   * @returns {Promise<ResponseServer<any>>} - Результат операции учета лайка.
+   */
+  public async countLike({
+    idUserDB,
+    idTrail,
+  }: {
+    idUserDB: string;
+    idTrail: string;
+  }): Promise<ResponseServer<any>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      // Проверка существует ли пользователь в БД с таким ID (может лишняя проверка)?
+      const userDB = await User.findOne({ _id: idUserDB });
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с _id:${userDB}`);
+      }
+
+      const trailDB: TTrailDocument | null = await TrailModel.findOne({ _id: idTrail });
+      if (!trailDB) {
+        throw new Error(`Маршрут не найден с _id:${idTrail}`);
+      }
+
+      const idUserDBObj = new mongoose.Types.ObjectId(idUserDB);
+
+      if (trailDB.likedBy.includes(idUserDBObj)) {
+        const userIndex = trailDB.likedBy.indexOf(idUserDBObj);
+        trailDB.likedBy.splice(userIndex, 1);
+        trailDB.count.likes = trailDB.likedBy.length;
+      } else {
+        trailDB.likedBy.push(idUserDBObj);
+        trailDB.count.likes = trailDB.likedBy.length;
+      }
+
+      await trailDB.save();
+
+      return {
+        data: null,
+        ok: true,
+        message: `Учет лайка от пользователя _id:${idUserDB}`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Сервис получения данных для интерактивного блока маршрута idTrail.
+   */
+  public async getInteractive({
+    idTrail,
+    idUserDB,
+  }: {
+    idTrail: string;
+    idUserDB: string | undefined;
+  }): Promise<ResponseServer<null | TNewsInteractiveDto>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const trailDB: {
+        count: {
+          views: number;
+          likes: number;
+          shares: number;
+        };
+        likedBy: ObjectId[];
+      } | null = await TrailModel.findOne(
+        { _id: idTrail },
+        { count: true, likedBy: true }
+      ).lean();
+
+      if (!trailDB) {
+        throw new Error(`Не найдена запрашиваемая новость с _id:${idTrail}`);
+      }
+
+      // isLikedByUser поставил или нет пользователь лайк данной новости
+      const isLikedByUser = trailDB.likedBy.some((like) => String(like) === idUserDB);
+
+      return {
+        data: serviceGetInteractiveToDto(
+          { viewsCount: trailDB.count.views, likesCount: trailDB.count.likes },
+          isLikedByUser
+        ),
+        ok: true,
+        message: `Запрашиваемый маршрут с _id:${idTrail}`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
   }
 }

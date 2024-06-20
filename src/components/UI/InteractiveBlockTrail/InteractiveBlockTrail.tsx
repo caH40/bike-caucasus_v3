@@ -4,27 +4,24 @@ import IconHandThumbUp from '@/components/Icons/IconHandThumbUp';
 import IconChatBubble from '@/components/Icons/IconChatBubble';
 
 import IconEye from '@/components/Icons/IconEye';
-import styles from './InteractiveBlockNews.module.css';
+import styles from '../InteractiveBlockNews/InteractiveBlockNews.module.css';
 
 import { toast } from 'sonner';
-import { getInteractive, setLike } from '@/actions/news';
+import { getInteractive } from '@/actions/trail';
 import { useEffect, useState } from 'react';
+import { InteractiveBlockProps } from '@/types/index.interface';
+import { setLike } from '@/actions/trail';
 
-type Props = {
-  likesCount?: number; // Количество лайков.
-  messages?: number; // Количество сообщений.
-  viewsCount?: number; // Количество просмотров.
-  idNews: string | undefined;
-  isLikedByUser: boolean;
-};
-
-export default function InteractiveNewsCard({
+/**
+ * Интерактивный блок для маршрута, отображение количества лайков, просмотров, фиксация лайка.
+ */
+export default function InteractiveBlockTrail({
   likesCount,
   isLikedByUser,
   messages,
-  idNews,
+  idDocument,
   viewsCount,
-}: Props) {
+}: InteractiveBlockProps) {
   // Данные интерактивного блока
   const [interData, setInterData] = useState({
     likesCount,
@@ -35,7 +32,7 @@ export default function InteractiveNewsCard({
   const [updateInter, setUpdateInter] = useState(false);
   // Обработка клика лайка.
   const getLike = async () => {
-    const response = await setLike({ idNews });
+    const response = await setLike(idDocument);
     setUpdateInter(true);
     if (!response.ok) {
       toast.error(response.message);
@@ -49,10 +46,11 @@ export default function InteractiveNewsCard({
       return;
     }
 
-    getInteractive({ idNews }).then((res) => {
+    getInteractive({ idDocument }).then((res) => {
       if (!res.data) {
         return;
       }
+
       setInterData({
         likesCount: res.data.likesCount,
         viewsCount: res.data.viewsCount,
@@ -60,7 +58,7 @@ export default function InteractiveNewsCard({
       });
       setUpdateInter(false);
     });
-  }, [idNews, updateInter]);
+  }, [idDocument, updateInter]);
 
   return (
     <div className={styles.wrapper}>

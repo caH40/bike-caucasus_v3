@@ -5,6 +5,7 @@ import type {
   TNewsInteractiveDto,
 } from '@/types/dto.types';
 import type { TNews } from '@/types/models.interface';
+import { ObjectId } from 'mongoose';
 
 /**
  * ДТО возвращаемых данных сервиса "Получение одной новости news.getOne()"
@@ -47,12 +48,12 @@ export function dtoNewsGetOne(
  * ДТО возвращаемых данных сервиса "Получение интерактивных данных новости news.getInteractive()"
  */
 export function serviceGetInteractiveToDto(
-  news: { viewsCount: number; likesCount: number },
+  document: { viewsCount: number; likesCount: number; likedBy?: ObjectId[] },
   isLikedByUser: boolean
 ): TNewsInteractiveDto {
   return {
-    likesCount: news.likesCount,
-    viewsCount: news.viewsCount,
+    likesCount: document.likesCount,
+    viewsCount: document.viewsCount,
     isLikedByUser,
   };
 }

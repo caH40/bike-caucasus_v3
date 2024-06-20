@@ -89,7 +89,8 @@ export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 
   _id: string;
   blocks: TBlockTrailDto[];
   // comments: string[];
-  likedBy: string[];
+  // likedBy: string[];
+  isLikedByUser: boolean;
   author: TAuthor;
 };
 

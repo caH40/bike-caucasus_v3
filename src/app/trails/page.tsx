@@ -6,6 +6,8 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import Trails from '@/components/Trails/Trails';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { parseError } from '@/errors/parse';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/auth-options';
 
 //!!!!!!!!!!!!!!!!!!!
 // export const dynamic = 'force-dynamic' делает страницу полностью динамичной!!!!!!!!
@@ -27,8 +29,14 @@ type TGetTrails = {
 async function getTrails({ bikeType, region, difficultyLevel }: TGetTrails) {
   'use server';
   try {
+    const session = await getServerSession(authOptions);
     const trailService = new Trail();
-    const trails = await trailService.getMany({ bikeType, region, difficultyLevel });
+    const trails = await trailService.getMany({
+      bikeType,
+      region,
+      difficultyLevel,
+      idUserDB: session?.user.idDB,
+    });
     return trails;
   } catch (error) {
     errorHandlerClient(parseError(error));

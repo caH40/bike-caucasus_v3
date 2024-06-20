@@ -47,7 +47,18 @@
   width: 100%;
   margin-bottom: 1rem;
 }
-
+.interactive {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.line {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 1rem auto;
+  min-width: 150px;
+  max-width: 300px;
+}
 /* ====================================================================== */
 
 @media (max-width: 1400px) {

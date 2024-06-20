@@ -2,19 +2,19 @@ import { type Metadata } from 'next';
 import Image from 'next/image';
 import cn from 'classnames/bind';
 import { notFound } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { regions } from '@/constants/trail';
 import BlockShare from '@/components/BlockShare/BlockShare';
-import LineSeparator from '@/components/LineSeparator/LineSeparator';
 import TrailTotal from '@/components/TrailTotal/TrailTotal';
 import { getTrail } from '@/actions/trail';
 import { generateMetadataTrail } from '@/meta/meta';
 import { blurBase64 } from '@/libs/image';
 import { Trail } from '@/services/Trail';
-import styles from './TrailPage.module.css';
-import dynamic from 'next/dynamic';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import InteractiveBlockTrail from '@/components/UI/InteractiveBlockTrail/InteractiveBlockTrail';
+import styles from './TrailPage.module.css';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 
 const cx = cn.bind(styles);
@@ -96,7 +96,19 @@ export default async function TrailPage({ params }: Props) {
         </div>
 
         <TrailTotal trail={trail} />
-        <LineSeparator />
+
+        {/* Интерактивный блок. */}
+        <div className={styles.interactive}>
+          <InteractiveBlockTrail
+            likesCount={trail.count.likes}
+            isLikedByUser={trail.isLikedByUser}
+            viewsCount={trail.count.views}
+            idDocument={trail._id}
+          />
+        </div>
+
+        <hr className={styles.line} />
+
         <BlockShare title={'Поделиться'} />
       </div>
     </Wrapper>

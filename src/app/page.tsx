@@ -32,7 +32,7 @@ export default async function Home() {
             </p>
             <NewsShort idUserDB={session?.user.idDB} />
             <BlockNewsImportant />
-            <BlockNews />
+            <BlockNews idUserDB={session?.user.idDB} />
           </div>
         </Wrapper>
       </div>

@@ -1,4 +1,4 @@
-import { Document, ObjectId } from 'mongoose';
+import mongoose, { Document, ObjectId } from 'mongoose';
 import { TFormCalendar } from './index.interface';
 
 /**
@@ -184,7 +184,7 @@ export type TTrail = {
   komoot?: string;
   author: ObjectId;
   // comments: ObjectId[];
-  likedBy: ObjectId[];
+  likedBy: mongoose.Types.ObjectId[];
   count: {
     views: number;
     likes: number;

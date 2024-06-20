@@ -119,7 +119,11 @@ export default function TrailCard({ trail }: Props) {
 
       <div className={styles.box__kudos}>
         <div>
-          <IconHandThumbUp squareSize={20} />
+          <IconHandThumbUp
+            squareSize={20}
+            isActive={trail.isLikedByUser}
+            colors={{ active: '#fafafa80' }}
+          />
           <span className={styles.kudos__text}>{trail.count.likes ?? 0}</span>
         </div>
 

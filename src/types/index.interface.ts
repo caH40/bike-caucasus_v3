@@ -351,3 +351,13 @@ export type ElevationData = {
   distance: number;
   elevation: number;
 };
+/**
+ * Пропсы интерактивных блоков news,trails.
+ */
+export type InteractiveBlockProps = {
+  likesCount?: number; // Количество лайков.
+  messages?: number; // Количество сообщений.
+  viewsCount?: number; // Количество просмотров.
+  idDocument: string; // id новости или маршрута.
+  isLikedByUser: boolean;
+};

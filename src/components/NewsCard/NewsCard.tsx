@@ -13,6 +13,7 @@ type Props = {
 
 export default function NewsCard({ newsOne }: Props) {
   const idNews = newsOne?._id ? String(newsOne._id) : undefined;
+
   return (
     <div className={styles.wrapper}>
       <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
