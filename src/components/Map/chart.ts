@@ -25,6 +25,7 @@ export function chartAltitude(elevationData: ElevationData[]) {
     color: '#ffffff80',
     responsive: true,
     maintainAspectRatio: false,
+    animation: false,
     scales: {
       x: {
         title: {
@@ -45,7 +46,9 @@ export function chartAltitude(elevationData: ElevationData[]) {
         },
         ticks: {
           color: '#ffffff80',
+          // mirror: true, // Отражение подписей от оси
         },
+
         beginAtZero: true,
       },
     },
