@@ -362,3 +362,29 @@ export type InteractiveBlockProps = {
   isLikedByUser: boolean;
   target: 'news' | 'trail';
 };
+/**
+ * Метаданные GPS трэка после парсинга.
+ */
+export type MetadataParsed = {
+  name: string; // Название трэка.
+  time: Date | null; // Дата создания трэка.
+  link: {
+    href: string; // Сервис, на котором создан трэк.
+    text: string; // Название сервиса, на котором создан трэк.
+  } | null;
+};
+/**
+ * Позиция точки в после парсинга GPX.
+ */
+export interface LatLng {
+  lat: number;
+  lng: number;
+  ele: number; // Добавляем ele для высоты
+}
+/**
+ * Данные GPS трэка после парсинга.
+ */
+export type TrackData = {
+  positions: LatLng[];
+  metadata: MetadataParsed;
+};
