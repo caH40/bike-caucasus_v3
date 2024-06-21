@@ -2,11 +2,35 @@
 
 import 'leaflet/dist/leaflet.css';
 import './style.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MapContainer, Polyline, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+} from 'chart.js';
+import { getRelativePosition } from 'chart.js/helpers';
+import crosshair from 'chartjs-plugin-crosshair';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  crosshair
+);
 
 import { useParseGPX } from '@/hooks/useParseGPX';
 import LayerControlBtn from '../UI/LayerControlBtn/LayerControlBtn';
@@ -34,10 +58,36 @@ interface Props {
 }
 
 export default function MapWithElevation({ url }: Props) {
+  const chartRef = useRef<ChartJS<'line'>>(null);
   const trackData = useParseGPX(url);
 
   const [elevationData, setElevationData] = useState<ElevationData[]>([]);
   const { chartData, chartOptions } = chartAltitude(elevationData);
+
+  useEffect(() => {
+    const chart: any = chartRef.current;
+
+    if (!chart) {
+      return;
+    }
+
+    const canvas = chart.canvas;
+
+    const handleMove = (event: MouseEvent) => {
+      const canvasPosition = getRelativePosition(event, chart);
+      const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+      const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+      if (chart.data.datasets[0].data.includes(dataX)) {
+      }
+      console.log(`Data X: ${dataX}, Data Y: ${dataY}`);
+    };
+
+    canvas.addEventListener('mousemove', handleMove);
+
+    return () => {
+      canvas.removeEventListener('mousemove', handleMove);
+    };
+  }, [trackData]);
 
   useEffect(() => {
     if (!trackData) {
@@ -54,7 +104,7 @@ export default function MapWithElevation({ url }: Props) {
         cumulativeDistance += distance;
 
         data.push({
-          distance: Math.trunc(cumulativeDistance / 1000), // Distance in km
+          distance: Math.trunc(cumulativeDistance), // Distance in km
           elevation: cur.ele || 0, // Добавляем значение высоты
         });
       }
@@ -92,7 +142,7 @@ export default function MapWithElevation({ url }: Props) {
       </MapContainer>
 
       <div className={styles.chartContainer}>
-        <Line data={chartData} options={chartOptions} />
+        <Line data={chartData} options={chartOptions} ref={chartRef} />
       </div>
     </>
   );
