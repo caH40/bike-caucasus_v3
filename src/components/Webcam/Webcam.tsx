@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 
 import { lcWebcamShadzhatmaz as lcName } from '@/constants/local-storage';
 import ArrowsWebcam from '../UI/ArrowWebcam/ArrowsWebcam';
-// import noImage from '../../../public/images/transparent800.png';
 import styles from './Webcam.module.css';
 
 type Props = {
