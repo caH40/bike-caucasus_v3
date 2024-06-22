@@ -1,3 +1,8 @@
+'use client';
+
+import IconAccount from '@/components/Icons/IconAccount';
+import IconTeam from '@/components/Icons/IconTeam';
+import IconUser from '@/components/Icons/IconUser';
 import { TMenuOnPage } from '@/types/index.interface';
 // import IconUsers from '@/components/Icons/IconUsers';
 // import IconCreator from '@/components/Icons/IconCreator';
@@ -85,7 +90,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
   },
 ];
 
-// Кнопки для меню на странице Аккаунт новости /account/
+// Кнопки для меню на странице Аккаунт Профиль /account/profile
 export const buttonsMenuAccountPage: TMenuOnPage[] = [
   {
     id: 0,
@@ -93,6 +98,7 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     classes: [],
     href: '/account/profile',
     permission: 'authorized', // Для авторизованного пользователя.
+    icon: IconUser,
   },
   {
     id: 1,
@@ -100,6 +106,7 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     classes: [],
     href: '/account/team',
     permission: 'authorized', // Для авторизованного пользователя.
+    icon: IconTeam,
   },
   {
     id: 2,
@@ -107,6 +114,7 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     classes: [],
     href: '/account/details',
     permission: 'authorized', // Для авторизованного пользователя.
+    icon: IconAccount,
   },
 ];
 

@@ -5,6 +5,9 @@ import { toast } from 'sonner';
 
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import type { TMenuOnPage } from '@/types/index.interface';
+import IconEdit from '@/components/Icons/IconEdit';
+import IconShare from '@/components/Icons/IconShare';
+import IconEllipsisHorCircle from '@/components/Icons/IconEllipsisHorCircle';
 
 type Params = {
   profileId: string;
@@ -34,6 +37,7 @@ export default function MenuProfile({ profileId }: Params) {
       href: '/account/profile',
       isMyButton: true,
       permission: null,
+      icon: IconEdit,
     },
     {
       id: 1,
@@ -41,6 +45,7 @@ export default function MenuProfile({ profileId }: Params) {
       classes: [],
       onClick: onDev,
       permission: null,
+      icon: IconEllipsisHorCircle,
     },
     {
       id: 2,
@@ -48,6 +53,7 @@ export default function MenuProfile({ profileId }: Params) {
       classes: [],
       onClick: shareUrl,
       permission: null,
+      icon: IconShare,
     },
   ];
 

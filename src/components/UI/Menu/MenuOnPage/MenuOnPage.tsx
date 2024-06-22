@@ -4,11 +4,12 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import cn from 'classnames/bind';
 
-import type { TMenuOnPage } from '@/types/index.interface';
-import styles from './MenuOnPage.module.css';
 import { handlerPosition } from '@/libs/utils/buttons';
 import { usePathname, useRouter } from 'next/navigation';
 import PermissionCheck from '@/hoc/permission-check';
+import IconBack from '@/components/Icons/IconBack';
+import type { TMenuOnPage } from '@/types/index.interface';
+import styles from './MenuOnPage.module.css';
 
 const cx = cn.bind(styles);
 
@@ -24,17 +25,17 @@ export default function MenuOnPage({ buttons, needBack }: Props) {
   const router = useRouter();
   const path = usePathname();
 
+  const buttonBack: TMenuOnPage = {
+    id: 100,
+    name: 'Вернуться',
+    classes: [],
+    onClick: () => router.back(),
+    permission: null,
+    icon: IconBack,
+  };
+
   // Меню с добавлением кнопки Вернуться назад.
-  const buttonList = [
-    ...buttons,
-    {
-      id: 100,
-      name: 'Вернуться',
-      classes: [],
-      onClick: () => router.back(),
-      permission: null,
-    },
-  ]
+  const buttonList = [...buttons, buttonBack]
     .filter((button) => button.id !== 100 || (button.id === 100 && needBack))
     .map((button) => {
       if (button.href && path.includes(button.href) && !button.classes.includes('active')) {
@@ -61,6 +62,11 @@ export default function MenuOnPage({ buttons, needBack }: Props) {
                       )}
                       href={button.href}
                     >
+                      {button.icon ? (
+                        <div className={styles.box__icon}>
+                          <button.icon squareSize={22} />
+                        </div>
+                      ) : null}
                       {button.name}
                     </Link>
                   </li>
@@ -75,6 +81,11 @@ export default function MenuOnPage({ buttons, needBack }: Props) {
                     )}
                     onClick={button.onClick}
                   >
+                    {button.icon ? (
+                      <div className={styles.box__icon}>
+                        <button.icon squareSize={22} />
+                      </div>
+                    ) : null}
                     {button.name}
                   </button>
                 </li>

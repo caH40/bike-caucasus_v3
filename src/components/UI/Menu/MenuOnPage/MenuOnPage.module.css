@@ -5,11 +5,12 @@
 }
 /* цвет кнопок соответствует цвету меню, ховер добавляет белой прозрачности */
 .btn {
+  position: relative;
   color: var(--main-color);
   height: 48px;
   display: flex;
   align-items: center;
-  padding-left: 48px;
+  padding-left: 60px;
   font-size: 1.1rem;
   width: 100%;
   cursor: pointer;
@@ -33,4 +34,9 @@
 .btn:hover {
   transition: all 0.25s;
   background-color: var(--white-12);
+}
+.box__icon {
+  position: absolute;
+  left: 1rem;
+  top: calc(50% - 11px);
 }
