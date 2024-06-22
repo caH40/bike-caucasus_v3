@@ -27,14 +27,14 @@ export default function usePositionIndex({ refChartLine, elevationData }: Props)
     }
 
     // Получаем элемент canvas из графика.
-    const canvas = chart.canvas;
+    const canvas: HTMLCanvasElement = chart.canvas;
 
     /**
      * Обработчик событий для перемещения мыши по canvas.
      *
      * @param {MouseEvent} event - Событие мыши.
      */
-    const handleMove = (event: MouseEvent) => {
+    const handleMove = (event: MouseEvent | TouchEvent) => {
       // Получаем относительное положение курсора на canvas.
       const canvasPosition = getRelativePosition(event, chart);
       // Получаем значение по оси X для позиции курсора
@@ -48,9 +48,11 @@ export default function usePositionIndex({ refChartLine, elevationData }: Props)
     };
 
     canvas.addEventListener('mousemove', handleMove);
+    canvas.addEventListener('touchmove', handleMove);
 
     return () => {
       canvas.removeEventListener('mousemove', handleMove);
+      canvas.removeEventListener('touchmove', handleMove);
     };
   }, [elevationData, refChartLine]);
 
