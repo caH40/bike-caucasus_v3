@@ -7,14 +7,13 @@ import IconNewspaper from '@/components/Icons/IconNewspaper';
 import IconRoute from '@/components/Icons/IconRoute';
 import IconTeam from '@/components/Icons/IconTeam';
 import IconUser from '@/components/Icons/IconUser';
-import { TMenuOnPage } from '@/types/index.interface';
 import IconCreate from '@/components/Icons/IconCreate';
 import IconEdit from '@/components/Icons/IconEdit';
 import IconView from '@/components/Icons/IconView';
 import IconAdd from '@/components/Icons/IconAdd';
-// import IconUsers from '@/components/Icons/IconUsers';
-// import IconCreator from '@/components/Icons/IconCreator';
-// import IconLog from '@/components/Icons/IconLog';
+import IconUsers from '@/components/Icons/IconUsers';
+import IconLog from '@/components/Icons/IconLog';
+import type { TMenuOnPage } from '@/types/index.interface';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -144,7 +143,7 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     classes: [],
     href: '/admin/users',
     permission: 'admin', // Для администратора сайта.
-    // icon: IconUsers,
+    icon: IconUsers,
   },
   {
     id: 1,
@@ -152,7 +151,7 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     classes: [],
     href: '/admin/logs/admin',
     permission: 'admin', // Для администратора сайта.
-    // icon: IconCreator,
+    icon: IconLog,
   },
   {
     id: 2,
@@ -160,7 +159,7 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     classes: [],
     href: '/admin/logs/errors',
     permission: 'admin', // Для администратора сайта.
-    // icon: IconLog,
+    icon: IconLog,
   },
 ];
 
