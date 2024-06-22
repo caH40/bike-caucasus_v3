@@ -30,6 +30,7 @@ type Props = {
  * Блок отображения карточек маршрутов и фильтров к ним.
  */
 export default function Trails({ getTrails }: Props) {
+  const [isFirstMounting, setIsFirstMounting] = useState<boolean>(true);
   const [trails, setTrails] = useState<TTrailDto[] | null | undefined>(null);
   const [bikeType, setBikeType] = useState<string>(''); // Маршрут для какого типа велосипедов.
   const [region, setRegion] = useState<string>('');
@@ -86,6 +87,10 @@ export default function Trails({ getTrails }: Props) {
   }, [trails, sortTarget, sortDirection]);
 
   useEffect(() => {
+    if (isFirstMounting) {
+      setIsFirstMounting(false);
+      return;
+    }
     const query = {
       bikeType: bikeType === 'нет фильтров' ? '' : bikeType,
       region: region === 'нет фильтров' ? '' : region,
@@ -96,7 +101,7 @@ export default function Trails({ getTrails }: Props) {
     getTrails(query).then((res) => {
       setTrails(res?.data);
     });
-  }, [getTrails, bikeType, region, difficultyLevel]);
+  }, [getTrails, bikeType, region, difficultyLevel, isFirstMounting]);
 
   const resetFilters = () => {
     setBikeType('нет фильтров');
