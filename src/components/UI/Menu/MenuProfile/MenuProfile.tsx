@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import type { TMenuOnPage } from '@/types/index.interface';
-import IconEdit from '@/components/Icons/IconEdit';
+import IconEditOld from '@/components/Icons/IconEditOld';
 import IconShare from '@/components/Icons/IconShare';
 import IconEllipsisHorCircle from '@/components/Icons/IconEllipsisHorCircle';
 
@@ -37,7 +37,7 @@ export default function MenuProfile({ profileId }: Params) {
       href: '/account/profile',
       isMyButton: true,
       permission: null,
-      icon: IconEdit,
+      icon: IconEditOld,
     },
     {
       id: 1,

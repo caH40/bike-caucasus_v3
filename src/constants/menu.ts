@@ -1,9 +1,17 @@
 'use client';
 
 import IconAccount from '@/components/Icons/IconAccount';
+import IconFinish from '@/components/Icons/IconFinish';
+import IconCalendar from '@/components/Icons/IconCreate';
+import IconNewspaper from '@/components/Icons/IconNewspaper';
+import IconRoute from '@/components/Icons/IconRoute';
 import IconTeam from '@/components/Icons/IconTeam';
 import IconUser from '@/components/Icons/IconUser';
 import { TMenuOnPage } from '@/types/index.interface';
+import IconCreate from '@/components/Icons/IconCreate';
+import IconEdit from '@/components/Icons/IconEdit';
+import IconView from '@/components/Icons/IconView';
+import IconAdd from '@/components/Icons/IconAdd';
 // import IconUsers from '@/components/Icons/IconUsers';
 // import IconCreator from '@/components/Icons/IconCreator';
 // import IconLog from '@/components/Icons/IconLog';
@@ -16,6 +24,7 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/news/create',
     permission: 'moderation.news.create',
+    icon: IconCreate,
   },
   {
     id: 1,
@@ -23,6 +32,7 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/news/edit',
     permission: 'moderation.news.edit',
+    icon: IconEdit,
   },
   {
     id: 2,
@@ -30,6 +40,7 @@ export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/news/list',
     permission: 'moderation.news.list',
+    icon: IconView,
   },
 ];
 
@@ -41,6 +52,7 @@ export const buttonsMenuModerationTrailsPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/trails/create',
     permission: 'moderation.trails.create',
+    icon: IconCreate,
   },
   {
     id: 1,
@@ -48,6 +60,7 @@ export const buttonsMenuModerationTrailsPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/trails/edit',
     permission: 'moderation.trails.edit',
+    icon: IconEdit,
   },
   {
     id: 2,
@@ -55,6 +68,7 @@ export const buttonsMenuModerationTrailsPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/trails/list',
     permission: 'moderation.trails.list',
+    icon: IconView,
   },
 ];
 
@@ -66,6 +80,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/news/create',
     permission: 'moderation.news.create',
+    icon: IconNewspaper,
   },
   {
     id: 1,
@@ -73,6 +88,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/trails',
     permission: 'moderation.trails',
+    icon: IconRoute,
   },
   {
     id: 2,
@@ -80,6 +96,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/championship',
     permission: 'moderation.championship',
+    icon: IconFinish,
   },
   {
     id: 3,
@@ -87,6 +104,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/calendar',
     permission: 'moderation.calendar',
+    icon: IconCalendar,
   },
 ];
 
@@ -154,6 +172,7 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/calendar/create',
     permission: 'moderation.calendar.create',
+    icon: IconAdd,
   },
   {
     id: 1,
@@ -161,6 +180,7 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/calendar/edit',
     permission: 'moderation.calendar.edit',
+    icon: IconEdit,
   },
   {
     id: 2,
@@ -168,5 +188,6 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/calendar/list',
     permission: 'moderation.calendar.list',
+    icon: IconView,
   },
 ];

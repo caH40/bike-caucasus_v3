@@ -17,7 +17,7 @@ import { getTimerLocal } from '@/libs/utils/date-local';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import Pagination from '@/components/UI/Pagination/Pagination';
 import IconDelete from '@/components/Icons/IconDelete';
-import IconEdit from '@/components/Icons/IconEdit';
+import IconEditOld from '@/components/Icons/IconEditOld';
 import BlockInteractive from '@/components/BlockInteractive/BlockInteractive';
 
 import styles from '../TableCommon.module.css';
@@ -165,7 +165,7 @@ function InteractiveBlock({
 
   // Иконки управления новостью.
   const icons = [
-    { id: 0, icon: IconEdit, getClick: () => getNavigate(props.row.original.urlSlug) },
+    { id: 0, icon: IconEditOld, getClick: () => getNavigate(props.row.original.urlSlug) },
     { id: 1, icon: IconDelete, getClick: () => getDeleteNews() },
   ];
 
