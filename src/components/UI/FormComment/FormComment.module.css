@@ -1,0 +1,33 @@
+.form {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 1rem;
+  align-items: start;
+}
+.textarea {
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-12);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.6rem 3rem 0.6rem 0.5rem;
+  width: 100%;
+  min-width: 250px;
+  resize: vertical;
+}
+.textarea:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+}
+.textarea:focus {
+  outline: none;
+}
+.textarea:disabled {
+  background-color: var(--loading);
+  color: var(--line);
+}
+/* ====================================================================== */
+@media (max-width: 992px) {
+  .form {
+    grid-template-columns: auto;
+  }
+}

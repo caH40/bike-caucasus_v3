@@ -25,6 +25,9 @@ export default function BlockComments({ comments, authorId, userId }: Props) {
   // Устанавливается Id комментария на который наведен курсор мыши.
   const [idForShowMenu, setIdForShowMenu] = useState<string | null>(null);
   const getLike = () => {};
+
+  const handlerSubmit = (text: string) => console.log(text);
+
   console.log(idForShowMenu);
 
   return (
@@ -100,7 +103,7 @@ export default function BlockComments({ comments, authorId, userId }: Props) {
           </button>
         )}
       </section>
-      <FormComment />
+      <FormComment handlerSubmit={handlerSubmit} target="news" />
     </div>
   );
 }
