@@ -107,6 +107,7 @@ export type TNews = {
   likesCount: number; // Счетчик лайков
   sharesCount: number; // Счетчик шеров
   likedBy: ObjectId[]; // Массив идентификаторов пользователей, которые лайкнули
+  comments: mongoose.Types.ObjectId[]; // Массив комментариев.
   important: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -214,6 +215,10 @@ export type TComment = {
   text: string;
   author: mongoose.Types.ObjectId;
   likedBy: mongoose.Types.ObjectId[];
+  document: {
+    _id: string;
+    type: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 };

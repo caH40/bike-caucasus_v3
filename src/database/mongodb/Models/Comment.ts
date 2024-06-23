@@ -6,7 +6,11 @@ const CommentSchema = new Schema<TCommentDocument>(
   {
     text: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Ссылка на пользователя
-    likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    likedBy: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
+    document: {
+      _id: String, // _id документа к которому создан данный комментарий.
+      type: String, // Тип Поста (документа, страницы): news, trail.
+    },
   },
   { timestamps: true }
 );

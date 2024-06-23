@@ -2,37 +2,37 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 import Button from '../Button/Button';
 import styles from './FormComment.module.css';
-import { useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { lcSuffixComment } from '@/constants/local-storage';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
-  handlerSubmit: (text: string) => void;
-  target: 'news' | 'trail';
+  handlerSubmit: (text: string, setText: Dispatch<SetStateAction<string>>) => void;
+  type: 'news' | 'trail';
 };
 
-export default function FormComment({ handlerSubmit, target }: Props) {
+export default function FormComment({ handlerSubmit, type }: Props) {
   const [text, setText] = useState<string>('');
 
   // Инициализация текста, сохраненного в Локальном хранилище.
   useEffect(() => {
-    const textFromLS = localStorage.getItem(`${lcSuffixComment}${target}`) || '';
+    const textFromLS = localStorage.getItem(`${lcSuffixComment}${type}`) || '';
     setText(textFromLS);
-  }, [target]);
+  }, [type]);
 
   // Сохранение текста в Локальном хранилище.
   useEffect(() => {
     if (text === '') {
       return;
     }
-    localStorage.setItem(`${lcSuffixComment}${target}`, text);
-  }, [text, target]);
+    localStorage.setItem(`${lcSuffixComment}${type}`, text);
+  }, [text, type]);
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handlerSubmit(text);
+        handlerSubmit(text, setText);
       }}
       className={styles.form}
     >
