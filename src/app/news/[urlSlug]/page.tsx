@@ -15,6 +15,8 @@ import { blurBase64 } from '@/libs/image';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
+import BlockComments from '@/components/BlockComments/BlockComments';
+import { comments } from '@/mock/comments';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -155,6 +157,16 @@ export default async function NewsPage({ params }: Props) {
           </div>
           <hr className={styles.line} />
           <BlockShare title={'Поделиться'} />
+          <hr className={styles.line} />
+
+          {/* Блок комментариев */}
+          <div className={styles.block__comments}>
+            <BlockComments
+              comments={comments}
+              authorId={newsOne.author.id}
+              userId={session?.user.id ? +session?.user.id : null}
+            />
+          </div>
         </Wrapper>
       </div>
       <aside className={styles.wrapper__aside}>

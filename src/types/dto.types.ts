@@ -106,3 +106,18 @@ export type TDtoCalendarEvents = {
   bikeType: string;
   author: string;
 };
+
+/**
+ * Dto Комментарий для новости, маршрута и т.д.
+ */
+export type TCommentDto = {
+  _id: string;
+  text: string; // Текст комментария.
+  author: TAuthor; // Данные об авторе комментария.
+  count: {
+    likes: number; // Общее количество лайков у комментария.
+  };
+  isLikedByUser: boolean; // Пользователь, просматривающий комментарий, ставил лайк данному комментарию?
+  createdAt: Date;
+  updatedAt: Date;
+};

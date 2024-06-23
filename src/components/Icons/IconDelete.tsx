@@ -2,12 +2,24 @@
 
 import cn from 'classnames/bind';
 
-import type { TIconProps } from '@/types/index.interface';
+import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
 
 const cx = cn.bind(styles);
 
-export default function IconDelete({ isActive, squareSize = 24, getClick }: TIconProps) {
+export default function IconDelete({
+  isActive,
+  squareSize = 24,
+  getClick,
+  colors = { default: 'currentColor', active: 'currentColor', hover: 'currentColor' },
+}: TIconProps) {
+  const style: React.CSSProperties & CSSVariables = {
+    width: squareSize,
+    height: squareSize,
+    '--color-icon-default': colors.default,
+    '--color-icon-active': colors.active,
+    '--color-icon-hover': colors.hover,
+  };
   return (
     <div
       onClick={getClick}
@@ -15,7 +27,7 @@ export default function IconDelete({ isActive, squareSize = 24, getClick }: TIco
         interactive: getClick,
         active: isActive,
       })}
-      style={{ width: squareSize, height: squareSize }}
+      style={{ ...style, width: squareSize, height: squareSize }}
     >
       <svg
         width="24"
@@ -24,13 +36,13 @@ export default function IconDelete({ isActive, squareSize = 24, getClick }: TIco
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <circle cx="12" cy="12" r="10.5" stroke="#CB0000" strokeWidth="3" />
+        <circle cx="12" cy="12" r="10.5" stroke="currentColor" strokeWidth="3" />
         <line
           x1="6.94975"
           y1="6.94975"
           x2="16.8492"
           y2="16.8492"
-          stroke="#CB0000"
+          stroke="currentColor"
           strokeWidth="2"
         />
         <line
@@ -38,7 +50,7 @@ export default function IconDelete({ isActive, squareSize = 24, getClick }: TIco
           y1="16.8493"
           x2="16.8492"
           y2="6.94976"
-          stroke="#CB0000"
+          stroke="currentColor"
           strokeWidth="2"
         />
       </svg>

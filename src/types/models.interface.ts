@@ -204,3 +204,16 @@ export type TTrail = {
  */
 export type TCalendarEventDocument = Document &
   Omit<TFormCalendar, 'date'> & { date: Date; author: ObjectId };
+
+/**
+ * Комментарий для новости, маршрута и т.д.
+ */
+export type TCommentDocument = Document & TComment;
+export type TComment = {
+  _id: mongoose.Types.ObjectId;
+  text: string;
+  author: mongoose.Types.ObjectId;
+  likedBy: mongoose.Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
+};
