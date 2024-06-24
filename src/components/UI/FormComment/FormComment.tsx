@@ -2,23 +2,32 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 import Button from '../Button/Button';
 import styles from './FormComment.module.css';
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, RefObject } from 'react';
 import { lcSuffixComment } from '@/constants/local-storage';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
-  handlerSubmit: (text: string, setText: Dispatch<SetStateAction<string>>) => void;
+  handlerSubmit: () => void;
   type: 'news' | 'trail';
+  text: string;
+  setText: Dispatch<SetStateAction<string>>;
+  isModeEdit: boolean; // Режим редактирования комментария.
+  textareaRef: RefObject<HTMLTextAreaElement>;
 };
 
-export default function FormComment({ handlerSubmit, type }: Props) {
-  const [text, setText] = useState<string>('');
-
+export default function FormComment({
+  text,
+  setText,
+  handlerSubmit,
+  type,
+  isModeEdit,
+  textareaRef,
+}: Props) {
   // Инициализация текста, сохраненного в Локальном хранилище.
   useEffect(() => {
     const textFromLS = localStorage.getItem(`${lcSuffixComment}${type}`) || '';
     setText(textFromLS);
-  }, [type]);
+  }, [type, setText]);
 
   // Сохранение текста в Локальном хранилище.
   useEffect(() => {
@@ -32,7 +41,7 @@ export default function FormComment({ handlerSubmit, type }: Props) {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handlerSubmit(text, setText);
+        handlerSubmit();
       }}
       className={styles.form}
     >
@@ -43,11 +52,16 @@ export default function FormComment({ handlerSubmit, type }: Props) {
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handlerSubmit(text, setText);
+            handlerSubmit();
           }
         }}
+        ref={textareaRef}
       ></TextareaAutosize>
-      <Button name="Отправить" theme="green" disabled={text.trim().length === 0} />
+      <Button
+        name={isModeEdit ? 'Сохранить' : 'Отправить'}
+        theme="green"
+        disabled={text.trim().length === 0}
+      />
     </form>
   );
 }

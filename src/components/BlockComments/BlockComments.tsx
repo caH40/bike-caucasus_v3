@@ -1,10 +1,10 @@
 'use client';
 
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { deleteComment, getComments, postComment, setLike } from '@/actions/comment';
+import { deleteComment, getComments, saveComment, setLike } from '@/actions/comment';
 import { lcSuffixComment } from '@/constants/local-storage';
 import FormComment from '../UI/FormComment/FormComment';
 import Avatar from '../Avatar/Avatar';
@@ -34,18 +34,25 @@ export default function BlockComments({
   const [commentsCurrent, setCommentsCurrent] = useState<TCommentDto[]>(comments);
   // Показывать все комментарии к данному посту, или сокращенное количество.
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
-
+  const [text, setText] = useState<string>('');
+  const [isModeEdit, setIsModeEdit] = useState<boolean>(false);
+  const [idCommentForEdit, setIdCommentForEdit] = useState<string | null>(null);
   const [trigger, setTrigger] = useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Может ли пользователь удалять любые комментарии.
   const hasPermissionForDelete = useHasAccess('delete.comment');
 
   // Установка/снятие лайка для комментария.
   const getLike = async (commentId: string) => {
-    await setLike(commentId);
-    setTrigger(true);
+    try {
+      await setLike(commentId);
+      setTrigger(true);
+    } catch (error) {
+      toast.error('Ошибка при установке лайка');
+    }
   };
 
-  const handlerSubmit = async (text: string, setText: Dispatch<SetStateAction<string>>) => {
+  const handlerSubmit = async () => {
     // Удаление пробелов в начале и в конце текста.
     const trimmedText = text.trim();
     // Если комментарий пустой, то не отправлять на сервер.
@@ -53,21 +60,40 @@ export default function BlockComments({
       return;
     }
 
-    const res = await postComment(text, document);
-    // При удачном сохранении нового комментария обновляются все комментарии
-    if (res.isSaved) {
-      setTrigger(true);
-      setText('');
-      localStorage.removeItem(`${lcSuffixComment}${document.type}`);
+    try {
+      const response = await saveComment({ text, document, isModeEdit, idCommentForEdit });
+
+      // При удачном сохранении нового комментария обновляются все комментарии
+      if (response.isSaved) {
+        setTrigger(true);
+        setText('');
+        setIsModeEdit(false);
+        setIdCommentForEdit(null);
+        localStorage.removeItem(`${lcSuffixComment}${document.type}`);
+      }
+    } catch (error) {
+      toast.error('Ошибка при сохранении комментария');
     }
   };
 
+  // Запрос обновленных данных при изменении триггера на true.
   useEffect(() => {
     if (!trigger) {
       return;
     }
-    setTrigger(false);
-    getComments({ document, idUserDB }).then((data) => setCommentsCurrent(data));
+
+    const fetchComments = async () => {
+      try {
+        const data = await getComments({ document, idUserDB });
+        setCommentsCurrent(data);
+      } catch (error) {
+        toast.error('Ошибка при получении комментариев');
+      } finally {
+        setTrigger(false);
+      }
+    };
+
+    fetchComments();
   }, [trigger, document, idUserDB]);
 
   // Удаление комментария.
@@ -80,18 +106,29 @@ export default function BlockComments({
     if (!isConfirmed) {
       toast.warning('Отмена удаления комментария!');
     }
-    const res = await deleteComment(idComment);
 
-    if (res.ok) {
-      setTrigger(true);
-      toast.success(res.message);
-    } else {
-      toast.error(res.message);
+    try {
+      const res = await deleteComment(idComment);
+      if (res.ok) {
+        setTrigger(true);
+        toast.success(res.message);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error('Ошибка при удалении комментария');
     }
   };
 
-  // Редактирование комментария.
-  const handlerEditComment = (idComment: string) => {};
+  // Запуск редактирования комментария.
+  const handlerEditComment = (idComment: string, textFromComment: string) => {
+    setText(textFromComment);
+    setIsModeEdit(true);
+    setIdCommentForEdit(idComment);
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -130,7 +167,7 @@ export default function BlockComments({
                     {userId === comment.author.id && (
                       <button
                         className={styles.btn__control}
-                        onClick={() => handlerEditComment(comment._id)}
+                        onClick={() => handlerEditComment(comment._id, comment.text)}
                       >
                         Редактировать
                       </button>
@@ -184,7 +221,16 @@ export default function BlockComments({
           ))}
       </section>
 
-      {idUserDB && <FormComment handlerSubmit={handlerSubmit} type={document.type} />}
+      {idUserDB && (
+        <FormComment
+          text={text}
+          setText={setText}
+          handlerSubmit={handlerSubmit}
+          type={document.type}
+          isModeEdit={isModeEdit}
+          textareaRef={textareaRef}
+        />
+      )}
     </div>
   );
 }

@@ -10,10 +10,20 @@ import { ResponseServer } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import type { TCommentDto } from '@/types/dto.types';
 
-export async function postComment(
-  text: string,
-  document: { _id: string; type: 'news' | 'trail' }
-) {
+/**
+ * Сохранение или обновление комментария.
+ */
+export async function saveComment({
+  text,
+  document,
+  isModeEdit,
+  idCommentForEdit,
+}: {
+  text: string;
+  document: { _id: string; type: 'news' | 'trail' };
+  isModeEdit: boolean;
+  idCommentForEdit: string | null;
+}) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -24,8 +34,13 @@ export async function postComment(
     }
 
     const commentService = new CommentService();
+    let res;
 
-    const res = await commentService.post({ authorIdDB: idUserDB, text, document });
+    if (isModeEdit && idCommentForEdit) {
+      res = await commentService.put({ authorIdDB: idUserDB, text, idCommentForEdit });
+    } else {
+      res = await commentService.post({ authorIdDB: idUserDB, text, document });
+    }
 
     return { isSaved: res.ok };
   } catch (error) {

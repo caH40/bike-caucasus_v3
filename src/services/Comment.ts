@@ -7,7 +7,7 @@ import { TAuthorFromUser, TCommentDocument, TRoleModel } from '@/types/models.in
 import { dtoComment } from '@/dto/comment';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { User } from '@/database/mongodb/Models/User';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 export class CommentService {
   private dbConnection: () => Promise<void>;
@@ -105,6 +105,53 @@ export class CommentService {
         data: null,
         ok: true,
         message: 'Комментарий сохранен в БД.',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление отредактированного комментария.
+   */
+  public async put({
+    authorIdDB,
+    text,
+    idCommentForEdit,
+  }: {
+    authorIdDB: string;
+    text: string;
+    idCommentForEdit: string;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const userDb: { _id: ObjectId } | null = await User.findOne(
+        { _id: authorIdDB },
+        { _id: true }
+      ).lean();
+
+      if (!userDb) {
+        throw new Error(
+          `Не найден пользователь в БД с _id:${authorIdDB}, создавший комментарий.`
+        );
+      }
+
+      if (String(userDb._id) !== authorIdDB) {
+        throw new Error(
+          `Редактировать комментарий может только автор с _id:${authorIdDB}, создавший комментарий.`
+        );
+      }
+
+      await CommentModel.findOneAndUpdate({ _id: idCommentForEdit }, { $set: { text } });
+
+      // Возвращаем успешный статус.
+      return {
+        data: null,
+        ok: true,
+        message: 'Комментарий обновлён в БД.',
       };
     } catch (error) {
       this.errorLogger(error);
