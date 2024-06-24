@@ -29,13 +29,14 @@ export default function FormComment({
     setText(textFromLS);
   }, [type, setText]);
 
-  // Сохранение текста в Локальном хранилище.
+  // Сохранение текста в Локальном хранилище. При редактировании (isModeEdit=true)
+  // не сохранять в Локальное хранилище.
   useEffect(() => {
-    if (text === '') {
+    if (text === '' || isModeEdit) {
       return;
     }
     localStorage.setItem(`${lcSuffixComment}${type}`, text);
-  }, [text, type]);
+  }, [text, type, isModeEdit]);
 
   return (
     <form

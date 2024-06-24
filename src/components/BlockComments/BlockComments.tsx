@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { deleteComment, getComments, saveComment, setLike } from '@/actions/comment';
+import { deleteComment, saveComment, setLike } from '@/actions/comment';
 import { lcSuffixComment } from '@/constants/local-storage';
 import FormComment from '../UI/FormComment/FormComment';
 import Avatar from '../Avatar/Avatar';
@@ -12,6 +12,7 @@ import IconHandThumbUp from '../Icons/IconHandThumbUp';
 import useHasAccess from '@/hooks/useHasAccess';
 import type { TCommentDto } from '@/types/dto.types';
 import styles from './BlockComments.module.css';
+import { useGetComments } from '@/hooks/useGetComments';
 
 type Props = {
   comments: TCommentDto[];
@@ -31,19 +32,22 @@ export default function BlockComments({
   document,
   idUserDB,
 }: Props) {
-  const [commentsCurrent, setCommentsCurrent] = useState<TCommentDto[]>(comments);
   // Показывать все комментарии к данному посту, или сокращенное количество.
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
+  // Текс комментария в textarea.
   const [text, setText] = useState<string>('');
+  // Режим редактирования комментария.
   const [isModeEdit, setIsModeEdit] = useState<boolean>(false);
+  // id комментария, который сейчас редактируется.
   const [idCommentForEdit, setIdCommentForEdit] = useState<string | null>(null);
-  const [trigger, setTrigger] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Может ли пользователь удалять любые комментарии.
   const hasPermissionForDelete = useHasAccess('delete.comment');
 
+  const { commentsCurrent, setTrigger } = useGetComments({ comments, document, idUserDB });
+
   // Установка/снятие лайка для комментария.
-  const getLike = async (commentId: string) => {
+  const likeComment = async (commentId: string) => {
     try {
       await setLike(commentId);
       setTrigger(true);
@@ -75,26 +79,6 @@ export default function BlockComments({
       toast.error('Ошибка при сохранении комментария');
     }
   };
-
-  // Запрос обновленных данных при изменении триггера на true.
-  useEffect(() => {
-    if (!trigger) {
-      return;
-    }
-
-    const fetchComments = async () => {
-      try {
-        const data = await getComments({ document, idUserDB });
-        setCommentsCurrent(data);
-      } catch (error) {
-        toast.error('Ошибка при получении комментариев');
-      } finally {
-        setTrigger(false);
-      }
-    };
-
-    fetchComments();
-  }, [trigger, document, idUserDB]);
 
   // Удаление комментария.
   const handlerDeleteComment = async (idComment: string) => {
@@ -186,7 +170,7 @@ export default function BlockComments({
                   <div className={styles.block__icon}>
                     <div className={styles.box__icon}>
                       <IconHandThumbUp
-                        getClick={() => getLike(comment._id)}
+                        getClick={() => likeComment(comment._id)}
                         squareSize={20}
                         isActive={comment.isLikedByUser}
                         colors={{
