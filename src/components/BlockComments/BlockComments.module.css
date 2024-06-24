@@ -1,0 +1,65 @@
+.wrapper__comment {
+  position: relative;
+  display: grid;
+  grid-template-columns: 45px 1fr;
+  font-size: 0.9rem;
+  letter-spacing: 0.09rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+.author {
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.author span {
+  font-weight: 400;
+}
+.dot {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 5px; /* Расстояние до соседнего текста */
+}
+.dot::before {
+  content: '\2022';
+  line-height: 0; /* Убираем высоту строки */
+}
+.box__control {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  gap: 1rem;
+}
+.text {
+  margin-bottom: 0.2rem;
+}
+.data {
+  font-size: 0.8rem;
+  color: var(--white-50);
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+}
+.box__icon {
+  display: flex;
+  gap: 0.3rem;
+  align-items: flex-end;
+}
+.icon__label {
+  font-size: 0.7;
+  color: var(--white-50);
+}
+.btn {
+  font-family: inherit;
+  letter-spacing: inherit;
+  color: var(--btn-bg);
+  font-size: 1rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.btn:hover {
+  color: var(--btn-bg-hover);
+}

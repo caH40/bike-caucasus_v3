@@ -15,6 +15,8 @@ import { blurBase64 } from '@/libs/image';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
+import BlockComments from '@/components/BlockComments/BlockComments';
+import { getComments } from '@/actions/comment';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -68,9 +70,11 @@ async function countView(idNews: string): Promise<void> {
  */
 export default async function NewsPage({ params }: Props) {
   const session = await getServerSession(authOptions);
+
+  const idUserDB = session?.user.idDB;
   const newsOne = await getNewsOne({
     urlSlug: params.urlSlug,
-    idUserDB: session?.user.idDB,
+    idUserDB,
   });
 
   // если нет Новости (или возникла ошибка на сервере) показывается страница 404.
@@ -80,6 +84,11 @@ export default async function NewsPage({ params }: Props) {
 
   const idNews = String(newsOne._id);
   await countView(idNews);
+
+  const comments = await getComments({
+    document: { _id: newsOne._id, type: 'news' },
+    idUserDB,
+  });
 
   return (
     <div className={styles.wrapper}>
@@ -150,11 +159,24 @@ export default async function NewsPage({ params }: Props) {
               isLikedByUser={newsOne.isLikedByUser}
               idDocument={idNews}
               viewsCount={newsOne.viewsCount}
+              commentsCount={comments.length}
               target="news"
             />
           </div>
           <hr className={styles.line} />
           <BlockShare title={'Поделиться'} />
+          <hr className={styles.line} />
+
+          {/* Блок комментариев */}
+          <div className={styles.block__comments}>
+            <BlockComments
+              comments={comments}
+              authorId={newsOne.author.id}
+              userId={session?.user.id ? +session?.user.id : null}
+              document={{ _id: newsOne._id, type: 'news' }}
+              idUserDB={idUserDB}
+            />
+          </div>
         </Wrapper>
       </div>
       <aside className={styles.wrapper__aside}>

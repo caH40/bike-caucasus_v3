@@ -21,6 +21,7 @@ export type TNewsGetOneDto = {
   hashtags: string[];
   viewsCount: number; // Счетчик просмотров
   likesCount: number; // Счетчик лайков
+  commentsCount: number; // Счетчик комментариев.
   sharesCount: number; // Счетчик шеров
   createdAt: Date;
   updatedAt: Date;
@@ -41,6 +42,7 @@ export type TNewsBlockDto = Omit<TNewsBlockInfo, '_id'>;
 export type TNewsInteractiveDto = {
   viewsCount: number;
   likesCount: number;
+  commentsCount: number;
   isLikedByUser: boolean;
 };
 
@@ -88,8 +90,7 @@ export type TBlockTrailDto = Omit<TNewsBlockInfo, '_id'> & { _id: string };
 export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 'likedBy'> & {
   _id: string;
   blocks: TBlockTrailDto[];
-  // comments: string[];
-  // likedBy: string[];
+  commentsCount: number;
   isLikedByUser: boolean;
   author: TAuthor;
 };
@@ -105,4 +106,19 @@ export type TDtoCalendarEvents = {
   urlSlug: string;
   bikeType: string;
   author: string;
+};
+
+/**
+ * Dto Комментарий для новости, маршрута и т.д.
+ */
+export type TCommentDto = {
+  _id: string;
+  text: string; // Текст комментария.
+  author: TAuthor; // Данные об авторе комментария.
+  count: {
+    likes: number; // Общее количество лайков у комментария.
+  };
+  isLikedByUser: boolean; // Пользователь, просматривающий комментарий, ставил лайк данному комментарию?
+  createdAt: Date;
+  updatedAt: Date;
 };

@@ -15,6 +15,10 @@ import { Trail } from '@/services/Trail';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import styles from './TrailPage.module.css';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
+import BlockComments from '@/components/BlockComments/BlockComments';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getComments } from '@/actions/comment';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 
 const cx = cn.bind(styles);
@@ -31,6 +35,9 @@ type Props = {
 };
 
 export default async function TrailPage({ params }: Props) {
+  const session = await getServerSession(authOptions);
+  const idUserDB = session?.user.idDB;
+
   const trail = await getTrail(params.urlSlug);
 
   // если нет Маршрута (или возникла ошибка на сервере) показывается страница 404.
@@ -41,6 +48,11 @@ export default async function TrailPage({ params }: Props) {
   // Подсчет просмотров Маршрута.
   const trailService = new Trail();
   await trailService.countView(params.urlSlug);
+
+  const comments = await getComments({
+    document: { _id: trail._id, type: 'trail' },
+    idUserDB,
+  });
 
   return (
     <Wrapper
@@ -104,13 +116,24 @@ export default async function TrailPage({ params }: Props) {
             isLikedByUser={trail.isLikedByUser}
             viewsCount={trail.count.views}
             idDocument={trail._id}
+            commentsCount={comments.length}
             target="trail"
           />
         </div>
-
+        <hr className={styles.line} />
+        <BlockShare title={'Поделиться'} />
         <hr className={styles.line} />
 
-        <BlockShare title={'Поделиться'} />
+        {/* Блок комментариев */}
+        <div className={styles.block__comments}>
+          <BlockComments
+            comments={comments}
+            authorId={trail.author.id}
+            userId={session?.user.id ? +session?.user.id : null}
+            document={{ _id: trail._id, type: 'trail' }}
+            idUserDB={idUserDB}
+          />
+        </div>
       </div>
     </Wrapper>
   );

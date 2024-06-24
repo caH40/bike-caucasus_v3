@@ -13,6 +13,7 @@ import { ObjectId } from 'mongoose';
 export function dtoNewsGetOne(
   news: Omit<TNews, 'author'> & { author: TAuthor } & {
     isLikedByUser: boolean;
+    commentsCount: number;
   }
 ): TNewsGetOneDto {
   const blocksDto: TNewsBlockDto[] = news.blocks.map((block) => ({
@@ -35,6 +36,7 @@ export function dtoNewsGetOne(
     hashtags: news.hashtags,
     viewsCount: news.viewsCount,
     likesCount: news.likesCount,
+    commentsCount: news.commentsCount,
     sharesCount: news.sharesCount,
     createdAt: news.createdAt,
     updatedAt: news.updatedAt,
@@ -49,25 +51,27 @@ export function dtoNewsGetOne(
  */
 export function serviceGetInteractiveToDto(
   document: { viewsCount: number; likesCount: number; likedBy?: ObjectId[] },
-  isLikedByUser: boolean
+  isLikedByUser: boolean,
+  commentsCount: number
 ): TNewsInteractiveDto {
   return {
     likesCount: document.likesCount,
     viewsCount: document.viewsCount,
+    commentsCount,
     isLikedByUser,
   };
 }
 
-/**
- * ДТО возвращаемых данных сервиса "Получение интерактивных данных новости news.getInteractive()"
- */
-export function dtoNewsGetMany(
-  news: { viewsCount: number; likesCount: number },
-  isLikedByUser: boolean
-): TNewsInteractiveDto {
-  return {
-    likesCount: news.likesCount,
-    viewsCount: news.viewsCount,
-    isLikedByUser,
-  };
-}
+// /**
+//  * ДТО возвращаемых данных сервиса "Получение интерактивных данных новости news.getInteractive()"
+//  */
+// export function dtoNewsGetMany(
+//   news: { viewsCount: number; likesCount: number },
+//   isLikedByUser: boolean
+// ): TNewsInteractiveDto {
+//   return {
+//     likesCount: news.likesCount,
+//     viewsCount: news.viewsCount,
+//     isLikedByUser,
+//   };
+// }

@@ -63,16 +63,17 @@
   border: none;
   border-top: 1px solid var(--line);
   margin: 1rem auto;
-  min-width: 150px;
-  max-width: 300px;
+  width: 100%;
+  max-width: 360px;
 }
 .img__title {
   font-size: 0.8rem;
   font-weight: 400;
   color: var(--white-50);
 }
-/* .wrapper__aside {
-} */
+.block__comments {
+  margin-bottom: 1rem;
+}
 /* ====================================================================== */
 @media (max-width: 1400px) {
   .content {

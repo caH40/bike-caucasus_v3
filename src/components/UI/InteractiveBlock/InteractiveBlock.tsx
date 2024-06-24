@@ -22,7 +22,7 @@ import styles from './InteractiveBlock.module.css';
 export default function InteractiveBlock({
   likesCount,
   isLikedByUser,
-  messages,
+  commentsCount,
   idDocument,
   viewsCount,
   target,
@@ -32,6 +32,7 @@ export default function InteractiveBlock({
     likesCount,
     viewsCount,
     isLikedByUser,
+    commentsCount,
   });
 
   const [updateInter, setUpdateInter] = useState(false);
@@ -63,6 +64,7 @@ export default function InteractiveBlock({
           likesCount: res.data.likesCount,
           viewsCount: res.data.viewsCount,
           isLikedByUser: res.data.isLikedByUser,
+          commentsCount: res.data.commentsCount,
         });
         setUpdateInter(false);
       });
@@ -76,6 +78,7 @@ export default function InteractiveBlock({
           likesCount: res.data.likesCount,
           viewsCount: res.data.viewsCount,
           isLikedByUser: res.data.isLikedByUser,
+          commentsCount: res.data.commentsCount,
         });
         setUpdateInter(false);
       });
@@ -97,7 +100,9 @@ export default function InteractiveBlock({
       </div>
       <div className={styles.box__icon}>
         <IconChatBubble squareSize={20} />
-        {messages && <span className={styles.icon__label}>{messages}</span>}
+        {interData.commentsCount && (
+          <span className={styles.icon__label}>{interData.commentsCount}</span>
+        )}
       </div>
       <div className={styles.box__icon}>
         <IconEye squareSize={20} />

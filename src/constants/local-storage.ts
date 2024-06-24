@@ -24,3 +24,10 @@ export const lcSuffixTrailModeration = `${suffixSite}moderation_trail-`;
  * После суффикса следует название соответствующего поля вводя информации.
  */
 export const lcSuffixTrailsFilters = `${suffixSite}trails_filters-`;
+
+/**
+ * Суффикс для localStorage при создании комментария.
+ * После суффикса следует название страницы к которой создается комментарий.
+ * news, trail и т.д.__bc_comments-news
+ */
+export const lcSuffixComment = `${suffixSite}comment-`;

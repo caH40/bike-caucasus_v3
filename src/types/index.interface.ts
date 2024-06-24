@@ -356,7 +356,7 @@ export type ElevationData = {
  */
 export type InteractiveBlockProps = {
   likesCount?: number; // Количество лайков.
-  messages?: number; // Количество сообщений.
+  commentsCount?: number; // Количество комментариев.
   viewsCount?: number; // Количество просмотров.
   idDocument: string; // id новости или маршрута.
   isLikedByUser: boolean;

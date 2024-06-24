@@ -13,6 +13,9 @@ tasks.md
 /.next/
 /out/
 
+# test data
+/mock
+
 # production
 /build
 

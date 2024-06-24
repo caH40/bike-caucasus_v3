@@ -107,6 +107,7 @@ export type TNews = {
   likesCount: number; // Счетчик лайков
   sharesCount: number; // Счетчик шеров
   likedBy: ObjectId[]; // Массив идентификаторов пользователей, которые лайкнули
+  comments: mongoose.Types.ObjectId[]; // Массив комментариев.
   important: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -204,3 +205,23 @@ export type TTrail = {
  */
 export type TCalendarEventDocument = Document &
   Omit<TFormCalendar, 'date'> & { date: Date; author: ObjectId };
+
+/**
+ * Комментарий для новости, маршрута и т.д.
+ */
+export type TCommentDocument = Document & TComment;
+export type TComment = {
+  _id: mongoose.Types.ObjectId;
+  text: string;
+  author: mongoose.Types.ObjectId;
+  likedBy: mongoose.Types.ObjectId[];
+  document: {
+    _id: string;
+    type: string;
+  };
+  count: {
+    likes: number;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+};

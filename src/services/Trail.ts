@@ -16,6 +16,7 @@ import { ErrorCustom } from './Error';
 import { User } from '@/database/mongodb/Models/User';
 import mongoose, { ObjectId } from 'mongoose';
 import { serviceGetInteractiveToDto } from '@/dto/news';
+import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -48,6 +49,7 @@ export class Trail {
       const trailDB:
         | (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
             isLikedByUser: boolean;
+            commentsCount: number;
           })
         | null = await TrailModel.findOne({
         urlSlug,
@@ -74,6 +76,11 @@ export class Trail {
       if (idUserDB) {
         trailDB.isLikedByUser = trailDB.likedBy.some((like) => String(like) === idUserDB);
       }
+
+      const commentsDB = await CommentModel.find({
+        document: { _id: String(trailDB._id), type: 'trail' },
+      });
+      trailDB.commentsCount = commentsDB.length;
 
       // Возвращаем информацию о маршруте и успешный статус.
       return {
@@ -132,6 +139,7 @@ export class Trail {
       // Получаем информацию о маршруте из БД.
       const trailsDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
         isLikedByUser: boolean;
+        commentsCount: number;
       })[] = await TrailModel.find(query)
         .populate({
           path: 'author',
@@ -153,6 +161,13 @@ export class Trail {
           trail.isLikedByUser = trail.likedBy.some((like) => String(like) === idUserDB);
           trail.likedBy = [];
         });
+      }
+
+      for (const trail of trailsDB) {
+        const commentsDB = await CommentModel.find({
+          document: { _id: String(trail._id), type: 'trail' },
+        });
+        trail.commentsCount = commentsDB.length;
       }
 
       // Возвращаем информацию о маршруте и успешный статус.
@@ -340,10 +355,14 @@ export class Trail {
       // isLikedByUser поставил или нет пользователь лайк данной новости
       const isLikedByUser = trailDB.likedBy.some((like) => String(like) === idUserDB);
 
+      const commentsDB = await CommentModel.find({ document: { _id: idTrail, type: 'trail' } });
+      const commentsCount = commentsDB.length;
+
       return {
         data: serviceGetInteractiveToDto(
           { viewsCount: trailDB.count.views, likesCount: trailDB.count.likes },
-          isLikedByUser
+          isLikedByUser,
+          commentsCount
         ),
         ok: true,
         message: `Запрашиваемый маршрут с _id:${idTrail}`,

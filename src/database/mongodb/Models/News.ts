@@ -26,6 +26,7 @@ const NewsSchema = new Schema<TNews>(
     sharesCount: { type: Number, default: 0 }, // Счетчик шеров
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     important: { type: Boolean, default: false },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment', default: [] }],
   },
   { timestamps: true }
 );

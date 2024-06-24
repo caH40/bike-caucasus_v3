@@ -7,6 +7,7 @@ import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
 export function dtoTrail(
   trail: Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
     isLikedByUser: boolean;
+    commentsCount: number;
   }
 ): TTrailDto {
   const author = { ...trail.author, _id: String(trail.author._id) };
@@ -15,7 +16,7 @@ export function dtoTrail(
     ...trail,
     _id: String(trail._id),
     author,
-    // comments: trail.comments?.map((comment) => String(comment)) || [],
+    commentsCount: trail.commentsCount,
     // likedBy: trail.likedBy?.map((like) => String(like)) || [],
     isLikedByUser: trail.isLikedByUser,
     blocks: trail.blocks?.map((block) => ({ ...block, _id: String(block._id) })) || [],
@@ -24,11 +25,12 @@ export function dtoTrail(
 }
 
 /**
- * Дто для маршрута (trail) получаемого на клиенте.
+ * Дто для маршрутов (trails) получаемых на клиенте.
  */
 export function dtoTrails(
   trails: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
     isLikedByUser: boolean;
+    commentsCount: number;
   })[]
 ): TTrailDto[] {
   const dto: TTrailDto[] = trails.map((trail) => dtoTrail(trail));
