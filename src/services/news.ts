@@ -24,7 +24,7 @@ import { millisecondsIn3Days } from '@/constants/date';
 import { saveFile } from './save-file';
 import { ErrorCustom } from './Error';
 import { getCurrentDocsOnPage } from '@/libs/utils/pagination';
-import { Comment } from '@/database/mongodb/Models/Comment';
+import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -260,7 +260,7 @@ export class News {
         .lean();
 
       for (const newsOne of newsDB) {
-        const commentsDB = await Comment.find({
+        const commentsDB = await CommentModel.find({
           document: { _id: String(newsOne._id), type: 'news' },
         });
         newsOne.commentsCount = commentsDB.length;
@@ -349,7 +349,7 @@ export class News {
         newsDB.isLikedByUser = res ? true : false;
       }
 
-      const commentsDB = await Comment.find({
+      const commentsDB = await CommentModel.find({
         document: { _id: String(newsDB._id), type: 'news' },
       });
       newsDB.commentsCount = commentsDB.length;
@@ -403,7 +403,7 @@ export class News {
         isLikedByUser = res ? true : false;
       }
 
-      const commentsDB = await Comment.find({ document: { _id: idNews, type: 'news' } });
+      const commentsDB = await CommentModel.find({ document: { _id: idNews, type: 'news' } });
       const commentsCount = commentsDB.length;
 
       return {

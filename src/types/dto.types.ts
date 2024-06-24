@@ -90,8 +90,7 @@ export type TBlockTrailDto = Omit<TNewsBlockInfo, '_id'> & { _id: string };
 export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 'likedBy'> & {
   _id: string;
   blocks: TBlockTrailDto[];
-  // comments: string[];
-  // likedBy: string[];
+  commentsCount: number;
   isLikedByUser: boolean;
   author: TAuthor;
 };
