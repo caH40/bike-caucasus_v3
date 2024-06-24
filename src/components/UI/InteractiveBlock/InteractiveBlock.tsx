@@ -94,21 +94,17 @@ export default function InteractiveBlock({
           isActive={interData.isLikedByUser}
           colors={{ default: 'currentColor', active: '#fafafa80', hover: 'orange' }}
         />
-        {interData.likesCount && (
-          <span className={styles.icon__label}>{interData.likesCount}</span>
-        )}
+        <span className={styles.icon__label}>{interData.likesCount}</span>
       </div>
+
       <div className={styles.box__icon}>
         <IconChatBubble squareSize={20} />
-        {interData.commentsCount && (
-          <span className={styles.icon__label}>{interData.commentsCount}</span>
-        )}
+        <span className={styles.icon__label}>{interData.commentsCount}</span>
       </div>
+
       <div className={styles.box__icon}>
         <IconEye squareSize={20} />
-        {interData.viewsCount && (
-          <span className={styles.icon__label}>{interData.viewsCount}</span>
-        )}
+        <span className={styles.icon__label}>{interData.viewsCount}</span>
       </div>
     </div>
   );

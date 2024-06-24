@@ -125,6 +125,7 @@ export default function BlockComments({
                     </span>
                   </div>
 
+                  {/* Удаление/редактирование комментария */}
                   <div className={styles.control__mobile}>
                     {userId === comment.author.id && (
                       <button
