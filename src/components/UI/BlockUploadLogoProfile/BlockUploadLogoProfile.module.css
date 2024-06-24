@@ -2,11 +2,11 @@
   width: 100%;
   display: flex;
   gap: 40px;
+  align-items: flex-start;
 }
 .image__control {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 .img {
   border-radius: 0.5rem;

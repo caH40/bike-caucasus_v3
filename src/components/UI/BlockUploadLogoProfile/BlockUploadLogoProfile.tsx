@@ -2,12 +2,12 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction, useState, ChangeEvent } from 'react';
 import { toast } from 'sonner';
 
-import Checkbox from '../Checkbox/Checkbox';
+import CheckboxRounded from '../CheckboxRounded/CheckboxRounded';
 import InputFile from '../InputFile/InputFile';
-import type { TUserDto } from '@/types/dto.types';
-import styles from './BlockUploadLogoProfile.module.css';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import { blurBase64 } from '@/libs/image';
+import type { TUserDto } from '@/types/dto.types';
+import styles from './BlockUploadLogoProfile.module.css';
 
 /**
  * Компонент для загрузки логотипа профиля.
@@ -86,8 +86,8 @@ export default function BlockUploadLogoProfile({
       />
 
       <div className={styles.image__control}>
-        <Checkbox
-          value={imageFromProvider}
+        <CheckboxRounded
+          value={!imageFromProvider} // ! поставлен так как, true при загруженной картинке, а не из провайдера
           setValue={setImageFromProvider}
           label={'Загруженная картинка'}
           id="imageFromProvider"

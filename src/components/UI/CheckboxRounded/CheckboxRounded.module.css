@@ -1,0 +1,53 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 40px;
+}
+.checkbox {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  background: #fcfff4;
+  background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+  border-radius: 50%;
+  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.box {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  left: 4px;
+  top: 4px;
+  background: linear-gradient(to bottom, #222 0%, #45484d 100%);
+  border-radius: 50%;
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 1);
+}
+.box:after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: var(--btn-bg-hover); /* замените на ваш цвет */
+  background: linear-gradient(
+    to bottom,
+    var(--btn-bg) 0%,
+    var(--green-dark) 100%
+  ); /* замените на ваш цвет */
+  opacity: 0;
+  border-radius: 50%;
+  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.box:hover:after {
+  opacity: 0.3;
+}
+.input {
+  visibility: hidden;
+}
+.input:checked + .box:after {
+  opacity: 1;
+}

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import styles from './Checkbox.module.css';
+import styles from './CheckboxRounded.module.css';
 
 type Props = {
   label?: string;
@@ -9,14 +9,11 @@ type Props = {
 };
 
 /**
- * Чекбокс в виде переключателя
+ * Чекбокс в виде круглой кнопки.
  */
-export default function Checkbox({ label, value, setValue, id }: Props) {
+export default function CheckboxRounded({ label, value, setValue, id }: Props) {
   return (
     <div className={styles.wrapper}>
-      <label className={styles.label} htmlFor={id}>
-        {label}
-      </label>
       <div className={styles.checkbox} onClick={() => setValue((prev) => !prev)}>
         <input
           className={styles.input}
@@ -26,9 +23,12 @@ export default function Checkbox({ label, value, setValue, id }: Props) {
           name={id}
           id={id}
         />
-        <span className={styles.switch_left} />
-        <span className={styles.switch_right} />
+        <div className={styles.box} />
       </div>
+
+      <label className={styles.label} htmlFor={id}>
+        {label}
+      </label>
     </div>
   );
 }

@@ -19,7 +19,7 @@ import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import { useRouter } from 'next/navigation';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import Checkbox from '../../Checkbox/Checkbox';
+import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -212,10 +212,10 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
           validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
         />
 
-        <Checkbox
+        <CheckboxRounded
           value={important}
           setValue={setImportant}
-          label={`Важная новость - ${important ? 'вкл' : 'выкл'}:`}
+          label={'Важная новость'}
           id="important"
         />
 
