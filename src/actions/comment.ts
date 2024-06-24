@@ -6,9 +6,9 @@ import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { CommentService } from '@/services/Comment';
-import type { TCommentDto } from '@/types/dto.types';
 import { ResponseServer } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
+import type { TCommentDto } from '@/types/dto.types';
 
 export async function postComment(
   text: string,
@@ -76,6 +76,31 @@ export async function setLike(idDocument: string): Promise<ResponseServer<null>>
     const commentService = new CommentService();
 
     const res = await commentService.countLike({ idUserDB, idComment: idDocument });
+    return res;
+  } catch (error) {
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Удаление комментария.
+ * @param idDocument
+ * @returns
+ */
+export async function deleteComment(idComment: string): Promise<ResponseServer<null>> {
+  try {
+    const session = await getServerSession(authOptions);
+    const idUserDB = session?.user.idDB;
+
+    // Проверка авторизации пользователя.
+    if (!idUserDB) {
+      throw new Error('Необходима авторизация и наличие idUserDB!');
+    }
+
+    const commentService = new CommentService();
+
+    const res = await commentService.delete({ idUserDB, idComment });
+
     return res;
   } catch (error) {
     return handlerErrorDB(error);

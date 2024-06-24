@@ -3,7 +3,7 @@ import { handlerErrorDB } from './mongodb/error';
 import { ResponseServer } from '@/types/index.interface';
 import { TCommentDto } from '@/types/dto.types';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
-import { TAuthorFromUser, TCommentDocument } from '@/types/models.interface';
+import { TAuthorFromUser, TCommentDocument, TRoleModel } from '@/types/models.interface';
 import { dtoComment } from '@/dto/comment';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { User } from '@/database/mongodb/Models/User';
@@ -155,6 +155,72 @@ export class CommentService {
         data: null,
         ok: true,
         message: `Учет лайка от пользователя _id:${idUserDB}`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Удаление комментария.
+   * @param param0
+   * @returns
+   */
+  public async delete({
+    idUserDB,
+    idComment,
+  }: {
+    idUserDB: string;
+    idComment: string;
+  }): Promise<ResponseServer<any>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const userDB: { role: TRoleModel; id: number } | null = await User.findOne(
+        { _id: idUserDB },
+        { role: true, id: true, _id: false }
+      )
+        .populate('role')
+        .lean();
+
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с _id:${userDB}`);
+      }
+
+      // Проверка есть ли такой комментарий в БД.
+      const commentDBForDelete = await CommentModel.findOne({ _id: idComment });
+      if (!commentDBForDelete) {
+        throw new Error(`Комментарий с _id:${idComment} не найден в БД`);
+      }
+
+      let query = {} as { _id: string; author?: string };
+      // Модератор с правами на удаление комментария может удалить любой комментарий.
+      if (
+        userDB.role.permissions.some((permission) =>
+          ['delete.comment', 'all'].includes(permission)
+        )
+      ) {
+        query = { _id: idComment };
+      } else {
+        // Пользователь может удалить только свой комментарий.
+        query = { _id: idComment, author: idUserDB };
+      }
+      const commentDB = await CommentModel.findOneAndDelete(query);
+
+      // Если Пользователь не является автором комментария, или модератор-пользователь у которого нет
+      // прав на удаление комментариев, отсутствует permissions - delete.comment то проброс исключения!
+      if (!commentDB) {
+        throw new Error(
+          `У вас нет прав на удаление комментария с _id:${idComment}. Запрос от пользователя bcId:${userDB.id}`
+        );
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Комментарий удалён!`,
       };
     } catch (error) {
       this.errorLogger(error); // логирование

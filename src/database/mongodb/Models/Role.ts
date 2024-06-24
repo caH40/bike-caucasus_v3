@@ -9,7 +9,7 @@ const RoleSchema = new Schema<TRoleModel>(
   {
     name: { type: String, unique: true },
     description: String,
-    permissions: [String], // ['moderation.news', 'moderation.route']
+    permissions: [String], // ['moderation.news', 'moderation.route','delete.comment']
   },
   { timestamps: true }
 );
