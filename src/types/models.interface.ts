@@ -219,6 +219,9 @@ export type TComment = {
     _id: string;
     type: string;
   };
+  count: {
+    likes: number;
+  };
   createdAt: Date;
   updatedAt: Date;
 };

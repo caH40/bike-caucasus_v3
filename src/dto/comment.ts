@@ -12,9 +12,7 @@ export function dtoComment(
       _id: String(comment._id),
       text: comment.text,
       author,
-      count: {
-        likes: comment.likedBy.length,
-      },
+      count: comment.count,
       isLikedByUser: comment.isLikedByUser,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,

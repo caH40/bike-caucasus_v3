@@ -7,6 +7,7 @@ import { TAuthorFromUser, TCommentDocument } from '@/types/models.interface';
 import { dtoComment } from '@/dto/comment';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { User } from '@/database/mongodb/Models/User';
+import mongoose from 'mongoose';
 
 export class CommentService {
   private dbConnection: () => Promise<void>;
@@ -107,6 +108,56 @@ export class CommentService {
       };
     } catch (error) {
       this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Подсчет лайков комментария.
+   * @param param0
+   * @returns
+   */
+  public async countLike({
+    idUserDB,
+    idComment,
+  }: {
+    idUserDB: string;
+    idComment: string;
+  }): Promise<ResponseServer<any>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const userDB = await User.findOne({ _id: idUserDB });
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с _id:${userDB}`);
+      }
+
+      const commentDB: TCommentDocument | null = await CommentModel.findOne({ _id: idComment });
+      if (!commentDB) {
+        throw new Error(`Комментарий не найден с _id:${idComment}`);
+      }
+
+      const idUserDBObj = new mongoose.Types.ObjectId(idUserDB);
+
+      if (commentDB.likedBy.includes(idUserDBObj)) {
+        const userIndex = commentDB.likedBy.indexOf(idUserDBObj);
+        commentDB.likedBy.splice(userIndex, 1);
+        commentDB.count.likes = commentDB.likedBy.length;
+      } else {
+        commentDB.likedBy.push(idUserDBObj);
+        commentDB.count.likes = commentDB.likedBy.length;
+      }
+
+      await commentDB.save();
+
+      return {
+        data: null,
+        ok: true,
+        message: `Учет лайка от пользователя _id:${idUserDB}`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
       return this.handlerErrorDB(error);
     }
   }

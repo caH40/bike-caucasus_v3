@@ -11,6 +11,9 @@ const CommentSchema = new Schema<TCommentDocument>(
       _id: String, // _id документа к которому создан данный комментарий.
       type: String, // Тип Поста (документа, страницы): news, trail.
     },
+    count: {
+      likes: { type: Number, default: 0 }, // Счетчик лайков
+    },
   },
   { timestamps: true }
 );

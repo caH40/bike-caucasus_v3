@@ -9,7 +9,7 @@ import { getTimerLocal } from '@/libs/utils/date-local';
 import IconHandThumbUp from '../Icons/IconHandThumbUp';
 import IconDelete from '../Icons/IconDelete';
 import IconPen from '../Icons/IconPen';
-import { getComments, postComment } from '@/actions/comment';
+import { getComments, postComment, setLike } from '@/actions/comment';
 import { lcSuffixComment } from '@/constants/local-storage';
 import styles from './BlockComments.module.css';
 
@@ -38,7 +38,11 @@ export default function BlockComments({
   const [idForShowMenu, setIdForShowMenu] = useState<string | null>(null);
   const [trigger, setTrigger] = useState<boolean>(false);
 
-  const getLike = () => {};
+  // Установка/снятие лайка для комментария.
+  const getLike = async (commentId: string) => {
+    await setLike(commentId);
+    setTrigger(true);
+  };
 
   const handlerSubmit = async (text: string, setText: Dispatch<SetStateAction<string>>) => {
     // Удаление пробелов в начале и в конце текста.
@@ -113,7 +117,7 @@ export default function BlockComments({
                   {/* Иконка активная - лайк комментария */}
                   <div className={styles.box__icon}>
                     <IconHandThumbUp
-                      getClick={getLike}
+                      getClick={() => getLike(comment._id)}
                       squareSize={20}
                       isActive={comment.isLikedByUser}
                       colors={{ default: 'currentColor', active: '#fafafa80', hover: 'orange' }}
