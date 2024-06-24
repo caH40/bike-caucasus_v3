@@ -44,6 +44,7 @@ export default function NewsCard({ newsOne }: Props) {
             isLikedByUser={newsOne.isLikedByUser}
             idDocument={idNews}
             viewsCount={newsOne.viewsCount}
+            commentsCount={newsOne.commentsCount}
             target="news"
           />
         </div>

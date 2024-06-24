@@ -3,6 +3,7 @@
   grid-template-columns: 1fr 160px;
   gap: 1rem;
   align-items: start;
+  margin-top: 1rem;
 }
 .textarea {
   font-family: inherit;

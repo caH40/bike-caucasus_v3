@@ -159,6 +159,7 @@ export default async function NewsPage({ params }: Props) {
               isLikedByUser={newsOne.isLikedByUser}
               idDocument={idNews}
               viewsCount={newsOne.viewsCount}
+              commentsCount={comments.length}
               target="news"
             />
           </div>

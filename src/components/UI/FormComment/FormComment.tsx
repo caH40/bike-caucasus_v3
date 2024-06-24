@@ -40,8 +40,14 @@ export default function FormComment({ handlerSubmit, type }: Props) {
         value={text}
         className={styles.textarea}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handlerSubmit(text, setText);
+          }
+        }}
       ></TextareaAutosize>
-      <Button name="Отправить" theme="green" disabled={text.length === 0} />
+      <Button name="Отправить" theme="green" disabled={text.trim().length === 0} />
     </form>
   );
 }

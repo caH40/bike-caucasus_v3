@@ -24,6 +24,7 @@ import { millisecondsIn3Days } from '@/constants/date';
 import { saveFile } from './save-file';
 import { ErrorCustom } from './Error';
 import { getCurrentDocsOnPage } from '@/libs/utils/pagination';
+import { Comment } from '@/database/mongodb/Models/Comment';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -242,6 +243,7 @@ export class News {
 
       const newsDB: (Omit<TNews, 'author'> & { author: TAuthor } & {
         isLikedByUser: boolean;
+        commentsCount: number;
       })[] = await NewsModel.find(query)
         .sort({ createdAt: -1 })
         .populate({
@@ -256,6 +258,13 @@ export class News {
           ],
         })
         .lean();
+
+      for (const newsOne of newsDB) {
+        const commentsDB = await Comment.find({
+          document: { _id: String(newsOne._id), type: 'news' },
+        });
+        newsOne.commentsCount = commentsDB.length;
+      }
 
       const { currentDocs, currentPage, quantityPages } = getCurrentDocsOnPage(
         newsDB,
@@ -305,7 +314,10 @@ export class News {
       this.dbConnection();
 
       const newsDB:
-        | (Omit<TNews, 'author'> & { author: TAuthor } & { isLikedByUser: boolean })
+        | (Omit<TNews, 'author'> & { author: TAuthor } & {
+            isLikedByUser: boolean;
+            commentsCount: number;
+          })
         | null = await NewsModel.findOne({ urlSlug })
         .populate({
           path: 'author',
@@ -336,6 +348,11 @@ export class News {
 
         newsDB.isLikedByUser = res ? true : false;
       }
+
+      const commentsDB = await Comment.find({
+        document: { _id: String(newsDB._id), type: 'news' },
+      });
+      newsDB.commentsCount = commentsDB.length;
 
       return {
         data: dtoNewsGetOne(newsDB),
@@ -386,8 +403,11 @@ export class News {
         isLikedByUser = res ? true : false;
       }
 
+      const commentsDB = await Comment.find({ document: { _id: idNews, type: 'news' } });
+      const commentsCount = commentsDB.length;
+
       return {
-        data: serviceGetInteractiveToDto(newsDB, isLikedByUser),
+        data: serviceGetInteractiveToDto(newsDB, isLikedByUser, commentsCount),
         ok: true,
         message: `Запрашиваемая новости с адресом  ${idNews}`,
       };

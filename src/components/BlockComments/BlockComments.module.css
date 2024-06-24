@@ -1,13 +1,10 @@
-.wrapper__comments {
-  margin-bottom: 1rem;
-}
 .wrapper__comment {
   position: relative;
   display: grid;
   grid-template-columns: 45px 1fr;
   font-size: 0.9rem;
   letter-spacing: 0.09rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   cursor: pointer;
 }
 .author {

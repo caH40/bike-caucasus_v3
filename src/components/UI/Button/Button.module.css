@@ -20,18 +20,26 @@
 
 .btn:disabled {
   background-color: var(--loading);
+  cursor: not-allowed;
+  transition: none; /* отключить переходы для отключенной кнопки */
+}
+.btn:disabled:hover,
+.btn:disabled:active {
+  background-color: var(--loading);
+  transition: none; /* отключить переходы для состояния hover и active для отключенной кнопки */
 }
 .btn:focus {
   outline: 3px solid var(--btn-focus);
 }
-.btn:hover {
+.btn:hover:not(:disabled) {
   background-color: var(--link-auth-color-hover);
-  transition: all 0.3s;
+  transition: all 0.3s; /* переход для кнопки при hover, если она не отключена */
 }
-.btn:active {
+
+.btn:active:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s;
+  transition: all 0.3s; /* переход для кнопки при active, если она не отключена */
 }
 .img {
   display: block;

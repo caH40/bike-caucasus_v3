@@ -21,6 +21,7 @@ export type TNewsGetOneDto = {
   hashtags: string[];
   viewsCount: number; // Счетчик просмотров
   likesCount: number; // Счетчик лайков
+  commentsCount: number; // Счетчик комментариев.
   sharesCount: number; // Счетчик шеров
   createdAt: Date;
   updatedAt: Date;
@@ -41,6 +42,7 @@ export type TNewsBlockDto = Omit<TNewsBlockInfo, '_id'>;
 export type TNewsInteractiveDto = {
   viewsCount: number;
   likesCount: number;
+  commentsCount: number;
   isLikedByUser: boolean;
 };
 

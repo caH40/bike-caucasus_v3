@@ -41,6 +41,13 @@ export default function BlockComments({
   const getLike = () => {};
 
   const handlerSubmit = async (text: string, setText: Dispatch<SetStateAction<string>>) => {
+    // Удаление пробелов в начале и в конце текста.
+    const trimmedText = text.trim();
+    // Если комментарий пустой, то не отправлять на сервер.
+    if (trimmedText.length === 0) {
+      return;
+    }
+
     const res = await postComment(text, document);
     // При удачном сохранении нового комментария обновляются все комментарии
     if (res.isSaved) {
@@ -121,17 +128,22 @@ export default function BlockComments({
             </div>
           ))
           .slice(0, showAllComments ? undefined : 4)}
-        {showAllComments ? (
-          <button onClick={() => setShowAllComments(false)} className={styles.btn}>
-            Скрыть часть комментариев
-          </button>
-        ) : (
-          <button onClick={() => setShowAllComments(true)} className={styles.btn}>
-            Показать все комментарии
-          </button>
-        )}
+
+        {/* Отображать часть комментариев или все */}
+        {!!commentsCurrent?.length &&
+          commentsCurrent.length > 4 &&
+          (showAllComments ? (
+            <button onClick={() => setShowAllComments(false)} className={styles.btn}>
+              Скрыть часть комментариев
+            </button>
+          ) : (
+            <button onClick={() => setShowAllComments(true)} className={styles.btn}>
+              Показать все комментарии
+            </button>
+          ))}
       </section>
-      <FormComment handlerSubmit={handlerSubmit} type={document.type} />
+
+      {idUserDB && <FormComment handlerSubmit={handlerSubmit} type={document.type} />}
     </div>
   );
 }
