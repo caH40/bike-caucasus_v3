@@ -3,16 +3,16 @@
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { getTimerLocal } from '@/libs/utils/date-local';
-import { deleteComment, saveComment, setLike } from '@/actions/comment';
-import { lcSuffixComment } from '@/constants/local-storage';
 import FormComment from '../UI/FormComment/FormComment';
 import Avatar from '../Avatar/Avatar';
 import IconHandThumbUp from '../Icons/IconHandThumbUp';
 import useHasAccess from '@/hooks/useHasAccess';
+import { getTimerLocal } from '@/libs/utils/date-local';
+import { deleteComment, saveComment, setLike } from '@/actions/comment';
+import { lcSuffixComment } from '@/constants/local-storage';
+import { useGetComments } from '@/hooks/useGetComments';
 import type { TCommentDto } from '@/types/dto.types';
 import styles from './BlockComments.module.css';
-import { useGetComments } from '@/hooks/useGetComments';
 
 type Props = {
   comments: TCommentDto[];
@@ -43,8 +43,10 @@ export default function BlockComments({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Может ли пользователь удалять любые комментарии.
   const hasPermissionForDelete = useHasAccess('delete.comment');
-
+  // Получение актуальных комментариев.
   const { commentsCurrent, setTrigger } = useGetComments({ comments, document, idUserDB });
+  // сокращенное количество показываемых комментариев
+  const reducedNumberOfComments = 4;
 
   // Установка/снятие лайка для комментария.
   const likeComment = async (commentId: string) => {
@@ -56,6 +58,7 @@ export default function BlockComments({
     }
   };
 
+  // Обработчик сохранения нового или отредактированного комментария в БД.
   const handlerSubmit = async () => {
     // Удаление пробелов в начале и в конце текста.
     const trimmedText = text.trim();
@@ -189,7 +192,7 @@ export default function BlockComments({
               </div>
             </div>
           ))
-          .slice(0, showAllComments ? undefined : 4)}
+          .slice(0, showAllComments ? undefined : reducedNumberOfComments)}
 
         {/* Отображать часть комментариев или все */}
         {!!commentsCurrent?.length &&
