@@ -355,7 +355,7 @@ export class Trail {
       // isLikedByUser поставил или нет пользователь лайк данной новости
       const isLikedByUser = trailDB.likedBy.some((like) => String(like) === idUserDB);
 
-      const commentsDB = await CommentModel.find({ document: { _id: trailDB, type: 'trail' } });
+      const commentsDB = await CommentModel.find({ document: { _id: idTrail, type: 'trail' } });
       const commentsCount = commentsDB.length;
 
       return {
