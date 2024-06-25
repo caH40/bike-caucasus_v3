@@ -3,8 +3,8 @@ import { revalidatePath } from 'next/cache';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { News } from '@/services/news';
-import Wrapper from '@/components/Wrapper/Wrapper';
 import FormNews from '@/components/UI/Forms/FormNews/FormNews';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -42,8 +42,9 @@ export default async function NewsCreatePage() {
   };
 
   return (
-    <Wrapper title={'Создание новости'}>
+    <>
+      <TitleAndLine title={'Создание новости'} hSize={1} />
       <FormNews fetchNewsCreated={fetchNewsCreated} />
-    </Wrapper>
+    </>
   );
 }

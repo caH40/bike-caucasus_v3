@@ -4,18 +4,33 @@
   align-items: flex-start;
   gap: 1rem;
 }
+.wrapper__block {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  width: 100%;
+  background-color: var(--white-12);
+  padding: 1rem 1.4rem 1.4rem 1.4rem;
+  border-radius: 1rem;
+  word-break: break-word;
+}
 .box__button {
-  margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: flex-end;
 }
 .separators {
-  gap: 2rem;
+  gap: 1.5rem;
 }
 .block__info {
   width: 100%;
 }
 .full__width {
   width: 100%;
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .wrapper__block {
+    padding: 1rem 0.5rem 1.4rem;
+  }
 }

@@ -4,11 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import FormTrail from '@/components/UI/Forms/FromTrail/FormTrail';
-import Wrapper from '@/components/Wrapper/Wrapper';
 import { parseError } from '@/errors/parse';
 import { ResponseServer } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { Trail } from '@/services/Trail';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -52,8 +52,9 @@ async function fetchTrailCreated(formData: FormData): Promise<ResponseServer<nul
 
 export default function TrailsCreatePage() {
   return (
-    <Wrapper title="Создание нового маршрута">
+    <>
+      <TitleAndLine title="Создание нового маршрута" hSize={1} />
       <FormTrail fetchTrailCreated={fetchTrailCreated} />
-    </Wrapper>
+    </>
   );
 }

@@ -4,9 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getNewsOne } from '@/app/news/[urlSlug]/page';
 import FormNews from '@/components/UI/Forms/FormNews/FormNews';
-import Wrapper from '@/components/Wrapper/Wrapper';
 import { News } from '@/services/news';
 import { TNewsGetOneDto } from '@/types/dto.types';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -54,12 +54,13 @@ export default async function NewsEditCurrentPage({ params }: Props) {
   };
 
   return (
-    <Wrapper title="Редактирование новости">
+    <>
+      <TitleAndLine title="Редактирование новости" hSize={1} />
       {news ? (
         <FormNews fetchNewsEdited={fetchNewsEdited} newsForEdit={news} />
       ) : (
         <span>Не получены данные Новости для редактирования</span>
       )}
-    </Wrapper>
+    </>
   );
 }

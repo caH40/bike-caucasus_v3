@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FormEvent, Fragment, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
@@ -19,14 +19,13 @@ import BlockNewsTextAdd from '../../BlockTextNewsAdd/BlockNewsTextAdd';
 import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxSelectSimple from '../../BoxSelect/BoxSelectSimple';
-import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
-import type { TTrailDto } from '@/types/dto.types';
-import styles from '../Form.module.css';
 import { formateAndStripContent } from './utils';
 import { serializationTrailCreate } from '@/libs/utils/serialization/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
-import LineSeparator from '@/components/LineSeparator/LineSeparator';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
+import type { TTrailDto } from '@/types/dto.types';
+import styles from '../Form.module.css';
 
 type Props = {
   fetchTrailCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -237,207 +236,205 @@ export default function FormTrail({
     <>
       <TitleAndLine title={'Форма ввода данных'} hSize={2} />
 
-      <form onSubmit={onSubmit} className={cn(styles.form)}>
-        {/* Блок ввода Названия */}
-        <BoxInputSimple
-          id="title"
-          name="title"
-          value={title}
-          handlerInput={setTitle}
-          type={'text'}
-          label="Название:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          showValidationText={true}
-          validationText={title.length > 2 && title.length < 30 ? '' : 'от 3 до 30 символов!'}
-        />
+      <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
+        <div className={styles.wrapper__block}>
+          {/* Блок ввода Названия */}
+          <BoxInputSimple
+            id="title"
+            name="title"
+            value={title}
+            handlerInput={setTitle}
+            type={'text'}
+            label="Название:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={title.length > 2 && title.length < 30 ? '' : 'от 3 до 30 символов!'}
+          />
 
-        {/* Блок ввода Региона */}
-        <BoxSelectSimple
-          state={region}
-          setState={setRegion}
-          name="state"
-          options={regionsOptions}
-          label="Регион:*"
-          loading={isLoading}
-          validationText={region ? '' : 'нет данных'}
-        />
+          {/* Блок ввода Региона */}
+          <BoxSelectSimple
+            state={region}
+            setState={setRegion}
+            name="state"
+            options={regionsOptions}
+            label="Регион:*"
+            loading={isLoading}
+            validationText={region ? '' : 'нет данных'}
+          />
 
-        {/* Блок ввода Типа велосипеда */}
-        <BoxSelectSimple
-          state={bikeType}
-          setState={setBikeType}
-          name="state"
-          options={bikeTypesOptions}
-          label="Тип велосипеда:*"
-          loading={isLoading}
-          validationText={bikeType ? '' : 'нет данных'}
-        />
+          {/* Блок ввода Типа велосипеда */}
+          <BoxSelectSimple
+            state={bikeType}
+            setState={setBikeType}
+            name="state"
+            options={bikeTypesOptions}
+            label="Тип велосипеда:*"
+            loading={isLoading}
+            validationText={bikeType ? '' : 'нет данных'}
+          />
 
-        {/* Блок ввода Сложности */}
-        <BoxSelectSimple
-          state={difficultyLevel}
-          setState={setDifficultyLevel}
-          name="difficultyLevel"
-          options={difficultyLevelOptions}
-          label="Сложность:*"
-          loading={isLoading}
-          validationText={difficultyLevel ? '' : 'нет данных'}
-        />
+          {/* Блок ввода Сложности */}
+          <BoxSelectSimple
+            state={difficultyLevel}
+            setState={setDifficultyLevel}
+            name="difficultyLevel"
+            options={difficultyLevelOptions}
+            label="Сложность:*"
+            loading={isLoading}
+            validationText={difficultyLevel ? '' : 'нет данных'}
+          />
 
-        {/* Блок ввода Места старта */}
-        <BoxInputSimple
-          id="startLocation"
-          name="startLocation"
-          value={startLocation}
-          handlerInput={setStartLocation}
-          type={'text'}
-          label="Место старта:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          showValidationText={true}
-          validationText={
-            startLocation.length > 2 && startLocation.length < 20 ? '' : 'от 3 до 20 символов!'
-          }
-        />
-
-        {/* Блок ввода Места разворота */}
-        <BoxInputSimple
-          id="turnLocation"
-          name="turnLocation"
-          value={turnLocation}
-          handlerInput={setTurnLocation}
-          type={'text'}
-          label="Место разворота:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          showValidationText={true}
-          validationText={''}
-        />
-
-        {/* Блок ввода Места финиша */}
-        <BoxInputSimple
-          id="finishLocation"
-          name="finishLocation"
-          value={finishLocation}
-          handlerInput={setFinishLocation}
-          type={'text'}
-          label="Место финиша:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          showValidationText={true}
-          validationText={
-            finishLocation.length > 2 && finishLocation.length < 20
-              ? ''
-              : 'от 3 до 20 символов!'
-          }
-        />
-
-        {/* Блок ввода общей дистанции в километрах */}
-        <BoxInputSimple
-          id="distance"
-          name="distance"
-          value={distance}
-          handlerInput={setDistance}
-          type={'number'}
-          label="Общая дистанция в километрах:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={distance > 5 ? '' : 'ошибка!'}
-        />
-
-        {/* Блок ввода общего набора в метрах */}
-        <BoxInputSimple
-          id="ascent"
-          name="ascent"
-          value={ascent}
-          handlerInput={setAscent}
-          type={'number'}
-          label="Общий набор в метрах:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={ascent > 0 ? '' : 'ошибка!'}
-        />
-
-        {/* Ссылка на маршрут в Garmin Connect */}
-        <BoxInputSimple
-          id="garminConnect"
-          name="garminConnect"
-          value={garminConnect}
-          handlerInput={setGarminConnect}
-          type={'text'}
-          label="Ссылка на маршрут в Garmin Connect:"
-          loading={isLoading}
-          autoComplete={'off'}
-          showValidationText={true}
-          validationText={
-            garminConnect
-              ? garminConnect.startsWith('https://connect.garmin.com/')
+          {/* Блок ввода Места старта */}
+          <BoxInputSimple
+            id="startLocation"
+            name="startLocation"
+            value={startLocation}
+            handlerInput={setStartLocation}
+            type={'text'}
+            label="Место старта:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={
+              startLocation.length > 2 && startLocation.length < 20
                 ? ''
-                : 'начало с https://connect.garmin.com/'
-              : ''
-          } // Необязательный, но если есть, то должен начинаться с https://connect.garmin.com/
-        />
+                : 'от 3 до 20 символов!'
+            }
+          />
 
-        {/* Ссылка на маршрут в komoot */}
-        <BoxInputSimple
-          id="komoot"
-          name="komoot"
-          value={komoot}
-          handlerInput={setKomoot}
-          type={'text'}
-          label="Ссылка на маршрут в Komoot:"
-          loading={isLoading}
-          autoComplete={'off'}
-          showValidationText={true}
-          validationText={
-            komoot
-              ? komoot.startsWith('https://www.komoot.com/')
+          {/* Блок ввода Места разворота */}
+          <BoxInputSimple
+            id="turnLocation"
+            name="turnLocation"
+            value={turnLocation}
+            handlerInput={setTurnLocation}
+            type={'text'}
+            label="Место разворота:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={''}
+          />
+
+          {/* Блок ввода Места финиша */}
+          <BoxInputSimple
+            id="finishLocation"
+            name="finishLocation"
+            value={finishLocation}
+            handlerInput={setFinishLocation}
+            type={'text'}
+            label="Место финиша:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={
+              finishLocation.length > 2 && finishLocation.length < 20
                 ? ''
-                : 'начало с https://www.komoot.com/'
-              : ''
-          } // Необязательный, но если есть, то должен начинаться с https://www.komoot.com
-        />
+                : 'от 3 до 20 символов!'
+            }
+          />
 
-        <LineSeparator theme="orange" />
+          {/* Блок ввода общей дистанции в километрах */}
+          <BoxInputSimple
+            id="distance"
+            name="distance"
+            value={distance}
+            handlerInput={setDistance}
+            type={'number'}
+            label="Общая дистанция в километрах:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            validationText={distance > 5 ? '' : 'ошибка!'}
+          />
 
-        {/* Блок загрузки Главного изображения (обложки) */}
-        <BlockUploadImage
-          title={'Главное изображение (обложка):*'}
-          poster={poster}
-          setPoster={setPoster}
-          resetData={resetData}
-          posterUrl={posterUrl}
-          setPosterUrl={setPosterUrl}
-        />
+          {/* Блок ввода общего набора в метрах */}
+          <BoxInputSimple
+            id="ascent"
+            name="ascent"
+            value={ascent}
+            handlerInput={setAscent}
+            type={'number'}
+            label="Общий набор в метрах:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            validationText={ascent > 0 ? '' : 'ошибка!'}
+          />
 
-        <LineSeparator theme="orange" />
+          {/* Ссылка на маршрут в Garmin Connect */}
+          <BoxInputSimple
+            id="garminConnect"
+            name="garminConnect"
+            value={garminConnect}
+            handlerInput={setGarminConnect}
+            type={'text'}
+            label="Ссылка на маршрут в Garmin Connect:"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={
+              garminConnect
+                ? garminConnect.startsWith('https://connect.garmin.com/')
+                  ? ''
+                  : 'начало с https://connect.garmin.com/'
+                : ''
+            } // Необязательный, но если есть, то должен начинаться с https://connect.garmin.com/
+          />
 
-        {/* Блок добавления Хэштэгов */}
-        <BoxInputSimple
-          id="hashtag"
-          name="hashtag"
-          value={hashtags}
-          handlerInput={setHashtags}
-          type={'text'}
-          label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
-        />
-        <LineSeparator theme="orange" />
+          {/* Ссылка на маршрут в komoot */}
+          <BoxInputSimple
+            id="komoot"
+            name="komoot"
+            value={komoot}
+            handlerInput={setKomoot}
+            type={'text'}
+            label="Ссылка на маршрут в Komoot:"
+            loading={isLoading}
+            autoComplete={'off'}
+            showValidationText={true}
+            validationText={
+              komoot
+                ? komoot.startsWith('https://www.komoot.com/')
+                  ? ''
+                  : 'начало с https://www.komoot.com/'
+                : ''
+            } // Необязательный, но если есть, то должен начинаться с https://www.komoot.com
+          />
 
-        {/* Блок загрузки Трэка маршрута в формате GPX */}
-        <BlockUploadTrack
-          title={'Загрузка трэка в формате GPX:*'}
-          setTrack={setTrack}
-          resetData={resetData}
-        />
-        <LineSeparator theme="orange" />
+          {/* Блок добавления Хэштэгов */}
+          <BoxInputSimple
+            id="hashtag"
+            name="hashtag"
+            value={hashtags}
+            handlerInput={setHashtags}
+            type={'text'}
+            label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
+            loading={isLoading}
+            autoComplete={'off'}
+            validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
+          />
+
+          {/* Блок загрузки Трэка маршрута в формате GPX */}
+          <BlockUploadTrack
+            title={'Загрузка трэка в формате GPX:*'}
+            setTrack={setTrack}
+            resetData={resetData}
+          />
+
+          {/* Блок загрузки Главного изображения (обложки) */}
+          <BlockUploadImage
+            title={'Главное изображение (обложка):*'}
+            poster={poster}
+            setPoster={setPoster}
+            resetData={resetData}
+            posterUrl={posterUrl}
+            setPosterUrl={setPosterUrl}
+          />
+        </div>
 
         {/* Блок добавления текста и изображения Маршрута */}
         {blocks.map((block) => (
-          <Fragment key={block.position}>
+          <div className={styles.wrapper__block} key={block.position}>
             <div className={styles.block__info}>
               <BlockNewsTextAdd
                 block={block}
@@ -446,8 +443,7 @@ export default function FormTrail({
                 isLoading={isLoading}
               />
             </div>
-            <LineSeparator theme="orange" />
-          </Fragment>
+          </div>
         ))}
 
         <div className={styles.box__button}>

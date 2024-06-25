@@ -155,69 +155,71 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
     <>
       <TitleAndLine title={'Форма ввода данных'} hSize={2} />
       <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
-        <BoxInputSimple
-          id="title"
-          name="title"
-          value={title}
-          handlerInput={setTitle}
-          type={'text'}
-          label="Заголовок:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={title.length > 10 ? '' : 'пустое!'} // необходима проверка?
-        />
-        <BoxTextareaSimple
-          id="subTitle"
-          name="subTitle"
-          value={subTitle}
-          handlerInput={setSubTitle}
-          type={'text'}
-          label="Краткое содержание:*"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={subTitle.length > 20 ? '' : 'пустое!'} // необходима проверка?
-        />
+        <div className={styles.wrapper__block}>
+          <BoxInputSimple
+            id="title"
+            name="title"
+            value={title}
+            handlerInput={setTitle}
+            type={'text'}
+            label="Заголовок:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            validationText={title.length > 10 ? '' : 'пустое!'} // необходима проверка?
+          />
+          <BoxTextareaSimple
+            id="subTitle"
+            name="subTitle"
+            value={subTitle}
+            handlerInput={setSubTitle}
+            type={'text'}
+            label="Краткое содержание:*"
+            loading={isLoading}
+            autoComplete={'off'}
+            validationText={subTitle.length > 20 ? '' : 'пустое!'} // необходима проверка?
+          />
 
-        {/* Блок загрузки Титульного изображения */}
-        <BlockUploadImage
-          title={'Титульное изображение:*'}
-          poster={poster}
-          setPoster={setPoster}
-          resetData={resetData}
-          posterUrl={posterUrl}
-          setPosterUrl={setPosterUrl}
-        />
+          {/* Блок загрузки Титульного изображения */}
+          <BlockUploadImage
+            title={'Титульное изображение:*'}
+            poster={poster}
+            setPoster={setPoster}
+            resetData={resetData}
+            posterUrl={posterUrl}
+            setPosterUrl={setPosterUrl}
+          />
+
+          <BoxInputSimple
+            id="hashtag"
+            name="hashtag"
+            value={hashtags}
+            handlerInput={setHashtags}
+            type={'text'}
+            label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
+            loading={isLoading}
+            autoComplete={'off'}
+            validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
+          />
+
+          <CheckboxRounded
+            value={important}
+            setValue={setImportant}
+            label={'Важная новость'}
+            id="important"
+          />
+        </div>
 
         {/* Блок добавления текста и изображения новости */}
         {blocks.map((block) => (
-          <Fragment key={block.position}>
+          <div className={styles.wrapper__block} key={block.position}>
             <BlockNewsTextAdd
               block={block}
               blocks={blocks}
               setBlocks={setBlocks}
               isLoading={isLoading}
             />
-          </Fragment>
+          </div>
         ))}
-
-        <BoxInputSimple
-          id="hashtag"
-          name="hashtag"
-          value={hashtags}
-          handlerInput={setHashtags}
-          type={'text'}
-          label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
-          loading={isLoading}
-          autoComplete={'off'}
-          validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
-        />
-
-        <CheckboxRounded
-          value={important}
-          setValue={setImportant}
-          label={'Важная новость'}
-          id="important"
-        />
 
         <div className={styles.box__button}>
           <Button name="Опубликовать" theme="green" loading={isLoading} />

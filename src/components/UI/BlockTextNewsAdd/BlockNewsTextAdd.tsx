@@ -251,18 +251,6 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
           />
         </div>
 
-        {/* Заголовок текстового блока */}
-        <BoxInputSimple
-          id={`block-${block.title}`}
-          name={`block-${block.title}`}
-          value={block.title}
-          handlerInput={handlerInputTitle}
-          type={'text'}
-          label="Заголовок:"
-          loading={isLoading}
-          autoComplete={'off'}
-        />
-
         {/* Блок отображения изображения и ввода описания к нему */}
         {block.image && (
           <>
@@ -292,6 +280,18 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
             />
           </>
         )}
+
+        {/* Заголовок текстового блока */}
+        <BoxInputSimple
+          id={`block-${block.title}`}
+          name={`block-${block.title}`}
+          value={block.title}
+          handlerInput={handlerInputTitle}
+          type={'text'}
+          label="Заголовок:"
+          loading={isLoading}
+          autoComplete={'off'}
+        />
 
         {/* Ссылка на видео в Youtube */}
         <BoxInputSimple
