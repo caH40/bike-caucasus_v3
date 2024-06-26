@@ -9,14 +9,21 @@ import { deserializeTrailCreate } from '@/libs/utils/deserialization/trail';
 import { saveFile } from './save-file';
 import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
-import type { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
-import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
+import type {
+  ResponseServer,
+  TCloudConnect,
+  TSaveFile,
+  TTrailCreateFromClient,
+} from '@/types/index.interface';
+import type { TAuthorFromUser, TRoleModel, TTrailDocument } from '@/types/models.interface';
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
 import { ErrorCustom } from './Error';
 import { User } from '@/database/mongodb/Models/User';
 import mongoose, { ObjectId } from 'mongoose';
 import { serviceGetInteractiveToDto } from '@/dto/news';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
+// import { millisecondsIn3Days } from '@/constants/date';
+import { Cloud } from './cloud';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -24,10 +31,12 @@ import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 export class Trail {
   private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
+  private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   constructor() {
     this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
+    this.handlerErrorDB = handlerErrorDB;
     this.saveFile = saveFile;
   }
 
@@ -91,7 +100,72 @@ export class Trail {
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
       this.errorLogger(error);
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Удаление Маршрута.
+   * @param urlSlug - Последняя часть url страницы с маршрутом
+   */
+  public async delete({
+    urlSlug,
+    idUserDB,
+  }: {
+    urlSlug: string;
+    idUserDB: string | undefined;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const userDB: { role: TRoleModel; id: number } | null = await User.findOne(
+        { _id: idUserDB },
+        { role: true, id: true, _id: false }
+      )
+        .populate('role')
+        .lean();
+
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с _id:${userDB}`);
+      }
+
+      // Проверка есть ли такой Маршрут в БД.
+      const trailDBForDelete: TTrailDocument | null = await TrailModel.findOne({ urlSlug });
+      if (!trailDBForDelete) {
+        throw new Error(`Маршрут с urlSlug:${urlSlug} не найден в БД`);
+      }
+
+      let query = {} as { urlSlug: string; 'author._id'?: string };
+      // Модератор с правами на удаление маршрута может удалить любой маршрут.
+      if (
+        userDB.role.permissions.some((permission) =>
+          ['moderation.trail.delete', 'all'].includes(permission)
+        )
+      ) {
+        query = { urlSlug };
+      } else {
+        // Пользователь может удалить только свой маршрут.
+        query = { urlSlug, 'author._id': idUserDB };
+      }
+      const commentDB = await TrailModel.findOneAndDelete(query);
+
+      // Если Пользователь не является автором маршрута, или модератор-пользователь у которого нет
+      // прав на удаление маршрутов, отсутствует permissions - moderation.trail.delete то проброс исключения!
+      if (!commentDB) {
+        throw new Error(
+          `У вас нет прав на удаление маршрута с urlSlug:${urlSlug}. Запрос от пользователя bcId:${userDB.id}`
+        );
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Маршрут удалён!`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -179,7 +253,7 @@ export class Trail {
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
       this.errorLogger(error);
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -318,7 +392,7 @@ export class Trail {
       };
     } catch (error) {
       this.errorLogger(error); // логирование
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -369,7 +443,132 @@ export class Trail {
       };
     } catch (error) {
       this.errorLogger(error); // логирование
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Сервис получения данных для интерактивного блока маршрута idTrail.
+   */
+  public async put(
+    formData: FormData,
+    { cloudName, bucketName, domainCloudName }: TCloudConnect
+  ): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      // Десериализация данных, полученных с клиента.
+      const trail = deserializeTrailCreate(formData);
+
+      const trailDB: { createdAt: Date } | null = await TrailModel.findOne(
+        { urlSlug: trail.urlSlug },
+        { createdAt: true, _id: false }
+      ).lean();
+
+      if (!trailDB) {
+        throw new Error(`Не найден Маршрут с urlSlug:${trail.urlSlug} для редактирования!`);
+      }
+
+      // Запрет на удаление Маршрута, если с даты создания прошло более millisecondsIn3Days
+      // if (Date.now() - new Date(trailDB?.createdAt).getTime() > millisecondsIn3Days) {
+      //   throw new Error(
+      //     'Нельзя редактировать Маршрут, который был создан больше 3 дней назад!'
+      //   );
+      // }
+
+      const suffixTrack = 'trail_track_gpx-';
+      // Сохранение файла трэка.
+      let trackGPX = '';
+      // Если существует track, значит он изменялся в процессе редактирования.
+      if (trail.track) {
+        trackGPX = await this.saveFile({
+          file: trail.track as File,
+          type: 'GPX',
+          suffix: suffixTrack,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+      }
+
+      const suffixForSave = 'news_image_title-';
+      // Обновление изображения для Постера новости, если оно загружено.
+      let poster = '';
+      if (trail.poster) {
+        poster = await this.saveFile({
+          file: trail.poster as File,
+          type: 'image',
+          suffix: suffixForSave,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+      }
+
+      // Инстанс сервиса работы с Облаком
+      const cloudService = new Cloud(cloudName);
+
+      // Удаление старого файла постера, если он был обновлён.
+      const suffix = `https://${bucketName}.${domainCloudName}/`;
+      if (trail.poster && trail.posterOldUrl) {
+        await cloudService.deleteFile(bucketName, trail.posterOldUrl.replace(suffix, ''));
+      }
+
+      // Сохранение изображений из текстовых блоков.
+      let index = -1;
+      for (const block of trail.blocks) {
+        index++;
+        // Если нет файла image и imageDeleted:false, то присваиваем старый url этого изображения.
+        if (!block.imageFile && !block.imageDeleted) {
+          trail.blocks[index].image = block.imageOldUrl;
+          continue;
+        }
+
+        // Если нет файла image и imageDeleted:true, то удаляем старое изображение из Облака.
+        if (!block.image && block.imageDeleted && block.imageOldUrl) {
+          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+          continue;
+        }
+
+        const urlSaved = await this.saveFile({
+          file: block.imageFile!, // !!!! попробовать разобраться!
+          type: 'image',
+          suffix: suffixForSave,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+
+        // Удаление старого файла изображения блока, если оно было обновлён.
+        if (block.imageOldUrl) {
+          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+        }
+
+        trail.blocks[index].image = urlSaved;
+      }
+
+      // Замена строки на массив хэштегов.
+      const hashtags = getHashtags(trail.hashtags);
+
+      const updateData: Omit<TTrailCreateFromClient, 'hashtags' | 'poster'> & {
+        poster: File | null | string;
+        hashtags: string[];
+      } = { ...trail, hashtags };
+      if (poster) {
+        updateData.poster = poster;
+      }
+      if (trackGPX) {
+        updateData.trackGPX = trackGPX;
+      }
+
+      // slug не обновляется, остается старый для исключения проблем с индексацией.
+      await TrailModel.findOneAndUpdate({ urlSlug: trail.urlSlug }, updateData);
+
+      return { data: null, ok: true, message: 'Данные маршрута обновлены!' };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return this.handlerErrorDB(error);
     }
   }
 }

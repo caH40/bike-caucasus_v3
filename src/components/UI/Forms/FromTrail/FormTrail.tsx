@@ -33,6 +33,12 @@ type Props = {
   trailForEdit?: TTrailDto & { posterOldUrl?: string | null };
 };
 
+// const initialValue = (
+//   trail: (TTrailDto & { posterOldUrl?: string | null }) | undefined,
+//   property: string,
+//   alternative: null | ''
+// ) => (trail ? trail[property] : alternative);
+
 /**
  * Форма создания и редактирования Маршрута (trail)
  * Разделение описания маршрута на блоки осуществляется для добавления картинки,
@@ -45,18 +51,31 @@ export default function FormTrail({
   fetchTrailEdited,
   trailForEdit,
 }: Props) {
-  const [title, setTitle] = useState<string>('');
-  const [region, setRegion] = useState<string>('');
-  const [difficultyLevel, setDifficultyLevel] = useState<string>('');
-  const [startLocation, setStartLocation] = useState<string>('');
-  const [turnLocation, setTurnLocation] = useState<string>('');
-  const [finishLocation, setFinishLocation] = useState<string>('');
-  const [distance, setDistance] = useState<number>(0);
-  const [ascent, setAscent] = useState<number>(0);
-  const [garminConnect, setGarminConnect] = useState<string>('');
-  const [komoot, setKomoot] = useState<string>('');
-  const [hashtags, setHashtags] = useState<string>('');
-  const [bikeType, setBikeType] = useState<string>('');
+  const [title, setTitle] = useState<string>(trailForEdit ? trailForEdit.title : '');
+  const [region, setRegion] = useState<string>(trailForEdit ? trailForEdit.region : '');
+  const [difficultyLevel, setDifficultyLevel] = useState<string>(
+    trailForEdit ? trailForEdit.difficultyLevel : ''
+  );
+  const [startLocation, setStartLocation] = useState<string>(
+    trailForEdit ? trailForEdit.startLocation : ''
+  );
+  const [turnLocation, setTurnLocation] = useState<string>(
+    trailForEdit?.turnLocation ? trailForEdit.turnLocation : ''
+  );
+  const [finishLocation, setFinishLocation] = useState<string>(
+    trailForEdit ? trailForEdit.finishLocation : ''
+  );
+  const [distance, setDistance] = useState<number>(trailForEdit ? trailForEdit.distance : 0);
+  const [ascent, setAscent] = useState<number>(trailForEdit ? trailForEdit.ascent : 0);
+  const [garminConnect, setGarminConnect] = useState<string>(
+    trailForEdit?.garminConnect ? trailForEdit.garminConnect : ''
+  );
+  const [komoot, setKomoot] = useState<string>(trailForEdit?.komoot ? trailForEdit.komoot : '');
+  const [hashtags, setHashtags] = useState<string>(
+    trailForEdit?.hashtags ? trailForEdit.hashtags.join(' ') : ''
+  );
+  const [bikeType, setBikeType] = useState<string>(trailForEdit ? trailForEdit.bikeType : '');
+
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );
@@ -65,7 +84,9 @@ export default function FormTrail({
   // Постер Маршрута в формате File.
   const [poster, setPoster] = useState<File | null>(null);
   // Постер Маршрута существует при редактировании, url на изображение.
-  const [posterUrl, setPosterUrl] = useState<string | null>(null);
+  const [posterUrl, setPosterUrl] = useState<string | null>(
+    trailForEdit ? trailForEdit.poster : null
+  );
   // Триггер очистки форм и Локального хранилища.
   const [resetData, setResetData] = useState<boolean>(false);
 
@@ -135,7 +156,7 @@ export default function FormTrail({
       !(title.length > 2 && title.length < 30) ||
       !(hashtags.length >= 3) ||
       !region ||
-      !track ||
+      !(!!trailForEdit ? true : track) || // Если редактирование, но игнорирование проверки track.
       !difficultyLevel ||
       !bikeType ||
       !(startLocation.length > 2 && startLocation.length < 20) ||
@@ -187,8 +208,9 @@ export default function FormTrail({
       track,
       bikeType,
       poster,
-      // urlSlug
-      // posterOldUrl,
+      isEditing: !!trailForEdit,
+      urlSlug: trailForEdit?.urlSlug,
+      posterOldUrl: trailForEdit?.posterOldUrl,
     });
 
     const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
@@ -419,6 +441,7 @@ export default function FormTrail({
             title={'Загрузка трэка в формате GPX:*'}
             setTrack={setTrack}
             resetData={resetData}
+            isEditing={!!trailForEdit}
           />
 
           {/* Блок загрузки Главного изображения (обложки) */}

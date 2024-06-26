@@ -63,7 +63,7 @@ export const buttonsMenuModerationTrailsPage: TMenuOnPage[] = [
   },
   {
     id: 2,
-    name: 'Список новостей',
+    name: 'Список маршрутов',
     classes: [],
     href: '/moderation/trails/list',
     permission: 'moderation.trails.list',

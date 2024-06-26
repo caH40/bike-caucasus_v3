@@ -10,11 +10,19 @@ type Props = {
   }[];
 };
 
+/**
+ * Интерактивный блок для модерации в таблицах модерации.
+ */
 export default function BlockInteractive({ icons }: Props) {
   return (
     <div className={styles.wrapper}>
       {icons.map((icon) => (
-        <icon.icon getClick={icon.getClick} key={icon.id} squareSize={20} />
+        <icon.icon
+          getClick={icon.getClick}
+          key={icon.id}
+          squareSize={20}
+          colors={{ hover: '#ec9c07' }}
+        />
       ))}
     </div>
   );

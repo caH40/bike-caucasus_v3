@@ -28,6 +28,13 @@
   text-align: left;
   padding: 1rem;
 }
+.tdWithImg {
+  padding: 0.5rem 1rem;
+}
+.img {
+  display: flex;
+  border-radius: 0.5rem;
+}
 .tr {
   background-color: #ffffff30;
 }

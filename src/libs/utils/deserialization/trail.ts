@@ -4,7 +4,7 @@ import { TTrailCreateFromClient } from '@/types/index.interface';
  *
  */
 export function deserializeTrailCreate(formData: FormData) {
-  const trail = {} as TTrailCreateFromClient & { [key: string]: any };
+  const trail = {} as TTrailCreateFromClient & { isEditing: boolean } & { [key: string]: any };
 
   for (const [name, value] of formData.entries()) {
     // Разбиваем имя на ключи с использованием регулярки /[\[\]]/ и фильтруем пустые строки.
@@ -23,6 +23,8 @@ export function deserializeTrailCreate(formData: FormData) {
               return +value;
             // Если ключ imageDeleted то возвращается булево значение.
             case 'imageDeleted':
+              return value === 'true' ? true : false;
+            case 'isEditing':
               return value === 'true' ? true : false;
             default:
               return value;

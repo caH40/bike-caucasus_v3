@@ -22,8 +22,10 @@ export function serializationTrailCreate({
   urlSlug,
   posterOldUrl,
   track,
+  isEditing,
 }: TTrailCreateFromClient): FormData {
   const formData = new FormData();
+  formData.set('isEditing', `${!!isEditing}`);
   formData.set('title', title);
   formData.set('region', region);
   formData.set('difficultyLevel', difficultyLevel);
@@ -41,12 +43,13 @@ export function serializationTrailCreate({
   if (poster) {
     formData.set('poster', poster);
   }
-  if (posterOldUrl) {
+  if (isEditing && posterOldUrl) {
     formData.set('posterOldUrl', posterOldUrl);
   }
   if (urlSlug) {
     formData.set('urlSlug', urlSlug);
   }
+
   if (track) {
     formData.set('track', track);
   }
