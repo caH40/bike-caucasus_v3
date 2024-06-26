@@ -33,12 +33,6 @@ type Props = {
   trailForEdit?: TTrailDto & { posterOldUrl?: string | null };
 };
 
-// const initialValue = (
-//   trail: (TTrailDto & { posterOldUrl?: string | null }) | undefined,
-//   property: string,
-//   alternative: null | ''
-// ) => (trail ? trail[property] : alternative);
-
 /**
  * Форма создания и редактирования Маршрута (trail)
  * Разделение описания маршрута на блоки осуществляется для добавления картинки,

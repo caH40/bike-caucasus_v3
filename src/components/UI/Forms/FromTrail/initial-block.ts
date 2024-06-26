@@ -20,8 +20,8 @@ export function getInitialBlocks(
       imageOldUrl: block.image,
       imageTitle: content.stripAllHtmlTags(block.imageTitle || ''),
       position: block.position,
-      title: block.title,
-      video: block.video,
+      title: block.title || '',
+      video: block.video || '',
     };
     return editedBlock;
   });
