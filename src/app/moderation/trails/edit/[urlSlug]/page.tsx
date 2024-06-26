@@ -59,7 +59,7 @@ export default async function TrailEditCurrentPage({ params }: Props) {
 
   return (
     <>
-      <TitleAndLine title="Редактирование Маршрута" hSize={1} />
+      <TitleAndLine title={`Редактирование маршрута "${trail?.title}"`} hSize={1} />
       {trail ? (
         <FormTrail fetchTrailEdited={fetchTrailEdited} trailForEdit={trail} />
       ) : (

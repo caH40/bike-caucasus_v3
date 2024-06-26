@@ -9,7 +9,12 @@ import { deserializeTrailCreate } from '@/libs/utils/deserialization/trail';
 import { saveFile } from './save-file';
 import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
-import type { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
+import type {
+  ResponseServer,
+  TCloudConnect,
+  TSaveFile,
+  TTrailCreateFromClient,
+} from '@/types/index.interface';
 import type { TAuthorFromUser, TRoleModel, TTrailDocument } from '@/types/models.interface';
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
 import { ErrorCustom } from './Error';
@@ -17,6 +22,8 @@ import { User } from '@/database/mongodb/Models/User';
 import mongoose, { ObjectId } from 'mongoose';
 import { serviceGetInteractiveToDto } from '@/dto/news';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
+// import { millisecondsIn3Days } from '@/constants/date';
+import { Cloud } from './cloud';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -439,6 +446,7 @@ export class Trail {
       return this.handlerErrorDB(error);
     }
   }
+
   /**
    * Сервис получения данных для интерактивного блока маршрута idTrail.
    */
@@ -450,11 +458,114 @@ export class Trail {
       // Подключение к БД.
       this.dbConnection();
 
-      return {
-        data: null,
-        ok: true,
-        message: ``,
-      };
+      // Десериализация данных, полученных с клиента.
+      const trail = deserializeTrailCreate(formData);
+
+      const trailDB: { createdAt: Date } | null = await TrailModel.findOne(
+        { urlSlug: trail.urlSlug },
+        { createdAt: true, _id: false }
+      ).lean();
+
+      if (!trailDB) {
+        throw new Error(`Не найден Маршрут с urlSlug:${trail.urlSlug} для редактирования!`);
+      }
+
+      // Запрет на удаление Маршрута, если с даты создания прошло более millisecondsIn3Days
+      // if (Date.now() - new Date(trailDB?.createdAt).getTime() > millisecondsIn3Days) {
+      //   throw new Error(
+      //     'Нельзя редактировать Маршрут, который был создан больше 3 дней назад!'
+      //   );
+      // }
+
+      const suffixTrack = 'trail_track_gpx-';
+      // Сохранение файла трэка.
+      let trackGPX = '';
+      // Если существует track, значит он изменялся в процессе редактирования.
+      if (trail.track) {
+        trackGPX = await this.saveFile({
+          file: trail.track as File,
+          type: 'GPX',
+          suffix: suffixTrack,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+      }
+
+      const suffixForSave = 'news_image_title-';
+      // Обновление изображения для Постера новости, если оно загружено.
+      let poster = '';
+      if (trail.poster) {
+        poster = await this.saveFile({
+          file: trail.poster as File,
+          type: 'image',
+          suffix: suffixForSave,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+      }
+
+      // Инстанс сервиса работы с Облаком
+      const cloudService = new Cloud(cloudName);
+
+      // Удаление старого файла постера, если он был обновлён.
+      const suffix = `https://${bucketName}.${domainCloudName}/`;
+      if (trail.poster && trail.posterOldUrl) {
+        await cloudService.deleteFile(bucketName, trail.posterOldUrl.replace(suffix, ''));
+      }
+
+      // Сохранение изображений из текстовых блоков.
+      let index = -1;
+      for (const block of trail.blocks) {
+        index++;
+        // Если нет файла image и imageDeleted:false, то присваиваем старый url этого изображения.
+        if (!block.imageFile && !block.imageDeleted) {
+          trail.blocks[index].image = block.imageOldUrl;
+          continue;
+        }
+
+        // Если нет файла image и imageDeleted:true, то удаляем старое изображение из Облака.
+        if (!block.image && block.imageDeleted && block.imageOldUrl) {
+          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+          continue;
+        }
+
+        const urlSaved = await this.saveFile({
+          file: block.imageFile!, // !!!! попробовать разобраться!
+          type: 'image',
+          suffix: suffixForSave,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+
+        // Удаление старого файла изображения блока, если оно было обновлён.
+        if (block.imageOldUrl) {
+          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+        }
+
+        trail.blocks[index].image = urlSaved;
+      }
+
+      // Замена строки на массив хэштегов.
+      const hashtags = getHashtags(trail.hashtags);
+
+      const updateData: Omit<TTrailCreateFromClient, 'hashtags' | 'poster'> & {
+        poster: File | null | string;
+        hashtags: string[];
+      } = { ...trail, hashtags };
+      if (poster) {
+        updateData.poster = poster;
+      }
+      if (trackGPX) {
+        updateData.trackGPX = trackGPX;
+      }
+
+      // slug не обновляется, остается старый для исключения проблем с индексацией.
+      await TrailModel.findOneAndUpdate({ urlSlug: trail.urlSlug }, updateData);
+
+      return { data: null, ok: true, message: 'Данные маршрута обновлены!' };
     } catch (error) {
       this.errorLogger(error); // логирование
       return this.handlerErrorDB(error);

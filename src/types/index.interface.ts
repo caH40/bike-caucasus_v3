@@ -278,6 +278,8 @@ export type TTrailCreateFromClient = {
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
   blocks: TBlockInputInfo[]; // Блоки, содержащие текст и изображения.
   track: File | null; // Трэк маршрута в GPX.
+  trackGPX?: string | undefined;
+  isEditing: boolean;
 };
 
 /**

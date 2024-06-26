@@ -11,14 +11,22 @@ type Props = {
   isLoading?: boolean;
   setTrack: Dispatch<SetStateAction<File | null>>;
   resetData: boolean; // Триггер сброса изображения.
+  isEditing: boolean; // Режим редактирования Маршрута?
 };
 
 /**
  * Блок для загрузки Титульного изображения для новости
  * Устанавливает в setPoster данные типа File, показывает загруженное изображения для контроля
+ * isEditing === true устанавливается информирование, что GPX изначально загружен.
  */
-export default function BlockUploadTrack({ title, setTrack, isLoading, resetData }: Props) {
-  const [trackName, setTrackName] = useState<string>('');
+export default function BlockUploadTrack({
+  title,
+  setTrack,
+  isLoading,
+  resetData,
+  isEditing,
+}: Props) {
+  const [trackName, setTrackName] = useState<string>(isEditing ? 'Трэк не заменялся!' : '');
   // Сброс отображаемого изображения после отправки формы.
   useEffect(() => {
     setTrack(null);
