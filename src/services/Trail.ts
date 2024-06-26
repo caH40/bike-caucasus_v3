@@ -439,4 +439,25 @@ export class Trail {
       return this.handlerErrorDB(error);
     }
   }
+  /**
+   * Сервис получения данных для интерактивного блока маршрута idTrail.
+   */
+  public async put(
+    formData: FormData,
+    { cloudName, bucketName, domainCloudName }: TCloudConnect
+  ): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      return {
+        data: null,
+        ok: true,
+        message: ``,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return this.handlerErrorDB(error);
+    }
+  }
 }

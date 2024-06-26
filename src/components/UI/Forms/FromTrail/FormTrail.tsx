@@ -57,6 +57,7 @@ export default function FormTrail({
   const [komoot, setKomoot] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [bikeType, setBikeType] = useState<string>('');
+
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(trailForEdit?.blocks)
   );

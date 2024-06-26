@@ -23,6 +23,8 @@ import styles from '../TableCommon.module.css';
 import useHasAccess from '@/hooks/useHasAccess';
 import { bikeTypes } from '@/constants/trail';
 import { deleteTrail } from '@/actions/trail';
+import Image from 'next/image';
+import { blurBase64 } from '@/libs/image';
 
 const cx = cn.bind(styles);
 
@@ -37,16 +39,24 @@ const columns: ColumnDef<TTrailDto & { index: number }>[] = [
     accessorKey: 'index',
   },
   {
-    header: 'Автор',
-    accessorFn: (row) =>
-      `id:${row.author.id}, ${row.author.person.lastName}  ${row.author.person.firstName}`,
+    header: 'Постер',
+    accessorKey: 'poster',
+    cell: (props: any) => (
+      <Image
+        width={64}
+        height={40}
+        src={props.getValue()}
+        alt={'Постер для маршрута'}
+        placeholder="blur"
+        blurDataURL={blurBase64}
+        className={styles.img}
+      />
+    ),
   },
   {
-    header: 'Дата создания',
-    accessorKey: 'createdAt',
-    cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
+    header: 'Название',
+    accessorKey: 'title',
   },
-
   {
     header: 'Тип велосипеда',
     accessorKey: 'bikeType',
@@ -57,8 +67,14 @@ const columns: ColumnDef<TTrailDto & { index: number }>[] = [
     ),
   },
   {
-    header: 'Название',
-    accessorKey: 'title',
+    header: 'Автор',
+    accessorFn: (row) =>
+      `id:${row.author.id}, ${row.author.person.lastName}  ${row.author.person.firstName}`,
+  },
+  {
+    header: 'Дата создания',
+    accessorKey: 'createdAt',
+    cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
   },
   {
     header: 'Модерация маршрута',
@@ -119,7 +135,7 @@ export default function TableTrailList({ trails, idUserDB }: Props) {
                 // onClick={() => getLink(String(row.original.urlSlug))}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td className={styles.td} key={cell.id}>
+                  <td className={cx('td', 'tdWithImg')} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -156,7 +172,7 @@ function InteractiveBlock({
       return toast.error('Не получен urlSlug новости!');
     }
 
-    router.push(`/moderation/trail/edit/${id}`);
+    router.push(`/moderation/trails/edit/${id}`);
   };
 
   /**
