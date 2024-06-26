@@ -218,9 +218,9 @@ export class CommentService {
     idUserDB,
     idComment,
   }: {
-    idUserDB: string;
+    idUserDB: string | undefined;
     idComment: string;
-  }): Promise<ResponseServer<any>> {
+  }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       this.dbConnection();

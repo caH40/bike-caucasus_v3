@@ -10,7 +10,7 @@ import { saveFile } from './save-file';
 import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
 import type { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
-import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
+import type { TAuthorFromUser, TRoleModel, TTrailDocument } from '@/types/models.interface';
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
 import { ErrorCustom } from './Error';
 import { User } from '@/database/mongodb/Models/User';
@@ -24,10 +24,12 @@ import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 export class Trail {
   private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
+  private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   constructor() {
     this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
+    this.handlerErrorDB = handlerErrorDB;
     this.saveFile = saveFile;
   }
 
@@ -91,7 +93,72 @@ export class Trail {
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
       this.errorLogger(error);
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Удаление Маршрута.
+   * @param urlSlug - Последняя часть url страницы с маршрутом
+   */
+  public async delete({
+    urlSlug,
+    idUserDB,
+  }: {
+    urlSlug: string;
+    idUserDB: string | undefined;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      const userDB: { role: TRoleModel; id: number } | null = await User.findOne(
+        { _id: idUserDB },
+        { role: true, id: true, _id: false }
+      )
+        .populate('role')
+        .lean();
+
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с _id:${userDB}`);
+      }
+
+      // Проверка есть ли такой Маршрут в БД.
+      const trailDBForDelete: TTrailDocument | null = await TrailModel.findOne({ urlSlug });
+      if (!trailDBForDelete) {
+        throw new Error(`Маршрут с urlSlug:${urlSlug} не найден в БД`);
+      }
+
+      let query = {} as { urlSlug: string; 'author._id'?: string };
+      // Модератор с правами на удаление маршрута может удалить любой маршрут.
+      if (
+        userDB.role.permissions.some((permission) =>
+          ['moderation.trail.delete', 'all'].includes(permission)
+        )
+      ) {
+        query = { urlSlug };
+      } else {
+        // Пользователь может удалить только свой маршрут.
+        query = { urlSlug, 'author._id': idUserDB };
+      }
+      const commentDB = await TrailModel.findOneAndDelete(query);
+
+      // Если Пользователь не является автором маршрута, или модератор-пользователь у которого нет
+      // прав на удаление маршрутов, отсутствует permissions - moderation.trail.delete то проброс исключения!
+      if (!commentDB) {
+        throw new Error(
+          `У вас нет прав на удаление маршрута с urlSlug:${urlSlug}. Запрос от пользователя bcId:${userDB.id}`
+        );
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Маршрут удалён!`,
+      };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -179,7 +246,7 @@ export class Trail {
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
       this.errorLogger(error);
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -318,7 +385,7 @@ export class Trail {
       };
     } catch (error) {
       this.errorLogger(error); // логирование
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -369,7 +436,7 @@ export class Trail {
       };
     } catch (error) {
       this.errorLogger(error); // логирование
-      return handlerErrorDB(error);
+      return this.handlerErrorDB(error);
     }
   }
 }

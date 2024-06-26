@@ -1,11 +1,37 @@
 'use server';
 
+import { getServerSession } from 'next-auth';
+
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Trail } from '@/services/Trail';
 import { handlerErrorDB } from '@/services/mongodb/error';
-import { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
-import { ResponseServer } from '@/types/index.interface';
-import { getServerSession } from 'next-auth';
+import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
+import type { ResponseServer } from '@/types/index.interface';
+import { errorLogger } from '@/errors/error';
+import { revalidatePath } from 'next/cache';
+
+type TGetTrails = {
+  bikeType: string | null;
+  region: string | null;
+  difficultyLevel: string | null;
+};
+
+export async function getTrails({ bikeType, region, difficultyLevel }: TGetTrails) {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+    const trailService = new Trail();
+    const trails = await trailService.getMany({
+      bikeType,
+      region,
+      difficultyLevel,
+      idUserDB: session?.user.idDB,
+    });
+    return trails;
+  } catch (error) {
+    return handlerErrorDB(error);
+  }
+}
 
 /**
  * Получение данных маршрута с БД.
@@ -26,6 +52,29 @@ export async function getTrail(urlSlug: string): Promise<TTrailDto | null | unde
   return response.data;
 }
 
+/**
+ * Получение данных маршрута с БД.
+ */
+export async function deleteTrail(urlSlug: string): Promise<ResponseServer<null>> {
+  try {
+    const session = await getServerSession(authOptions);
+
+    const idUserDB = session?.user.idDB;
+
+    const trailsService = new Trail();
+    const response = await trailsService.delete({ urlSlug, idUserDB });
+
+    revalidatePath('moderation/trails');
+    return response;
+  } catch (error) {
+    errorLogger(error);
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Установка/снятие лайка для маршрута.
+ */
 export async function setLike(idDocument: string): Promise<ResponseServer<null>> {
   try {
     const session = await getServerSession(authOptions);
