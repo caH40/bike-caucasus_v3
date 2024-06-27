@@ -19,7 +19,13 @@ export default async function ModerationCalendarLayout({
     <div className={styles.wrapper}>
       {/* левая боковая панель */}
       <aside className={styles.wrapper__aside}>
-        <MenuOnPage buttons={buttonsMenuModerationCalendarPage} />
+        <MenuOnPage
+          buttons={buttonsMenuModerationCalendarPage}
+          buttonAdditional={{
+            name: 'Главное меню',
+            path: '/moderation',
+          }}
+        />
       </aside>
 
       {/* основное тело страницы */}

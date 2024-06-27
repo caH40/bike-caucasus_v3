@@ -10,7 +10,7 @@ export default function ModerationPage({}: Props) {
     <div className={styles.wrapper}>
       {/* левая боковая панель */}
       <aside className={styles.aside__left}>
-        <MenuOnPage buttons={buttonsMenuModerationPage} needBack={true} />
+        <MenuOnPage buttons={buttonsMenuModerationPage} />
       </aside>
 
       {/* основное тело страницы */}

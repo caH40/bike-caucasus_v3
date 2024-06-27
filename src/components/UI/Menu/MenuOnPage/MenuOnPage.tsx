@@ -15,28 +15,32 @@ const cx = cn.bind(styles);
 
 type Props = {
   buttons: TMenuOnPage[];
-  needBack?: boolean;
+  buttonAdditional?: {
+    name: string; // Название кнопки.
+    path: string; // Путь адреса навигации.
+  };
 };
 
 /**
  * Меню которое располагается на страницах с кнопками и линками.
  */
-export default function MenuOnPage({ buttons, needBack }: Props) {
+export default function MenuOnPage({ buttons, buttonAdditional }: Props) {
   const router = useRouter();
   const path = usePathname();
 
+  // Дополнительная кнопка в меню, обычно возврат на определенный адрес (path)
   const buttonBack: TMenuOnPage = {
     id: 100,
-    name: 'Вернуться',
+    name: buttonAdditional?.name || 'Вернуться',
     classes: [],
-    onClick: () => router.back(),
+    onClick: () => router.push(buttonAdditional?.path || '/'),
     permission: null,
     icon: IconBack,
   };
 
   // Меню с добавлением кнопки Вернуться назад.
   const buttonList = [...buttons, buttonBack]
-    .filter((button) => button.id !== 100 || (button.id === 100 && needBack))
+    .filter((button) => button.id !== 100 || (button.id === 100 && buttonAdditional))
     .map((button) => {
       if (button.href && path.includes(button.href) && !button.classes.includes('active')) {
         // Выделение кнопки активной страницы.

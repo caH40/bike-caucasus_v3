@@ -14,7 +14,13 @@ export default function ModerationNewsLayout({
     <div className={styles.wrapper}>
       {/* левая боковая панель */}
       <aside className={styles.wrapper__aside}>
-        <MenuOnPage buttons={buttonsMenuModerationTrailsPage} />
+        <MenuOnPage
+          buttons={buttonsMenuModerationTrailsPage}
+          buttonAdditional={{
+            name: 'Главное меню',
+            path: '/moderation',
+          }}
+        />
       </aside>
 
       {/* основное тело страницы */}

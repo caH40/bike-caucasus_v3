@@ -10,7 +10,7 @@ export default function AccountLayout({
   return (
     <div className={styles.wrapper}>
       <aside className={styles.aside__left}>
-        <MenuOnPage needBack={true} buttons={buttonsMenuAccountPage} />
+        <MenuOnPage buttons={buttonsMenuAccountPage} />
       </aside>
       <div className={styles.main}>{children}</div>
     </div>

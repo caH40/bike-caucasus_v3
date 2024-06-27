@@ -13,7 +13,7 @@ export default function layout({
   return (
     <div className={styles.wrapper}>
       <aside className={styles.aside__left}>
-        <MenuOnPage needBack={true} buttons={buttonsMenuAdminPage} />
+        <MenuOnPage buttons={buttonsMenuAdminPage} />
       </aside>
       <div className={styles.main}>{children}</div>
     </div>
