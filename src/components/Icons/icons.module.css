@@ -21,6 +21,11 @@
   transition: all 0.3s;
   color: var(--color-icon-active);
 }
+.box .tooltip {
+  background-color: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  font-family: inherit;
+}
 /* ====================================================================== */
 .icon__custom {
   width: 100%;

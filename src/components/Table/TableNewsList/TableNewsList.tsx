@@ -1,27 +1,20 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-  CellContext,
 } from '@tanstack/react-table';
 import { useMemo } from 'react';
-import { toast } from 'sonner';
 import cn from 'classnames/bind';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { TNewsGetOneDto } from '@/types/dto.types';
+import BlockModeration from '@/components/UI/BlockModeration/BlockModeration';
 import Pagination from '@/components/UI/Pagination/Pagination';
-import IconDelete from '@/components/Icons/IconDelete';
-import IconEditOld from '@/components/Icons/IconEditOld';
-import BlockInteractive from '@/components/BlockInteractive/BlockInteractive';
-
+import { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
-import { deleteNews } from '@/actions/news';
 
 const cx = cn.bind(styles);
 
@@ -32,9 +25,12 @@ type Props = {
 
 const columns: ColumnDef<TNewsGetOneDto>[] = [
   {
-    header: 'Автор',
-    accessorFn: (row) =>
-      `id:${row.author.id}, ${row.author.person.lastName}  ${row.author.person.firstName}`,
+    header: '#',
+    accessorKey: 'index',
+  },
+  {
+    header: 'Заголовок',
+    accessorKey: 'title',
   },
   {
     header: 'Дата создания',
@@ -47,13 +43,14 @@ const columns: ColumnDef<TNewsGetOneDto>[] = [
     cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
   },
   {
-    header: 'Заголовок',
-    accessorKey: 'title',
+    header: 'Автор',
+    accessorFn: (row) =>
+      `id:${row.author.id}, ${row.author.person.lastName}  ${row.author.person.firstName}`,
   },
   {
-    header: 'Удаление новости',
+    header: 'Модерация',
     accessorKey: 'urlSlug',
-    cell: (props) => <InteractiveBlock props={props} />,
+    cell: (props) => <BlockModeration propsTable={props} type={'news'} />,
   },
 ];
 
@@ -65,7 +62,7 @@ export default function TableNewsList({ news, idUserDB }: Props) {
     return [...news]
       .filter((newsOne) => newsOne.author._id === idUserDB)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .map((newsOne, index) => ({ ...newsOne, index }));
+      .map((newsOne, index) => ({ ...newsOne, index: index + 1 }));
   }, [news, idUserDB]);
 
   const table = useReactTable({
@@ -126,48 +123,4 @@ export default function TableNewsList({ news, idUserDB }: Props) {
       />
     </div>
   );
-}
-
-function InteractiveBlock({
-  props,
-}: {
-  props: CellContext<TNewsGetOneDto, unknown>;
-}): JSX.Element {
-  const router = useRouter();
-
-  const urlSlug = props.row.original.urlSlug;
-
-  const getNavigate = (id: string) => {
-    if (id === 'undefined') {
-      return toast.error('Не получен urlSlug новости!');
-    }
-
-    router.push(`/moderation/news/edit/${id}`);
-  };
-
-  /**
-   * Обработка клика на удаление новости.
-   */
-  const getDeleteNews = async () => {
-    const confirmed = window.confirm(
-      `Вы действительно хотите удалить новость c urlSlug:${urlSlug}?`
-    );
-    if (!confirmed) {
-      return toast.warning('Отменён запрос на удаление новости!');
-    }
-    const res = await deleteNews(urlSlug);
-    if (res.ok) {
-      toast.success(res.message);
-    } else {
-      toast.error(res.message);
-    }
-  };
-
-  // Иконки управления новостью.
-  const icons = [
-    { id: 0, icon: IconEditOld, getClick: () => getNavigate(props.row.original.urlSlug) },
-    { id: 1, icon: IconDelete, getClick: () => getDeleteNews() },
-  ];
-
-  return <BlockInteractive icons={icons} />;
 }

@@ -4,14 +4,18 @@ import cn from 'classnames/bind';
 
 import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
+import { Tooltip } from 'react-tooltip';
 
 const cx = cn.bind(styles);
+
+const id = 'IconEditOld';
 
 export default function IconEditOld({
   isActive,
   squareSize = 24,
   getClick,
   colors = { default: 'currentColor', active: 'currentColor', hover: 'currentColor' },
+  tooltip,
 }: TIconProps) {
   const style: React.CSSProperties & CSSVariables = {
     width: squareSize,
@@ -28,6 +32,7 @@ export default function IconEditOld({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
+      id={id}
     >
       <svg
         width="24"
@@ -46,6 +51,9 @@ export default function IconEditOld({
           fill="currentColor"
         />
       </svg>
+      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
+        {tooltip}
+      </Tooltip>
     </div>
   );
 }

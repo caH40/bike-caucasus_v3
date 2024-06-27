@@ -7,6 +7,7 @@ type Props = {
     // eslint-disable-next-line no-unused-vars
     icon: ({ isActive, squareSize, getClick }: TIconProps) => JSX.Element;
     getClick: () => void;
+    tooltip: string;
   }[];
 };
 
@@ -22,6 +23,7 @@ export default function BlockInteractive({ icons }: Props) {
           key={icon.id}
           squareSize={20}
           colors={{ hover: '#ec9c07' }}
+          tooltip={icon.tooltip}
         />
       ))}
     </div>

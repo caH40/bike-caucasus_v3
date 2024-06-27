@@ -219,6 +219,7 @@ export type TIconProps = {
   getClick?: () => void;
   // Наборы цветов под разные случаи.
   colors?: IconColors;
+  tooltip?: string;
 };
 type IconColors = {
   default?: string;

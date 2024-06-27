@@ -1,30 +1,24 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-  CellContext,
 } from '@tanstack/react-table';
 import { useMemo } from 'react';
-import { toast } from 'sonner';
 import cn from 'classnames/bind';
+import Image from 'next/image';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
 import Pagination from '@/components/UI/Pagination/Pagination';
-import IconDelete from '@/components/Icons/IconDelete';
-import IconEditOld from '@/components/Icons/IconEditOld';
-import BlockInteractive from '@/components/BlockInteractive/BlockInteractive';
-import type { TTrailDto } from '@/types/dto.types';
-import styles from '../TableCommon.module.css';
 import useHasAccess from '@/hooks/useHasAccess';
 import { bikeTypes } from '@/constants/trail';
-import { deleteTrail } from '@/actions/trail';
-import Image from 'next/image';
 import { blurBase64 } from '@/libs/image';
+import BlockModeration from '@/components/UI/BlockModeration/BlockModeration';
+import type { TTrailDto } from '@/types/dto.types';
+import styles from '../TableCommon.module.css';
 
 const cx = cn.bind(styles);
 
@@ -77,9 +71,9 @@ const columns: ColumnDef<TTrailDto & { index: number }>[] = [
     cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
   },
   {
-    header: 'Модерация маршрута',
+    header: 'Модерация',
     accessorKey: 'urlSlug',
-    cell: (props) => <InteractiveBlock props={props} />,
+    cell: (props) => <BlockModeration propsTable={props} type={'trails'} />,
   },
 ];
 
@@ -153,51 +147,4 @@ export default function TableTrailList({ trails, idUserDB }: Props) {
       />
     </div>
   );
-}
-
-/**
- * Блок Модерации маршрутом.
- */
-function InteractiveBlock({
-  props,
-}: {
-  props: CellContext<TTrailDto & { index: number }, unknown>;
-}): JSX.Element {
-  const router = useRouter();
-
-  const urlSlug = props.row.original.urlSlug;
-
-  const getNavigate = (id: string) => {
-    if (id === 'undefined') {
-      return toast.error('Не получен urlSlug новости!');
-    }
-
-    router.push(`/moderation/trails/edit/${id}`);
-  };
-
-  /**
-   * Обработка клика на удаление новости.
-   */
-  const getDeleteTrail = async () => {
-    const confirmed = window.confirm(
-      `Вы действительно хотите удалить маршрут c urlSlug:${urlSlug}?`
-    );
-    if (!confirmed) {
-      return toast.warning('Отменён запрос на удаление маршрута!');
-    }
-    const res = await deleteTrail(urlSlug);
-    if (res.ok) {
-      toast.success(res.message);
-    } else {
-      toast.error(res.message);
-    }
-  };
-
-  // Иконки управления новостью.
-  const icons = [
-    { id: 0, icon: IconEditOld, getClick: () => getNavigate(props.row.original.urlSlug) },
-    { id: 1, icon: IconDelete, getClick: () => getDeleteTrail() },
-  ];
-
-  return <BlockInteractive icons={icons} />;
 }

@@ -13,6 +13,9 @@
 
   --link-color: rgb(98, 161, 255);
 
+  --tooltip-color: var(--main-color-dark);
+  --tooltip-bg: var(--color-orange);
+
   /* зеленая кнопка */
   --btn-bg: #318d2c;
   --btn-bg-hover: #3fb439;
