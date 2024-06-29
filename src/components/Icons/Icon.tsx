@@ -9,7 +9,7 @@ import styles from './icons.module.css';
 const cx = cn.bind(styles);
 const id = 'IconDelete';
 
-export default function IconDelete({
+export default function Icon({
   isActive,
   squareSize = 24,
   getClick,

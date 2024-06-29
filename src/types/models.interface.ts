@@ -225,3 +225,13 @@ export type TComment = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Разрешения, доступные пользователям, назначаемые админом.
+ */
+export type TPermissionDocument = Document & TPermission;
+export type TPermission = {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  description: string;
+};

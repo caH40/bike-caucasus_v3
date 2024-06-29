@@ -14,6 +14,7 @@ import IconAdd from '@/components/Icons/IconAdd';
 import IconUsers from '@/components/Icons/IconUsers';
 import IconLog from '@/components/Icons/IconLog';
 import type { TMenuOnPage } from '@/types/index.interface';
+import IconRole from '@/components/Icons/IconRole';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -147,6 +148,14 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
   },
   {
     id: 1,
+    name: 'Роли и разрешения',
+    classes: [],
+    href: '/admin/roles',
+    permission: 'admin', // Для администратора сайта.
+    icon: IconRole,
+  },
+  {
+    id: 2,
     name: 'Логи модераторов',
     classes: [],
     href: '/admin/logs/admin',
@@ -154,7 +163,7 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     icon: IconLog,
   },
   {
-    id: 2,
+    id: 3,
     name: 'Логи ошибок',
     classes: [],
     href: '/admin/logs/errors',
