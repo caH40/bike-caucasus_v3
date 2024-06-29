@@ -86,6 +86,8 @@ export class Trail {
         trailDB.isLikedByUser = trailDB.likedBy.some((like) => String(like) === idUserDB);
       }
 
+      trailDB.likedBy = []; // Не нужны на клиенте Id тех кто лайкал.
+
       const commentsDB = await CommentModel.find({
         document: { _id: String(trailDB._id), type: 'trail' },
       });
@@ -233,8 +235,10 @@ export class Trail {
       if (idUserDB) {
         trailsDB.forEach((trail) => {
           trail.isLikedByUser = trail.likedBy.some((like) => String(like) === idUserDB);
-          trail.likedBy = [];
+          trail.likedBy = []; // Не нужны на клиенте Id тех кто лайкал.
         });
+      } else {
+        trailsDB.forEach((trail) => (trail.likedBy = [])); // Не нужны на клиенте Id тех кто лайкал.
       }
 
       for (const trail of trailsDB) {

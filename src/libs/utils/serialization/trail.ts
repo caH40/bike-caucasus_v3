@@ -78,7 +78,7 @@ export function serializationTrailCreate({
 
     const title = blocks[i].title;
     if (title) {
-      formData.set(`blocks[${i}][video]`, title);
+      formData.set(`blocks[${i}][title]`, title);
     }
 
     const video = blocks[i].video;
