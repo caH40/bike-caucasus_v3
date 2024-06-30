@@ -32,7 +32,7 @@ export default function Webcam({ forFullScr }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <h2 className={styles.title}>Вебкамеры на горе Шаджатмаз</h2>
+      {!forFullScr && <h2 className={styles.title}>Вебкамеры на горе Шаджатмаз</h2>}
 
       <div className={styles.webcam}>
         <ArrowsWebcam numberWebcam={numberWebcam} setNumberWebcam={setNumberWebcam} />
