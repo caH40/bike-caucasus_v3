@@ -5,6 +5,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { News } from '@/services/news';
 import FormNews from '@/components/UI/Forms/FormNews/FormNews';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import IconNewspaper from '@/components/Icons/IconNewspaper';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -43,7 +44,7 @@ export default async function NewsCreatePage() {
 
   return (
     <>
-      <TitleAndLine title={'Создание новости'} hSize={1} />
+      <TitleAndLine title={'Создание новости'} hSize={1} Icon={IconNewspaper} />
       <FormNews fetchNewsCreated={fetchNewsCreated} />
     </>
   );

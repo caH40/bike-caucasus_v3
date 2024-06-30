@@ -2,7 +2,7 @@
 
 import IconAccount from '@/components/Icons/IconAccount';
 import IconFinish from '@/components/Icons/IconFinish';
-import IconCalendar from '@/components/Icons/IconCreate';
+import IconCalendar from '@/components/Icons/IconCalendar';
 import IconNewspaper from '@/components/Icons/IconNewspaper';
 import IconRoute from '@/components/Icons/IconRoute';
 import IconTeam from '@/components/Icons/IconTeam';

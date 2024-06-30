@@ -1,11 +1,11 @@
 import Wrapper from '@/components/Wrapper/Wrapper';
-
+import IconRoute from '@/components/Icons/IconRoute';
 import styles from './layout.module.css';
 
 export default function ModerationTrailsPage() {
   return (
     <div className={styles.content}>
-      <Wrapper title="Управление велосипедными маршрутами">
+      <Wrapper title="Управление велосипедными маршрутами" Icon={IconRoute}>
         <h2>Добро пожаловать на страницу модерации маршрутов</h2>
         <div>
           <h3>Создание велосипедных маршрутов</h3>

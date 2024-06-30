@@ -1,9 +1,11 @@
+import IconRoute from '@/components/Icons/IconRoute';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import styles from './TrailEditPage.module.css';
 
 export default function TrailEditPage() {
   return (
     <>
-      <h1 className={styles.title}>Страница редактирования Маршрута</h1>
+      <TitleAndLine title="Страница редактирования Маршрута" hSize={1} Icon={IconRoute} />
       <p className={styles.paragraph}>
         Пользователь может удалять и редактировать только созданные им маршруты.
       </p>

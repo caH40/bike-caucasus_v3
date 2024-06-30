@@ -1,9 +1,15 @@
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import styles from './NewsEditPage.module.css';
+import IconNewspaper from '@/components/Icons/IconNewspaper';
 
 export default function NewsEditPage() {
   return (
     <>
-      <h1 className={styles.title}>Страница редактирования ранее созданной новости</h1>
+      <TitleAndLine
+        hSize={1}
+        Icon={IconNewspaper}
+        title="Страница редактирования ранее созданной новости"
+      />
       <p className={styles.paragraph}>
         Модератор может удалять и редактировать только созданные им новости.
       </p>

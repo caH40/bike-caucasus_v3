@@ -10,6 +10,7 @@ import FormCalendar from '@/components/UI/Forms/FormCalendar/FormCalendar';
 import { getNews } from '@/actions/news';
 import { CalendarService } from '@/services/Calendar';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import IconCalendar from '@/components/Icons/IconCalendar';
 
 async function fetchCalendarCreated(formData: FormData): Promise<ResponseServer<null>> {
   'use server';
@@ -51,7 +52,11 @@ export default async function CalendarCreatePage() {
 
   return (
     <>
-      <TitleAndLine title="Добавление нового События в календарь" hSize={1} />
+      <TitleAndLine
+        title="Добавление нового События в календарь"
+        hSize={1}
+        Icon={IconCalendar}
+      />
       <FormCalendar fetchTrailCreated={fetchCalendarCreated} news={news} />
     </>
   );

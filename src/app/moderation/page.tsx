@@ -1,11 +1,10 @@
-type Props = {};
-
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { buttonsMenuModerationPage } from '@/constants/menu';
 import styles from './ModerationPage.module.css';
+import IconWrench from '@/components/Icons/IconWrench';
 
-export default function ModerationPage({}: Props) {
+export default function ModerationPage() {
   return (
     <div className={styles.wrapper}>
       {/* левая боковая панель */}
@@ -15,7 +14,7 @@ export default function ModerationPage({}: Props) {
 
       {/* основное тело страницы */}
       <div className={styles.main}>
-        <Wrapper title="Модерация сайта">
+        <Wrapper title="Модерация сайта" Icon={IconWrench}>
           <h2 className={styles.title}>Добро пожаловать на страницу управления сайта</h2>
           <p>
             На этой странице вы сможете управлять всеми аспектами вашего сайта, от создания

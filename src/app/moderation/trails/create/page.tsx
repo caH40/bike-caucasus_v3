@@ -9,6 +9,7 @@ import { ResponseServer } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { Trail } from '@/services/Trail';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import IconRoute from '@/components/Icons/IconRoute';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -53,7 +54,7 @@ async function fetchTrailCreated(formData: FormData): Promise<ResponseServer<nul
 export default function TrailsCreatePage() {
   return (
     <>
-      <TitleAndLine title="Создание нового маршрута" hSize={1} />
+      <TitleAndLine title="Создание нового маршрута" hSize={1} Icon={IconRoute} />
       <FormTrail fetchTrailCreated={fetchTrailCreated} />
     </>
   );

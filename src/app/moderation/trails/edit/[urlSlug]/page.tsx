@@ -9,6 +9,7 @@ import { getTrail } from '@/actions/trail';
 
 import { Trail } from '@/services/Trail';
 import FormTrail from '@/components/UI/Forms/FromTrail/FormTrail';
+import IconRoute from '@/components/Icons/IconRoute';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -59,7 +60,11 @@ export default async function TrailEditCurrentPage({ params }: Props) {
 
   return (
     <>
-      <TitleAndLine title={`Редактирование маршрута "${trail?.title}"`} hSize={1} />
+      <TitleAndLine
+        title={`Редактирование маршрута "${trail?.title}"`}
+        hSize={1}
+        Icon={IconRoute}
+      />
       {trail ? (
         <FormTrail fetchTrailEdited={fetchTrailEdited} trailForEdit={trail} />
       ) : (

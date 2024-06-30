@@ -3,12 +3,15 @@ import cn from 'classnames/bind';
 
 import styles from './TitleAndLine.module.css';
 import LineSeparator from '../LineSeparator/LineSeparator';
+import { TIconProps } from '@/types/index.interface';
 
 const cx = cn.bind(styles);
 
 type Props = {
   title: string;
   hSize: 1 | 2 | 3 | 4 | 5 | 6;
+  Icon?: React.ComponentType<TIconProps>;
+  hideLine?: boolean;
 };
 
 /**
@@ -18,11 +21,19 @@ type Props = {
  * @param {1 | 2 | 3 | 4 | 5 | 6} props.hSize - Размер заголовка (h1, h2, h3, h4, h5, h6).
  * @returns {JSX.Element} - JSX элемент, содержащий заголовок и горизонтальную линию.
  */
-export default function TitleAndLine({ title, hSize }: Props): JSX.Element {
+export default function TitleAndLine({
+  title,
+  hSize,
+  Icon,
+  hideLine = false,
+}: Props): JSX.Element {
   return (
     <>
-      {createElement(`h${hSize}`, { className: cx('title', `h${hSize}`) }, title)}
-      <LineSeparator />
+      <div className={styles.box__title}>
+        {Icon && <Icon squareSize={28} />}
+        {createElement(`h${hSize}`, { className: cx('title', `h${hSize}`) }, title)}
+      </div>
+      {!hideLine && <LineSeparator />}
     </>
   );
 }

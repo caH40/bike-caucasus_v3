@@ -1,3 +1,6 @@
-.title {
+.box__title {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
   margin-bottom: 7px;
 }

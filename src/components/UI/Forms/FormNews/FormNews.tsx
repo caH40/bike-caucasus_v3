@@ -1,6 +1,7 @@
 'use client';
 
-import { FormEvent, Fragment, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
@@ -14,12 +15,10 @@ import Button from '../../Button/Button';
 import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import { formateAndStripContent } from './utils';
-import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
-import { TNewsGetOneDto } from '@/types/dto.types';
-import styles from '../Form.module.css';
-import { useRouter } from 'next/navigation';
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
+import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
+import type { TNewsGetOneDto } from '@/types/dto.types';
+import styles from '../Form.module.css';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -152,79 +151,76 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
   // загрузка основного изображения
 
   return (
-    <>
-      <TitleAndLine title={'Форма ввода данных'} hSize={2} />
-      <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
-        <div className={styles.wrapper__block}>
-          <BoxInputSimple
-            id="title"
-            name="title"
-            value={title}
-            handlerInput={setTitle}
-            type={'text'}
-            label="Заголовок:*"
-            loading={isLoading}
-            autoComplete={'off'}
-            validationText={title.length > 10 ? '' : 'пустое!'} // необходима проверка?
-          />
-          <BoxTextareaSimple
-            id="subTitle"
-            name="subTitle"
-            value={subTitle}
-            handlerInput={setSubTitle}
-            type={'text'}
-            label="Краткое содержание:*"
-            loading={isLoading}
-            autoComplete={'off'}
-            validationText={subTitle.length > 20 ? '' : 'пустое!'} // необходима проверка?
-          />
+    <form onSubmit={onSubmit} className={cn(styles.form, styles.separators)}>
+      <div className={styles.wrapper__block}>
+        <BoxInputSimple
+          id="title"
+          name="title"
+          value={title}
+          handlerInput={setTitle}
+          type={'text'}
+          label="Заголовок:*"
+          loading={isLoading}
+          autoComplete={'off'}
+          validationText={title.length > 10 ? '' : 'пустое!'} // необходима проверка?
+        />
+        <BoxTextareaSimple
+          id="subTitle"
+          name="subTitle"
+          value={subTitle}
+          handlerInput={setSubTitle}
+          type={'text'}
+          label="Краткое содержание:*"
+          loading={isLoading}
+          autoComplete={'off'}
+          validationText={subTitle.length > 20 ? '' : 'пустое!'} // необходима проверка?
+        />
 
-          {/* Блок загрузки Титульного изображения */}
-          <BlockUploadImage
-            title={'Титульное изображение:*'}
-            poster={poster}
-            setPoster={setPoster}
-            resetData={resetData}
-            posterUrl={posterUrl}
-            setPosterUrl={setPosterUrl}
-          />
+        {/* Блок загрузки Титульного изображения */}
+        <BlockUploadImage
+          title={'Титульное изображение:*'}
+          poster={poster}
+          setPoster={setPoster}
+          resetData={resetData}
+          posterUrl={posterUrl}
+          setPosterUrl={setPosterUrl}
+        />
 
-          <BoxInputSimple
-            id="hashtag"
-            name="hashtag"
-            value={hashtags}
-            handlerInput={setHashtags}
-            type={'text'}
-            label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
-            loading={isLoading}
-            autoComplete={'off'}
-            validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
-          />
+        <BoxInputSimple
+          id="hashtag"
+          name="hashtag"
+          value={hashtags}
+          handlerInput={setHashtags}
+          type={'text'}
+          label="Хэштеги:* (например: анонс, результаты, мтб, шоссе, кк, пвд, кисловодск, море, горы)"
+          loading={isLoading}
+          autoComplete={'off'}
+          validationText={hashtags.length >= 3 ? '' : 'пустое!'} // необходима проверка?
+        />
 
-          <CheckboxRounded
-            value={important}
-            setValue={setImportant}
-            label={'Важная новость'}
-            id="important"
+        <CheckboxRounded
+          value={important}
+          setValue={setImportant}
+          label={'Важная новость'}
+          id="important"
+        />
+      </div>
+
+      {/* Блок добавления текста и изображения новости */}
+      {blocks.map((block) => (
+        <div className={styles.wrapper__block} key={block.position}>
+          <BlockNewsTextAdd
+            block={block}
+            blocks={blocks}
+            setBlocks={setBlocks}
+            isLoading={isLoading}
           />
         </div>
+      ))}
 
-        {/* Блок добавления текста и изображения новости */}
-        {blocks.map((block) => (
-          <div className={styles.wrapper__block} key={block.position}>
-            <BlockNewsTextAdd
-              block={block}
-              blocks={blocks}
-              setBlocks={setBlocks}
-              isLoading={isLoading}
-            />
-          </div>
-        ))}
-
-        <div className={styles.box__button}>
-          <Button name="Опубликовать" theme="green" loading={isLoading} />
-        </div>
-      </form>
-    </>
+      <div className={styles.box__button}>
+        <Button name="Опубликовать" theme="green" loading={isLoading} />
+      </div>
+    </form>
   );
 }
