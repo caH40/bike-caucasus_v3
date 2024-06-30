@@ -13,7 +13,7 @@
   margin-bottom: 20px;
 }
 .content {
-  padding: 0rem 5rem;
+  padding: 0rem 4rem;
 }
 .block__text {
   font-size: 1.2rem;
@@ -31,7 +31,10 @@
   position: absolute;
   object-fit: cover;
 }
-.img__title {
+.block__title {
+  margin-bottom: 0.1rem;
+}
+.figcaption {
   font-size: 0.8rem;
   font-weight: 400;
   color: var(--white-50);

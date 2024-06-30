@@ -77,13 +77,14 @@ export default async function TrailPage({ params }: Props) {
         <div className={styles.content}>
           {trail.blocks.map(async (block) => (
             <article className={cx('wrapper__block')} key={block._id}>
+              <h2 className={styles.block__title}>{block.title}</h2>
               <div
                 className={cx('block__text', { full: !block.image })}
                 dangerouslySetInnerHTML={{ __html: block.text }}
               />
 
               {block.image && (
-                <div className={styles.column__img}>
+                <figure>
                   <div className={styles.block__box__img}>
                     <Image
                       src={block.image}
@@ -95,8 +96,8 @@ export default async function TrailPage({ params }: Props) {
                       placeholder="blur"
                     />
                   </div>
-                  <h4 className={styles.img__title}>{block.imageTitle}</h4>
-                </div>
+                  <figcaption className={styles.figcaption}>{block.imageTitle}</figcaption>
+                </figure>
               )}
             </article>
           ))}

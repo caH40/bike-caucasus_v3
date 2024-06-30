@@ -64,9 +64,8 @@ body {
 .fixed {
   position: fixed;
 }
-
 h1 {
-  font-size: 1.9rem;
+  font-size: 26px;
 }
 h2 {
   font-size: 22px;
@@ -120,6 +119,29 @@ textarea:disabled {
 .link__news:hover {
   transition: all 0.3s;
   text-decoration-color: var(--link-color);
+}
+/* ====================================================================== */
+@media (max-width: 992px) {
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+}
+@media (max-width: 768px) {
+  h1 {
+    font-size: 22px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  h3 {
+    font-size: 16px;
+  }
 }
 /* ===================================================================================== */
 .page404 {

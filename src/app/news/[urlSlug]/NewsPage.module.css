@@ -4,7 +4,6 @@
   grid-template-columns: 1fr 468px;
   letter-spacing: 0.08rem;
 }
-
 .author {
   display: flex;
   justify-content: flex-end;
@@ -21,13 +20,12 @@
   border-radius: 0.5rem 0.5rem 0 0;
 }
 .subtitle {
-  font-size: 1.4em;
   margin-bottom: 1rem;
   font-weight: 500;
 }
 .content {
   font-size: 1.1rem;
-  padding: 0 9%;
+  padding: 0 4rem;
   margin: 0 auto;
 }
 .article__block {
@@ -88,9 +86,6 @@
 @media (max-width: 992px) {
 }
 @media (max-width: 576px) {
-  .subtitle {
-    font-size: 1.2rem;
-  }
   .content {
     padding: 0rem 1rem;
   }

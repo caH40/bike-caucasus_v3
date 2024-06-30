@@ -1,18 +1,3 @@
 .title {
   margin-bottom: 7px;
 }
-.h1 {
-  font-size: 1.9rem;
-}
-.h2 {
-  font-size: 22px;
-}
-.h3 {
-  font-size: 18px;
-}
-/* ====================================================================== */
-@media (max-width: 756px) {
-  .h1 {
-    font-size: 1.7rem;
-  }
-}
