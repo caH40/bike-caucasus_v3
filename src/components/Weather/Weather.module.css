@@ -1,6 +1,5 @@
 .box__today {
   display: flex;
-
   align-items: center;
 }
 .day {
@@ -17,7 +16,7 @@
 .box__day {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
   font-size: 1.1em;
 }
 .box__temperature {
@@ -29,4 +28,9 @@
 .temperature__feels {
   font-size: 1rem;
   color: var(--white-50);
+}
+.box__additional {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }

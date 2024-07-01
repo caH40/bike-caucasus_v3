@@ -46,6 +46,24 @@ export function getMonthNameInRussian(year: number, month: number): string {
 }
 
 /**
+ * Пример функции для получения названия дня недели на русском языке
+ */
+export function getDayNameInRussian(timestamp: number): string {
+  const date = DateTime.fromMillis(timestamp, { locale: 'ru' });
+  const dayName = date.toLocaleString({ weekday: 'long' });
+  return capitalizeFirstLetter(dayName);
+}
+/**
+ * Создание заглавной первой буквы дня недели.
+ */
+function capitalizeFirstLetter(word: string): string {
+  if (!word) {
+    return word;
+  }
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+/**
  * Получение месяца, года и месяца в строчном формате
  * предыдущего или следующего месяца относительно входных данных.
  */

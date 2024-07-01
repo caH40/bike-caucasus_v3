@@ -2,7 +2,6 @@ import { TTrailDto } from '@/types/dto.types';
 
 import styles from './TrailTotal.module.css';
 import Link from 'next/link';
-import Author from '../Author/Author';
 import { difficultyLevel, regions } from '@/constants/trail';
 
 type Props = {
@@ -104,9 +103,6 @@ export default function TrailTotal({ trail }: Props) {
           </div>
         )}
       </dl>
-      <div className={styles.author}>
-        <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
-      </div>
     </div>
   );
 }

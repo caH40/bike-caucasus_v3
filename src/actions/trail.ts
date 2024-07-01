@@ -6,9 +6,12 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Trail } from '@/services/Trail';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { LatLng, ResponseServer } from '@/types/index.interface';
 import { errorLogger } from '@/errors/error';
 import { revalidatePath } from 'next/cache';
+import { TWeatherForecast } from '@/types/weather.types';
+import { getGPSData } from './gpx';
+import { WeatherService } from '@/services/Weather';
 
 type TGetTrails = {
   bikeType: string | null;
@@ -116,5 +119,40 @@ export async function getInteractive(
     return response;
   } catch (error) {
     return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Запрос прогноза погоды на 6ть дней.
+ */
+export async function getForecastWeather({
+  urlTrack,
+}: {
+  urlTrack: string;
+}): Promise<TWeatherForecast | null> {
+  try {
+    const data = await getGPSData(urlTrack);
+
+    const positionsParsed: Omit<LatLng, 'ele'>[] = data.gpx.trk[0].trkseg[0].trkpt.map(
+      (point) => ({
+        lat: parseFloat(point.$.lat),
+        lng: parseFloat(point.$.lon),
+      })
+    );
+
+    const weatherService = new WeatherService();
+    const res: ResponseServer<TWeatherForecast | null> = await weatherService.getRaw({
+      lat: positionsParsed[0].lat,
+      lon: positionsParsed[0].lng,
+      type: 'forecast',
+    });
+
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
+
+    return res.data;
+  } catch (error) {
+    return null;
   }
 }

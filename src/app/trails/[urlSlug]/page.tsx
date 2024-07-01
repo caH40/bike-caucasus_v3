@@ -1,3 +1,4 @@
+import { getServerSession } from 'next-auth';
 import { type Metadata } from 'next';
 import Image from 'next/image';
 import cn from 'classnames/bind';
@@ -8,21 +9,19 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import { regions } from '@/constants/trail';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import TrailTotal from '@/components/TrailTotal/TrailTotal';
-import { getTrail } from '@/actions/trail';
+import { getForecastWeather, getTrail } from '@/actions/trail';
 import { generateMetadataTrail } from '@/meta/meta';
 import { blurBase64 } from '@/libs/image';
 import { Trail } from '@/services/Trail';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import styles from './TrailPage.module.css';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 import BlockComments from '@/components/BlockComments/BlockComments';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getComments } from '@/actions/comment';
-import { WeatherService } from '@/services/Weather';
-import { TWeatherForecast } from '@/types/weather.types';
 import Weather from '@/components/Weather/Weather';
+import Author from '@/components/Author/Author';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
+import styles from './TrailPage.module.css';
 
 const cx = cn.bind(styles);
 
@@ -48,6 +47,7 @@ export default async function TrailPage({ params }: Props) {
     notFound();
   }
 
+  const weather = await getForecastWeather({ urlTrack: trail.trackGPX });
   // Подсчет просмотров Маршрута.
   const trailService = new Trail();
   await trailService.countView(params.urlSlug);
@@ -57,13 +57,7 @@ export default async function TrailPage({ params }: Props) {
     idUserDB,
   });
 
-  const weatherService = new WeatherService();
-  const weather: TWeatherForecast = await weatherService.getRaw({
-    lat: 44,
-    lon: 43,
-    type: 'forecast',
-  });
-  console.log(weather.list);
+  // console.log(weather);
 
   return (
     <Wrapper
@@ -72,6 +66,10 @@ export default async function TrailPage({ params }: Props) {
       }`}
     >
       <div className={styles.main}>
+        <div className={styles.author}>
+          <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
+        </div>
+
         {/* Изображение-обложка новости. */}
         <div className={styles.box__img}>
           <Image
@@ -121,9 +119,11 @@ export default async function TrailPage({ params }: Props) {
 
         <TrailTotal trail={trail} />
 
-        <div className={styles.box__weather}>
-          <Weather />
-        </div>
+        {weather && (
+          <div className={styles.box__weather}>
+            <Weather weather={weather} startLocation={trail.startLocation} />
+          </div>
+        )}
 
         {/* Интерактивный блок. */}
         <div className={styles.interactive}>
