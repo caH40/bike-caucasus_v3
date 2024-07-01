@@ -33,7 +33,7 @@ export default function TitleAndLine({
         {Icon && <Icon squareSize={28} />}
         {createElement(`h${hSize}`, { className: cx('title', `h${hSize}`) }, title)}
       </div>
-      {!hideLine && <LineSeparator />}
+      {!hideLine && <LineSeparator marginBottom={true} />}
     </>
   );
 }

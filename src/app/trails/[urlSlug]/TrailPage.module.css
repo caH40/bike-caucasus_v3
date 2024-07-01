@@ -65,6 +65,9 @@
 .block__comments {
   margin-bottom: 1rem;
 }
+.box__weather {
+  margin-bottom: 1rem;
+}
 /* ====================================================================== */
 
 @media (max-width: 1400px) {

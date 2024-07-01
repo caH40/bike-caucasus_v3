@@ -1,19 +1,25 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 
+type PropsWeatherFromApi = {
+  lat: number;
+  lon: number;
+  type: 'weather' | 'forecast'; // weather - текущая погода, forecast - на 5 дней.
+};
+
 /**
  * Сервис получение прогноза погоды.
  */
-export class Weather {
-  appId: string | undefined;
+export class WeatherService {
+  private appId: string | undefined;
   constructor() {
     this.appId = process.env.API_KEY_OPENWEATHERMAP; // API key для сайта openweathermap.com
   }
 
-  private async getRaw({ lat, lon }: { lat: number; lon: number }) {
+  async getRaw({ lat, lon, type }: PropsWeatherFromApi) {
     try {
-      const server = 'https://api.openweathermap.org/data/2.5/forecast';
-      const query = `lat=${lat}&lon=${lon}&appid=${this.appId}&exclude=hourly&units=metric&lang=ru`;
+      const server = `https://api.openweathermap.org/data/2.5/${type}`;
+      const query = `lat=${lat}&lon=${lon}&appid=${this.appId}&units=metric&lang=ru`;
 
       const response = await fetch(`${server}?${query}`);
 

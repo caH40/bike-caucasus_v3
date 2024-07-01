@@ -19,6 +19,9 @@ import BlockComments from '@/components/BlockComments/BlockComments';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getComments } from '@/actions/comment';
+import { WeatherService } from '@/services/Weather';
+import { TWeatherForecast } from '@/types/weather.types';
+import Weather from '@/components/Weather/Weather';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 
 const cx = cn.bind(styles);
@@ -53,6 +56,14 @@ export default async function TrailPage({ params }: Props) {
     document: { _id: trail._id, type: 'trail' },
     idUserDB,
   });
+
+  const weatherService = new WeatherService();
+  const weather: TWeatherForecast = await weatherService.getRaw({
+    lat: 44,
+    lon: 43,
+    type: 'forecast',
+  });
+  console.log(weather.list);
 
   return (
     <Wrapper
@@ -109,6 +120,10 @@ export default async function TrailPage({ params }: Props) {
         </div>
 
         <TrailTotal trail={trail} />
+
+        <div className={styles.box__weather}>
+          <Weather />
+        </div>
 
         {/* Интерактивный блок. */}
         <div className={styles.interactive}>

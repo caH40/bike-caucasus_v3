@@ -1,0 +1,32 @@
+.box__today {
+  display: flex;
+
+  align-items: center;
+}
+.day {
+  font-size: 1.1rem;
+}
+.temperature__today {
+  font-size: 1.8rem;
+}
+.block__day {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.box__day {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1.1em;
+}
+.box__temperature {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: center;
+}
+.temperature__feels {
+  font-size: 1rem;
+  color: var(--white-50);
+}
