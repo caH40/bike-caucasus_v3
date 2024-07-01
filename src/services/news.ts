@@ -95,8 +95,8 @@ export class News {
 
         const urlSaved = await this.saveFile({
           file: block.imageFile,
-          type: 'pdf',
-          suffix,
+          type: 'image',
+          suffix: `${suffix}_image_block-`,
           cloudName,
           domainCloudName,
           bucketName,
