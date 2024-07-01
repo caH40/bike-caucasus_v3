@@ -19,6 +19,7 @@ import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
 import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
+import BlockUploadFile from '../../BlockUploadFile/BlockUploadFile';
 
 type Props = {
   fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -55,7 +56,8 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
   const [posterUrl, setPosterUrl] = useState<string | null>(
     newsForEdit ? newsForEdit.poster : null
   );
-
+  // Протокол или другой файл в формате pdf.
+  const [filePdf, setFilePdf] = useState<File | null>(null);
   // Триггер очистки форм и Локального хранилища.
   const [resetData, setResetData] = useState<boolean>(false);
 
@@ -117,6 +119,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
       poster,
       urlSlug: newsForEdit?.urlSlug,
       posterOldUrl: newsForEdit?.posterOldUrl,
+      filePdf,
     });
 
     let response = {
@@ -205,6 +208,15 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
           id="important"
         />
       </div>
+
+      {/* Блок загрузки Трэка маршрута в формате GPX */}
+      <BlockUploadFile
+        title={'Загрузка PDF файла:'}
+        setFile={setFilePdf}
+        resetData={resetData}
+        isEditing={!!newsForEdit}
+        accept={'.pdf'}
+      />
 
       {/* Блок добавления текста и изображения новости */}
       {blocks.map((block) => (

@@ -251,7 +251,7 @@ export type TCloudConnect = {
  */
 export type TSaveFile = {
   file: File;
-  type: 'image' | 'GPX';
+  type: 'image' | 'GPX' | 'pdf';
   suffix: string;
   cloudName: 'vk';
   domainCloudName: string;
@@ -295,6 +295,7 @@ export type TNewsCreateFromClient = {
   urlSlug?: string; // urlSlug редактируемой новости, если его нет, значит новость создаётся.
   important: boolean; // important Важная новость?
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
+  filePdf?: File | null; // Протокол или другой файл в формате pdf.
 };
 
 /**

@@ -42,6 +42,7 @@ export function dtoNewsGetOne(
     updatedAt: news.updatedAt,
     isLikedByUser: news.isLikedByUser,
     important: news.important,
+    filePdf: news.filePdf,
     author,
   };
 }

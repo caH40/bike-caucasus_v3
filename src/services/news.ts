@@ -52,16 +52,37 @@ export class News {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
 
-      const suffix = 'news_image_title-';
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Создание slug из title для url страницы новости.
+      const sequenceValue = await getNextSequenceValue('news');
+      const title = `${sequenceValue}-${news.title}`;
+      const urlSlug = slugify(title, { lower: true, strict: true });
+
+      const suffix = `news_${urlSlug}`;
       // Сохранение изображения для Постера новости.
       const poster = await this.saveFile({
         file: news.poster as File,
         type: 'image',
-        suffix,
+        suffix: `${suffix}_image_title-`,
         cloudName,
         domainCloudName,
         bucketName,
       });
+
+      let filePdf;
+      if (news.filePdf) {
+        // Сохранение изображения для Постера новости.
+        filePdf = await this.saveFile({
+          file: news.filePdf as File,
+          type: 'pdf',
+          suffix: `${suffix}_pdf-`,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
+      }
 
       // Сохранение изображений из текстовых блоков.
       let index = -1;
@@ -74,7 +95,7 @@ export class News {
 
         const urlSaved = await this.saveFile({
           file: block.imageFile,
-          type: 'image',
+          type: 'pdf',
           suffix,
           cloudName,
           domainCloudName,
@@ -87,15 +108,14 @@ export class News {
       // Замена строки на массив хэштегов.
       const hashtags = getHashtags(news.hashtags);
 
-      // Подключение к БД.
-      await this.dbConnection();
-
-      // Создание slug из title для url страницы новости.
-      const sequenceValue = await getNextSequenceValue('news');
-      const title = `${sequenceValue}-${news.title}`;
-      const urlSlug = slugify(title, { lower: true, strict: true });
-
-      const response = await NewsModel.create({ ...news, hashtags, poster, author, urlSlug });
+      const response = await NewsModel.create({
+        ...news,
+        hashtags,
+        poster,
+        author,
+        filePdf,
+        urlSlug,
+      });
 
       if (!response._id) {
         throw new Error('Новость не сохранилась в БД!');

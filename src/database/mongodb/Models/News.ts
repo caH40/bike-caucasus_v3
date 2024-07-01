@@ -27,6 +27,7 @@ const NewsSchema = new Schema<TNews>(
     likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     important: { type: Boolean, default: false },
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment', default: [] }],
+    filePdf: { type: String },
   },
   { timestamps: true }
 );

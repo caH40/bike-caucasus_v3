@@ -28,6 +28,7 @@ export type TNewsGetOneDto = {
   author: TAuthor;
   isLikedByUser: boolean;
   important: boolean;
+  filePdf?: string;
 };
 
 /**

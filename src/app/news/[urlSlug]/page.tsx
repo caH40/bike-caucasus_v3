@@ -17,6 +17,7 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 import BlockComments from '@/components/BlockComments/BlockComments';
 import { getComments } from '@/actions/comment';
+import Link from 'next/link';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -143,6 +144,21 @@ export default async function NewsPage({ params }: Props) {
                 )}
               </section>
             ))}
+
+            {/* Блок с прикрепленными файлами */}
+            {newsOne.filePdf && (
+              <div className={styles.block__files}>
+                <span>Прикрепленные файлы:</span>
+                <Link
+                  className={'link__news '}
+                  target="blank"
+                  href={newsOne.filePdf}
+                  rel="noreferrer"
+                >
+                  Финишный протокол
+                </Link>
+              </div>
+            )}
           </article>
 
           {/* Блок хэштегов. */}

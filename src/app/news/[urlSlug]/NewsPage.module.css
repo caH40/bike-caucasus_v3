@@ -72,6 +72,14 @@
 .block__comments {
   margin-bottom: 1rem;
 }
+.block__files {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-style: italic;
+}
+.block__files span {
+  margin-right: 1rem;
+}
 /* ====================================================================== */
 @media (max-width: 1400px) {
   .content {

@@ -14,4 +14,10 @@ export const fileTypes = [
     description: 'Файл gpx-track формата GPX',
     testString: 'application/octet-stream',
   },
+  {
+    type: 'pdf',
+    accept: '.pdf',
+    description: 'Файл pdf',
+    testString: 'application/pdf',
+  },
 ];

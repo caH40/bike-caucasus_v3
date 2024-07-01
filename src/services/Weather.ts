@@ -13,7 +13,7 @@ export class Weather {
   private async getRaw({ lat, lon }: { lat: number; lon: number }) {
     try {
       const server = 'https://api.openweathermap.org/data/2.5/forecast';
-      const query = `lat=${lat}&lon=${lon}&appid=4d3a319d9897ea9e5193219be2840547&exclude=hourly&units=metric&lang=ru`;
+      const query = `lat=${lat}&lon=${lon}&appid=${this.appId}&exclude=hourly&units=metric&lang=ru`;
 
       const response = await fetch(`${server}?${query}`);
 

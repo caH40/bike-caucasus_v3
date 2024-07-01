@@ -109,6 +109,7 @@ export type TNews = {
   likedBy: ObjectId[]; // Массив идентификаторов пользователей, которые лайкнули
   comments: mongoose.Types.ObjectId[]; // Массив комментариев.
   important: boolean;
+  filePdf?: string; // URL на файл pdf(например протокол).
   createdAt: Date;
   updatedAt: Date;
 };
