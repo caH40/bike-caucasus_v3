@@ -6,7 +6,7 @@ import { Trail } from '@/services/Trail';
 const host = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
 // Интервал времени в секундах когда обновляется sitemap.
-export const revalidate = 1200;
+export const revalidate = 600;
 
 /**
  * Генерирует карту сайта (sitemap) для сайта.
