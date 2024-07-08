@@ -20,9 +20,19 @@
 .gap__aside {
   margin-bottom: 1rem;
 }
+
+.block__ad-mobile {
+  display: none;
+}
 /* ====================================================================== */
 @media screen and (max-width: 992px) {
   .webcam__title__mobile {
+    display: block;
+  }
+  .block__ad {
+    display: none;
+  }
+  .block__ad-mobile {
     display: block;
   }
 }

@@ -1,4 +1,5 @@
 import { getServerSession } from 'next-auth';
+import cn from 'classnames/bind';
 
 import { authOptions } from './api/auth/[...nextauth]/auth-options';
 import { getCalendarEvents } from '@/actions/calendar';
@@ -11,6 +12,8 @@ import AdContainer from '@/components/AdContainer/AdContainer';
 import BlockNewsImportant from '@/components/BlockNewsImportant/BlockNewsImportant';
 import Calendar from '@/components/UI/Calendar/Calendar';
 import styles from './Home.module.css';
+
+const cx = cn.bind(styles);
 
 /**
  * Главная (домашняя) страница сайта.
@@ -32,6 +35,11 @@ export default async function Home() {
             </p>
             <NewsShort idUserDB={session?.user.idDB} />
             <BlockNewsImportant />
+
+            <div className={cx('gap__aside', 'block__ad-mobile')}>
+              <AdContainer adsNumber={8} />
+            </div>
+
             <BlockNews idUserDB={session?.user.idDB} />
           </div>
         </Wrapper>
@@ -44,7 +52,7 @@ export default async function Home() {
           <Webcam />
         </div>
 
-        <div className={styles.gap__aside}>
+        <div className={cx('gap__aside', 'block__ad')}>
           <AdContainer adsNumber={8} />
         </div>
 

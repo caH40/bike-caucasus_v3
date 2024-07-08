@@ -13,11 +13,11 @@ async function getUsers(): Promise<ResponseServer<TUserDto[] | null>> {
 }
 
 export default async function UsersAdminPage() {
-  const logsData = await getUsers();
+  const response = await getUsers();
   return (
     <>
       <h1 className={styles.title}>Администрирование зарегистрированными пользователями</h1>
-      <TableUsersAdmin users={logsData.data || []} />
+      <TableUsersAdmin users={response.data || []} />
     </>
   );
 }
