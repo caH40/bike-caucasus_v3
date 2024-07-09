@@ -25,7 +25,7 @@ export function dtoGetUserPublic(user: TUserDto, ageCategory: string): TUserDtoP
     provider: user.provider?.name
       ? {
           name: user.provider.name,
-          image: user.provider.name,
+          image: user.provider.image,
         }
       : null,
     person: {

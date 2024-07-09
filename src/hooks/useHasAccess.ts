@@ -19,7 +19,7 @@ export default function useHasAccess(permission: string | null): boolean {
     return false;
   }
 
-  if (!session?.user) {
+  if (!session?.user || !session.user.role) {
     return false;
   }
 

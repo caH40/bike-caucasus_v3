@@ -102,6 +102,7 @@ export class UserService {
         {},
         {
           'provider.id': false,
+          'provider._id': false,
           'credentials.password': false,
           'credentials._id': false,
           'social._id': false,
@@ -211,7 +212,7 @@ export class UserService {
 
       // Обновления ревалидация данных на указанных страницах.
       revalidatePath(`/profile/${profile.id}`);
-      revalidatePath('/admin/users');
+      // revalidatePath('/admin/users'); // эта страница с 'force-dynamic'
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       this.errorLogger(error); // логирование
