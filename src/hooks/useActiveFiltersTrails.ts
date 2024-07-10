@@ -5,6 +5,7 @@ type Props = {
   bikeType: string;
   region: string;
   difficultyLevel: string;
+  search: string;
 };
 
 /**
@@ -15,20 +16,21 @@ type Props = {
  * @param props.difficultyLevel - Уровень сложности.
  * @returns hasFilters - Указывает, активны ли фильтры.
  */
-export function useActiveFiltersTrails({ bikeType, region, difficultyLevel }: Props) {
+export function useActiveFiltersTrails({ bikeType, region, difficultyLevel, search }: Props) {
   const [hasFilters, setHasFilters] = useState<boolean>(false);
 
   useEffect(() => {
     if (
       (bikeType !== '' && bikeType !== 'нет фильтров') ||
       (region !== '' && region !== 'нет фильтров') ||
-      (difficultyLevel !== '' && difficultyLevel !== 'нет фильтров')
+      (difficultyLevel !== '' && difficultyLevel !== 'нет фильтров') ||
+      search !== ''
     ) {
       setHasFilters(true);
     } else {
       setHasFilters(false);
     }
-  }, [bikeType, region, difficultyLevel]);
+  }, [bikeType, region, difficultyLevel, search]);
 
   return hasFilters;
 }

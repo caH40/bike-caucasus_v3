@@ -181,7 +181,15 @@ export type TTrail = {
   finishLocation: string; // Город или место у которого есть название.
   distance: number; // Расстояние в километрах.
   ascent: number; // Набор высоты в метрах.
-  blocks: TNewsBlockInfo[];
+  blocks: {
+    _id: ObjectId;
+    text: string; // Текст блока.
+    image?: string | null; // Ссылка на изображение (в облаке).
+    imageTitle: string; // Заголовок(подпись) изображения.
+    position: number; // Порядковый номер блока.
+    title?: string; // Заголовок блока
+    video?: string; // Ссылка на видео с Youtube.
+  }[];
   garminConnect?: string;
   komoot?: string;
   author: ObjectId;

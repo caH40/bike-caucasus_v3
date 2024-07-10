@@ -191,11 +191,13 @@ export class Trail {
     region,
     difficultyLevel,
     idUserDB,
+    search,
   }: {
     bikeType?: string | null;
     region?: string | null;
     difficultyLevel?: string | null;
     idUserDB?: string;
+    search?: string;
   }): Promise<ResponseServer<TTrailDto[] | null>> {
     try {
       // Подключение к БД.
@@ -211,12 +213,25 @@ export class Trail {
       if (difficultyLevel) {
         query.difficultyLevel = difficultyLevel;
       }
+      const regex = new RegExp(search || '', 'i'); // 'i' флаг делает поиск регистронезависимым
 
       // Получаем информацию о маршруте из БД.
       const trailsDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
         isLikedByUser: boolean;
         commentsCount: number;
-      })[] = await TrailModel.find(query)
+      })[] = await TrailModel.find({
+        ...query,
+        $or: [
+          { title: { $regex: regex } },
+          { region: { $regex: regex } },
+          { startLocation: { $regex: regex } },
+          { turnLocation: { $regex: regex } },
+          { finishLocation: { $regex: regex } },
+          { 'blocks.text': { $regex: regex } },
+          { 'blocks.title': { $regex: regex } },
+          { hashtags: { $regex: regex } },
+        ],
+      })
         .populate({
           path: 'author',
           select: [
@@ -231,6 +246,11 @@ export class Trail {
         }) // Получаем информацию об авторе маршрута
         // .populate({ path: 'comments' }) // Нет модели/описания типов.
         .lean();
+
+      // Фильтрация найденных маршрутов по ключевому слову search.
+      // const trailsFiltered = trailsDB.filter((trail) =>
+      //   trail.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      // );
 
       if (idUserDB) {
         trailsDB.forEach((trail) => {

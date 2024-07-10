@@ -17,9 +17,10 @@ type TGetTrails = {
   bikeType: string | null;
   region: string | null;
   difficultyLevel: string | null;
+  search: string;
 };
 
-export async function getTrails({ bikeType, region, difficultyLevel }: TGetTrails) {
+export async function getTrails({ bikeType, region, difficultyLevel, search }: TGetTrails) {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -29,6 +30,7 @@ export async function getTrails({ bikeType, region, difficultyLevel }: TGetTrail
       region,
       difficultyLevel,
       idUserDB: session?.user.idDB,
+      search,
     });
     return trails;
   } catch (error) {

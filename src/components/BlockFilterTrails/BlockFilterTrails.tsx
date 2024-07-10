@@ -13,6 +13,7 @@ import styles from './BlockFilterTrails.module.css';
 import IconArrowTrendingUp from '../Icons/IconArrowTrendingUp';
 import IconArrowTrendingDown from '../Icons/IconArrowTrendingDown';
 import { Transition } from 'react-transition-group';
+import BoxInputSimple from '../UI/BoxInput/BoxInputSimple';
 
 type Props = {
   bikeType: string;
@@ -25,6 +26,8 @@ type Props = {
   setSortDirection: Dispatch<SetStateAction<string>>;
   sortTarget: string;
   setSortTarget: Dispatch<SetStateAction<string>>;
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
   hasFilters?: boolean;
   resetFilters: () => void;
   quantityTrails: number | undefined;
@@ -46,6 +49,8 @@ export default function BlockFilterTrails({
   setSortDirection,
   sortTarget,
   setSortTarget,
+  search,
+  setSearch,
 }: Props) {
   const [isVisibleFilters, setIsVisibleFilters] = useState<boolean>(false);
   const nodeRef = useRef(null);
@@ -114,6 +119,7 @@ export default function BlockFilterTrails({
                 </div>
               </div>
 
+              {/* Сортировка карточек */}
               <div className={styles.block__filters}>
                 <div className={styles.type}>
                   <SelectCustom
@@ -131,6 +137,18 @@ export default function BlockFilterTrails({
                 >
                   {sortDirection === 'up' ? <IconArrowTrendingUp /> : <IconArrowTrendingDown />}
                 </button>
+              </div>
+
+              {/* поиск по ключевому слову */}
+              <div className={styles.block__filters}>
+                <BoxInputSimple
+                  handlerInput={setSearch}
+                  label="Поиск"
+                  value={search}
+                  type="text"
+                  id="searchTrail"
+                  autoComplete="off"
+                />
               </div>
 
               <div className={styles.block__reset}>

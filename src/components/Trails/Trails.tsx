@@ -19,10 +19,13 @@ type Props = {
     region,
     // eslint-disable-next-line no-unused-vars
     difficultyLevel,
+    // eslint-disable-next-line no-unused-vars
+    search,
   }: {
     bikeType: string;
     region: string;
     difficultyLevel: string;
+    search: string;
   }) => Promise<ResponseServer<TTrailDto[] | null> | undefined>;
 };
 
@@ -37,11 +40,13 @@ export default function Trails({ getTrails }: Props) {
   const [difficultyLevel, setDifficultyLevel] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<string>('');
   const [sortTarget, setSortTarget] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
 
   const hasFilters = useActiveFiltersTrails({
     bikeType,
     region,
     difficultyLevel,
+    search,
   });
 
   useLSTrailsInit({
@@ -95,13 +100,14 @@ export default function Trails({ getTrails }: Props) {
       bikeType: bikeType === 'нет фильтров' ? '' : bikeType,
       region: region === 'нет фильтров' ? '' : region,
       difficultyLevel: difficultyLevel === 'нет фильтров' ? '' : difficultyLevel,
+      search,
     };
 
     // Если приходит значение 'нет фильтров', то запрашивать все данные, то есть ''.
     getTrails(query).then((res) => {
       setTrails(res?.data);
     });
-  }, [getTrails, bikeType, region, difficultyLevel, isFirstMounting]);
+  }, [getTrails, bikeType, region, difficultyLevel, isFirstMounting, search]);
 
   const resetFilters = () => {
     setBikeType('нет фильтров');
@@ -125,6 +131,8 @@ export default function Trails({ getTrails }: Props) {
         setSortDirection={setSortDirection}
         sortTarget={sortTarget}
         setSortTarget={setSortTarget}
+        search={search}
+        setSearch={setSearch}
       />
       <div className={styles.wrapper}>
         {sortedTrails &&

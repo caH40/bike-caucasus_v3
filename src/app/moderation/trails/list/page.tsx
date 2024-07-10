@@ -18,6 +18,7 @@ export default async function TrailsListPage() {
     bikeType: null,
     region: null,
     difficultyLevel: null,
+    search: '',
   });
 
   return (
