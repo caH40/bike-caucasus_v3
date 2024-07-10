@@ -197,12 +197,13 @@ export class Trail {
     region?: string | null;
     difficultyLevel?: string | null;
     idUserDB?: string;
-    search?: string;
+    search?: string; // Ключевое слово по которому происходит поиск маршрутов.
   }): Promise<ResponseServer<TTrailDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
+      // Формирование строки для запроса маршрутов из БД.
       const query = {} as { bikeType?: string; region?: string; difficultyLevel?: string };
       if (bikeType) {
         query.bikeType = bikeType;
@@ -213,6 +214,8 @@ export class Trail {
       if (difficultyLevel) {
         query.difficultyLevel = difficultyLevel;
       }
+
+      // Регулярное выражение для поиска маршрута в котором есть ключевое слово search.
       const regex = new RegExp(search || '', 'i'); // 'i' флаг делает поиск регистронезависимым
 
       // Получаем информацию о маршруте из БД.

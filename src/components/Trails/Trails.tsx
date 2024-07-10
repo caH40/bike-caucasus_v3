@@ -113,6 +113,7 @@ export default function Trails({ getTrails }: Props) {
     setBikeType('нет фильтров');
     setRegion('нет фильтров');
     setDifficultyLevel('нет фильтров');
+    setSearch('');
   };
 
   return (
