@@ -112,12 +112,12 @@ export function generateMetadataWebcam(): Metadata {
 }
 
 /**
- * Метаданные для страницы Новость "/trails/[urlSlug]".
+ * Метаданные для страницы Маршруты "/trails".
  */
 export async function generateMetadataTrails(): Promise<Metadata> {
   const title = 'Захватывающие велосипедные маршруты по Кавказу';
   const description =
-    'Велосипедные маршруты по Ставропольскому краю, республикам Карачаево-Черкессия, Кабардино-Балкария, Северная Осетия для шоссейных, гравийных и горных байков.';
+    'Велосипедные маршруты по региону Кавказские Минеральные Воды, республикам Карачаево-Черкессия, Кабардино-Балкария, Северная Осетия для шоссейных, гравийных и горных байков.';
 
   return {
     title,
@@ -133,7 +133,7 @@ export async function generateMetadataTrails(): Promise<Metadata> {
 }
 
 /**
- * Метаданные для страницы Новость "/trails/[urlSlug]".
+ * Метаданные для страницы Маршрут "/trails/[urlSlug]".
  */
 export async function generateMetadataTrail({ params }: Props): Promise<Metadata> {
   const urlSlug = params.urlSlug;
@@ -147,8 +147,8 @@ export async function generateMetadataTrail({ params }: Props): Promise<Metadata
   const region = regions.find((region) => region.name === trail.region)?.translation || '';
   const bikeType = bikeTypes.find((type) => type.name === trail.bikeType)?.translation || '';
 
-  const title = `${trail.title} - Велосипедный маршрут в регионе ${region}`;
-  const description = `Откройте для себя велосипедный маршрут ${trail.title}, пролегающий в ${region}. Старт из ${trail.startLocation}, с разворотом в ${trail.turnLocation}. Идеально для ${bikeType} велосипед.`;
+  const title = `${trail.title} - Велосипедный маршрут со стартом из ${trail.startLocation}`;
+  const description = `Откройте для себя велосипедный маршрут ${trail.title}, пролегающий в регионе ${region} со стартом из  ${trail.startLocation}. Маршрут для типа велосипеда - ${bikeType}.`;
 
   return {
     title,
@@ -164,7 +164,7 @@ export async function generateMetadataTrail({ params }: Props): Promise<Metadata
 }
 
 /**
- * Метаданные для страницы Новость "/calendar".
+ * Метаданные для страницы Календарь "/calendar".
  */
 export function generateMetadataCalendar(): Metadata {
   const title = `Календарь соревнований на Кавказе по велоспорту в дисциплинах: кросскантри, шоссе и грэвел`;
