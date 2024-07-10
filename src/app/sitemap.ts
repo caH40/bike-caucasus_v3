@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${host}/calendar`,
-      changeFrequency: 'daily',
+      changeFrequency: 'weekly',
       priority: 0.5,
     },
     ...profilesSitemap, // profile
@@ -83,7 +83,7 @@ async function generateSitemapNewsPages(): Promise<MetadataRoute.Sitemap> {
       (newsOne) => ({
         url: `${host}/news/${newsOne.urlSlug}`,
         lastModified: newsOne.updatedAt,
-        changeFrequency: 'hourly',
+        changeFrequency: 'monthly',
         priority: 1,
       })
     );
@@ -105,7 +105,7 @@ async function generateSitemapTrailPages(): Promise<MetadataRoute.Sitemap> {
     const trailsSitemap: MetadataRoute.Sitemap = (trails.data || []).map((trail) => ({
       url: `${host}/trails/${trail.urlSlug}`,
       lastModified: trail.updatedAt,
-      changeFrequency: 'weekly',
+      changeFrequency: 'monthly',
       priority: 0.6,
     }));
 
