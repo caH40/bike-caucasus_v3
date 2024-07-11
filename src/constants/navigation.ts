@@ -1,6 +1,10 @@
 import IconAdmin from '@/components/Icons/IconAdmin';
+import IconDelete from '@/components/Icons/IconDelete';
+import IconEditOld from '@/components/Icons/IconEditOld';
 import IconUser from '@/components/Icons/IconUser';
 import IconWrench from '@/components/Icons/IconWrench';
+import { deleteItem } from '@/components/UI/BlockModeration/delete';
+import type { TMenuOnPage } from '@/types/index.interface';
 
 // навигация по страницам
 export const navLinksFull = [
@@ -55,5 +59,27 @@ export const getNavLinksUserPopup = (userId: string | undefined) => [
     href: '/admin',
     permission: 'admin',
     icon: IconAdmin,
+  },
+];
+
+/**
+ * Меню навигации для управления новостью в меню Popup.
+ */
+export const getNavLinksNewsPopup = (urlSlug: string): TMenuOnPage[] => [
+  {
+    id: 0,
+    name: 'Редактирование',
+    href: `/moderation/news/edit/${urlSlug}`,
+    permission: 'admin',
+    icon: IconEditOld,
+    classes: [],
+  },
+  {
+    id: 1,
+    name: 'Удаление',
+    onClick: () => deleteItem({ type: 'news', urlSlug }),
+    permission: 'admin',
+    icon: IconDelete,
+    classes: [],
   },
 ];

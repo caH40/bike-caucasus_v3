@@ -3,18 +3,20 @@
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
-import styles from './PopupMenu.module.css';
 import { getNavLinksUserPopup } from '@/constants/navigation';
 import { usePopupUserStore } from '@/store/popup-user';
 import PermissionCheck from '@/hoc/permission-check';
+import styles from './PopupMenu.module.css';
 
+/**
+ * Popup меню у профиля пользователя.
+ */
 export default function PopupMenu() {
   const { data: session } = useSession();
   const { isVisible, setMenu } = usePopupUserStore();
 
   return (
     isVisible && (
-      // <div className={styles.wrapper} onClick={() => setMenu(false)}>
       <div
         className={styles.popup}
         onClick={() => setMenu(false)}
@@ -34,7 +36,6 @@ export default function PopupMenu() {
           ))}
         </ul>
       </div>
-      // </div>
     )
   );
 }

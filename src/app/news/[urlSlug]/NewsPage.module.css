@@ -4,6 +4,14 @@
   grid-template-columns: 1fr 468px;
   letter-spacing: 0.08rem;
 }
+.wrapper__main {
+  position: relative;
+}
+.ellipsis {
+  position: absolute;
+  top: 1rem;
+  right: 3px;
+}
 .author {
   display: flex;
   justify-content: flex-end;
@@ -37,6 +45,10 @@
 }
 .block__img {
   text-align: right;
+}
+.block__edit {
+  text-align: right;
+  padding: 0.5rem 0;
 }
 .content__box__img {
   position: relative;

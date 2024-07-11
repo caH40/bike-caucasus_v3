@@ -1,3 +1,5 @@
+'use client';
+
 import useHasAccess from '@/hooks/useHasAccess';
 
 type Props = {

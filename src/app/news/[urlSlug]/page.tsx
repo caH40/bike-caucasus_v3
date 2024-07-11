@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { getServerSession } from 'next-auth';
+import Link from 'next/link';
 
 import Author from '@/components/Author/Author';
 import BlockShare from '@/components/BlockShare/BlockShare';
@@ -8,8 +9,6 @@ import { News } from '@/services/news';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { generateMetadataNews } from '@/meta/meta';
 import { errorLogger } from '@/errors/error';
-import type { TNewsGetOneDto } from '@/types/dto.types';
-import styles from './NewsPage.module.css';
 import { notFound } from 'next/navigation';
 import { blurBase64 } from '@/libs/image';
 import AdContainer from '@/components/AdContainer/AdContainer';
@@ -17,7 +16,10 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 import BlockComments from '@/components/BlockComments/BlockComments';
 import { getComments } from '@/actions/comment';
-import Link from 'next/link';
+import MenuForNews from '@/components/UI/Menu/MenuControl/MenuForNews';
+import type { TNewsGetOneDto } from '@/types/dto.types';
+import styles from './NewsPage.module.css';
+import PermissionCheck from '@/hoc/permission-check';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -94,6 +96,13 @@ export default async function NewsPage({ params }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
+        {/* popup меня управления новостью */}
+        <PermissionCheck permission={'admin'}>
+          <div className={styles.ellipsis} id="popup-control-menu-news">
+            <MenuForNews newsUrlSlug={newsOne.urlSlug} />
+          </div>
+        </PermissionCheck>
+
         <Wrapper title={newsOne.title} hSize={1}>
           {/*Блок об авторе новости и дате создания. */}
           <div className={styles.author}>
@@ -180,8 +189,16 @@ export default async function NewsPage({ params }: Props) {
             />
           </div>
           <hr className={styles.line} />
+
+          {/* Поделится в социальных сетях */}
           <BlockShare title={'Поделиться'} />
           <hr className={styles.line} />
+
+          <div className={styles.block__edit}>
+            <Link href={`/moderation/news/edit/${newsOne.urlSlug}`} className="link__news">
+              Редактировать
+            </Link>
+          </div>
 
           {/* Блок комментариев */}
           <div className={styles.block__comments}>
