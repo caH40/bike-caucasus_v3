@@ -3,6 +3,9 @@
   grid-gap: 1rem 20px;
   grid-template-columns: 1fr 468px;
 }
+.wrapper__main {
+  position: relative;
+}
 .wrapper__aside {
   margin-top: 39px;
 }

@@ -83,3 +83,25 @@ export const getNavLinksNewsPopup = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
   },
 ];
+
+/**
+ * Меню навигации для управления Маршрутом в меню Popup.
+ */
+export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
+  {
+    id: 0,
+    name: 'Редактирование',
+    href: `/moderation/trails/edit/${urlSlug}`,
+    permission: 'admin',
+    icon: IconEditOld,
+    classes: [],
+  },
+  {
+    id: 1,
+    name: 'Удаление',
+    onClick: () => deleteItem({ type: 'trails', urlSlug }),
+    permission: 'admin',
+    icon: IconDelete,
+    classes: [],
+  },
+];

@@ -22,6 +22,8 @@ import Weather from '@/components/Weather/Weather';
 import Author from '@/components/Author/Author';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 import styles from './TrailPage.module.css';
+import PermissionCheck from '@/hoc/permission-check';
+import MenuForTrail from '@/components/UI/Menu/MenuControl/MenuForTrail';
 
 const cx = cn.bind(styles);
 
@@ -57,100 +59,106 @@ export default async function TrailPage({ params }: Props) {
     idUserDB,
   });
 
-  // console.log(weather);
-
   return (
-    <Wrapper
-      title={`${trail.title} - велосипедный маршрут в регионе ${
-        regions.find((region) => region.name === trail.region)?.translation || ''
-      }`}
-    >
-      <div className={styles.main}>
-        <div className={styles.author}>
-          <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
+    <>
+      {/* popup меня управления новостью */}
+      <PermissionCheck permission={'admin'}>
+        <div className={styles.ellipsis} id="popup-control-menu-trail">
+          <MenuForTrail trailUrlSlug={trail.urlSlug} />
         </div>
-
-        {/* Изображение-обложка новости. */}
-        <div className={styles.box__img}>
-          <Image
-            src={trail.poster}
-            fill={true}
-            sizes="(max-width: 992px) 100vw, 70vw"
-            alt={`image ${trail.title}`}
-            className={styles.img}
-            priority={true}
-            blurDataURL={blurBase64}
-            placeholder="blur"
-          />
-        </div>
-        <div className={styles.content}>
-          {trail.blocks.map(async (block) => (
-            <article className={cx('wrapper__block')} key={block._id}>
-              <h2 className={styles.block__title}>{block.title}</h2>
-              <div
-                className={cx('block__text', { full: !block.image })}
-                dangerouslySetInnerHTML={{ __html: block.text }}
-              />
-
-              {block.image && (
-                <figure>
-                  <div className={styles.block__box__img}>
-                    <Image
-                      src={block.image}
-                      fill={true}
-                      sizes="(max-width: 992px) 100vw 33vw"
-                      alt={`image ${block.imageTitle}`}
-                      className={styles.block__img}
-                      blurDataURL={blurBase64}
-                      placeholder="blur"
-                    />
-                  </div>
-                  <figcaption className={styles.figcaption}>{block.imageTitle}</figcaption>
-                </figure>
-              )}
-            </article>
-          ))}
-        </div>
-
-        <TitleAndLine hSize={2} title={`Карта и профиль высоты маршрута ${trail.title}`} />
-        <div className={styles.box__map}>
-          <MapWithElevation url={trail.trackGPX} />
-        </div>
-
-        <TrailTotal trail={trail} />
-
-        {weather && (
-          <div className={styles.box__weather}>
-            <Weather weather={weather} startLocation={trail.startLocation} />
+      </PermissionCheck>
+      <Wrapper
+        title={`${trail.title} - велосипедный маршрут в регионе ${
+          regions.find((region) => region.name === trail.region)?.translation || ''
+        }`}
+      >
+        <div className={styles.main}>
+          <div className={styles.author}>
+            <Author data={{ author: trail.author, createdAt: trail.createdAt }} />
           </div>
-        )}
 
-        {/* Интерактивный блок. */}
-        <div className={styles.interactive}>
-          <InteractiveBlock
-            likesCount={trail.count.likes}
-            isLikedByUser={trail.isLikedByUser}
-            viewsCount={trail.count.views}
-            idDocument={trail._id}
-            commentsCount={comments.length}
-            target="trail"
-          />
-        </div>
-        <hr className={styles.line} />
-        <BlockShare title={'Поделиться'} />
-        <hr className={styles.line} />
+          {/* Изображение-обложка новости. */}
+          <div className={styles.box__img}>
+            <Image
+              src={trail.poster}
+              fill={true}
+              sizes="(max-width: 992px) 100vw, 70vw"
+              alt={`image ${trail.title}`}
+              className={styles.img}
+              priority={true}
+              blurDataURL={blurBase64}
+              placeholder="blur"
+            />
+          </div>
+          <div className={styles.content}>
+            {trail.blocks.map(async (block) => (
+              <article className={cx('wrapper__block')} key={block._id}>
+                <h2 className={styles.block__title}>{block.title}</h2>
+                <div
+                  className={cx('block__text', { full: !block.image })}
+                  dangerouslySetInnerHTML={{ __html: block.text }}
+                />
 
-        {/* Блок комментариев */}
-        <div className={styles.block__comments}>
-          <BlockComments
-            comments={comments}
-            authorId={trail.author.id}
-            userId={session?.user.id ? +session?.user.id : null}
-            document={{ _id: trail._id, type: 'trail' }}
-            idUserDB={idUserDB}
-          />
+                {block.image && (
+                  <figure>
+                    <div className={styles.block__box__img}>
+                      <Image
+                        src={block.image}
+                        fill={true}
+                        sizes="(max-width: 992px) 100vw 33vw"
+                        alt={`image ${block.imageTitle}`}
+                        className={styles.block__img}
+                        blurDataURL={blurBase64}
+                        placeholder="blur"
+                      />
+                    </div>
+                    <figcaption className={styles.figcaption}>{block.imageTitle}</figcaption>
+                  </figure>
+                )}
+              </article>
+            ))}
+          </div>
+
+          <TitleAndLine hSize={2} title={`Карта и профиль высоты маршрута ${trail.title}`} />
+          <div className={styles.box__map}>
+            <MapWithElevation url={trail.trackGPX} />
+          </div>
+
+          <TrailTotal trail={trail} />
+
+          {weather && (
+            <div className={styles.box__weather}>
+              <Weather weather={weather} startLocation={trail.startLocation} />
+            </div>
+          )}
+
+          {/* Интерактивный блок. */}
+          <div className={styles.interactive}>
+            <InteractiveBlock
+              likesCount={trail.count.likes}
+              isLikedByUser={trail.isLikedByUser}
+              viewsCount={trail.count.views}
+              idDocument={trail._id}
+              commentsCount={comments.length}
+              target="trail"
+            />
+          </div>
+          <hr className={styles.line} />
+          <BlockShare title={'Поделиться'} />
+          <hr className={styles.line} />
+
+          {/* Блок комментариев */}
+          <div className={styles.block__comments}>
+            <BlockComments
+              comments={comments}
+              authorId={trail.author.id}
+              userId={session?.user.id ? +session?.user.id : null}
+              document={{ _id: trail._id, type: 'trail' }}
+              idUserDB={idUserDB}
+            />
+          </div>
         </div>
-      </div>
-    </Wrapper>
+      </Wrapper>
+    </>
   );
 }
