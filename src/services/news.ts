@@ -152,11 +152,11 @@ export class News {
       }
 
       // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
-      if (Date.now() - new Date(newsDB?.createdAt).getTime() > millisecondsIn3Days) {
-        throw new Error(
-          'Нельзя редактировать новость, которая была создана больше 3 дней назад!'
-        );
-      }
+      // if (Date.now() - new Date(newsDB?.createdAt).getTime() > millisecondsIn3Days) {
+      //   throw new Error(
+      //     'Нельзя редактировать новость, которая была создана больше 3 дней назад!'
+      //   );
+      // }
 
       const suffixForSave = 'news_image_title-';
       // Обновление изображения для Постера новости, если оно загружено.
