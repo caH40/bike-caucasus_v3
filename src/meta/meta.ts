@@ -148,7 +148,7 @@ export async function generateMetadataTrail({ params }: Props): Promise<Metadata
   const bikeType = bikeTypes.find((type) => type.name === trail.bikeType)?.translation || '';
 
   const title = `${trail.title} - Велосипедный маршрут со стартом из ${trail.startLocation}`;
-  const description = `Откройте для себя велосипедный маршрут ${trail.title}, пролегающий в регионе ${region} со стартом из  ${trail.startLocation}. Маршрут для типа велосипеда - ${bikeType}.`;
+  const description = `На велосипеде ${trail.title}, маршрут пролегает в регионе ${region} со стартом из ${trail.startLocation}. Маршрут для типа велосипеда - ${bikeType}.`;
 
   return {
     title,
