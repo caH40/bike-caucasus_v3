@@ -37,7 +37,7 @@ export default async function Home() {
             <BlockNewsImportant />
 
             <div className={cx('gap__aside', 'block__ad-mobile')}>
-              <AdContainer adsNumber={8} />
+              <AdContainer adsNumber={13} />
             </div>
 
             <BlockNews idUserDB={session?.user.idDB} />
