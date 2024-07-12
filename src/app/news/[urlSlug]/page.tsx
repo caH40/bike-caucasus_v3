@@ -194,12 +194,6 @@ export default async function NewsPage({ params }: Props) {
           <BlockShare title={'Поделиться'} />
           <hr className={styles.line} />
 
-          <div className={styles.block__edit}>
-            <Link href={`/moderation/news/edit/${newsOne.urlSlug}`} className="link__news">
-              Редактировать
-            </Link>
-          </div>
-
           {/* Блок комментариев */}
           <div className={styles.block__comments}>
             <BlockComments
