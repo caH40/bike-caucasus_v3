@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className={cn(roboto.className, montserrat_Alternates.variable, 'body')}>
         {/* <!-- Yandex.Metrika counter --> */}
 
-        <Script id="metrika-counter" strategy="afterInteractive">
+        {/* <Script id="metrika-counter" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
               m[i].l=1*new Date();
               for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
@@ -40,7 +40,7 @@ export default function RootLayout({
                     accurateTrackBounce:true,
                     webvisor:false
               });`}
-        </Script>
+        </Script> */}
 
         <Script
           id="yandex-ads-init"
