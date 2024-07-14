@@ -114,7 +114,7 @@ export default async function NewsPage({ params }: Props) {
             <Image
               src={newsOne.poster}
               fill={true}
-              sizes="(max-width: 992px) 100vw, 70vw"
+              sizes="(max-width: 992px) 30vw, 70vw"
               alt={`image ${newsOne.title}`}
               className={styles.img}
               priority={true}
@@ -142,7 +142,7 @@ export default async function NewsPage({ params }: Props) {
                         fill={true}
                         src={block.image}
                         alt={`Картинка к блоку ${block.position}`}
-                        sizes="(max-width: 992px) 100vw, 50vw"
+                        sizes="(max-width: 992px) 30vw, 50vw"
                         className={styles.content__img}
                         placeholder="blur"
                         blurDataURL={blurBase64}
