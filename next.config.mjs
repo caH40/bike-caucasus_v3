@@ -16,13 +16,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'sun89-2.userapi.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'sun1-97.userapi.com',
+        hostname: '**.userapi.com',
         port: '',
         pathname: '/**',
       },
