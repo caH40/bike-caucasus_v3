@@ -5,6 +5,7 @@ import { errorHandlerClient } from '@/actions/error-handler';
 import { parseError } from '@/errors/parse';
 import { TPermissionDto } from '@/types/dto.types';
 import { ResponseServer } from '@/types/index.interface';
+import { revalidatePath } from 'next/cache';
 
 const permissionsService = new PermissionsService();
 
@@ -27,7 +28,7 @@ export async function getPermissions(): Promise<TPermissionDto[] | null> {
 }
 
 /**
- * Серверный экшен получения создания Разрешения (доступа) к ресурсам сайта.
+ * Серверный экшен создания Разрешения (доступа) к ресурсам сайта.
  */
 export async function postPermission({
   name,
@@ -39,9 +40,31 @@ export async function postPermission({
   try {
     const res = await permissionsService.post({ name, description });
 
+    revalidatePath('/admin/roles');
+
     return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return { data: null, ok: false, message: 'Ошибка в серверном экшене postPermission' };
+  }
+}
+
+/**
+ * Серверный экшен удаления Разрешения (доступа) к ресурсам сайта.
+ */
+export async function deletePermission({
+  _id,
+}: {
+  _id: string;
+}): Promise<ResponseServer<null>> {
+  try {
+    const res = await permissionsService.delete({ _id });
+
+    revalidatePath('/admin/roles');
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return { data: null, ok: false, message: 'Ошибка в серверном экшене deletePermission' };
   }
 }
