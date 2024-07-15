@@ -14,7 +14,6 @@ import IconAdd from '@/components/Icons/IconAdd';
 import IconUsers from '@/components/Icons/IconUsers';
 import IconLog from '@/components/Icons/IconLog';
 import IconRole from '@/components/Icons/IconRole';
-import IconPermissions from '@/components/Icons/IconPermissions';
 import type { TMenuOnPage } from '@/types/index.interface';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
@@ -171,14 +170,6 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     permission: 'admin', // Для администратора сайта.
     icon: IconLog,
   },
-  {
-    id: 4,
-    name: 'Разрешения',
-    classes: [],
-    href: '/admin/permissions',
-    permission: 'admin', // Для администратора сайта.
-    icon: IconPermissions,
-  },
 ];
 
 // Кнопки для меню на странице Модерация календаря /moderation/calendar
@@ -205,6 +196,34 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
     classes: [],
     href: '/moderation/calendar/list',
     permission: 'moderation.calendar.list',
+    icon: IconView,
+  },
+];
+
+// Кнопки для меню на странице Модерация маршрута /moderation/trails
+export const buttonsMenuAdminRolesPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Создание',
+    classes: [],
+    href: '/admin/roles/create',
+    permission: 'admin',
+    icon: IconCreate,
+  },
+  {
+    id: 1,
+    name: 'Редактирование',
+    classes: [],
+    href: '/admin/roles/edit',
+    permission: 'admin',
+    icon: IconEdit,
+  },
+  {
+    id: 2,
+    name: 'Список Разрешений',
+    classes: [],
+    href: '/admin/roles/list',
+    permission: 'admin',
     icon: IconView,
   },
 ];

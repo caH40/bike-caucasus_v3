@@ -3,6 +3,10 @@ import { Logger } from '@/services/logger';
 import type { TGetErrorsDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import styles from './LogsErrorsPage.module.css';
+import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
+import { buttonsMenuAdminPage } from '@/constants/menu';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import IconLog from '@/components/Icons/IconLog';
 
 /**
  * Получает список ошибок из логов.
@@ -23,9 +27,14 @@ async function getLogsError(): Promise<ResponseServer<TGetErrorsDto[] | null>> {
 export default async function LogsErrorsPage(): Promise<JSX.Element> {
   const logsData = await getLogsError();
   return (
-    <>
-      <h1 className={styles.title}>Логирование ошибок</h1>
-      <TableLogsErrors logs={logsData.data || []} />
-    </>
+    <div className={styles.wrapper}>
+      <aside className={styles.aside__left}>
+        <MenuOnPage buttons={buttonsMenuAdminPage} />
+      </aside>
+      <div className={styles.main}>
+        <TitleAndLine Icon={IconLog} title="Логирование ошибок" hSize={1} />
+        <TableLogsErrors logs={logsData.data || []} />
+      </div>
+    </div>
   );
 }
