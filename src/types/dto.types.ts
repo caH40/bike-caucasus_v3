@@ -123,3 +123,12 @@ export type TCommentDto = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Dto Разрешения (доступа) к ресурсам сайта.
+ */
+export type TPermissionDto = {
+  _id: string;
+  name: string;
+  description: string;
+};

@@ -1,13 +1,11 @@
-.wrapper {
-  display: grid;
-  gap: 1rem 20px;
-  grid-template-columns: 300px 1fr;
-}
-.main {
-  overflow: hidden;
-}
 .content {
   letter-spacing: 0.08rem;
+}
+.title {
+  margin-bottom: 1rem;
+}
+.paragraph {
+  margin-bottom: 1rem;
 }
 
 /* ====================================================================== */

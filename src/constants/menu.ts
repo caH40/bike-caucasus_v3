@@ -13,8 +13,8 @@ import IconView from '@/components/Icons/IconView';
 import IconAdd from '@/components/Icons/IconAdd';
 import IconUsers from '@/components/Icons/IconUsers';
 import IconLog from '@/components/Icons/IconLog';
-import type { TMenuOnPage } from '@/types/index.interface';
 import IconRole from '@/components/Icons/IconRole';
+import type { TMenuOnPage } from '@/types/index.interface';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -197,5 +197,25 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
     href: '/moderation/calendar/list',
     permission: 'moderation.calendar.list',
     icon: IconView,
+  },
+];
+
+// Кнопки для меню на странице Модерация маршрута /moderation/trails
+export const buttonsMenuAdminRolesPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Список и Создание',
+    classes: [],
+    href: '/admin/roles/create',
+    permission: 'admin',
+    icon: IconCreate,
+  },
+  {
+    id: 1,
+    name: 'Редактирование',
+    classes: [],
+    href: '/admin/roles/edit',
+    permission: 'admin',
+    icon: IconEdit,
   },
 ];

@@ -10,4 +10,8 @@ export const translationForModeration = {
     m: 'новость',
     a: 'новости',
   },
+  permissions: {
+    m: 'разрешение',
+    a: 'разрешения',
+  },
 } as { [key: string]: any };

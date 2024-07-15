@@ -9,7 +9,7 @@ const cx = cn.bind(styles);
 
 type Props = {
   title: string;
-  hSize: 1 | 2 | 3 | 4 | 5 | 6;
+  hSize?: 1 | 2 | 3 | 4 | 5 | 6;
   Icon?: React.ComponentType<TIconProps>;
   hideLine?: boolean;
 };
@@ -23,7 +23,7 @@ type Props = {
  */
 export default function TitleAndLine({
   title,
-  hSize,
+  hSize = 1,
   Icon,
   hideLine = false,
 }: Props): JSX.Element {

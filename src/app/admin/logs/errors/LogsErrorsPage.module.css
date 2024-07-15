@@ -1,3 +1,18 @@
-.title {
-  margin-bottom: 1rem;
+.wrapper {
+  display: grid;
+  gap: 1rem 20px;
+  grid-template-columns: 300px 1fr;
+}
+.main {
+  overflow: hidden;
+}
+.content {
+  letter-spacing: 0.08rem;
+}
+
+/* ====================================================================== */
+@media (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
 }
