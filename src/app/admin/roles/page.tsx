@@ -14,16 +14,16 @@ export default async function RolesAdminPage() {
     >
       <div className={styles.content}>
         <h2 className={styles.title}>Основные функции:</h2>
-        <p className={styles.paragraph}>
+        <div className={styles.paragraph}>
           <h3>Создание, редактирование и удаление ролей</h3>
           <ul>
             <li>Создание новых ролей с указанием названия и описания.</li>
             <li>Редактирование существующих ролей для изменения их параметров.</li>
             <li>Удаление ролей, которые больше не нужны.</li>
           </ul>
-        </p>
+        </div>
 
-        <p className={styles.paragraph}>
+        <div className={styles.paragraph}>
           <h3>Управление разрешениями</h3>
           <ul>
             <li>
@@ -33,15 +33,15 @@ export default async function RolesAdminPage() {
             <li>Редактирование разрешений для обновления описания или прав доступа.</li>
             <li>Удаление устаревших разрешений.</li>
           </ul>
-        </p>
+        </div>
 
-        <p className={styles.paragraph}>
+        <div className={styles.paragraph}>
           <h3>Назначение ролей пользователям</h3>
           <ul>
             <li>Присвоение пользователю конкретной роли для управления его правами доступа.</li>
             <li>Просмотр и изменение текущих назначений ролей.</li>
           </ul>
-        </p>
+        </div>
 
         <div>
           <h3>Управление текущими настройками</h3>
@@ -51,11 +51,11 @@ export default async function RolesAdminPage() {
           </ul>
         </div>
 
-        <p className={styles.paragraph}>
+        <div className={styles.paragraph}>
           Эти функции обеспечивают гибкость и безопасность управления доступом к ресурсам сайта,
           позволяя администраторам точно настраивать права пользователей в соответствии с
           требованиями и изменениями в системе.
-        </p>
+        </div>
       </div>
     </Wrapper>
   );

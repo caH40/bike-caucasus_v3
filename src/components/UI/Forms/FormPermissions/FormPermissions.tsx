@@ -102,8 +102,8 @@ export default function FormPermissions({ permission }: Props) {
             message: 'Название Разрешения должно быть больше 10 символов',
           },
           maxLength: {
-            value: 100,
-            message: 'Название события не может быть больше 100 символов',
+            value: 400,
+            message: 'Название события не может быть больше 400 символов',
           },
         })}
         validationText={errors.description ? errors.description.message : ''}

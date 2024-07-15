@@ -7,7 +7,7 @@ import { getCalendarEvents } from '@/actions/calendar';
 export const dynamic = 'force-dynamic';
 
 /**
- * Страница создания/редактирования/удаления новости
+ * Страница создания/редактирования/удаления события в календаре.
  */
 export default async function ModerationCalendarLayout({
   children,

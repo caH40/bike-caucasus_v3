@@ -5,6 +5,8 @@ import FormPermissions from '@/components/UI/Forms/FormPermissions/FormPermissio
 import styles from './PermissionsPage.module.css';
 import { getPermissions } from '@/actions/permissions';
 
+export const dynamic = 'force-dynamic';
+
 type Props = {};
 
 export default async function PermissionsPage({}: Props) {
