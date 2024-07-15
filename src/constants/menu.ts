@@ -204,7 +204,7 @@ export const buttonsMenuModerationCalendarPage: TMenuOnPage[] = [
 export const buttonsMenuAdminRolesPage: TMenuOnPage[] = [
   {
     id: 0,
-    name: 'Создание',
+    name: 'Список и Создание',
     classes: [],
     href: '/admin/roles/create',
     permission: 'admin',
@@ -217,13 +217,5 @@ export const buttonsMenuAdminRolesPage: TMenuOnPage[] = [
     href: '/admin/roles/edit',
     permission: 'admin',
     icon: IconEdit,
-  },
-  {
-    id: 2,
-    name: 'Список Разрешений',
-    classes: [],
-    href: '/admin/roles/list',
-    permission: 'admin',
-    icon: IconView,
   },
 ];

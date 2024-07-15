@@ -28,7 +28,49 @@ export async function getPermissions(): Promise<TPermissionDto[] | null> {
 }
 
 /**
+ * Серверный экшен получения Разрешения (доступа) к ресурсам сайта.
+ */
+export async function getPermission({ _id }: { _id: string }): Promise<TPermissionDto | null> {
+  try {
+    const res = await permissionsService.getOne({ _id });
+
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
+
+    return res.data;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return null;
+  }
+}
+
+/**
  * Серверный экшен создания Разрешения (доступа) к ресурсам сайта.
+ */
+export async function putPermission({
+  _id,
+  name,
+  description,
+}: {
+  _id: string;
+  name: string;
+  description: string;
+}): Promise<ResponseServer<null>> {
+  try {
+    const res = await permissionsService.put({ _id, name, description });
+
+    revalidatePath('/admin/roles');
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return { data: null, ok: false, message: 'Ошибка в серверном экшене putPermission' };
+  }
+}
+
+/**
+ * Серверный экшен обновления данных Разрешения (доступа) к ресурсам сайта.
  */
 export async function postPermission({
   name,

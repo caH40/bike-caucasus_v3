@@ -132,7 +132,7 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
     } else if (fetchNewsEdited) {
       response = await fetchNewsEdited(formData);
     } else {
-      return toast.error('Не передана ни функция обновления, ни создания новости!');
+      return toast.error('Не передана ни функция обновления, ни функция создания!');
     }
 
     if (response.ok) {

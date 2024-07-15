@@ -30,7 +30,7 @@ export default function BlockTableControlAdmin({
     }
 
     if (type === 'permissions') {
-      router.push(`/moderation/${type}/edit/${id}`);
+      router.push(`/admin/roles/edit/${type}/${id}`);
     }
   };
 

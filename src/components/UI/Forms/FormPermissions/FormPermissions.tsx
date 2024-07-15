@@ -1,28 +1,26 @@
 'use client';
 
+import { toast } from 'sonner';
 import cn from 'classnames';
-
-import { TPermission } from '@/types/models.interface';
-import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import styles from '../Form.module.css';
-import { useLoadingStore } from '@/store/loading';
 import BoxInput from '../../BoxInput/BoxInput';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
-import { postPermission } from '@/actions/permissions';
 import Button from '../../Button/Button';
-import { toast } from 'sonner';
+import { useLoadingStore } from '@/store/loading';
+import { postPermission, putPermission } from '@/actions/permissions';
+import type { TPermissionDto } from '@/types/dto.types';
+import type { TPermission } from '@/types/models.interface';
+import styles from '../Form.module.css';
 
-type Props = {};
+type Props = {
+  permission?: TPermissionDto;
+};
 
 /**
  * Форма создания Разрешений (доступов) к ресурсам сайта.
  */
-export default function FormPermissions({}: Props) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-
+export default function FormPermissions({ permission }: Props) {
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
 
@@ -38,7 +36,16 @@ export default function FormPermissions({}: Props) {
     // Старт отображение спинера загрузки.
     setLoading(true);
 
-    const res = await postPermission(dataForm);
+    let res = {
+      data: null,
+      ok: false,
+      message: 'Не передана ни функция обновления, ни создания новости!',
+    };
+    if (permission) {
+      res = await putPermission({ _id: permission._id, ...dataForm });
+    } else {
+      res = await postPermission(dataForm);
+    }
 
     // Завершение отображение спинера загрузки.
     setLoading(false);
@@ -51,6 +58,7 @@ export default function FormPermissions({}: Props) {
       toast.error(res.message);
     }
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
       {/* Блок ввода Названия */}
@@ -59,7 +67,7 @@ export default function FormPermissions({}: Props) {
         id="name"
         autoComplete="off"
         type="text"
-        defaultValue={name}
+        defaultValue={permission?.name ? permission.name : ''}
         loading={isLoading}
         register={register('name', {
           required: 'Обязательное поле',
@@ -85,7 +93,7 @@ export default function FormPermissions({}: Props) {
         id="description"
         autoComplete="off"
         type="text"
-        defaultValue={description}
+        defaultValue={permission?.description ? permission.description : ''}
         loading={isLoading}
         register={register('description', {
           required: 'Обязательное поле',
@@ -103,7 +111,7 @@ export default function FormPermissions({}: Props) {
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
-        <Button name="Добавить" theme="green" loading={isLoading} />
+        <Button name={permission ? 'Обновить' : 'Добавить'} theme="green" loading={isLoading} />
       </div>
     </form>
   );
