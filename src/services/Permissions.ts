@@ -37,10 +37,14 @@ export class PermissionsService {
       const res = await PermissionModel.create({ name, description });
 
       if (!res) {
-        throw new Error('Разрешение (permission) не создано');
+        throw new Error(`Разрешение (permission) ${name} не создано`);
       }
 
-      return { data: null, ok: true, message: 'Разрешение (permission) успешно создано!' };
+      return {
+        data: null,
+        ok: true,
+        message: `Разрешение (permission)  ${name}  успешно создано!`,
+      };
     } catch (error) {
       await this.errorLogger(error);
       return this.handlerErrorDB(error);
