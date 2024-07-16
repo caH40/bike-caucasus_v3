@@ -1,0 +1,24 @@
+.input {
+  padding: 5px 10px;
+  min-width: 0;
+  flex: 0 0 180px;
+  height: 28px;
+  border: solid 1px var(--line);
+  border-radius: 3px;
+  text-align: left;
+
+  color: var(--main-color);
+  background-color: transparent;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.input:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
+}
+.input::placeholder {
+  font-weight: 400;
+  color: var(--white-50);
+}

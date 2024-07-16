@@ -3,7 +3,7 @@
 import { TPermissionDto } from '@/types/dto.types';
 import TablePermissions from '../Table/TablePermissions/TablePermissions';
 import FilterBoxForTable from '../UI/FilterBoxForTable/FilterBoxForTable';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './BlockTable.module.css';
 import { lcRecordsOnPage } from '@/constants/local-storage';
@@ -17,6 +17,8 @@ export default function BlockTable({ permissions }: Props) {
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
+
+  const [permissionsFiltered, setPermissionsFiltered] = useState(permissions || []);
 
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
@@ -33,6 +35,19 @@ export default function BlockTable({ permissions }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
+  useMemo(() => {
+    if (!permissions) {
+      return;
+    }
+    setPermissionsFiltered(
+      permissions.filter(
+        (elm) =>
+          elm.name.toLowerCase().includes(search.toLowerCase()) ||
+          elm.description.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, permissions]);
+
   return (
     <>
       <div className={styles.block__filter}>
@@ -44,7 +59,7 @@ export default function BlockTable({ permissions }: Props) {
           placeholder={'поиск'}
         />
       </div>
-      <TablePermissions permissions={permissions || []} docsOnPage={docsOnPage} />
+      <TablePermissions permissions={permissionsFiltered} docsOnPage={docsOnPage} />
     </>
   );
 }

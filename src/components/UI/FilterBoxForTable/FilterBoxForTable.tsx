@@ -3,6 +3,7 @@ import { Dispatch } from 'react';
 import PaginationSelect from '../PaginationSelect/PaginationSelect';
 // import PaginationInput from '../PaginationInput/PaginationInput';
 import styles from './FilterBoxForTable.module.css';
+import PaginationInput from '../PaginationInput/PaginationInput';
 
 type Props = {
   docsOnPage: number;
@@ -21,12 +22,7 @@ function FilterBoxForTable({
 }: Props) {
   return (
     <div className={styles.block}>
-      {/* <PaginationInput
-        search={search}
-        setSearch={setSearch}
-        placeholder={placeholder || ''}
-        setPage={setPage}
-      /> */}
+      <PaginationInput search={search} setSearch={setSearch} placeholder={placeholder || ''} />
       <PaginationSelect docsOnPage={docsOnPage} setDocsOnPage={setDocsOnPage} />
     </div>
   );
