@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 import Image from 'next/image';
 
@@ -24,6 +24,7 @@ const cx = cn.bind(styles);
 
 type Props = {
   trails: TTrailDto[];
+  docsOnPage: number;
   idUserDB: string | undefined; // _id Пользователя в БД.
 };
 
@@ -80,7 +81,7 @@ const columns: ColumnDef<TTrailDto & { index: number }>[] = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TableTrailList({ trails, idUserDB }: Props) {
+export default function TableTrailList({ trails, docsOnPage, idUserDB }: Props) {
   const isAdmin = useHasAccess('all'); // Админ может модерировать любые маршруты
   const data = useMemo(() => {
     return [...trails]
@@ -97,10 +98,15 @@ export default function TableTrailList({ trails, idUserDB }: Props) {
     initialState: {
       pagination: {
         pageIndex: 0, //custom initial page index
-        pageSize: 10, //custom default page size
+        pageSize: docsOnPage, //custom default page size
       },
     },
   });
+
+  useEffect(() => {
+    table.setPageSize(docsOnPage);
+    table.setPageIndex(0);
+  }, [docsOnPage, table]);
 
   return (
     <div className={styles.wrapper}>
@@ -138,6 +144,7 @@ export default function TableTrailList({ trails, idUserDB }: Props) {
           </tbody>
         </table>
       </div>
+
       <Pagination
         isFirstPage={!table.getCanPreviousPage()}
         isLastPage={!table.getCanNextPage()}

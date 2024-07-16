@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getTrails } from '@/actions/trail';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import TableTrailList from '@/components/Table/TableTrailList/TableTrailList';
 import IconRoute from '@/components/Icons/IconRoute';
+import ContainerTableTrailsModeration from '@/components/Table/Containers/TrailsModeration/ContainerTableTrailsModeration';
 
 /**
  * Страница со списком всех Маршрутов для редактирования.
@@ -28,9 +28,10 @@ export default async function TrailsListPage() {
         title="Список маршрутов, созданных пользователем"
         Icon={IconRoute}
       />
-      {responseWithTrails.data && (
-        <TableTrailList trails={responseWithTrails.data} idUserDB={session?.user.idDB} />
-      )}
+      <ContainerTableTrailsModeration
+        trails={responseWithTrails.data}
+        idUserDB={session?.user.idDB}
+      />
     </>
   );
 }

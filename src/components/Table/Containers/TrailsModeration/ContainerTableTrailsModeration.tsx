@@ -2,23 +2,26 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { TPermissionDto } from '@/types/dto.types';
 import { lcRecordsOnPage } from '@/constants/local-storage';
-import TablePermissions from '../../TablePermissions/TablePermissions';
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
-import styles from './ContainerTablePermissions.module.css';
+import TableTrailList from '../../TableTrailList/TableTrailList';
+import { TTrailDto } from '@/types/dto.types';
+import styles from './ContainerTableTrailsModeration.module.css';
 
-type Props = { permissions: TPermissionDto[] | null };
+type Props = {
+  trails: TTrailDto[] | null;
+  idUserDB: string | undefined;
+};
 
 /**
  * Блок для таблиц и их управления, что бы был один клиентский компонент.
  */
-export default function ContainerTablePermissions({ permissions }: Props) {
+export default function ContainerTableTrailsModeration({ trails, idUserDB }: Props) {
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [permissionsFiltered, setPermissionsFiltered] = useState(permissions || []);
+  const [trailsFiltered, settTailsFiltered] = useState(trails || []);
 
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
@@ -36,17 +39,17 @@ export default function ContainerTablePermissions({ permissions }: Props) {
   }, [docsOnPage]);
 
   useMemo(() => {
-    if (!permissions) {
+    if (!trails) {
       return;
     }
-    setPermissionsFiltered(
-      permissions.filter(
+    settTailsFiltered(
+      trails.filter(
         (elm) =>
-          elm.name.toLowerCase().includes(search.toLowerCase()) ||
-          elm.description.toLowerCase().includes(search.toLowerCase())
+          elm.author.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+          elm.title.toLowerCase().includes(search.toLowerCase())
       )
     );
-  }, [search, permissions]);
+  }, [search, trails]);
 
   return (
     <>
@@ -61,7 +64,7 @@ export default function ContainerTablePermissions({ permissions }: Props) {
       </div>
 
       {/* Таблица */}
-      <TablePermissions permissions={permissionsFiltered} docsOnPage={docsOnPage} />
+      <TableTrailList trails={trailsFiltered} docsOnPage={docsOnPage} idUserDB={idUserDB} />
     </>
   );
 }
