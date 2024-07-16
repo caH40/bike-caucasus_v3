@@ -1,5 +1,5 @@
 import { getPermissions } from '@/actions/permissions';
-import BlockTable from '@/components/BlockTable/BlockTable';
+import ContainerTablePermissions from '@/components/Table/Containers/Permissions/ContainerTablePermissions';
 import IconCreate from '@/components/Icons/IconCreate';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormPermissions from '@/components/UI/Forms/FormPermissions/FormPermissions';
@@ -21,7 +21,7 @@ export default async function PermissionsPage({}: Props) {
         <FormPermissions />
       </div>
 
-      <BlockTable permissions={permissions} />
+      <ContainerTablePermissions permissions={permissions} />
     </>
   );
 }

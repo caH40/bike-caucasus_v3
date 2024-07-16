@@ -1,3 +1,7 @@
+.wrapper {
+  overflow: hidden;
+  width: 100%;
+}
 .wrapper__wide {
   overflow-x: auto;
 }

@@ -1,12 +1,12 @@
 'use client';
 
-import { TPermissionDto } from '@/types/dto.types';
-import TablePermissions from '../Table/TablePermissions/TablePermissions';
-import FilterBoxForTable from '../UI/FilterBoxForTable/FilterBoxForTable';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import styles from './BlockTable.module.css';
+import { TPermissionDto } from '@/types/dto.types';
 import { lcRecordsOnPage } from '@/constants/local-storage';
+import TablePermissions from '../../TablePermissions/TablePermissions';
+import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
+import styles from './ContainerTablePermissions.module.css';
 
 type Props = { permissions: TPermissionDto[] | null };
 
@@ -59,6 +59,8 @@ export default function BlockTable({ permissions }: Props) {
           placeholder={'поиск'}
         />
       </div>
+
+      {/* Таблица */}
       <TablePermissions permissions={permissionsFiltered} docsOnPage={docsOnPage} />
     </>
   );
