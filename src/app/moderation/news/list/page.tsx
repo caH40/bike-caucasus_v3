@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getNews } from '@/actions/news';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import TableNewsList from '@/components/Table/TableNewsList/TableNewsList';
 import IconNewspaper from '@/components/Icons/IconNewspaper';
+import ContainerTableNewsModeration from '@/components/Table/Containers/NewsModeration/ContainerTableNewsModeration';
 
 /**
  * Страница со списком всех новостей для редактирования.
@@ -23,9 +23,10 @@ export default async function NewsListPage() {
         title="Список новостей, созданных пользователем"
         Icon={IconNewspaper}
       />
-      {responseWithNews && (
-        <TableNewsList news={responseWithNews.news} idUserDB={session?.user.idDB} />
-      )}
+      <ContainerTableNewsModeration
+        news={responseWithNews?.news || []}
+        idUserDB={session?.user.idDB}
+      />
     </>
   );
 }

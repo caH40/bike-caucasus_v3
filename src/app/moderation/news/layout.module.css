@@ -6,12 +6,10 @@
 .wrapper__aside {
   max-width: 300px;
 }
-.wrapper__main {
-  overflow: hidden;
-}
+
 /* ====================================================================== */
 @media (max-width: 992px) {
   .wrapper {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
   }
 }

@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
@@ -21,6 +21,7 @@ const cx = cn.bind(styles);
 type Props = {
   news: TNewsGetOneDto[];
   idUserDB: string | undefined; // _id Пользователя в БД.
+  docsOnPage: number;
 };
 
 const columns: ColumnDef<TNewsGetOneDto>[] = [
@@ -57,7 +58,7 @@ const columns: ColumnDef<TNewsGetOneDto>[] = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TableNewsList({ news, idUserDB }: Props) {
+export default function TableNewsList({ news, idUserDB, docsOnPage }: Props) {
   const data = useMemo(() => {
     return [...news]
       .filter((newsOne) => newsOne.author._id === idUserDB)
@@ -73,10 +74,15 @@ export default function TableNewsList({ news, idUserDB }: Props) {
     initialState: {
       pagination: {
         pageIndex: 0, //custom initial page index
-        pageSize: 10, //custom default page size
+        pageSize: docsOnPage, //custom default page size
       },
     },
   });
+
+  useEffect(() => {
+    table.setPageSize(docsOnPage);
+    table.setPageIndex(0);
+  }, [docsOnPage, table]);
 
   return (
     <div className={styles.wrapper}>

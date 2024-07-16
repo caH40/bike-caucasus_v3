@@ -243,7 +243,7 @@ export class News {
   public async getMany({
     idUserDB,
     page = 1,
-    docsOnPage = 10,
+    docsOnPage = 100,
     query = {},
   }: {
     idUserDB?: string;
