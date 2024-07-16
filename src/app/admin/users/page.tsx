@@ -1,10 +1,12 @@
-import TableUsersAdmin from '@/components/Table/TableUsersAdmin/TableUsersAdmin';
 import { UserService } from '@/services/user';
 import { TUserDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
-import styles from './UsersAdminPage.module.css';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import { buttonsMenuAdminPage } from '@/constants/menu';
+import ContainerTableUsers from '@/components/Table/Containers/Users/ContainerTableUsers';
+import styles from './UsersAdminPage.module.css';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import IconUsers from '@/components/Icons/IconUsers';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,9 +25,14 @@ export default async function UsersAdminPage() {
       <aside className={styles.aside__left}>
         <MenuOnPage buttons={buttonsMenuAdminPage} />
       </aside>
+
       <div className={styles.main}>
-        <h1 className={styles.title}>Администрирование зарегистрированными пользователями</h1>
-        <TableUsersAdmin users={response.data || []} />
+        <TitleAndLine
+          title="Администрирование зарегистрированными пользователями"
+          hSize={1}
+          Icon={IconUsers}
+        />
+        <ContainerTableUsers users={response.data} />
       </div>
     </div>
   );

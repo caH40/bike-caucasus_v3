@@ -2,18 +2,20 @@
 
 // import { useRouter } from 'next/navigation';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 // import { toast } from 'sonner';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { TUserDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
+import Pagination from '@/components/UI/Pagination/Pagination';
 
 const cx = cn.bind(styles);
 
 type Props = {
-  users: TUserDto[] | null;
+  users: TUserDto[];
+  docsOnPage: number;
 };
 
 const columns: ColumnDef<TUserDto>[] = [
@@ -47,15 +49,29 @@ const columns: ColumnDef<TUserDto>[] = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TableUsersAdmin({ users }: Props) {
+export default function TableUsersAdmin({ users, docsOnPage = 5 }: Props) {
   const data = useMemo(() => {
-    if (!users) {
-      return [];
-    }
-    return users;
+    return [...users]
+      .sort((a, b) => a.person.lastName.localeCompare(b.person.lastName))
+      .map((newsOne, index) => ({ ...newsOne, index: index + 1 }));
   }, [users]);
 
-  const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() });
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0, //custom initial page index
+        pageSize: docsOnPage, //custom default page size
+      },
+    },
+  });
+
+  useEffect(() => {
+    table.setPageSize(docsOnPage);
+    table.setPageIndex(0);
+  }, [docsOnPage, table]);
 
   // const router = useRouter();
   // const getLink = (id: string) => {
@@ -99,6 +115,14 @@ export default function TableUsersAdmin({ users }: Props) {
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        isFirstPage={!table.getCanPreviousPage()}
+        isLastPage={!table.getCanNextPage()}
+        quantityPages={table.getPageCount()}
+        page={table.getState().pagination.pageIndex}
+        setPage={table.setPageIndex}
+      />
     </div>
   );
 }
