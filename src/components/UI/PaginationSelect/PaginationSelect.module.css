@@ -1,0 +1,26 @@
+.select {
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.35rem 0.4rem;
+  border: solid 1px var(--line);
+  border-radius: 3px;
+  text-align: center;
+  color: var(--main-color);
+  background-color: transparent;
+}
+.option {
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  background-color: var(--green-dark);
+}
+.select:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
+}
+
+@media screen and (max-width: 992px) {
+  .select {
+    padding: 0.15em 0.2em;
+  }
+}

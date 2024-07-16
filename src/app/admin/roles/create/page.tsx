@@ -1,9 +1,9 @@
+import { getPermissions } from '@/actions/permissions';
+import BlockTable from '@/components/BlockTable/BlockTable';
 import IconCreate from '@/components/Icons/IconCreate';
-import TablePermissions from '@/components/Table/TablePermissions/TablePermissions';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormPermissions from '@/components/UI/Forms/FormPermissions/FormPermissions';
 import styles from './PermissionsPage.module.css';
-import { getPermissions } from '@/actions/permissions';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +21,7 @@ export default async function PermissionsPage({}: Props) {
         <FormPermissions />
       </div>
 
-      <TablePermissions permissions={permissions || []} />
+      <BlockTable permissions={permissions} />
     </>
   );
 }

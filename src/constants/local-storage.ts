@@ -31,3 +31,9 @@ export const lcSuffixTrailsFilters = `${suffixSite}trails_filters-`;
  * news, trail и т.д.__bc_comments-news
  */
 export const lcSuffixComment = `${suffixSite}comment-`;
+
+/**
+ * Переменная для хранения количество документов на странице
+ * для пагинации для localStorage
+ */
+export const lcRecordsOnPage = `${suffixSite}recordsOnPage`;

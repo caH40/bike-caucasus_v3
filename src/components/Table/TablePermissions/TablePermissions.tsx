@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
 import BlockTableControlAdmin from '@/components/UI/BlockTableControlAdmin/BlockTableControlAdmin';
@@ -19,6 +19,7 @@ const cx = cn.bind(styles);
 
 type Props = {
   permissions: TPermissionDto[];
+  docsOnPage: number;
 };
 
 const columns: ColumnDef<TPermissionDto & { index: number }>[] = [
@@ -44,7 +45,7 @@ const columns: ColumnDef<TPermissionDto & { index: number }>[] = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TablePermissions({ permissions }: Props) {
+export default function TablePermissions({ permissions, docsOnPage = 5 }: Props) {
   const data = useMemo(() => {
     return [...permissions]
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -59,10 +60,15 @@ export default function TablePermissions({ permissions }: Props) {
     initialState: {
       pagination: {
         pageIndex: 0, //custom initial page index
-        pageSize: 10, //custom default page size
+        pageSize: docsOnPage, //custom default page size
       },
     },
   });
+
+  useEffect(() => {
+    table.setPageSize(docsOnPage);
+    table.setPageIndex(0);
+  }, [docsOnPage, table]);
 
   return (
     <div className={styles.wrapper}>

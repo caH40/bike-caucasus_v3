@@ -38,7 +38,7 @@
   --green-dark: #133810;
 
   --line: #979797; /* для разделительной линии hr */
-  --white-12: rgba(255, 255, 255, 0.12);
+  --white-12: #ffffff1f;
   --white-20: rgba(255, 255, 255, 0.2);
   --white-50: rgba(255, 255, 255, 0.5);
 
@@ -90,6 +90,12 @@ button,
 select,
 textarea:disabled {
   opacity: 1;
+}
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
 }
 .body {
   min-height: calc(100vh - 80px);
