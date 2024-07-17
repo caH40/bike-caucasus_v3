@@ -1,15 +1,19 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import cn from 'classnames/bind';
 
 import { useActiveFiltersTrails } from '@/hooks/useActiveFiltersTrails';
 import { useLSTrails } from '@/hooks/local_storage/useLSTrails';
 import { useLSTrailsInit } from '@/hooks/local_storage/useLSTrailsInit';
 import BlockFilterTrails from '../BlockFilterTrails/BlockFilterTrails';
 import TrailCard from '../TrailCard/TrailCard';
+import AdContainer from '../AdContainer/AdContainer';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from './Trails.module.css';
+
+const cx = cn.bind(styles);
 
 type Props = {
   getTrails: ({
@@ -135,9 +139,22 @@ export default function Trails({ getTrails }: Props) {
         search={search}
         setSearch={setSearch}
       />
+
       <div className={styles.wrapper}>
         {sortedTrails &&
-          sortedTrails.map((trail) => <TrailCard trail={trail} key={trail._id} />)}
+          sortedTrails.map((trail, index) => {
+            // Отображение рекламного блока в мобильной версии после третьей карточки.
+            if (index === 3) {
+              return [
+                <div className={cx('block__ad-mobile')} key="ad-1">
+                  <AdContainer adsNumber={14} />
+                </div>,
+                <TrailCard trail={trail} key={trail._id} />,
+              ];
+            }
+
+            return <TrailCard trail={trail} key={trail._id} />;
+          })}
       </div>
     </>
   );

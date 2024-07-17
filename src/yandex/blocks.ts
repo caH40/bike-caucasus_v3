@@ -55,6 +55,11 @@ export const adBlocks: AdsBlock[] = [
     label: 'R-A-5213436-13',
     description: 'Баннер, Home page for mobile',
   },
+  {
+    id: 14,
+    label: 'R-A-5213436-14',
+    description: 'Баннер, trails page for mobile',
+  },
 ];
 // {
 //   id: 16,

@@ -3,10 +3,16 @@
   grid-gap: 1rem 2rem;
   grid-template-columns: repeat(auto-fit, 308px);
 }
+.block__ad-mobile {
+  display: none;
+}
 /* ====================================================================== */
 @media (max-width: 576px) {
   .wrapper {
     grid-template-columns: minmax(308px, 340px);
     justify-content: center;
+  }
+  .block__ad-mobile {
+    display: block;
   }
 }
