@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import cn from 'classnames/bind';
 
 import { useActiveFiltersTrails } from '@/hooks/useActiveFiltersTrails';
@@ -45,11 +45,6 @@ export default function Trails({ getTrails }: Props) {
   const [sortDirection, setSortDirection] = useState<string>('');
   const [sortTarget, setSortTarget] = useState<string>('');
   const [search, setSearch] = useState<string>('');
-
-  // Скрытие рекламного блока в карточках, если реклама не получена с РСЯ.
-  // Для устранения двойного Гэпа между карточками.
-  const adRef = useRef<HTMLDivElement>(null);
-  const [isAdVisible, setIsAdVisible] = useState(true);
 
   const hasFilters = useActiveFiltersTrails({
     bikeType,
@@ -99,13 +94,6 @@ export default function Trails({ getTrails }: Props) {
       return 0;
     });
   }, [trails, sortTarget, sortDirection]);
-
-  useEffect(() => {
-    if (adRef.current) {
-      // Проверка высоты рекламного блока, если 0 то реклама не получена, необходимо скрыть блок.
-      setIsAdVisible(adRef.current.offsetHeight > 0);
-    }
-  }, [sortedTrails]); // Зависимость от sortedTrails для проверки при обновлении
 
   useEffect(() => {
     if (isFirstMounting) {
@@ -158,11 +146,11 @@ export default function Trails({ getTrails }: Props) {
             // Отображение рекламного блока в мобильной версии после третьей карточки.
             if (index === 3) {
               return [
-                <div className={cx('block__ad-mobile')} ref={adRef} key="ad-1">
+                <div className={cx('block__ad-mobile')} key="ad-1">
                   <AdContainer adsNumber={14} />
                 </div>,
                 <TrailCard trail={trail} key={trail._id} />,
-              ].filter((elm, index) => index !== 0 || (index === 0 && isAdVisible)); // Скрытие рекламного блока, если реклама не поступила с РСЯ.
+              ];
             }
 
             return <TrailCard trail={trail} key={trail._id} />;
