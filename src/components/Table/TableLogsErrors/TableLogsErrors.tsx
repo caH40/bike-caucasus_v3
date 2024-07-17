@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
@@ -17,6 +17,7 @@ import styles from '../TableCommon.module.css';
 
 type Props = {
   logs: TGetErrorsDto[];
+  docsOnPage: number;
 };
 
 const columns = [
@@ -45,7 +46,7 @@ const columns = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TableLogsErrors({ logs }: Props) {
+export default function TableLogsErrors({ logs, docsOnPage = 5 }: Props) {
   const data = useMemo(() => logs, [logs]);
 
   const table = useReactTable({
@@ -69,6 +70,11 @@ export default function TableLogsErrors({ logs }: Props) {
 
     router.push(`/admin/logs/errors/${id}`);
   };
+
+  useEffect(() => {
+    table.setPageSize(docsOnPage);
+    table.setPageIndex(0);
+  }, [docsOnPage, table]);
 
   return (
     <div className={styles.wrapper}>

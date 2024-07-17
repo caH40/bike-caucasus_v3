@@ -30,7 +30,7 @@ export default function TitleAndLine({
   return (
     <>
       <div className={styles.box__title}>
-        {Icon && <Icon squareSize={28} />}
+        <div>{Icon && <Icon squareSize={28} />}</div>
         {createElement(`h${hSize}`, { className: cx('title', `h${hSize}`) }, title)}
       </div>
       {!hideLine && <LineSeparator marginBottom={true} />}

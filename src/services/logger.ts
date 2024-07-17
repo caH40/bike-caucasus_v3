@@ -35,6 +35,7 @@ export class Logger {
     try {
       await this.dbConnection();
       const logsDB: TLogsErrorModel[] = await LogsError.find().lean();
+      logsDB.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       return {
         data: serviceGetErrorsDto(logsDB),

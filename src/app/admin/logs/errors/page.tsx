@@ -1,12 +1,12 @@
-import TableLogsErrors from '@/components/Table/TableLogsErrors/TableLogsErrors';
 import { Logger } from '@/services/logger';
-import type { TGetErrorsDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
-import styles from './LogsErrorsPage.module.css';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import { buttonsMenuAdminPage } from '@/constants/menu';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconLog from '@/components/Icons/IconLog';
+import ContainerTableLogsError from '@/components/Table/Containers/LogsError/ContainerTableLogsError';
+import type { TGetErrorsDto } from '@/types/dto.types';
+import type { ResponseServer } from '@/types/index.interface';
+import styles from './LogsErrorsPage.module.css';
 
 /**
  * Получает список ошибок из логов.
@@ -33,7 +33,8 @@ export default async function LogsErrorsPage(): Promise<JSX.Element> {
       </aside>
       <div className={styles.main}>
         <TitleAndLine Icon={IconLog} title="Логирование ошибок" hSize={1} />
-        <TableLogsErrors logs={logsData.data || []} />
+
+        <ContainerTableLogsError logs={logsData.data} />
       </div>
     </div>
   );

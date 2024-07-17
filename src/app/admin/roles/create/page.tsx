@@ -1,8 +1,9 @@
 import { getPermissions } from '@/actions/permissions';
-import ContainerTablePermissions from '@/components/Table/Containers/Permissions/ContainerTablePermissions';
+
 import IconCreate from '@/components/Icons/IconCreate';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormPermissions from '@/components/UI/Forms/FormPermissions/FormPermissions';
+import ContainerTablePermissions from '@/components/Table/Containers/Permissions/ContainerTablePermissions';
 import styles from './PermissionsPage.module.css';
 
 export const dynamic = 'force-dynamic';
