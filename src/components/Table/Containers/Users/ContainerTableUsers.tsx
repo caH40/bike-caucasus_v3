@@ -44,7 +44,8 @@ export default function ContainerTableUsers({ users }: Props) {
       users.filter(
         (elm) =>
           elm.person.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-          elm.person.lastName?.toLowerCase().includes(search.toLowerCase())
+          elm.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+          !elm.person.firstName
       )
     );
   }, [search, users]);

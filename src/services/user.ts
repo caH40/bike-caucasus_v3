@@ -80,7 +80,17 @@ export class UserService {
 
       const userPrivate = dtoGetUser(userDB);
 
-      const profile = isPrivate ? userPrivate : dtoGetUserPublic(userPrivate, ageCategory);
+      // Заполнение Имени и Фамилии данными, если они не заданны.
+      const userFilledName = {
+        ...userPrivate,
+        person: {
+          ...userPrivate.person,
+          firstName: userPrivate.person.firstName || 'Имя',
+          lastName: userPrivate.person.lastName || 'Фамилия',
+        },
+      };
+
+      const profile = isPrivate ? userPrivate : dtoGetUserPublic(userFilledName, ageCategory);
 
       return { data: profile, ok: true, message: 'Данные профиля пользователя' };
     } catch (error) {
@@ -111,7 +121,17 @@ export class UserService {
         .populate('role')
         .lean();
 
-      const users = usersDB.map((user) => dtoGetUser(user));
+      // Заполнение Имени и Фамилии данными, если они не заданны.
+      const usersFilledName = usersDB.map((user) => ({
+        ...user,
+        person: {
+          ...user.person,
+          firstName: user.person.firstName || 'Имя',
+          lastName: user.person.lastName || 'Фамилия',
+        },
+      }));
+
+      const users = usersFilledName.map((user) => dtoGetUser(user));
 
       // Возвращение данных всех пользователей с успешным статусом
       return { data: users, ok: true, message: 'Данные всех пользователей.' };

@@ -29,9 +29,9 @@ export function dtoGetUserPublic(user: TUserDto, ageCategory: string): TUserDtoP
         }
       : null,
     person: {
-      firstName: user.person.firstName ? user.person.firstName : 'Неизвестно',
-      patronymic: user.person.patronymic ? user.person.patronymic : 'Неизвестно',
-      lastName: user.person.lastName ? user.person.lastName : 'Неизвестно',
+      firstName: user.person.firstName,
+      patronymic: user.person.patronymic,
+      lastName: user.person.lastName,
       ageCategory,
       gender: user.person.gender,
       bio: user.person.bio,
