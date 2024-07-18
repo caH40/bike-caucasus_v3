@@ -73,7 +73,7 @@ export class News {
 
       let filePdf;
       if (news.filePdf) {
-        // Сохранение изображения для Постера новости.
+        // Сохранение pdf для Постера новости.
         filePdf = await this.saveFile({
           file: news.filePdf as File,
           type: 'pdf',
@@ -142,13 +142,29 @@ export class News {
       // Подключение к БД.
       await this.dbConnection();
 
-      const newsDB: { createdAt: Date } | null = await NewsModel.findOne(
+      const newsDB: { createdAt: Date; filePdf: string } | null = await NewsModel.findOne(
         { urlSlug: news.urlSlug },
-        { createdAt: true, _id: false }
+        { createdAt: true, filePdf: true, _id: false }
       ).lean();
 
       if (!newsDB) {
         throw new Error(`Не найдена новость с urlSlug:${news.urlSlug} для редактирования!`);
+      }
+
+      const suffixForFilesNews = `news_${news.urlSlug}`;
+
+      let filePdf;
+      // Если существует filePdf, значит он изменялся в процессе редактирования.
+      if (news.filePdf) {
+        // Сохранение pdf для новости.
+        filePdf = await this.saveFile({
+          file: news.filePdf as File,
+          type: 'pdf',
+          suffix: `${suffixForFilesNews}_pdf-`,
+          cloudName,
+          domainCloudName,
+          bucketName,
+        });
       }
 
       // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
@@ -179,6 +195,11 @@ export class News {
       const suffix = `https://${bucketName}.${domainCloudName}/`;
       if (news.poster && news.posterOldUrl) {
         await cloudService.deleteFile(bucketName, news.posterOldUrl.replace(suffix, ''));
+      }
+
+      // Удаление старого файла pdf, если он был обновлён.
+      if (filePdf && newsDB.filePdf) {
+        await cloudService.deleteFile(bucketName, newsDB.filePdf.replace(suffix, ''));
       }
 
       // Сохранение изображений из текстовых блоков.
@@ -217,12 +238,20 @@ export class News {
       // Замена строки на массив хэштегов.
       const hashtags = getHashtags(news.hashtags);
 
-      const updateData: Omit<TNewsCreateFromClient, 'hashtags' | 'poster'> & {
+      // Удаление filePdf из данных, пришедших с клиента.
+      const { filePdf: _, ...newsWithOutFilePfd } = news; // eslint-disable-line no-unused-vars
+
+      const updateData: Omit<TNewsCreateFromClient, 'hashtags' | 'poster' | 'filePdf'> & {
         poster: File | null | string;
         hashtags: string[];
-      } = { ...news, hashtags };
+        filePdf?: string;
+      } = { ...newsWithOutFilePfd, hashtags };
       if (poster) {
         updateData.poster = poster;
+      }
+      // Добавление нового url filePdf.
+      if (filePdf) {
+        updateData.filePdf = filePdf;
       }
 
       // slug не обновляется, остается старый для исключения проблем с индексацией.

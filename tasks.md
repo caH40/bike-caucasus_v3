@@ -337,8 +337,22 @@ v3.44.15 +фильтры для таблицы с логами ошибок;
 v3.44.16 +добавление рекламы на страницу Маршрутов после третьей карточки в мобильной версии
 сайта;  
 v3.44.17 +исправление бага с блоком рекламы;  
-v3.44.18 +скрытие рекламного блока, если не поступила реклама с РСЯ; v3.44.19 +убрал скрытие
-рекламного блока, если не поступила реклама с РСЯ, не работает в проде;
+v3.44.18 +скрытие рекламного блока, если не поступила реклама с РСЯ;  
+v3.44.19 +убрал скрытие рекламного блока, если не поступила реклама с РСЯ, не работает в
+проде;  
+v3.44.20 +исправление бага при изменении файла pdf при редактировании новости;
+
+-не всегда приходят данные погоды:  
+TypeError: fetch failed at Object.fetch (node:internal/deps/undici/undici:11730:11) at
+process.processTicksAndRejections (node:internal/process/task_queues:95:5) at async
+WeatherService.getRaw (webpack-internal:///(rsc)/./src/services/Weather.ts:21:30) at async
+getForecastWeather (webpack-internal:///(rsc)/./src/actions/trail.ts:133:21) at async TrailPage
+(webpack-internal:///(rsc)/./src/app/trails/[urlSlug]/page.tsx:79:21) { cause:
+ConnectTimeoutError: Connect Timeout Error at onConnectTimeout
+(node:internal/deps/undici/undici:6869:28) at node:internal/deps/undici/undici:6825:50 at
+Immediate.\_onImmediate (node:internal/deps/undici/undici:6855:37) at process.processImmediate
+(node:internal/timers:478:21) at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+code: 'UND_ERR_CONNECT_TIMEOUT' } }
 
 -не изменяется pdf файл в новости;  
 -добавить попап к маркерам и сделать кластер для маркеров
