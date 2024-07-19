@@ -4,11 +4,11 @@ import Image from 'next/image';
 import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import LineSeparator from '../LineSeparator/LineSeparator';
 import { getDayNameInRussian } from '@/libs/utils/calendar';
-import { TWeatherForecast } from '@/types/weather.types';
+import { getForecastWeather } from '@/actions/trail';
 import styles from './Weather.module.css';
 
 type Props = {
-  weather: TWeatherForecast;
+  urlTrack: string;
   startLocation: string;
 };
 
@@ -20,7 +20,11 @@ const getLinkIcon = (iconName: string) =>
  * @param param0
  * @returns
  */
-export default function Weather({ weather, startLocation }: Props) {
+export default async function Weather({ urlTrack, startLocation }: Props) {
+  const weather = await getForecastWeather({ urlTrack });
+  if (!weather) {
+    return null;
+  }
   return (
     <div className={styles.wrapper}>
       <TitleAndLine hSize={2} title={`Прогноз погоды на старте маршрута: "${startLocation}"`} />

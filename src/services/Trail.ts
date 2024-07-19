@@ -1,3 +1,4 @@
+import mongoose, { ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
 import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
@@ -19,7 +20,6 @@ import type { TAuthorFromUser, TRoleModel, TTrailDocument } from '@/types/models
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
 import { ErrorCustom } from './Error';
 import { User } from '@/database/mongodb/Models/User';
-import mongoose, { ObjectId } from 'mongoose';
 import { serviceGetInteractiveToDto } from '@/dto/news';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 // import { millisecondsIn3Days } from '@/constants/date';

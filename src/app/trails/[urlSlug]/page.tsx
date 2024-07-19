@@ -20,6 +20,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getComments } from '@/actions/comment';
 // import Weather from '@/components/Weather/Weather';
 import Author from '@/components/Author/Author';
+const Weather = dynamic(() => import('@/components/Weather/Weather'), { ssr: false });
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 import styles from './TrailPage.module.css';
 import PermissionCheck from '@/hoc/permission-check';
@@ -49,7 +50,6 @@ export default async function TrailPage({ params }: Props) {
     notFound();
   }
 
-  // const weather = await getForecastWeather({ urlTrack: trail.trackGPX });
   // Подсчет просмотров Маршрута.
   const trailService = new Trail();
   await trailService.countView(params.urlSlug);
@@ -126,11 +126,12 @@ export default async function TrailPage({ params }: Props) {
 
           <TrailTotal trail={trail} />
 
-          {/* {weather && (
+          {/* Блок погоды */}
+          {trail.trackGPX && (
             <div className={styles.box__weather}>
-              <Weather weather={weather} startLocation={trail.startLocation} />
+              <Weather urlTrack={trail.trackGPX} startLocation={trail.startLocation} />
             </div>
-          )} */}
+          )}
 
           {/* Интерактивный блок. */}
           <div className={styles.interactive}>
