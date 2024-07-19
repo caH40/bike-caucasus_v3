@@ -9,7 +9,7 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import { regions } from '@/constants/trail';
 import BlockShare from '@/components/BlockShare/BlockShare';
 import TrailTotal from '@/components/TrailTotal/TrailTotal';
-import { getForecastWeather, getTrail } from '@/actions/trail';
+import { getTrail } from '@/actions/trail';
 import { generateMetadataTrail } from '@/meta/meta';
 import { blurBase64 } from '@/libs/image';
 import { Trail } from '@/services/Trail';
@@ -18,7 +18,7 @@ import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock'
 import BlockComments from '@/components/BlockComments/BlockComments';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getComments } from '@/actions/comment';
-import Weather from '@/components/Weather/Weather';
+// import Weather from '@/components/Weather/Weather';
 import Author from '@/components/Author/Author';
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 import styles from './TrailPage.module.css';
@@ -49,7 +49,7 @@ export default async function TrailPage({ params }: Props) {
     notFound();
   }
 
-  const weather = await getForecastWeather({ urlTrack: trail.trackGPX });
+  // const weather = await getForecastWeather({ urlTrack: trail.trackGPX });
   // Подсчет просмотров Маршрута.
   const trailService = new Trail();
   await trailService.countView(params.urlSlug);
@@ -126,11 +126,11 @@ export default async function TrailPage({ params }: Props) {
 
           <TrailTotal trail={trail} />
 
-          {weather && (
+          {/* {weather && (
             <div className={styles.box__weather}>
               <Weather weather={weather} startLocation={trail.startLocation} />
             </div>
-          )}
+          )} */}
 
           {/* Интерактивный блок. */}
           <div className={styles.interactive}>
