@@ -24,6 +24,10 @@ export function validateUsername(register: UseFormRegister<FieldValuesCustom>) {
       required: 'Это обязательное поле для заполнения',
       minLength: { value: 5, message: 'Username должен быть больше 4х символов' },
       maxLength: { value: 15, message: 'Username не может быть больше 15 символов' },
+      pattern: {
+        value: /^[a-zA-Z][a-zA-Z0-9._]{4,15}$/i,
+        message: 'Логин может состоять из лат. букв, цифр, . и _',
+      },
     }),
   };
 }
