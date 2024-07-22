@@ -15,7 +15,10 @@ type PropsWeatherFromApi = {
  */
 export class WeatherService {
   private appId: string | undefined;
+  private timeoutForFetch: number;
+
   constructor() {
+    this.timeoutForFetch = 500; // Время отмены fetch запроса, если не получен ответ fetch.
     this.appId = process.env.API_KEY_OPENWEATHERMAP; // API key для сайта openweathermap.com
   }
 
@@ -24,11 +27,16 @@ export class WeatherService {
     lon,
     type,
   }: PropsWeatherFromApi): Promise<ResponseServer<TWeatherForecast | null>> {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const timeoutId = setTimeout(() => controller.abort(), this.timeoutForFetch);
+
     try {
       const server = `https://api.openweathermap.org/data/2.5/${type}`;
       const query = `lat=${lat}&lon=${lon}&appid=${this.appId}&units=metric&lang=ru`;
 
-      const response = await fetch(`${server}?${query}`);
+      const response = await fetch(`${server}?${query}`, { signal });
 
       if (!response.ok) {
         throw new Error('Ошибка fetch при получении данных с сервера!');
@@ -41,6 +49,8 @@ export class WeatherService {
     } catch (error) {
       errorLogger(error);
       return handlerErrorDB(error);
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 }

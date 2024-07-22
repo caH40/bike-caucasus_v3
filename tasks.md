@@ -346,20 +346,10 @@ v3.44.22 +оптимизация определения координат ст�
 v3.44.23 +запрет использования в логине кириллицы и пробелов, а также символов кроме точки и
 подчеркивания;  
 v3.44.24 +добавления иконок лого сайта и телаграма для писем;  
-v3.44.25 +блок погоды в описании маршрута перенесен в динамическую загрузку;
+v3.44.25 +блок погоды в описании маршрута перенесен в динамическую загрузку;  
+v3.44.26 +добавления таймаута отмены фетча погоды, если запрос длится больше 500мс;
 
 -не всегда приходят данные погоды:  
-TypeError: fetch failed at Object.fetch (node:internal/deps/undici/undici:11730:11) at
-process.processTicksAndRejections (node:internal/process/task_queues:95:5) at async
-WeatherService.getRaw (webpack-internal:///(rsc)/./src/services/Weather.ts:21:30) at async
-getForecastWeather (webpack-internal:///(rsc)/./src/actions/trail.ts:133:21) at async TrailPage
-(webpack-internal:///(rsc)/./src/app/trails/[urlSlug]/page.tsx:79:21) { cause:
-ConnectTimeoutError: Connect Timeout Error at onConnectTimeout
-(node:internal/deps/undici/undici:6869:28) at node:internal/deps/undici/undici:6825:50 at
-Immediate.\_onImmediate (node:internal/deps/undici/undici:6855:37) at process.processImmediate
-(node:internal/timers:478:21) at process.callbackTrampoline (node:internal/async_hooks:130:17) {
-code: 'UND_ERR_CONNECT_TIMEOUT' } }
-
 -не изменяется pdf файл в новости;  
 -добавить попап к маркерам и сделать кластер для маркеров
 https://www.youtube.com/watch?v=jD6813wGdBA&t=427s;  
