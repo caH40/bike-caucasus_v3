@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { dtoWeatherForecast } from '@/dto/weather';
@@ -35,16 +38,21 @@ export class WeatherService {
     try {
       const server = `https://api.openweathermap.org/data/2.5/${type}`;
       const query = `lat=${lat}&lon=${lon}&appid=${this.appId}&units=metric&lang=ru`;
+      const url = `${server}?${query}`;
 
-      const response = await fetch(`${server}?${query}`, { signal });
-
-      if (!response.ok) {
-        throw new Error('Ошибка fetch при получении данных с сервера!');
+      const proxyServer = process.env.PROXY;
+      if (!proxyServer) {
+        throw new Error('Не получен адрес прокси-сервера!');
       }
 
-      const data = await response.json();
+      const agent = new HttpsProxyAgent(proxyServer);
+      const response = await axios.get(url, {
+        httpAgent: agent,
+        httpsAgent: agent,
+        signal,
+      });
 
-      const weatherForecast = dtoWeatherForecast(data);
+      const weatherForecast = dtoWeatherForecast(response.data);
       return { data: weatherForecast, ok: true, message: 'Данные погоды за 6 дней!' };
     } catch (error) {
       errorLogger(error);

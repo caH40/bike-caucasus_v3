@@ -34,3 +34,11 @@
   align-items: center;
   gap: 0.4rem;
 }
+.icon {
+  filter: invert(1) sepia(1) saturate(4) hue-rotate(0deg);
+}
+.box__icon .tooltip {
+  background-color: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  font-family: inherit;
+}

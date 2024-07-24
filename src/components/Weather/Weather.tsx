@@ -5,15 +5,13 @@ import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import LineSeparator from '../LineSeparator/LineSeparator';
 import { getDayNameInRussian } from '@/libs/utils/calendar';
 import { getForecastWeather } from '@/actions/trail';
+import ClientBlockIcon from './ClientBlockIcon';
 import styles from './Weather.module.css';
 
 type Props = {
   urlTrack: string;
   startLocation: string;
 };
-
-const getLinkIcon = (iconName: string) =>
-  `https://openweathermap.org/img/wn/${iconName}@2x.png`;
 
 /**
  * Блок прогноза погода на 5ть дней.
@@ -25,6 +23,7 @@ export default async function Weather({ urlTrack, startLocation }: Props) {
   if (!weather) {
     return null;
   }
+
   return (
     <div className={styles.wrapper}>
       <TitleAndLine hSize={2} title={`Прогноз погоды на старте маршрута: "${startLocation}"`} />
@@ -33,11 +32,12 @@ export default async function Weather({ urlTrack, startLocation }: Props) {
       <div className={styles.block__today}>
         <div className={styles.day}>Сейчас</div>
         <div className={styles.box__today}>
-          <Image
-            src={getLinkIcon(weather.list[0].weather[0].icon)}
+          <ClientBlockIcon
+            icon={weather.list[0].weather[0].icon}
+            id={weather.list[0].dt}
+            description={weather.list[0].weather[0].description}
             width={80}
             height={80}
-            alt={weather.list[0].weather[0].main}
           />
           <span className={styles.temperature__today}>
             {Math.round(weather.list[0].main.temp)}&deg;C
@@ -51,12 +51,12 @@ export default async function Weather({ urlTrack, startLocation }: Props) {
         <Fragment key={elm.dt}>
           <div className={styles.block__day}>
             <div className={styles.day}>{getDayNameInRussian(elm.dt * 1000)}</div>
+
             <div className={styles.box__day}>
-              <Image
-                src={getLinkIcon(elm.weather[0].icon)}
-                width={60}
-                height={60}
-                alt="weather"
+              <ClientBlockIcon
+                icon={elm.weather[0].icon}
+                id={elm.dt}
+                description={elm.weather[0].description}
               />
 
               <div className={styles.box__temperature}>
