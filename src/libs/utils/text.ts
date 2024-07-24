@@ -67,3 +67,24 @@ export const content = {
     return text.replace(/((http|https):\/\/[^\s]+)/g, '<a  class="link" href="$1">$1</a>');
   },
 };
+
+/**
+ * Форматирует числовые значения в удобочитаемый вид,
+ * сокращая числа до трех символов и добавляя сокращения, такие как "k" для тысяч.
+ */
+export function formatNumberShort(num: number | undefined): string {
+  if (num === undefined || num === null) {
+    return '0';
+  }
+  if (num >= 100000) {
+    return '∞'; // Бесконечность для чисел больше или равных 100,000
+  } else if (num >= 10000) {
+    const t = Math.trunc(num / 1000); // Округляем до ближайшего меньшего целого
+    return `${t}k`;
+  } else if (num >= 1000) {
+    const t = Math.trunc(num / 100) / 10; // Делим на 100 и округляем до одной десятой
+    return `${t}k`;
+  } else {
+    return num.toString(); // Для чисел меньше 1,000
+  }
+}

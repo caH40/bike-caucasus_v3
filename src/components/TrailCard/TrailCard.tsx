@@ -8,6 +8,7 @@ import { bikeTypes, regions } from '@/constants/trail';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from './TrailCard.module.css';
 import { blurBase64 } from '@/libs/image';
+import { formatNumberShort } from '@/libs/utils/text';
 
 type Props = {
   trail: TTrailDto;
@@ -117,19 +118,21 @@ export default function TrailCard({ trail }: Props) {
         </div>
       </div>
 
-      <div className={styles.box__kudos}>
-        <div>
+      {/* Блок отображения количества просмотров и лайков */}
+      <div className={styles.block__social}>
+        <div className={styles.box__interactive}>
           <IconHandThumbUp
             squareSize={20}
             isActive={trail.isLikedByUser}
             colors={{ active: '#fafafa80' }}
           />
-          <span className={styles.kudos__text}>{trail.count.likes ?? 0}</span>
+          <div className={styles.interactive__text}>{formatNumberShort(trail.count.likes)}</div>
         </div>
 
-        <div>
+        <div className={styles.box__interactive}>
           <IconEye squareSize={20} />
-          <span className={styles.kudos__text}>{trail.count.views ?? 0}</span>
+
+          <div className={styles.interactive__text}>{formatNumberShort(trail.count.views)}</div>
         </div>
       </div>
     </Link>
