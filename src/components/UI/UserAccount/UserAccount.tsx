@@ -49,9 +49,15 @@ const UserAccount = () => {
           quality={100}
         />
       </button>
-      <div className={styles.block__popup}>
-        <PopupMenu navLinks={getNavLinksUserPopup} />
-      </div>
+      {isVisible && (
+        <div
+          className={styles.block__popup}
+          onClick={() => setMenu(false)}
+          onMouseLeave={() => setMenu(false)}
+        >
+          <PopupMenu navLinks={getNavLinksUserPopup} />
+        </div>
+      )}
     </>
   );
 };
