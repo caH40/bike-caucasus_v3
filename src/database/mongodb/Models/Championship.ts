@@ -2,6 +2,16 @@ import mongoose, { Schema, model, models, Model } from 'mongoose';
 
 import { TChampionshipDocument } from '@/types/models.interface';
 
+// Трэк заезда.
+const trackGPXSchema = new Schema({
+  url: String,
+  coordStart: {
+    // Координаты старта заезда.
+    lat: Number,
+    lon: Number,
+  },
+});
+
 /**
  * Схема для чемпионата.
  */
@@ -55,6 +65,8 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       enum: ['TimeTrial', 'Mountain', 'Road', 'Downhill'],
       required: true,
     },
+    trackGPX: { type: trackGPXSchema, default: null },
+    posterUrl: { type: String, default: null },
   },
   {
     timestamps: true, // Автоматически добавляет поля createdAt и updatedAt.

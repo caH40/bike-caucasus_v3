@@ -37,6 +37,7 @@ const organizerSchema = new Schema<TOrganizerDocument>(
     logoUrl: { type: String, default: null },
     contactInfo: { type: contactInfoSchema, required: true },
     address: { type: addressSchema, required: true },
+    posterUrl: { type: String, default: null },
     championshipCreationFee: {
       amount: {
         type: Number, // Количество денег на счету.

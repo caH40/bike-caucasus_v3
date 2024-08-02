@@ -277,7 +277,8 @@ export type TOrganizer = {
   creator: mongoose.Types.ObjectId;
   name: string;
   description?: string;
-  logoUrl?: string;
+  logoUrl?: string; // Лого клуба.
+  posterUrl?: string; // Постер для страницы клуба.
   contactInfo: ContactInfo;
   address: Address;
   championshipCreationFee: ChampionshipCreationFee;
@@ -296,6 +297,11 @@ export type TChampionship = {
   childChampionshipUrls?: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
+  trackGPX?: {
+    url: string; // Трэк заезда.
+    coordStart: { lat: number; lon: number }; // Координаты старта заезда.
+  };
+  posterUrl?: string; // Постер для страницы Чемпионата.
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
   championshipType: 'Tour' | 'Series' | 'Single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   bikeType: 'TimeTrial' | 'Mountain' | 'Road' | 'Downhill'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
