@@ -244,3 +244,41 @@ export type TPermission = {
   name: string;
   description: string;
 };
+
+// Типы для контактной информации.
+type ContactInfo = {
+  email: string;
+  phone?: string;
+  website?: string;
+  socialMedia?: {
+    vk?: string;
+    telegram?: string;
+  };
+};
+// Тип для адреса.
+type Address = {
+  street?: string;
+  city: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+};
+// Тип для оплаты за создание чемпионата.
+type ChampionshipCreationFee = {
+  amount: number;
+  method?: string; // Метод оплаты (например, "credit card", "bank transfer")
+};
+/**
+ * Тип схемы/модели для Организатора Чемпионатов.
+ */
+export type TOrganizerDocument = Document & TOrganizer;
+export type TOrganizer = {
+  _id: mongoose.Types.ObjectId;
+  creator: mongoose.Types.ObjectId;
+  name: string;
+  description?: string;
+  logoUrl?: string;
+  contactInfo: ContactInfo;
+  address: Address;
+  championshipCreationFee: ChampionshipCreationFee;
+};
