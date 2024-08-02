@@ -3,6 +3,7 @@ import {
   TAuthorFromUser,
   TLogsErrorModel,
   TNewsBlockInfo,
+  TOrganizer,
   TRoleModel,
   TTrail,
 } from './models.interface';
@@ -107,6 +108,15 @@ export type TDtoCalendarEvents = {
   urlSlug: string;
   bikeType: string;
   author: string;
+};
+
+/**
+ * ДТО для Организатора чемпионата.
+ */
+export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | 'updatedAt'> & {
+  _id: string;
+  creator: TAuthor;
+  createdAt: string;
 };
 
 /**

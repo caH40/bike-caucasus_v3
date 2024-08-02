@@ -246,7 +246,7 @@ export type TPermission = {
 };
 
 // Типы для контактной информации.
-type ContactInfo = {
+export type OrganizerContactInfo = {
   email: string;
   phone?: string;
   website?: string;
@@ -256,7 +256,7 @@ type ContactInfo = {
   };
 };
 // Тип для адреса.
-type Address = {
+export type OrganizerAddress = {
   street?: string;
   city: string;
   state?: string;
@@ -279,9 +279,11 @@ export type TOrganizer = {
   description?: string;
   logoUrl?: string; // Лого клуба.
   posterUrl?: string; // Постер для страницы клуба.
-  contactInfo: ContactInfo;
-  address: Address;
+  contactInfo: OrganizerContactInfo;
+  address: OrganizerAddress;
   championshipCreationFee: ChampionshipCreationFee;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -305,4 +307,6 @@ export type TChampionship = {
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
   championshipType: 'Tour' | 'Series' | 'Single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   bikeType: 'TimeTrial' | 'Mountain' | 'Road' | 'Downhill'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
+  createdAt: Date;
+  updatedAt: Date;
 };
