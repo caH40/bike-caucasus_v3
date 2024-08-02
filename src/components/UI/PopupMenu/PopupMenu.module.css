@@ -1,18 +1,4 @@
-/* .wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  background-color: aqua;
-} */
-
 .popup {
-  position: absolute;
-  z-index: 1001;
-  top: 70px;
-  right: 40px;
   min-width: 140px;
   padding: 10px 0px;
   background: var(--color-orange);

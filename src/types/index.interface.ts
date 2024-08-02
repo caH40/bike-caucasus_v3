@@ -191,6 +191,17 @@ export type TMenuOnPage = {
 };
 
 /**
+ * Меню Попап с навигацией для главного навбара.
+ */
+export type TMenuPopup = {
+  id: number;
+  name: string;
+  href: string;
+  permission: string | null; // правило доступа
+  icon?: React.ComponentType<TIconProps>;
+};
+
+/**
  * Навигационные линки.
  */
 export type TNavLink = {

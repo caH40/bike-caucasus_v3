@@ -4,7 +4,7 @@ import IconEditOld from '@/components/Icons/IconEditOld';
 import IconUser from '@/components/Icons/IconUser';
 import IconWrench from '@/components/Icons/IconWrench';
 import { deleteItem } from '@/components/UI/BlockModeration/delete';
-import type { TMenuOnPage } from '@/types/index.interface';
+import type { TMenuOnPage, TMenuPopup } from '@/types/index.interface';
 
 // навигация по страницам
 export const navLinksFull = [
@@ -38,7 +38,7 @@ export const getNavLinksMobile = (userId: string | undefined) => [
 /**
  * Меню навигации у Пользователя в Popup.
  */
-export const getNavLinksUserPopup = (userId: string | undefined) => [
+export const getNavLinksUserPopup = (userId: string | undefined): TMenuPopup[] => [
   {
     id: 0,
     name: 'Профиль',
