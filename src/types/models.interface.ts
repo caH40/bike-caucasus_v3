@@ -282,3 +282,21 @@ export type TOrganizer = {
   address: Address;
   championshipCreationFee: ChampionshipCreationFee;
 };
+
+/**
+ * Тип схемы/модели для Чемпионата.
+ */
+export type TChampionshipDocument = TChampionship & Document;
+export type TChampionship = {
+  _id: mongoose.Types.ObjectId;
+  name: string; // Название чемпионата.
+  description: string; // Описание, включая карту с местом старта.
+  organizer: mongoose.Types.ObjectId; // Ссылка на объект организатора.
+  parentChampionshipUrl?: mongoose.Types.ObjectId; // Ссылка на родительскую страницу чемпионата, если это этап.
+  childChampionshipUrls?: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
+  startDate: Date; // Дата начала чемпионата.
+  endDate: Date; // Дата окончания чемпионата.
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
+  championshipType: 'Tour' | 'Series' | 'Single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
+  bikeType: 'TimeTrial' | 'Mountain' | 'Road' | 'Downhill'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
+};
