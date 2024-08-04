@@ -25,6 +25,7 @@ export function dtoCOrganizer(
     creator,
     name: organizer.name,
     description: organizer.description,
+    posterUrl: organizer.posterUrl,
     logoUrl: organizer.logoUrl,
     contactInfo: organizer.contactInfo,
     address: organizer.address,

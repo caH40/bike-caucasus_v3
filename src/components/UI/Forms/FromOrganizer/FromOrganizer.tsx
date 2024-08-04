@@ -68,6 +68,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
     // Отображение статуса сохранения События в БД.
     if (res.ok) {
       reset();
+      setResetData((prev) => !prev);
       toast.success(res.message);
     } else {
       toast.error(res.message);
@@ -88,8 +89,8 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
           required: 'Это обязательное поле для заполнения',
           minLength: { value: 3, message: 'Название должно быть больше 2х символов' },
           maxLength: {
-            value: 25,
-            message: 'Название не может быть больше 25 символов',
+            value: 35,
+            message: 'Название не может быть больше 35 символов',
           },
         })}
         validationText={errors.name ? errors.name.message : ''}
