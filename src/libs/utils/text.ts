@@ -1,6 +1,23 @@
 // функции обработки строк
 
 /**
+ * Валидация форм для библиотеки react-hook-form.
+ */
+export class TextValidationService {
+  /**
+   *  Функция проверки для пробелов. Не больше одного пробела
+   */
+  public spaces(value: string) {
+    // Регулярное выражение для проверки более двух пробелов подряд
+    const hasMoreThanTwoSpaces = /\s{2,}/.test(value);
+    if (hasMoreThanTwoSpaces) {
+      return 'Текст не может содержать более одного пробела подряд';
+    }
+    return true; // Возвращаем true, если проверка пройдена
+  }
+}
+
+/**
  * Создает массив хэштэгов из предложения, разделение происходит по символам и пробелам.
  */
 export function getHashtags(hashtag: string): string[] {

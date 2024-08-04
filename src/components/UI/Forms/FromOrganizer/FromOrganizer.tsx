@@ -16,12 +16,15 @@ import { serializationOrganizerCreate } from '@/libs/utils/serialization/organiz
 import type { ResponseServer, TFormOrganizerCreate } from '@/types/index.interface';
 import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from '../Form.module.css';
+import { TextValidationService } from '@/libs/utils/text';
 
 type Props = {
   fetchOrganizerCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   // fetchTrailEdited?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   organizerForEdit?: TDtoOrganizer;
 };
+
+const textValidation = new TextValidationService();
 
 export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit }: Props) {
   const isLoading = useLoadingStore((state) => state.isLoading);
@@ -92,6 +95,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
             value: 35,
             message: 'Название не может быть больше 35 символов',
           },
+          validate: textValidation.spaces,
         })}
         validationText={errors.name ? errors.name.message : ''}
       />
@@ -111,6 +115,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
             value: 500,
             message: 'В описании не может быть больше 500 символов',
           },
+          validate: textValidation.spaces,
         })}
         validationText={errors.description ? errors.description.message : ''}
       />
