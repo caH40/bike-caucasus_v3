@@ -1,10 +1,13 @@
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import cn from 'classnames/bind';
 
 import InputFileIcon from '../InputFile/InputFileIcon';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import ButtonClose from '../ButtonClose/ButtonClose';
 import styles from './BlockUploadImage.module.css';
+
+const cx = cn.bind(styles);
 
 type Props = {
   title: string;
@@ -14,6 +17,7 @@ type Props = {
   resetData: boolean; // Триггер сброса изображения.
   posterUrl: string | null; // Существует только при редактировании новости.
   setPosterUrl: Dispatch<SetStateAction<string | null>>;
+  isSquare?: boolean; // true если квадратное изображение
 };
 const noImage = '/images/icons/noimage.svg';
 
@@ -29,6 +33,7 @@ export default function BlockUploadImage({
   resetData,
   posterUrl,
   setPosterUrl,
+  isSquare,
 }: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
@@ -92,7 +97,7 @@ export default function BlockUploadImage({
         disabled={imageTitle !== noImage}
       />
 
-      <div className={styles.relative}>
+      <div className={cx('relative', { square: isSquare })}>
         {/* в данном случае компонент Image не нужен */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={posterUrl || imageTitle} alt="title image" className={styles.img} />

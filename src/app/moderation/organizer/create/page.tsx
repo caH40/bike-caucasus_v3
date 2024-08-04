@@ -3,9 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import IconOrganizers from '@/components/Icons/IconOrganizers';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { getOrganizer } from '@/actions/organizer';
-import styles from './OrganizerCreatePage.module.css';
+import { fetchOrganizerCreated, getOrganizer } from '@/actions/organizer';
 import FromOrganizer from '@/components/UI/Forms/FromOrganizer/FromOrganizer';
+import styles from './OrganizerCreatePage.module.css';
 
 // export const dynamic = 'force-dynamic';
 
@@ -30,7 +30,9 @@ export default async function OrganizerCreatePage() {
         Icon={IconOrganizers}
       />
       {!organizer.ok && <h2 className={styles.error}>{organizer.message}</h2>}
-      {organizer.message === 'Не найден запрашиваемый Организатор!' && <FromOrganizer />}
+      {organizer.message !== 'Не найден запрашиваемый Организатор!' && (
+        <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />
+      )}
     </>
   );
 }

@@ -5,6 +5,7 @@ import type { TDtoOrganizer } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
+import { handlerErrorDB } from '@/services/mongodb/error';
 
 /**
  * Получение данных организатора или по _id Организатора или по _id(creatorId) создателя Организатора.
@@ -35,8 +36,22 @@ export async function getOrganizer({
 
     return res;
   } catch (error) {
-    const errorParsed = parseError(error);
-    errorHandlerClient(errorParsed);
-    return { data: null, ok: false, message: errorParsed.message };
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Акшен отправки созданной формы Организатора
+ */
+export async function fetchOrganizerCreated(formData: FormData): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    console.log(formData);
+
+    return { data: null, ok: true, message: 'Всё отлично' };
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
   }
 }

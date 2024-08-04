@@ -3,6 +3,11 @@
   width: 180px;
   height: 120px;
 }
+.square {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
 .title {
   font-size: 1em;
   margin-bottom: 5px;

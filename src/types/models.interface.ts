@@ -276,9 +276,9 @@ export type TOrganizer = {
   _id: mongoose.Types.ObjectId;
   creator: mongoose.Types.ObjectId;
   name: string;
-  description?: string;
-  logoUrl?: string; // Лого клуба.
-  posterUrl?: string; // Постер для страницы клуба.
+  description: string;
+  logoUrl: string; // Лого клуба.
+  posterUrl: string; // Постер для страницы клуба.
   contactInfo: OrganizerContactInfo;
   address: OrganizerAddress;
   championshipCreationFee: ChampionshipCreationFee;
