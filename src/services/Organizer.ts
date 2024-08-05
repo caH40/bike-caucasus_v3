@@ -48,6 +48,9 @@ export class OrganizerService {
    */
   public async getMany(): Promise<ResponseServer<TDtoOrganizer[] | null>> {
     try {
+      // Подключение к БД.
+      await this.dbConnection();
+
       const organizersDB: (Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser })[] =
         await OrganizerModel.find()
           .populate({
@@ -77,6 +80,9 @@ export class OrganizerService {
       if ((!_id && !creatorId) || (_id && creatorId)) {
         throw new Error('Необходимо передать только один из параметров: _id или creatorId.');
       }
+
+      // Подключение к БД.
+      await this.dbConnection();
 
       let query = {} as { _id: string } | { creator: string };
 

@@ -8,8 +8,12 @@
  * * Отзывы
  */
 
-type Props = {};
+type Props = {
+  params: {
+    urlSlug: string;
+  };
+};
 
-export default function OrganizerPage({}: Props) {
-  return <div>page</div>;
+export default function OrganizerPage({ params: { urlSlug } }: Props) {
+  return <div>{urlSlug}</div>;
 }

@@ -46,6 +46,20 @@ export async function getOrganizer({
     return handlerErrorDB(error);
   }
 }
+/**
+ * Получение Организаторов Чемпионатов.
+ */
+export async function getOrganizers(): Promise<ResponseServer<TDtoOrganizer[] | null>> {
+  try {
+    const organizerService = new OrganizerService();
+    const res = await organizerService.getMany();
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
 
 /**
  * Экшен отправки формы Организатора с измененными данными.
