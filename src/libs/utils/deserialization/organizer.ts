@@ -5,8 +5,11 @@ import { TFormOrganizerCreate } from '@/types/index.interface';
  * @param dataForm - Данные формы, которые нужно десериализовать.
  * @returns Сериализованные данные в формате FormData.
  */
-export function deserializeOrganizerCreate(serializedFormData: FormData) {
-  const organizer = {} as TFormOrganizerCreate & { isEditing: boolean } & {
+export function deserializeOrganizer(serializedFormData: FormData) {
+  const organizer = {} as TFormOrganizerCreate & {
+    isEditing: boolean;
+    organizerId?: string;
+  } & {
     [key: string]: any;
   };
 
@@ -22,6 +25,10 @@ export function deserializeOrganizerCreate(serializedFormData: FormData) {
         if (typeof value === 'string') {
           organizer[name] = JSON.parse(value);
         }
+        break;
+
+      case 'isEditing':
+        organizer[name] = value === 'true' ? true : false;
         break;
 
       default:

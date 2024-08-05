@@ -14,7 +14,7 @@ type Props = {
   isLoading?: boolean;
   poster: File | null;
   setPoster: Dispatch<SetStateAction<File | null>>;
-  resetData: boolean; // Триггер сброса изображения.
+  resetData?: boolean; // Триггер сброса изображения.
   posterUrl: string | null; // Существует только при редактировании новости.
   setPosterUrl: Dispatch<SetStateAction<string | null>>;
   isSquare?: boolean; // true если квадратное изображение

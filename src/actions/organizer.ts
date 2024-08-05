@@ -8,6 +8,8 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
+import { revalidatePath } from 'next/cache';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -46,7 +48,67 @@ export async function getOrganizer({
 }
 
 /**
- * Акшен отправки созданной формы Организатора
+ * Экшен отправки формы Организатора с измененными данными.
+ */
+export async function fetchOrganizerEdited({
+  dataSerialized,
+  organizerId,
+}: {
+  dataSerialized: FormData;
+  organizerId: string;
+}): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const creator = session?.user.idDB;
+    if (!creator) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Проверка на существования Организатора с _id, созданного creator.
+    const organizerDB = await OrganizerModel.findOne({
+      _id: organizerId,
+      creator,
+    });
+    if (!organizerDB) {
+      throw new Error(
+        `Организатор с таким _id: ${organizerId}, созданного пользователем с _id: ${creator} уже существует`
+      );
+    }
+
+    // Проверка наличия прав на создание Организатора.
+    if (
+      !session.user.role.permissions.some(
+        (elm) => elm === 'moderation.organizer.edit' || elm === 'all'
+      )
+    ) {
+      throw new Error('У вас нет прав для редактирования Организатора!');
+    }
+
+    const cloudOptions: TCloudConnect = {
+      cloudName: 'vk',
+      domainCloudName: 'hb.vkcs.cloud',
+      bucketName,
+    };
+
+    const organizerService = new OrganizerService();
+    const res = await organizerService.put({
+      serializedFormData: dataSerialized,
+      cloudOptions,
+    });
+
+    revalidatePath('/moderation/organizer/edit');
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+/**
+ * Экшен отправки созданной формы Организатора
  */
 export async function fetchOrganizerCreated(formData: FormData): Promise<ResponseServer<null>> {
   'use server';

@@ -12,34 +12,44 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import { optionsRegisterEmail } from '@/libs/utils/validatorService';
 import { useLoadingStore } from '@/store/loading';
-import { serializationOrganizerCreate } from '@/libs/utils/serialization/organizer';
+import { serializationOrganizer } from '@/libs/utils/serialization/organizer';
+import { TextValidationService } from '@/libs/utils/text';
 import type { ResponseServer, TFormOrganizerCreate } from '@/types/index.interface';
 import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from '../Form.module.css';
-import { TextValidationService } from '@/libs/utils/text';
 
 type Props = {
   fetchOrganizerCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  // fetchTrailEdited?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  fetchOrganizerEdited?: ({
+    // eslint-disable-next-line no-unused-vars
+    dataSerialized,
+    // eslint-disable-next-line no-unused-vars
+    organizerId,
+  }: {
+    dataSerialized: FormData;
+    organizerId: string;
+  }) => Promise<ResponseServer<any>>;
   organizerForEdit?: TDtoOrganizer;
 };
 
 const textValidation = new TextValidationService();
 
-export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit }: Props) {
+export default function FromOrganizer({
+  fetchOrganizerCreated,
+  fetchOrganizerEdited,
+  organizerForEdit,
+}: Props) {
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
-
-  // Постер Организатора в формате File.
-  // const [poster, setPoster] = useState<File | null>(null);
 
   // Постер Организатора существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
     organizerForEdit ? organizerForEdit.posterUrl : null
   );
-
-  // Триггер очистки форм и Локального хранилища.
-  const [resetData, setResetData] = useState<boolean>(false);
+  // Постер Организатора существует при редактировании, url на изображение.
+  const [logoUrl, setLogoUrl] = useState<string | null>(
+    organizerForEdit ? organizerForEdit.logoUrl : null
+  );
 
   const {
     register,
@@ -55,26 +65,43 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
     setLoading(true);
 
     // Сериализация данных перед отправкой на сервер.
-    const dataSerialized = serializationOrganizerCreate(dataForm);
+    const isEditing = organizerForEdit ? true : false;
+    const organizerId = organizerForEdit?._id;
+    const posterUrl = organizerForEdit?.posterUrl;
+    const logoUrl = organizerForEdit?.logoUrl;
+    const dataSerialized = serializationOrganizer({
+      dataForm,
+      isEditing,
+      organizerId,
+      posterUrl,
+      logoUrl,
+    });
 
     // Отправка данных на сервер и получение ответа после завершения операции.
-    let res = {} as ResponseServer<null>;
+    const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
+    let response = {
+      data: null,
+      ok: false,
+      message: messageErr,
+    };
+
     if (fetchOrganizerCreated) {
-      res = await fetchOrganizerCreated(dataSerialized);
+      response = await fetchOrganizerCreated(dataSerialized);
+    } else if (fetchOrganizerEdited && organizerId) {
+      response = await fetchOrganizerEdited({ dataSerialized, organizerId });
     } else {
-      return toast.error('Нет функций отправки для создания или редактирования Организатора.');
+      return toast.error(messageErr);
     }
 
     // Завершение отображение спинера загрузки.
     setLoading(false);
 
     // Отображение статуса сохранения События в БД.
-    if (res.ok) {
+    if (response.ok) {
       reset();
-      setResetData((prev) => !prev);
-      toast.success(res.message);
+      toast.success(response.message);
     } else {
-      toast.error(res.message);
+      toast.error(response.message);
     }
   };
 
@@ -83,10 +110,10 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
       {/* Блок ввода Названия */}
       <BoxInput
         label="Название должно быть уникальным:*"
-        id="title"
+        id="name"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.name : ''}
         loading={isLoading}
         register={register('name', {
           required: 'Это обязательное поле для заполнения',
@@ -106,7 +133,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="title"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.description : ''}
         loading={isLoading}
         register={register('description', {
           required: 'Это обязательное поле для заполнения',
@@ -126,7 +153,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="contactInfoEmail"
         autoComplete="email"
         type="email"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.contactInfo.email : ''}
         loading={isLoading}
         register={register('contactInfo.email', optionsRegisterEmail)}
         validationText={errors.contactInfo?.email ? errors.contactInfo?.email.message : ''}
@@ -138,7 +165,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="contactInfoPhone"
         autoComplete="off"
         type="tel"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.contactInfo.phone : ''}
         loading={isLoading}
         register={register('contactInfo.phone', {
           minLength: {
@@ -162,13 +189,12 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         name="posterFile"
         control={control}
         defaultValue={null}
-        rules={{ required: 'Обязательно к заполнению' }}
+        // rules={{ required: 'Обязательно к заполнению' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Главное изображение (обложка):*'}
             poster={field.value}
             setPoster={field.onChange}
-            resetData={resetData}
             posterUrl={posterUrl}
             setPosterUrl={setPosterUrl}
           />
@@ -180,15 +206,14 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         name="logoFile"
         control={control}
         defaultValue={null}
-        rules={{ required: 'Обязательно к заполнению' }}
+        // rules={{ required: 'Обязательно к заполнению' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Логотип Организатора, желательно квадратный:*'}
             poster={field.value}
             setPoster={field.onChange}
-            resetData={resetData}
-            posterUrl={posterUrl}
-            setPosterUrl={setPosterUrl}
+            posterUrl={logoUrl}
+            setPosterUrl={setLogoUrl}
             isSquare={true}
           />
         )}
@@ -202,7 +227,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="contactInfoWebsite"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.contactInfo.website : ''}
         loading={isLoading}
         register={register('contactInfo.website', {
           maxLength: {
@@ -219,7 +244,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="contactInfoVk"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.contactInfo.socialMedia?.vk : ''}
         loading={isLoading}
         register={register('contactInfo.socialMedia.vk', {
           maxLength: {
@@ -232,13 +257,15 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         }
       />
 
-      {/* Блок ввода Группа/канал в Телеграм */}
+      {/* Блок ввода контакт Организатора в Телеграм */}
       <BoxInput
-        label="Группа/канал в Телеграм:"
+        label="Контакт Организатора в Телеграм:"
         id="contactInfoTelegram"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={
+          organizerForEdit ? organizerForEdit.contactInfo.socialMedia?.telegram : ''
+        }
         loading={isLoading}
         register={register('contactInfo.socialMedia.telegram', {
           maxLength: {
@@ -253,6 +280,29 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         }
       />
 
+      {/* Блок ввода Группа/канал в Телеграм */}
+      <BoxInput
+        label="Группа/канал в Телеграм:"
+        id="contactInfoTelegramGroup"
+        autoComplete="off"
+        type="text"
+        defaultValue={
+          organizerForEdit ? organizerForEdit.contactInfo.socialMedia?.telegramGroup : ''
+        }
+        loading={isLoading}
+        register={register('contactInfo.socialMedia.telegramGroup', {
+          maxLength: {
+            value: 200,
+            message: 'Не больше 200 символов',
+          },
+        })}
+        validationText={
+          errors.contactInfo?.socialMedia?.telegramGroup
+            ? errors.contactInfo?.socialMedia?.telegramGroup.message
+            : ''
+        }
+      />
+
       <TitleAndLine title="Адрес" hSize={2} hideLine={true} />
 
       {/* Блок ввода Города */}
@@ -261,7 +311,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="addressCity"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.address.city : ''}
         loading={isLoading}
         register={register('address.city', {
           required: 'Это обязательное поле для заполнения',
@@ -280,7 +330,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="addressCountry"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.address.country : ''}
         loading={isLoading}
         register={register('address.country', {
           minLength: { value: 3, message: 'Минимум 3х символа' },
@@ -298,7 +348,7 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         id="addressState"
         autoComplete="off"
         type="text"
-        defaultValue={''}
+        defaultValue={organizerForEdit ? organizerForEdit.address.state : ''}
         loading={isLoading}
         register={register('address.state', {
           minLength: { value: 3, message: 'Минимум 3х символа' },
@@ -310,26 +360,13 @@ export default function FromOrganizer({ fetchOrganizerCreated, organizerForEdit 
         validationText={errors.address?.state ? errors.address?.state.message : ''}
       />
 
-      {/* Блок ввода Почтового индекса */}
-      <BoxInput
-        label="Почтовый индекс:"
-        id="addressPostalCode"
-        autoComplete="off"
-        type="number"
-        defaultValue={''}
-        loading={isLoading}
-        register={register('address.postalCode', {
-          pattern: {
-            value: /^\d{6}$/, // Регулярное выражение для проверки ровно 6 цифр
-            message: 'Почтовый индекс должен состоять ровно из 6 цифр',
-          },
-        })}
-        validationText={errors.address?.postalCode ? errors.address?.postalCode.message : ''}
-      />
-
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
-        <Button name="Добавить" theme="green" loading={isLoading} />
+        <Button
+          name={organizerForEdit ? 'Обновить' : 'Добавить'}
+          theme="green"
+          loading={isLoading}
+        />
       </div>
     </form>
   );

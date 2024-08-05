@@ -6,9 +6,12 @@ import { dtoCOrganizer, dtoCOrganizers } from '@/dto/organizer';
 import { userPublicSelect } from '@/constants/populate';
 import type { TAuthorFromUser, TOrganizer } from '@/types/models.interface';
 import type { TDtoOrganizer } from '@/types/dto.types';
-import { deserializeOrganizerCreate } from '@/libs/utils/deserialization/organizer';
+import { deserializeOrganizer } from '@/libs/utils/deserialization/organizer';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { saveFile } from './save-file';
+import { Cloud } from './cloud';
+import { getNextSequenceValue } from './sequence';
+import slugify from 'slugify';
 
 type GetOneParams =
   | {
@@ -28,12 +31,16 @@ export class OrganizerService {
   private handlerErrorDB;
   private dbConnection: () => Promise<void>;
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private suffixImagePoster: string;
+  private suffixImageLogo: string;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.dbConnection = connectToMongo;
     this.saveFile = saveFile;
+    this.suffixImagePoster = 'organizer_image_poster-';
+    this.suffixImageLogo = 'organizer_image_logo-';
   }
 
   /**
@@ -116,7 +123,7 @@ export class OrganizerService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const deserializedFormData = deserializeOrganizerCreate(serializedFormData);
+      const deserializedFormData = deserializeOrganizer(serializedFormData);
 
       // Проверка на дубликат имени Организатора.
       const isUniqueName = await OrganizerModel.findOne({ name: deserializedFormData.name });
@@ -126,40 +133,132 @@ export class OrganizerService {
         );
       }
 
-      const suffixImage = 'organizer_image_poster-';
       // Сохранение изображения для Постера маршрута.
       const posterUrl = await this.saveFile({
-        file: deserializedFormData.poster as File,
+        file: deserializedFormData.posterFile as File,
         type: 'image',
-        suffix: suffixImage,
+        suffix: this.suffixImagePoster,
         cloudName: cloudOptions.cloudName,
         domainCloudName: cloudOptions.domainCloudName,
         bucketName: cloudOptions.bucketName,
       });
 
-      const suffixImageLogo = 'organizer_image_logo-';
       // Сохранение изображения для Постера маршрута.
       const logoUrl = await this.saveFile({
-        file: deserializedFormData.poster as File,
+        file: deserializedFormData.logoFile as File,
         type: 'image',
-        suffix: suffixImageLogo,
+        suffix: this.suffixImageLogo,
         cloudName: cloudOptions.cloudName,
         domainCloudName: cloudOptions.domainCloudName,
         bucketName: cloudOptions.bucketName,
       });
+
+      // Создание slug из name для url страницы Организатора.
+      const sequenceValue = await getNextSequenceValue('organizer');
+      const stringRaw = `${sequenceValue}-${deserializedFormData.name}`;
+      const urlSlug = slugify(stringRaw, { lower: true, strict: true });
 
       const response = await OrganizerModel.create({
         ...deserializedFormData,
         posterUrl,
         logoUrl,
         creator,
+        urlSlug,
       });
 
       if (!response._id) {
-        throw new Error('Маршрут не сохранился в БД!');
+        throw new Error('Организатор не сохранился в БД!');
       }
 
       return { data: null, ok: true, message: 'Организатор создан, данные сохранены в БД!' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Создание нового Организатора по _id или по creatorId.
+   */
+  public async put({
+    serializedFormData,
+    cloudOptions,
+  }: {
+    serializedFormData: FormData;
+    cloudOptions: TCloudConnect;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const deserializedFormData = deserializeOrganizer(serializedFormData);
+
+      // Инстанс сервиса работы с Облаком
+      const cloudService = new Cloud(cloudOptions.cloudName);
+      const suffixUrl = `https://${cloudOptions.bucketName}.${cloudOptions.domainCloudName}/`;
+      let posterUrl: null | string = null;
+      // Если вернулся posterUrl, значит Постер был изменен и необходимо удалить старый из облака.
+      if (deserializedFormData.posterUrl) {
+        await cloudService.deleteFile(
+          cloudOptions.bucketName,
+          deserializedFormData.posterUrl.replace(suffixUrl, '')
+        );
+
+        // Сохранение изображения для Постера маршрута.
+        posterUrl = await this.saveFile({
+          file: deserializedFormData.posterFile as File,
+          type: 'image',
+          suffix: this.suffixImagePoster,
+          cloudName: cloudOptions.cloudName,
+          domainCloudName: cloudOptions.domainCloudName,
+          bucketName: cloudOptions.bucketName,
+        });
+      }
+
+      let logoUrl: null | string = null;
+      // Если вернулся posterUrl, значит Постер был изменен и необходимо удалить старый из облака.
+      if (deserializedFormData.posterUrl) {
+        await cloudService.deleteFile(
+          cloudOptions.bucketName,
+          deserializedFormData.logoUrl.replace(suffixUrl, '')
+        );
+
+        // Сохранение изображения для Постера маршрута.
+        // Сохранение изображения для Постера маршрута.
+        logoUrl = await this.saveFile({
+          file: deserializedFormData.logoFile as File,
+          type: 'image',
+          suffix: this.suffixImageLogo,
+          cloudName: cloudOptions.cloudName,
+          domainCloudName: cloudOptions.domainCloudName,
+          bucketName: cloudOptions.bucketName,
+        });
+      }
+
+      // Создание запроса на изменение данных Организатора.
+      const updateData = { ...deserializedFormData };
+
+      if (posterUrl) {
+        updateData.posterUrl = posterUrl;
+      }
+      if (logoUrl) {
+        updateData.logoUrl = logoUrl;
+      }
+
+      const response = await OrganizerModel.findOneAndUpdate(
+        { _id: deserializedFormData.organizerId },
+        updateData
+      );
+
+      if (!response._id) {
+        throw new Error('Изменения данных Организатора не сохранились в БД!');
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: 'Изменения данных Организатора сохранились в БД!',
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

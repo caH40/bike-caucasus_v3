@@ -253,14 +253,13 @@ export type OrganizerContactInfo = {
   socialMedia?: {
     vk?: string;
     telegram?: string;
+    telegramGroup?: string;
   };
 };
 // Тип для адреса.
 export type OrganizerAddress = {
-  street?: string;
   city: string;
   state?: string;
-  postalCode?: string;
   country?: string;
 };
 // Тип для оплаты за создание чемпионата.
@@ -275,6 +274,7 @@ export type TOrganizerDocument = Document & TOrganizer;
 export type TOrganizer = {
   _id: mongoose.Types.ObjectId;
   creator: mongoose.Types.ObjectId;
+  urlSlug: string;
   name: string;
   description: string;
   logoUrl: string; // Лого клуба.

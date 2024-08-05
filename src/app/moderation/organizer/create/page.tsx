@@ -22,6 +22,9 @@ export default async function OrganizerCreatePage() {
 
   const organizer = await getOrganizer({ creatorId: userIdDB });
 
+  // У пользователя еще не создавал Организатора Чемпионатов
+  const hasNotOrganizer = organizer.message === 'Не найден запрашиваемый Организатор!';
+
   return (
     <>
       <TitleAndLine
@@ -29,9 +32,9 @@ export default async function OrganizerCreatePage() {
         hSize={1}
         Icon={IconOrganizers}
       />
-      {!organizer.ok && <h2 className={styles.error}>{organizer.message}</h2>}
-      {organizer.message !== 'Не найден запрашиваемый Организатор!' && (
-        <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />
+      {hasNotOrganizer && <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />}
+      {!organizer.ok && !hasNotOrganizer && (
+        <h2 className={styles.error}>{organizer.message}</h2>
       )}
     </>
   );

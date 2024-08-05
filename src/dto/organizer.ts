@@ -23,6 +23,7 @@ export function dtoCOrganizer(
   return {
     _id: String(organizer._id),
     creator,
+    urlSlug: organizer.urlSlug,
     name: organizer.name,
     description: organizer.description,
     posterUrl: organizer.posterUrl,
