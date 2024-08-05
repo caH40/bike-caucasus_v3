@@ -17,22 +17,22 @@ const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
  * Получение данных организатора или по _id Организатора или по _id(creatorId) создателя Организатора.
  */
 export async function getOrganizer({
-  _id,
+  urlSlug,
   creatorId,
 }: {
-  _id?: string;
+  urlSlug?: string;
   creatorId?: string;
 }): Promise<ResponseServer<TDtoOrganizer | null>> {
   try {
     // Проверка, что только один параметр предоставлен
-    if ((!_id && !creatorId) || (_id && creatorId)) {
+    if ((!urlSlug && !creatorId) || (urlSlug && creatorId)) {
       throw new Error('Необходимо передать только один из параметров: _id или creatorId.');
     }
 
-    let query = {} as { _id: string } | { creatorId: string };
+    let query = {} as { urlSlug: string } | { creatorId: string };
 
-    if (_id) {
-      query = { _id };
+    if (urlSlug) {
+      query = { urlSlug };
     } else if (creatorId) {
       query = { creatorId };
     }

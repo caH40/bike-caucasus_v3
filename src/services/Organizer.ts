@@ -15,11 +15,11 @@ import slugify from 'slugify';
 
 type GetOneParams =
   | {
-      _id?: never;
+      urlSlug?: never;
       creatorId: string;
     }
   | {
-      _id: string;
+      urlSlug: string;
       creatorId?: never;
     };
 
@@ -72,22 +72,24 @@ export class OrganizerService {
    * Получить Организатора по _id или по creatorId.
    */
   public async getOne({
-    _id,
+    urlSlug,
     creatorId,
   }: GetOneParams): Promise<ResponseServer<TDtoOrganizer | null>> {
     try {
       // Проверка, что только один параметр предоставлен
-      if ((!_id && !creatorId) || (_id && creatorId)) {
-        throw new Error('Необходимо передать только один из параметров: _id или creatorId.');
+      if ((!urlSlug && !creatorId) || (urlSlug && creatorId)) {
+        throw new Error(
+          'Необходимо передать только один из параметров: urlSlug или creatorId.'
+        );
       }
 
       // Подключение к БД.
       await this.dbConnection();
 
-      let query = {} as { _id: string } | { creator: string };
+      let query = {} as { urlSlug: string } | { creator: string };
 
-      if (_id) {
-        query = { _id };
+      if (urlSlug) {
+        query = { urlSlug };
       } else if (creatorId) {
         query = { creator: creatorId };
       }
@@ -223,7 +225,7 @@ export class OrganizerService {
 
       let logoUrl: null | string = null;
       // Если вернулся posterUrl, значит Постер был изменен и необходимо удалить старый из облака.
-      if (deserializedFormData.posterUrl) {
+      if (deserializedFormData.logoUrl) {
         await cloudService.deleteFile(
           cloudOptions.bucketName,
           deserializedFormData.logoUrl.replace(suffixUrl, '')
