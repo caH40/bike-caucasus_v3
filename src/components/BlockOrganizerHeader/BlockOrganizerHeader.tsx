@@ -13,7 +13,16 @@ export default function BlockOrganizerHeader({ organizer }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.box__poster}>
-        <Image src={organizer.posterUrl} className={styles.poster} fill={true} alt={'poster'} />
+        <Image
+          src={organizer.posterUrl}
+          className={styles.poster}
+          fill={true}
+          alt={'poster'}
+          sizes="(max-width: 992px) 100vw, (max-width: 2000px) 70vw, 90vw"
+          priority={true}
+          placeholder="blur"
+          blurDataURL={blurBase64}
+        />
       </div>
 
       <div className={styles.box__logo}>
@@ -23,10 +32,6 @@ export default function BlockOrganizerHeader({ organizer }: Props) {
           width={90}
           height={90}
           alt={'logo'}
-          sizes="(max-width: 992px) 100vw, 20vw"
-          priority={true}
-          placeholder="blur"
-          blurDataURL={blurBase64}
         />
       </div>
 
