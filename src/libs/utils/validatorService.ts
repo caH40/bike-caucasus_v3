@@ -31,7 +31,13 @@ export function validateUsername(register: UseFormRegister<FieldValuesCustom>) {
     }),
   };
 }
-
+export const optionsRegisterEmail = {
+  required: 'Это обязательное поле для заполнения',
+  pattern: {
+    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+    message: 'Некорректный email',
+  },
+};
 /**
  * Валидация поля "Email".
  * @param register Функция регистрации поля из библиотеки react-hook-form.

@@ -14,6 +14,8 @@ import IconAdd from '@/components/Icons/IconAdd';
 import IconUsers from '@/components/Icons/IconUsers';
 import IconLog from '@/components/Icons/IconLog';
 import IconRole from '@/components/Icons/IconRole';
+import IconChampionship from '@/components/Icons/IconChampionship';
+import IconOrganizers from '@/components/Icons/IconOrganizers';
 import type { TMenuOnPage } from '@/types/index.interface';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
@@ -105,6 +107,22 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     href: '/moderation/calendar',
     permission: 'moderation.calendar',
     icon: IconCalendar,
+  },
+  {
+    id: 4,
+    name: 'Чемпионат',
+    classes: [],
+    href: '/moderation/championship',
+    permission: 'moderation.championship',
+    icon: IconChampionship,
+  },
+  {
+    id: 5,
+    name: 'Организатор',
+    classes: [],
+    href: '/moderation/organizer',
+    permission: 'moderation.organizer',
+    icon: IconOrganizers,
   },
 ];
 
@@ -217,5 +235,25 @@ export const buttonsMenuAdminRolesPage: TMenuOnPage[] = [
     href: '/admin/roles/edit',
     permission: 'admin',
     icon: IconEdit,
+  },
+];
+
+// Кнопки для меню на странице Модерация маршрута /moderation/organizer
+export const buttonsMenuModerationOrganizerPage: TMenuOnPage[] = [
+  {
+    id: 2,
+    name: 'Редактирование',
+    classes: [],
+    href: '/moderation/organizer/edit',
+    permission: 'moderation.organizer',
+    icon: IconEdit,
+  },
+  {
+    id: 1,
+    name: 'Создание/удаление',
+    classes: [],
+    href: '/moderation/organizer/create',
+    permission: 'moderation.organizer',
+    icon: IconCreate,
   },
 ];

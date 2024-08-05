@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import classNames from 'classnames/bind';
 
+import PopupMenu from '../PopupMenu/PopupMenu';
 import PermissionCheck from '@/hoc/permission-check';
 import { useResize } from '@/hooks/resize';
 import { navLinksFull } from '@/constants/navigation';
@@ -11,8 +13,12 @@ import styles from './Navbar.module.css';
 
 const cx = classNames.bind(styles);
 
+/**
+ * Главное навигационное меню в шапке страницы в десктопном варианте.
+ */
 const Navbar = () => {
   const { isScreenLg: lg } = useResize();
+  const [activePopupId, setActivePopupId] = useState<number | null>(null);
 
   const pathname = usePathname();
   const isActivePage = (href: string) => {
@@ -29,18 +35,41 @@ const Navbar = () => {
     <nav className={styles.nav}>
       {lg && (
         <ul className={styles.list}>
-          {navLinksFull.map((link) => (
-            <PermissionCheck permission={link.permission} key={link.id}>
-              <li className={styles.item}>
-                <Link
-                  className={cx('link', { active: isActivePage(link.href) })}
-                  href={link.href}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            </PermissionCheck>
-          ))}
+          {navLinksFull.map((link) =>
+            link.popupMenu ? (
+              <PermissionCheck permission={link.permission} key={link.id}>
+                <li className={styles.item}>
+                  <span
+                    className={cx('link', { active: isActivePage(link.href) })}
+                    onClick={() => setActivePopupId(link.id)}
+                  >
+                    {link.name}
+                  </span>
+
+                  {activePopupId === link.id && (
+                    <div
+                      className={styles.block__popup}
+                      onClick={() => setActivePopupId(null)}
+                      onMouseLeave={() => setActivePopupId(null)}
+                    >
+                      <PopupMenu navLinks={link.popupMenu} />
+                    </div>
+                  )}
+                </li>
+              </PermissionCheck>
+            ) : (
+              <PermissionCheck permission={link.permission} key={link.id}>
+                <li className={styles.item}>
+                  <Link
+                    className={cx('link', { active: isActivePage(link.href) })}
+                    href={link.href}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              </PermissionCheck>
+            )
+          )}
         </ul>
       )}
     </nav>

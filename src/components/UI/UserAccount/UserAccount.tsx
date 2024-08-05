@@ -9,6 +9,7 @@ import { useMobileMenuStore } from '@/store/mobile';
 import { usePopupUserStore } from '@/store/popup-user';
 import styles from './UserAccount.module.css';
 import PopupMenu from '../PopupMenu/PopupMenu';
+import { getNavLinksUserPopup } from '@/constants/navigation';
 
 const cx = cn.bind(styles);
 
@@ -48,7 +49,15 @@ const UserAccount = () => {
           quality={100}
         />
       </button>
-      <PopupMenu />
+      {isVisible && (
+        <div
+          className={styles.block__popup}
+          onClick={() => setMenu(false)}
+          onMouseLeave={() => setMenu(false)}
+        >
+          <PopupMenu navLinks={getNavLinksUserPopup} />
+        </div>
+      )}
     </>
   );
 };

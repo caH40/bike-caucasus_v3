@@ -1,5 +1,5 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TLogsErrorModel, TNewsBlockInfo } from './models.interface';
+import { TLogsErrorModel, TNewsBlockInfo, TOrganizer } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
@@ -114,6 +114,18 @@ export type TFormCalendar = {
   urlSlug: string;
   bikeType: string;
 };
+/**
+ * Данные профиля для изменения в account/profile
+ */
+export type TFormOrganizerCreate = Omit<
+  TOrganizer,
+  '_id' | 'creator' | 'championshipCreationFee'
+> & {
+  logoUrl?: string; // url Лого клуба. (Существует при редактировании Организатора)
+  posterUrl?: string; // url Постер для страницы клуба. (Существует при редактировании Организатора)
+  logoFile: File | null; // Файл загружаемого Лого клуба.
+  posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
+};
 
 /**
  * Данные профиля (аккаунта) для изменения в account/details
@@ -186,6 +198,17 @@ export type TMenuOnPage = {
   href?: string;
   onClick?: () => void;
   isMyButton?: boolean; // отображается только авторизованному пользователю для данной кнопки
+  permission: string | null; // правило доступа
+  icon?: React.ComponentType<TIconProps>;
+};
+
+/**
+ * Меню Попап с навигацией для главного навбара.
+ */
+export type TMenuPopup = {
+  id: number;
+  name: string;
+  href: string;
   permission: string | null; // правило доступа
   icon?: React.ComponentType<TIconProps>;
 };

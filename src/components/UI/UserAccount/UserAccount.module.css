@@ -19,3 +19,9 @@
 .focus {
   outline: solid 3px var(--btn-bg-hover);
 }
+.block__popup {
+  position: absolute;
+  z-index: 1001;
+  top: 70px;
+  right: 40px;
+}

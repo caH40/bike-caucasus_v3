@@ -1,6 +1,10 @@
 .nav {
   flex: 1 1 100%;
 }
+.item {
+  position: relative;
+  cursor: pointer;
+}
 .list {
   display: flex;
   justify-content: flex-end;
@@ -25,6 +29,12 @@
 }
 .active {
   color: #39a034;
+}
+.block__popup {
+  position: absolute;
+  z-index: 1001;
+  top: 42px;
+  left: 0px;
 }
 
 /* ====================================================================== */

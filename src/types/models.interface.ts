@@ -244,3 +244,69 @@ export type TPermission = {
   name: string;
   description: string;
 };
+
+// Типы для контактной информации.
+export type OrganizerContactInfo = {
+  email: string;
+  phone?: string;
+  website?: string;
+  socialMedia?: {
+    vk?: string;
+    telegram?: string;
+    telegramGroup?: string;
+  };
+};
+// Тип для адреса.
+export type OrganizerAddress = {
+  city: string;
+  state?: string;
+  country?: string;
+};
+// Тип для оплаты за создание чемпионата.
+type ChampionshipCreationFee = {
+  amount: number;
+  method?: string; // Метод оплаты (например, "credit card", "bank transfer")
+};
+/**
+ * Тип схемы/модели для Организатора Чемпионатов.
+ */
+export type TOrganizerDocument = Document & TOrganizer;
+export type TOrganizer = {
+  _id: mongoose.Types.ObjectId;
+  creator: mongoose.Types.ObjectId;
+  urlSlug: string;
+  name: string;
+  description: string;
+  logoUrl: string; // Лого клуба.
+  posterUrl: string; // Постер для страницы клуба.
+  contactInfo: OrganizerContactInfo;
+  address: OrganizerAddress;
+  championshipCreationFee: ChampionshipCreationFee;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+/**
+ * Тип схемы/модели для Чемпионата.
+ */
+export type TChampionshipDocument = TChampionship & Document;
+export type TChampionship = {
+  _id: mongoose.Types.ObjectId;
+  name: string; // Название чемпионата.
+  description: string; // Описание, включая карту с местом старта.
+  organizer: mongoose.Types.ObjectId; // Ссылка на объект организатора.
+  parentChampionshipUrl?: mongoose.Types.ObjectId; // Ссылка на родительскую страницу чемпионата, если это этап.
+  childChampionshipUrls?: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
+  startDate: Date; // Дата начала чемпионата.
+  endDate: Date; // Дата окончания чемпионата.
+  trackGPX?: {
+    url: string; // Трэк заезда.
+    coordStart: { lat: number; lon: number }; // Координаты старта заезда.
+  };
+  posterUrl?: string; // Постер для страницы Чемпионата.
+  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
+  championshipType: 'Tour' | 'Series' | 'Single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
+  bikeType: 'TimeTrial' | 'Mountain' | 'Road' | 'Downhill'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
+  createdAt: Date;
+  updatedAt: Date;
+};

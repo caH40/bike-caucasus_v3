@@ -6,7 +6,7 @@ type PopupUserStore = {
 };
 
 /**
- * Хранилище для модального информационного окна.
+ * Хранилище попап меню Пользователя, сделано в Сторе так как управление происходит из разных компонентов.
  */
 export const usePopupUserStore = create<PopupUserStore>((set) => ({
   isVisible: false,
