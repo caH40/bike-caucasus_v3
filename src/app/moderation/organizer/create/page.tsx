@@ -22,7 +22,7 @@ export default async function OrganizerCreatePage() {
 
   const organizer = await getOrganizer({ creatorId: userIdDB });
 
-  // У пользователя еще не создавал Организатора Чемпионатов
+  // Пользователь еще не создавал Организатора Чемпионатов.
   const hasNotOrganizer = organizer.message === 'Не найден запрашиваемый Организатор!';
 
   return (
@@ -32,7 +32,15 @@ export default async function OrganizerCreatePage() {
         hSize={1}
         Icon={IconOrganizers}
       />
-      {hasNotOrganizer && <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />}
+      {hasNotOrganizer ? (
+        <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />
+      ) : (
+        <h2>
+          У Вас уже есть созданный Организатор, для редактирования данных перейдите в
+          соответствующий пункт меню. У пользователя может быть только один Организатор
+          Чемпионатов!
+        </h2>
+      )}
       {!organizer.ok && !hasNotOrganizer && (
         <h2 className={styles.error}>{organizer.message}</h2>
       )}
