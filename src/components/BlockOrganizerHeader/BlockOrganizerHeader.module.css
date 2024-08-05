@@ -21,7 +21,7 @@
 }
 .box__logo {
   position: absolute;
-  top: 285px;
+  top: 280px;
   left: 45px;
   width: 100px;
   height: 100px;
@@ -42,4 +42,24 @@
 }
 .description {
   font-size: 1.1rem;
+}
+
+/* ====================================================================== */
+@media (max-width: 768px) {
+  .box__logo {
+    top: 210px;
+    left: 20px;
+  }
+  .block__text {
+    padding: 350px 2rem 2rem 2rem;
+  }
+}
+@media (max-width: 576px) {
+  .box__logo {
+    top: 214px;
+    left: 14px;
+  }
+  .block__text {
+    padding: 350px 1rem 1rem 1rem;
+  }
 }

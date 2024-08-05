@@ -11,6 +11,7 @@
 import { getOrganizer } from '@/actions/organizer';
 import styles from './OrganizerPage.module.css';
 import BlockOrganizerHeader from '@/components/BlockOrganizerHeader/BlockOrganizerHeader';
+import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 
 type Props = {
   params: {
@@ -41,6 +42,9 @@ export default async function OrganizerPage({ params: { urlSlug } }: Props) {
       {organizer.data && (
         <>
           <BlockOrganizerHeader organizer={organizer.data} />
+          <div className={styles.wrapper__contacts}>
+            <BlockOrganizerContacts organizer={organizer.data} />
+          </div>
         </>
       )}
     </div>

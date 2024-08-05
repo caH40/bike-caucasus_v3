@@ -1,0 +1,32 @@
+.wrapper {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  background-color: var(--white-20);
+  padding: 1rem 2rem;
+}
+.title {
+  margin-bottom: 7px;
+}
+.block__contacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 7px 20px;
+  padding-right: 15rem;
+}
+.box__contacts {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+/* ====================================================================== */
+@media (max-width: 1200px) {
+  .block__contacts {
+    padding-right: 0rem;
+  }
+}
+@media (max-width: 576px) {
+  .wrapper {
+    padding: 1rem;
+  }
+}

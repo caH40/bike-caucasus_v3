@@ -12,6 +12,7 @@
   height: 100%;
 }
 .box {
+  flex: 0 0 auto;
   color: var(--color-icon-default);
 }
 .box:hover {
