@@ -44,6 +44,8 @@ type Props = {
 
 export default async function OrganizerPage({ params: { urlSlug } }: Props) {
   const organizer = await getOrganizer({ urlSlug });
+  console.log(organizer);
+
   return (
     <div className={styles.main}>
       {organizer.data && (

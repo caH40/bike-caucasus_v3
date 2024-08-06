@@ -257,7 +257,7 @@ export async function generateMetadataOrganizer({ params }: Props): Promise<Meta
 }
 
 /**
- * Метаданные для страницы Организаторы "/organizers".
+ * Метаданные для страницы Чемпионаты "/championships".
  */
 const titleChampionships =
   'Чемпионаты по любительскому велоспорту на Кавказе, в Ставропольском крае, Краснодарском крае, КЧР, КБР, Северной Осетии';

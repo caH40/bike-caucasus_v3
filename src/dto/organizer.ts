@@ -32,5 +32,6 @@ export function dtoCOrganizer(
     address: organizer.address,
     championshipCreationFee: organizer.championshipCreationFee,
     createdAt: getDateTime(organizer.createdAt).isoDate,
+    updatedAt: getDateTime(organizer.updatedAt).isoDate,
   };
 }

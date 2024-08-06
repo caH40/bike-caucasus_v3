@@ -2,6 +2,7 @@ import { UserService } from '@/services/user';
 import { News } from '@/services/news';
 import { MetadataRoute } from 'next';
 import { Trail } from '@/services/Trail';
+import { OrganizerService } from '@/services/Organizer';
 
 const host = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -21,6 +22,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Генерация sitemap данных для страниц описание Маршрута.
   const trailsSitemap = await generateSitemapTrailPages();
+
+  // Генерация sitemap данных для страниц Организаторов.
+  const organizersSitemap = await generateSitemapOrganizerPages();
 
   return [
     {
@@ -44,9 +48,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.5,
     },
+    {
+      url: `${host}/organizers`,
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+    {
+      url: `${host}/championships`,
+      changeFrequency: 'hourly',
+      priority: 0.9,
+    },
     ...profilesSitemap, // profile
     ...newsSitemap, // news
     ...trailsSitemap, // trails
+    ...organizersSitemap, // organizers
   ];
 }
 
@@ -105,6 +120,26 @@ async function generateSitemapTrailPages(): Promise<MetadataRoute.Sitemap> {
     const trailsSitemap: MetadataRoute.Sitemap = (trails.data || []).map((trail) => ({
       url: `${host}/trails/${trail.urlSlug}`,
       lastModified: trail.updatedAt,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    }));
+
+    return trailsSitemap;
+  } catch (error) {
+    return [];
+  }
+}
+/**
+ * Генерирует sitemap данных для страниц Организаторов /organizers/urlSlug
+ */
+async function generateSitemapOrganizerPages(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const organizerService = new OrganizerService();
+    const organizers = await organizerService.getMany();
+
+    const trailsSitemap: MetadataRoute.Sitemap = (organizers.data || []).map((organizer) => ({
+      url: `${host}/organizers/${organizer.urlSlug}`,
+      lastModified: new Date(organizer.updatedAt).toISOString(),
       changeFrequency: 'monthly',
       priority: 0.6,
     }));

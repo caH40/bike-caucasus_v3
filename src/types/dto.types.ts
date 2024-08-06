@@ -117,6 +117,7 @@ export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | '
   _id: string;
   creator: TAuthor;
   createdAt: string;
+  updatedAt: string;
 };
 
 /**
