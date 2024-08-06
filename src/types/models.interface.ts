@@ -293,10 +293,11 @@ export type TChampionshipDocument = TChampionship & Document;
 export type TChampionship = {
   _id: mongoose.Types.ObjectId;
   name: string; // Название чемпионата.
+  urlSlug: string; // Уникальный url страницы чемпионата.
   description: string; // Описание, включая карту с местом старта.
   organizer: mongoose.Types.ObjectId; // Ссылка на объект организатора.
-  parentChampionshipUrl?: mongoose.Types.ObjectId; // Ссылка на родительскую страницу чемпионата, если это этап.
-  childChampionshipUrls?: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
+  parentChampionshipUrl: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
+  childChampionshipUrls: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   trackGPX?: {

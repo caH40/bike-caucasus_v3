@@ -21,6 +21,11 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       type: String,
       required: true,
     },
+    urlSlug: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     description: {
       type: String,
       required: true,

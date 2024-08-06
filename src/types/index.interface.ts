@@ -1,5 +1,11 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TLogsErrorModel, TNewsBlockInfo, TOrganizer } from './models.interface';
+import {
+  TAuthorFromUser,
+  TChampionship,
+  TLogsErrorModel,
+  TNewsBlockInfo,
+  TOrganizer,
+} from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
@@ -414,4 +420,11 @@ export interface LatLng {
 export type TrackData = {
   positions: LatLng[];
   metadata: MetadataParsed;
+};
+
+/**
+ * Данные Чемпионата с БД.
+ */
+export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
+  organizer: TAuthorFromUser;
 };

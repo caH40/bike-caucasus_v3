@@ -1,6 +1,7 @@
 import {
   IUserModel,
   TAuthorFromUser,
+  TChampionship,
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
@@ -111,11 +112,24 @@ export type TDtoCalendarEvents = {
 };
 
 /**
- * ДТО для Организатора чемпионата.
+ * ДТО для Организатора Организатора.
  */
 export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | 'updatedAt'> & {
   _id: string;
   creator: TAuthor;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/**
+ * ДТО для Организатора Чемпионата.
+ */
+export type TDtoChampionship = Omit<
+  TChampionship,
+  'organizer' | '_id' | 'createdAt' | 'updatedAt'
+> & {
+  _id: string;
+  organizer: TAuthor;
   createdAt: string;
   updatedAt: string;
 };

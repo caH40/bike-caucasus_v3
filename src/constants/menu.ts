@@ -262,7 +262,7 @@ export const buttonsMenuModerationOrganizerPage: TMenuOnPage[] = [
 export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
   {
     id: 0,
-    name: 'Добавление',
+    name: 'Создание',
     classes: [],
     href: '/moderation/championship/create',
     permission: 'moderation.calendar.create',

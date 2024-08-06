@@ -24,7 +24,7 @@ type GetOneParams =
     };
 
 /**
- * Класс сервиса работы с Календарем событий.
+ * Класс сервиса работы с сущностью Организатор.
  */
 export class OrganizerService {
   private errorLogger;
