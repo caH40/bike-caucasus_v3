@@ -1,15 +1,16 @@
 'use server';
 
+import { getServerSession } from 'next-auth';
+import { revalidatePath } from 'next/cache';
+
 import { OrganizerService } from '@/services/Organizer';
-import type { TDtoOrganizer } from '@/types/dto.types';
-import type { ResponseServer, TCloudConnect } from '@/types/index.interface';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
-import { revalidatePath } from 'next/cache';
+import type { TDtoOrganizer } from '@/types/dto.types';
+import type { ResponseServer, TCloudConnect } from '@/types/index.interface';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 

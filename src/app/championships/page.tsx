@@ -1,6 +1,10 @@
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import { Metadata } from 'next';
 
-// Создание динамических meta данных
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import { metadataChampionships } from '@/meta/meta';
+
+// Создание meta данных.
+export const metadata: Metadata = metadataChampionships;
 
 /**
  * Страница с карточками предстоящих и завершившихся чемпионатов.

@@ -7,11 +7,18 @@
  * Список прошедших и будущих Чемпионатов, проводимых организатором.
  * * Отзывы
  */
+import { Metadata } from 'next';
 
 import { getOrganizer } from '@/actions/organizer';
 import styles from './OrganizerPage.module.css';
 import BlockOrganizerHeader from '@/components/BlockOrganizerHeader/BlockOrganizerHeader';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
+import { generateMetadataOrganizer } from '@/meta/meta';
+
+// Создание динамических meta данных
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataOrganizer(props);
+}
 
 type Props = {
   params: {

@@ -7,6 +7,7 @@ import { bikeTypes, regions } from '../constants/trail';
 import { metadata404Page } from './meta404';
 import { ParamsWithId } from '@/types/index.interface';
 import { UserService } from '@/services/user';
+import { OrganizerService } from '@/services/Organizer';
 
 type Props = {
   params: {
@@ -209,3 +210,67 @@ export async function generateMetadataProfile({ params }: ParamsWithId): Promise
     },
   };
 }
+
+/**
+ * Метаданные для страницы Организаторы "/organizers".
+ */
+const titleOrganizers = 'Организаторы Чемпионатов по любительскому велоспорту на Кавказе';
+const descriptionOrganizers =
+  'Организаторы соревнований, гонок-тренировок, чемпионатов по любительскому велоспорту в Ставропольском, Краснодарском крае, КЧР, КБР, Северной Осетии';
+export const metadataOrganizers: Metadata = {
+  title: titleOrganizers,
+  description: descriptionOrganizers,
+  openGraph: {
+    title: titleOrganizers,
+    description: descriptionOrganizers,
+    url: './',
+    images: ['/images/og/organizers.jpg'],
+    type: 'website',
+  },
+};
+
+/**
+ * Метаданные для страницы Организатор "/organizers/[urlSlug]".
+ */
+export async function generateMetadataOrganizer({ params }: Props): Promise<Metadata> {
+  const organizerService = new OrganizerService();
+  const { data: organizer } = await organizerService.getOne({ urlSlug: params.urlSlug });
+
+  if (!organizer) {
+    return metadata404Page;
+  }
+
+  const title = `${organizer.name} - организатор Чемпионатов по любительскому велоспорту из города ${organizer.address.city}`;
+  const description = `Организатор ${organizer.name} проводит соревнования, гонки-тренировки, чемпионаты по любительскому велоспорту в регионе ${organizer.address.state} и на Кавказе`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: [organizer.posterUrl],
+      type: 'website',
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Организаторы "/organizers".
+ */
+const titleChampionships =
+  'Чемпионаты по любительскому велоспорту на Кавказе, в Ставропольском крае, Краснодарском крае, КЧР, КБР, Северной Осетии';
+const descriptionChampionships =
+  'Соревнования, гонки-тренировки, чемпионаты по любительскому велоспорту на шоссе, МТБ, даунхил в Ставропольском крае, Краснодарском крае, КЧР, КБР, Северной Осетии';
+export const metadataChampionships: Metadata = {
+  title: titleChampionships,
+  description: descriptionChampionships,
+  openGraph: {
+    title: titleChampionships,
+    description: descriptionChampionships,
+    url: './',
+    images: ['/images/og/organizers.jpg'],
+    type: 'website',
+  },
+};
