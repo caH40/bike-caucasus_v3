@@ -257,3 +257,31 @@ export const buttonsMenuModerationOrganizerPage: TMenuOnPage[] = [
     icon: IconCreate,
   },
 ];
+
+// Кнопки для меню на странице Модерация Чемпионата /moderation/championship
+export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Добавление',
+    classes: [],
+    href: '/moderation/championship/create',
+    permission: 'moderation.calendar.create',
+    icon: IconAdd,
+  },
+  {
+    id: 1,
+    name: 'Редактирование',
+    classes: [],
+    href: '/moderation/championship/edit',
+    permission: 'moderation.calendar.edit',
+    icon: IconEdit,
+  },
+  {
+    id: 2,
+    name: 'Список',
+    classes: [],
+    href: '/moderation/championship/list',
+    permission: 'moderation.calendar.list',
+    icon: IconView,
+  },
+];
