@@ -460,5 +460,6 @@ export type TFormOChampionshipCreate = Omit<
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
   startDate: string;
   endDate: string;
+  trackGPXFile: File | null;
   trackGPXUrl: string | null;
 };

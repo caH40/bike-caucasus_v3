@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconChampionship from '@/components/Icons/IconChampionship';
 import FromChampionship from '@/components/UI/Forms/FromChampionship/FromChampionship';
+import { fetchChampionshipCreated } from '@/actions/championship';
 // import styles from './Championship.module.css';
 
 // export const dynamic = 'force-dynamic';
@@ -22,7 +23,7 @@ export default async function ChampionshipCreatePage() {
   return (
     <>
       <TitleAndLine title="Создание Чемпионата" hSize={1} Icon={IconChampionship} />
-      <FromChampionship />
+      <FromChampionship fetchChampionshipCreated={fetchChampionshipCreated} />
     </>
   );
 }

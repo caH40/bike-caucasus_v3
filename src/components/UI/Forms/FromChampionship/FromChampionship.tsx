@@ -19,6 +19,7 @@ import { championshipTypes } from '@/constants/championship';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import { bikeTypes } from '@/constants/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
+import { serializationChampionship } from '@/libs/utils/serialization/championship';
 
 type Props = {
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
@@ -38,7 +39,7 @@ type Props = {
  * Форма создания/редактирования Чемпионата.
  */
 export default function FromChampionship({
-  // fetchChampionshipCreated,
+  fetchChampionshipCreated,
   // fetchChampionshipEdited,
   championshipForEdit,
 }: Props) {
@@ -48,6 +49,10 @@ export default function FromChampionship({
   // Постер Чемпионата существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
     championshipForEdit ? championshipForEdit.posterUrl : null
+  );
+  // Постер Чемпионата существует при редактировании, url на изображение.
+  const [trackGPXUrl, setTrackGPXUrl] = useState<string | null>(
+    championshipForEdit?.trackGPX?.url ? championshipForEdit.trackGPX?.url : null
   );
 
   const {
@@ -61,7 +66,45 @@ export default function FromChampionship({
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormOChampionshipCreate> = async (dataForm) => {
-    console.log(dataForm);
+    // Старт отображение спинера загрузки.
+    setLoading(true);
+
+    // Сериализация данных перед отправкой на сервер.
+    const isEditing = championshipForEdit ? true : false;
+    const championshipId = championshipForEdit?._id;
+    const posterUrl = championshipForEdit?.posterUrl;
+    const dataSerialized = serializationChampionship({
+      dataForm,
+      isEditing,
+      championshipId,
+      posterUrl,
+      trackGPXUrl,
+    });
+
+    // Отправка данных на сервер и получение ответа после завершения операции.
+    const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
+    let response = {
+      data: null,
+      ok: false,
+      message: messageErr,
+    };
+
+    if (fetchChampionshipCreated) {
+      response = await fetchChampionshipCreated(dataSerialized);
+    } else {
+      return toast.error(messageErr);
+    }
+
+    // Завершение отображение спинера загрузки.
+    setLoading(false);
+
+    // Отображение статуса сохранения События в БД.
+    if (response.ok) {
+      reset();
+      toast.success(response.message);
+    } else {
+      toast.error(response.message);
+    }
   };
 
   const textValidation = new TextValidationService();
@@ -194,7 +237,7 @@ export default function FromChampionship({
 
       {/* Блок загрузки GPX трэка*/}
       <Controller
-        name="trackGPXUrl"
+        name="trackGPXFile"
         control={control}
         defaultValue={null}
         rules={{ required: 'Файл трека обязателен' }}
@@ -205,7 +248,7 @@ export default function FromChampionship({
             isLoading={isLoading}
             resetData={false}
             isEditing={!!championshipForEdit}
-            validationText={errors.trackGPXUrl?.message ? errors.trackGPXUrl.message : ''}
+            validationText={errors.trackGPXFile?.message ? errors.trackGPXFile.message : ''}
           />
         )}
       />
