@@ -304,7 +304,7 @@ export type TChampionship = {
     url: string; // Трэк заезда.
     coordStart: { lat: number; lon: number }; // Координаты старта заезда.
   };
-  posterUrl?: string; // Постер для страницы Чемпионата.
+  posterUrl: string; // Постер для страницы Чемпионата.
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
   championshipType: 'Tour' | 'Series' | 'Single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   bikeType: 'TimeTrial' | 'Mountain' | 'Road' | 'Downhill'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).

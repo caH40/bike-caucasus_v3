@@ -126,10 +126,12 @@ export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | '
  */
 export type TDtoChampionship = Omit<
   TChampionship,
-  'organizer' | '_id' | 'createdAt' | 'updatedAt'
+  'organizer' | '_id' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'
 > & {
   _id: string;
   organizer: TAuthor;
+  startDate: string;
+  endDate: string;
   createdAt: string;
   updatedAt: string;
 };

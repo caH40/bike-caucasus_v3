@@ -127,10 +127,10 @@ export default function FromOrganizer({
         validationText={errors.name ? errors.name.message : ''}
       />
 
-      {/* Блок ввода Названия */}
+      {/* Блок ввода Описания */}
       <BoxTextarea
         label="Описание:*"
-        id="title"
+        id="description"
         autoComplete="off"
         type="text"
         defaultValue={organizerForEdit ? organizerForEdit.description : ''}

@@ -23,6 +23,8 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
   };
 
   // Приведение даты в вид yyyy-mm-dd
+  const { isoDate: startDate } = getDateTime(championship.startDate);
+  const { isoDate: endDate } = getDateTime(championship.endDate);
   const { isoDate: createdAt } = getDateTime(championship.createdAt);
   const { isoDate: updatedAt } = getDateTime(championship.updatedAt);
 
@@ -39,8 +41,8 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     status: championship.status,
     championshipType: championship.championshipType,
     bikeType: championship.bikeType,
-    startDate: championship.startDate,
-    endDate: championship.endDate,
+    startDate,
+    endDate,
     createdAt,
     updatedAt,
   };

@@ -1,22 +1,14 @@
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import InputFileIcon from '../InputFile/InputFileIcon';
 import { convertBytesTo } from '@/libs/utils/handler-data';
-import styles from './BlockUploadTrack.module.css';
 import BoxInputSimple from '../BoxInput/BoxInputSimple';
-
-type Props = {
-  title?: string;
-  isLoading?: boolean;
-  setTrack: Dispatch<SetStateAction<File | null>>;
-  resetData: boolean; // Триггер сброса изображения.
-  isEditing: boolean; // Режим редактирования Маршрута?
-};
+import { PropsBoxInputFile } from '@/types/index.interface';
+import styles from './BlockUploadTrack.module.css';
 
 /**
- * Блок для загрузки Титульного изображения для новости
- * Устанавливает в setPoster данные типа File, показывает загруженное изображения для контроля
+ * Блок для загрузки GPX.
  * isEditing === true устанавливается информирование, что GPX изначально загружен.
  */
 export default function BlockUploadTrack({
@@ -25,7 +17,8 @@ export default function BlockUploadTrack({
   isLoading,
   resetData,
   isEditing,
-}: Props) {
+  validationText,
+}: PropsBoxInputFile) {
   const [trackName, setTrackName] = useState<string>(isEditing ? 'Трэк не заменялся!' : '');
   // Сброс отображаемого изображения после отправки формы.
   useEffect(() => {
@@ -53,7 +46,10 @@ export default function BlockUploadTrack({
 
   return (
     <section className={styles.wrapper}>
-      <h2 className={styles.title}>{title}</h2>
+      <div className={styles.box__title}>
+        <h2 className={styles.title}>{title}</h2>
+        <span className={styles.validate}>{validationText}</span>
+      </div>
       <InputFileIcon
         name="uploadTrack"
         icon={{

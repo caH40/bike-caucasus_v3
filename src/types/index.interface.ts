@@ -35,6 +35,26 @@ export type PropsBoxInput = {
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
 };
+
+/**
+ * Пропсы для Select использующего библиотеку react-hook-form.
+ */
+export type PropsBoxSelect = Omit<PropsBoxInput, 'type' | 'autoComplete'> & {
+  options: { id: number; translation: string; name: string }[];
+};
+
+/**
+ * Пропсы для Input загрузки файла трэка GPX.
+ */
+export type PropsBoxInputFile = {
+  title?: string;
+  isLoading?: boolean;
+  setTrack: Dispatch<SetStateAction<File | null>>;
+  resetData: boolean; // Триггер сброса изображения.
+  isEditing: boolean; // Режим редактирования Маршрута?
+  validationText: string; // Текст если есть ошибка валидации, иначе ''
+};
+
 export type PropsBoxSelectSimple = {
   state: string;
   setState: Dispatch<SetStateAction<string>>;
@@ -121,7 +141,7 @@ export type TFormCalendar = {
   bikeType: string;
 };
 /**
- * Данные профиля для изменения в account/profile
+ * Данные формы создания Организатора.
  */
 export type TFormOrganizerCreate = Omit<
   TOrganizer,
@@ -427,4 +447,18 @@ export type TrackData = {
  */
 export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
   organizer: TAuthorFromUser;
+};
+
+/**
+ * Данные для формы создания Чемпионата.
+ */
+export type TFormOChampionshipCreate = Omit<
+  TChampionship,
+  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX'
+> & {
+  posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
+  posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
+  startDate: string;
+  endDate: string;
+  trackGPXUrl: string | null;
 };

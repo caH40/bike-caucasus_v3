@@ -26,12 +26,13 @@ export const difficultyLevel: TOptions[] = [
   { id: 4, translation: 'Невыполнимый', name: 'impossible' },
 ];
 
-// Уровни сложности маршрута.
+// Типы велосипедов.
 export const bikeTypes: TOptions[] = [
   { id: 0, translation: 'Шоссейный', name: 'road', icon: IconBikeRoad },
   { id: 1, translation: 'Горный', name: 'mtb', icon: IconBikeMTB },
   { id: 3, translation: 'Грэвел', name: 'gravel', icon: IconBikeGravel },
   { id: 4, translation: 'Скоростной спуск', name: 'dh', icon: IconBikeDH },
+  { id: 5, translation: 'Тайм триал', name: 'tt', icon: IconBikeRoad },
 ];
 
 // Уровни сложности маршрута.

@@ -18,6 +18,7 @@ type Props = {
   posterUrl: string | null; // Существует только при редактировании новости.
   setPosterUrl: Dispatch<SetStateAction<string | null>>;
   isSquare?: boolean; // true если квадратное изображение
+  validationText: string; // Текст если есть ошибка валидации, иначе ''
 };
 const noImage = '/images/icons/noimage.svg';
 
@@ -34,6 +35,7 @@ export default function BlockUploadImage({
   posterUrl,
   setPosterUrl,
   isSquare,
+  validationText,
 }: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
@@ -82,7 +84,11 @@ export default function BlockUploadImage({
 
   return (
     <section className={styles.wrapper}>
-      <h2 className={styles.title}>{title}</h2>
+      <div className={styles.box__title}>
+        <h2 className={styles.title}>{title}</h2>
+        <span className={styles.validate}>{validationText}</span>
+      </div>
+
       <InputFileIcon
         name="uploadImage"
         icon={{
