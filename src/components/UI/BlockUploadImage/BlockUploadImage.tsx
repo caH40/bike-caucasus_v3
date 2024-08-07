@@ -18,7 +18,7 @@ type Props = {
   posterUrl: string | null; // Существует только при редактировании новости.
   setPosterUrl: Dispatch<SetStateAction<string | null>>;
   isSquare?: boolean; // true если квадратное изображение
-  validationText: string; // Текст если есть ошибка валидации, иначе ''
+  validationText?: string; // Текст если есть ошибка валидации, иначе ''
 };
 const noImage = '/images/icons/noimage.svg';
 

@@ -7,14 +7,27 @@ import type { GPX } from '@/types/index.interface';
  * @param url - Ссылка на gpx трэк на удаленном сервере.
  * @returns
  */
-export async function parseGPX(url: string): Promise<GPX> {
-  const res = await fetch(url);
+export async function parseGPX(input: string): Promise<GPX> {
+  let data: string = '';
 
-  if (!res.ok) {
-    throw new Error('Ошибка fetch!');
+  // Проверка, является ли входной параметр URL.
+  if (input.startsWith('http://') || input.startsWith('https://')) {
+    try {
+      const res = await fetch(input);
+
+      if (!res.ok) {
+        throw new Error('Ошибка fetch!');
+      }
+
+      data = await res.text();
+    } catch (error) {
+      throw error;
+    }
+  } else {
+    // Если это не URL, предполагаем, что это строка с данными GPX.
+    data = input;
   }
 
-  const data = await res.text();
   // Парсинг XML с помощью xml2js
   return new Promise((resolve, reject) => {
     parseString(data, {}, (err, result) => {

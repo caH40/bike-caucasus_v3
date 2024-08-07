@@ -8,10 +8,16 @@ import { dtoChampionship, dtoChampionships } from '@/dto/championship';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
+  TCloudConnect,
   TSaveFile,
 } from '@/types/index.interface';
 import type { TAuthorFromUser, TChampionship } from '@/types/models.interface';
 import type { TDtoChampionship } from '@/types/dto.types';
+import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
+import { getNextSequenceValue } from './sequence';
+import slugify from 'slugify';
+import { parseGPX } from '@/libs/utils/parse-gpx';
+import { getCoordStart } from '@/libs/utils/track';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -21,12 +27,16 @@ export class ChampionshipService {
   private handlerErrorDB;
   private dbConnection: () => Promise<void>;
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private suffixImagePoster: string;
+  private suffixTrackGpx: string;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.dbConnection = connectToMongo;
     this.saveFile = saveFile;
+    this.suffixImagePoster = 'championship_image_poster-';
+    this.suffixTrackGpx = 'championship_track_gpx-';
   }
 
   public async getOne({
@@ -79,6 +89,86 @@ export class ChampionshipService {
       const championships = dtoChampionships(championshipsDB);
 
       return { data: championships, ok: true, message: 'Все Чемпионаты' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Создание нового Чемпионата по _id или по creatorId.
+   */
+  public async post({
+    serializedFormData,
+    cloudOptions,
+    creator,
+  }: {
+    serializedFormData: FormData;
+    cloudOptions: TCloudConnect;
+    creator: string;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const deserializedFormData = deserializeChampionship(serializedFormData);
+
+      // Сохранение изображения для Постера Чемпионата.
+      const posterUrl = await this.saveFile({
+        file: deserializedFormData.posterFile as File,
+        type: 'image',
+        suffix: this.suffixImagePoster,
+        cloudName: cloudOptions.cloudName,
+        domainCloudName: cloudOptions.domainCloudName,
+        bucketName: cloudOptions.bucketName,
+      });
+
+      // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
+      const trackGPXUrl = await this.saveFile({
+        file: deserializedFormData.trackGPXFile as File,
+        type: 'GPX',
+        suffix: this.suffixTrackGpx,
+        cloudName: cloudOptions.cloudName,
+        domainCloudName: cloudOptions.domainCloudName,
+        bucketName: cloudOptions.bucketName,
+      });
+
+      // Получаем файл GPX с облака, так как реализация через FileReader большая!
+      const gpxParsed = await parseGPX(trackGPXUrl);
+
+      const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+
+      const trackGPX = {
+        url: trackGPXUrl,
+        coordStart,
+      };
+
+      // Создание slug из name для url страницы Чемпионата.
+      const sequenceValue = await getNextSequenceValue('championship');
+      const stringRaw = `${sequenceValue}-${deserializedFormData.name}`;
+      const urlSlug = slugify(stringRaw, { lower: true, strict: true });
+
+      const createData = {
+        name: deserializedFormData.name,
+        description: deserializedFormData.description,
+        startDate: deserializedFormData.startDate,
+        endDate: deserializedFormData.endDate,
+        championshipType: deserializedFormData.championshipType,
+        bikeType: deserializedFormData.bikeType,
+        organizer: deserializedFormData.organizerId,
+        posterUrl,
+        trackGPX,
+        creator,
+        urlSlug,
+      };
+
+      const response = await ChampionshipModel.create(createData);
+
+      if (!response._id) {
+        throw new Error('Чемпионат не сохранился в БД!');
+      }
+
+      return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

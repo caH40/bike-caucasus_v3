@@ -52,7 +52,7 @@ export type PropsBoxInputFile = {
   setTrack: Dispatch<SetStateAction<File | null>>;
   resetData: boolean; // Триггер сброса изображения.
   isEditing: boolean; // Режим редактирования Маршрута?
-  validationText: string; // Текст если есть ошибка валидации, иначе ''
+  validationText?: string; // Текст если есть ошибка валидации, иначе ''
 };
 
 export type PropsBoxSelectSimple = {
@@ -385,7 +385,7 @@ type GpxMetadata = {
   link: GpxLink[];
   time: string[];
 };
-type GpxTrackPoint = {
+export type GpxTrackPoint = {
   $: {
     lat: string;
     lon: string;
@@ -452,7 +452,7 @@ export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
 /**
  * Данные для формы создания Чемпионата.
  */
-export type TFormOChampionshipCreate = Omit<
+export type TFormChampionshipCreate = Omit<
   TChampionship,
   '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX'
 > & {

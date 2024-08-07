@@ -5,6 +5,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconChampionship from '@/components/Icons/IconChampionship';
 import FromChampionship from '@/components/UI/Forms/FromChampionship/FromChampionship';
 import { fetchChampionshipCreated } from '@/actions/championship';
+import { getOrganizer } from '@/actions/organizer';
 // import styles from './Championship.module.css';
 
 // export const dynamic = 'force-dynamic';
@@ -19,11 +20,23 @@ export default async function ChampionshipCreatePage() {
   if (!userIdDB) {
     return <h1>Нет авторизации!</h1>;
   }
+  const { data: organizer } = await getOrganizer({ creatorId: userIdDB });
+
+  if (!organizer) {
+    return (
+      <h1>
+        Не найден Организатора, перед созданием Чемпионата необходимо создать Организатора!
+      </h1>
+    );
+  }
 
   return (
     <>
       <TitleAndLine title="Создание Чемпионата" hSize={1} Icon={IconChampionship} />
-      <FromChampionship fetchChampionshipCreated={fetchChampionshipCreated} />
+      <FromChampionship
+        organizer={organizer}
+        fetchChampionshipCreated={fetchChampionshipCreated}
+      />
     </>
   );
 }

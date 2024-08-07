@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 import cn from 'classnames';
 
 import { useLoadingStore } from '@/store/loading';
-import type { ResponseServer, TFormOChampionshipCreate } from '@/types/index.interface';
-import { TDtoChampionship } from '@/types/dto.types';
+import type { ResponseServer, TFormChampionshipCreate } from '@/types/index.interface';
+import { TDtoChampionship, TDtoOrganizer } from '@/types/dto.types';
 import { TextValidationService } from '@/libs/utils/text';
 import styles from '../Form.module.css';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
@@ -22,6 +22,7 @@ import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
 import { serializationChampionship } from '@/libs/utils/serialization/championship';
 
 type Props = {
+  organizer: TDtoOrganizer;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   fetchChampionshipEdited?: ({
     // eslint-disable-next-line no-unused-vars
@@ -39,6 +40,7 @@ type Props = {
  * Форма создания/редактирования Чемпионата.
  */
 export default function FromChampionship({
+  organizer,
   fetchChampionshipCreated,
   // fetchChampionshipEdited,
   championshipForEdit,
@@ -62,10 +64,10 @@ export default function FromChampionship({
     reset,
     watch,
     formState: { errors },
-  } = useForm<TFormOChampionshipCreate>({ mode: 'all' });
+  } = useForm<TFormChampionshipCreate>({ mode: 'all' });
 
   // Обработка формы после нажатия кнопки "Отправить".
-  const onSubmit: SubmitHandler<TFormOChampionshipCreate> = async (dataForm) => {
+  const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
     // Старт отображение спинера загрузки.
     setLoading(true);
 
@@ -79,6 +81,7 @@ export default function FromChampionship({
       championshipId,
       posterUrl,
       trackGPXUrl,
+      organizerId: organizer._id,
     });
 
     // Отправка данных на сервер и получение ответа после завершения операции.
@@ -118,6 +121,19 @@ export default function FromChampionship({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
+      {/* Блок ввода Названия */}
+      <div className={styles.box__input}>
+        <label className={styles.label} htmlFor="organizer">
+          Организатор Чемпионата:
+        </label>
+        <input
+          name={'organizer'}
+          value={organizer.name}
+          className={styles.input}
+          disabled={true}
+        />
+      </div>
+
       {/* Блок ввода Названия */}
       <BoxInput
         label="Название должно быть уникальным:*"

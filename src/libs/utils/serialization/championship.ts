@@ -1,11 +1,12 @@
-import type { TFormOChampionshipCreate } from '@/types/index.interface';
+import type { TFormChampionshipCreate } from '@/types/index.interface';
 
 type Params = {
-  dataForm: TFormOChampionshipCreate;
+  dataForm: TFormChampionshipCreate;
   isEditing: boolean;
   championshipId: string | undefined;
   posterUrl: string | undefined;
   trackGPXUrl: string | null;
+  organizerId: string; // _id Организатора.
 };
 
 /**
@@ -19,6 +20,7 @@ export function serializationChampionship({
   championshipId,
   posterUrl,
   trackGPXUrl,
+  organizerId,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -29,6 +31,7 @@ export function serializationChampionship({
   formData.set('endDate', dataForm.endDate);
   formData.set('championshipType', dataForm.championshipType);
   formData.set('bikeType', dataForm.bikeType);
+  formData.set('organizerId', organizerId);
 
   // _id Чемпионата в БД, необходим для редактирования.
   if (championshipId) {

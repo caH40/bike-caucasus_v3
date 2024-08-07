@@ -306,8 +306,8 @@ export type TChampionship = {
   };
   posterUrl: string; // Постер для страницы Чемпионата.
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
-  championshipType: 'Tour' | 'Series' | 'Single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
-  bikeType: 'TimeTrial' | 'Mountain' | 'Road' | 'Downhill'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
+  championshipType: 'tour' | 'series' | 'single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
+  bikeType: 'tt' | 'road' | 'mtb' | 'gravel' | 'downhill' | 'timeTrial'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
   createdAt: Date;
   updatedAt: Date;
 };

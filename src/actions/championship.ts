@@ -8,6 +8,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 
 import type { ResponseServer, TCloudConnect } from '@/types/index.interface';
+import { ChampionshipService } from '@/services/Championship';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -18,8 +19,6 @@ export async function fetchChampionshipCreated(
   formData: FormData
 ): Promise<ResponseServer<null>> {
   try {
-    console.log(formData);
-
     const session = await getServerSession(authOptions);
 
     // Проверка авторизации и наличия idUserDB.
@@ -34,7 +33,7 @@ export async function fetchChampionshipCreated(
         (elm) => elm === 'moderation.championship.create' || elm === 'all'
       )
     ) {
-      throw new Error('У вас нет прав для создания Организатора!');
+      throw new Error('У вас нет прав для создания Чемпионата!');
     }
 
     const cloudOptions: TCloudConnect = {
@@ -43,7 +42,15 @@ export async function fetchChampionshipCreated(
       bucketName,
     };
 
-    return { data: null, ok: true, message: 'test' };
+    const championshipService = new ChampionshipService();
+
+    const res = await championshipService.post({
+      serializedFormData: formData,
+      cloudOptions,
+      creator,
+    });
+
+    return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

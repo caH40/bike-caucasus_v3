@@ -17,8 +17,11 @@ const trackGPXSchema = new Schema({
  */
 const championshipSchema = new Schema<TChampionshipDocument>(
   {
+    // Название может быть не уникальным,
+    // уникальный будет urlSlug из-за добавления номера из счетчика в каждое название.
     name: {
       type: String,
+
       required: true,
     },
     urlSlug: {
@@ -58,16 +61,17 @@ const championshipSchema = new Schema<TChampionshipDocument>(
     status: {
       type: String,
       enum: ['upcoming', 'ongoing', 'completed', 'cancelled'],
+      default: 'upcoming',
       required: true,
     },
     championshipType: {
       type: String,
-      enum: ['Tour', 'Series', 'Single'],
+      default: 'single',
       required: true,
     },
     bikeType: {
       type: String,
-      enum: ['TimeTrial', 'Mountain', 'Road', 'Downhill'],
+      default: 'road',
       required: true,
     },
     trackGPX: { type: trackGPXSchema, default: null },
