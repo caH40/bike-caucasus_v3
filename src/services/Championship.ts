@@ -18,6 +18,8 @@ import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
 import { parseGPX } from '@/libs/utils/parse-gpx';
 import { getCoordStart } from '@/libs/utils/track';
+import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
+import { ObjectId } from 'mongoose';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -72,14 +74,35 @@ export class ChampionshipService {
   /**
    * Получение всех Чемпионатов.
    */
-  public async getMany(): Promise<ResponseServer<TDtoChampionship[] | null>> {
+  public async getMany({
+    idUserDB,
+    forModeration,
+  }: {
+    idUserDB?: string;
+    forModeration?: boolean;
+  }): Promise<ResponseServer<TDtoChampionship[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
+      let query = {};
+      // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные idUserDB.
+      if (forModeration && idUserDB) {
+        const organizer: { _id: ObjectId } | null = await OrganizerModel.findOne(
+          { creator: idUserDB },
+          { _id: true }
+        ).lean();
+
+        if (!organizer) {
+          throw new Error('У пользователя не создан Организатор!');
+        }
+
+        query = { organizer: organizer._id };
+      }
+
       const championshipsDB: (Omit<TChampionship, 'organizer'> & {
         organizer: TAuthorFromUser;
-      })[] = await ChampionshipModel.find()
+      })[] = await ChampionshipModel.find(query)
         .populate({
           path: 'organizer',
           select: userPublicSelect,

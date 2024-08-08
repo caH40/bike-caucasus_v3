@@ -2,7 +2,7 @@ import { CellContext } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-import { TNewsGetOneDto, TTrailDto } from '@/types/dto.types';
+import { TDtoChampionship, TNewsGetOneDto, TTrailDto } from '@/types/dto.types';
 
 import IconEditOld from '@/components/Icons/IconEditOld';
 import IconDelete from '@/components/Icons/IconDelete';
@@ -19,7 +19,8 @@ export default function BlockModeration({
 }: {
   propsTable:
     | CellContext<TTrailDto & { index: number }, unknown>
-    | CellContext<TNewsGetOneDto, unknown>;
+    | CellContext<TNewsGetOneDto, unknown>
+    | CellContext<TDtoChampionship & { index: number }, unknown>;
   type: string;
 }): JSX.Element {
   const router = useRouter();
