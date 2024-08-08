@@ -228,14 +228,14 @@ export default function FromChampionship({
       {/* Блок выбора типа Чемпионата */}
       <BoxSelectNew
         label="Тип Чемпионата:*"
-        id="championshipType"
+        id="type"
         options={championshipTypes}
-        defaultValue={championshipForEdit ? championshipForEdit.championshipType : 'single'}
+        defaultValue={championshipForEdit ? championshipForEdit.type : 'single'}
         loading={isLoading}
-        register={register('championshipType', {
+        register={register('type', {
           required: 'Это обязательное поле для заполнения',
         })}
-        validationText={errors.championshipType ? errors.championshipType.message : ''}
+        validationText={errors.type ? errors.type.message : ''}
       />
 
       {/* Блок выбора типа Велосипеда на котором проводится Заезд */}

@@ -10,6 +10,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import type { ResponseServer, TCloudConnect } from '@/types/index.interface';
 import { ChampionshipService } from '@/services/Championship';
 import { TDtoChampionship } from '@/types/dto.types';
+import { revalidatePath } from 'next/cache';
 
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
@@ -92,6 +93,39 @@ export async function fetchChampionshipCreated(
     return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен, удаления Чемпионата.
+ */
+export async function deleteChampionship(urlSlug: string): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+    const idUserDB = session?.user.idDB;
+
+    // Проверка авторизации пользователя.
+    if (!idUserDB) {
+      throw new Error('Необходима авторизация и наличие idUserDB!');
+    }
+
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.delete({
+      urlSlug,
+      cloudOptions: {
+        cloudName: 'vk',
+        domainCloudName: 'hb.vkcs.cloud',
+        bucketName,
+      },
+    });
+
+    revalidatePath('/championship');
+    revalidatePath('/moderation/championship');
+
+    return response;
+  } catch (error) {
     return handlerErrorDB(error);
   }
 }

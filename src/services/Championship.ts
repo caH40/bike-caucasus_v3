@@ -11,7 +11,12 @@ import type {
   TCloudConnect,
   TSaveFile,
 } from '@/types/index.interface';
-import type { TAuthorFromUser, TChampionship } from '@/types/models.interface';
+import type {
+  TAuthorFromUser,
+  TChampionship,
+  TChampionshipStatus,
+  TTrackGPXObj,
+} from '@/types/models.interface';
 import type { TDtoChampionship } from '@/types/dto.types';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
@@ -19,7 +24,8 @@ import slugify from 'slugify';
 import { parseGPX } from '@/libs/utils/parse-gpx';
 import { getCoordStart } from '@/libs/utils/track';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
-import { ObjectId } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
+import { Cloud } from './cloud';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -176,7 +182,7 @@ export class ChampionshipService {
         description: deserializedFormData.description,
         startDate: deserializedFormData.startDate,
         endDate: deserializedFormData.endDate,
-        championshipType: deserializedFormData.championshipType,
+        type: deserializedFormData.type,
         bikeType: deserializedFormData.bikeType,
         organizer: deserializedFormData.organizerId,
         posterUrl,
@@ -192,6 +198,77 @@ export class ChampionshipService {
       }
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Удаление Чемпионата.
+   */
+  public async delete({
+    urlSlug,
+    cloudOptions,
+  }: {
+    urlSlug: string;
+    cloudOptions: TCloudConnect;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const championshipDB:
+        | ({
+            status: TChampionshipStatus;
+            name: string;
+            posterUrl: string;
+            trackGPX: TTrackGPXObj;
+          } & Document)
+        | null = await ChampionshipModel.findOne(
+        { urlSlug },
+        {
+          status: true,
+          name: true,
+          posterUrl: true,
+          trackGPX: true,
+        }
+      );
+
+      if (!championshipDB) {
+        throw new Error(`Не найден Чемпионат с urlSlug: ${urlSlug} в БД!`);
+      }
+
+      // Можно удалять только Чемпионаты которые еще не начались.
+      if (championshipDB.status !== 'upcoming') {
+        throw new Error(`Можно удалять только Чемпионаты которые еще не начались`);
+      }
+
+      // Удаление документа Чемпионат
+      await championshipDB.deleteOne();
+
+      // Инстанс сервиса работы с Облаком
+      const cloudService = new Cloud(cloudOptions.cloudName);
+
+      // Удаление Постера с облака.
+      await cloudService.deleteFile(
+        cloudOptions.bucketName,
+        championshipDB.posterUrl.replace(this.suffixImagePoster, '')
+      );
+
+      // Удаление GPX трека с облака.
+      if (championshipDB.trackGPX.url) {
+        await cloudService.deleteFile(
+          cloudOptions.bucketName,
+          championshipDB.trackGPX.url.replace(this.suffixTrackGpx, '')
+        );
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Чемпионат ${championshipDB.name} удалён!`,
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

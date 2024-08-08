@@ -18,6 +18,8 @@ import { blurBase64 } from '@/libs/image';
 import BlockModeration from '@/components/UI/BlockModeration/BlockModeration';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
+import { championshipStatus, championshipTypes } from '@/constants/championship';
+import Link from 'next/link';
 
 const cx = cn.bind(styles);
 
@@ -47,8 +49,26 @@ const columns: ColumnDef<TDtoChampionship & { index: number }>[] = [
     ),
   },
   {
+    header: 'Тип',
+    accessorKey: 'type',
+    cell: (props: any) => (
+      <span>
+        {championshipTypes.find((type) => type.name === props.getValue())?.translation ||
+          'не задан'}
+      </span>
+    ),
+  },
+  {
     header: 'Название',
     accessorKey: 'name',
+    cell: (props: any) => {
+      const urlSlug = props.row.original.urlSlug;
+      return (
+        <Link className="link__news" href={`/championships/${urlSlug}`}>
+          {props.getValue()}
+        </Link>
+      );
+    },
   },
   {
     header: 'Тип велосипеда',
@@ -56,6 +76,16 @@ const columns: ColumnDef<TDtoChampionship & { index: number }>[] = [
     cell: (props: any) => (
       <span>
         {bikeTypes.find((bt) => bt.name === props.getValue())?.translation || 'не задан'}
+      </span>
+    ),
+  },
+  {
+    header: 'Статус',
+    accessorKey: 'status',
+    cell: (props: any) => (
+      <span>
+        {championshipStatus.find((status) => status.name === props.getValue())?.translation ||
+          'не задан'}
       </span>
     ),
   },

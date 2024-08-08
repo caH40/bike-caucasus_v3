@@ -39,7 +39,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     childChampionshipUrls: championship.childChampionshipUrls,
     posterUrl: championship.posterUrl,
     status: championship.status,
-    championshipType: championship.championshipType,
+    type: championship.type,
     bikeType: championship.bikeType,
     startDate,
     endDate,

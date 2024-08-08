@@ -300,14 +300,16 @@ export type TChampionship = {
   childChampionshipUrls: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
-  trackGPX?: {
-    url: string; // Трэк заезда.
-    coordStart: { lat: number; lon: number }; // Координаты старта заезда.
-  };
+  trackGPX?: TTrackGPXObj;
   posterUrl: string; // Постер для страницы Чемпионата.
-  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled'; // Статус чемпионата.
-  championshipType: 'tour' | 'series' | 'single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
+  status: TChampionshipStatus; // Статус чемпионата.
+  type: 'tour' | 'series' | 'single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   bikeType: 'tt' | 'road' | 'mtb' | 'gravel' | 'downhill' | 'timeTrial'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
   createdAt: Date;
   updatedAt: Date;
 };
+export type TTrackGPXObj = {
+  url: string; // URL трек заезда в облаке.
+  coordStart: { lat: number; lon: number }; // Координаты старта заезда.
+};
+export type TChampionshipStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';

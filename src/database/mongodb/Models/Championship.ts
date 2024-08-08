@@ -3,14 +3,18 @@ import mongoose, { Schema, model, models, Model } from 'mongoose';
 import { TChampionshipDocument } from '@/types/models.interface';
 
 // Трэк заезда.
-const trackGPXSchema = new Schema({
-  url: String,
-  coordStart: {
-    // Координаты старта заезда.
-    lat: Number,
-    lon: Number,
+const trackGPXSchema = new Schema(
+  {
+    url: String,
+    coordStart: {
+      // Координаты старта заезда.
+      lat: Number,
+      lon: Number,
+      _id: false,
+    },
   },
-});
+  { _id: false }
+);
 
 /**
  * Схема для чемпионата.
@@ -64,7 +68,7 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       default: 'upcoming',
       required: true,
     },
-    championshipType: {
+    type: {
       type: String,
       default: 'single',
       required: true,

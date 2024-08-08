@@ -29,7 +29,7 @@ export function serializationChampionship({
   formData.set('description', dataForm.description);
   formData.set('startDate', dataForm.startDate);
   formData.set('endDate', dataForm.endDate);
-  formData.set('championshipType', dataForm.championshipType);
+  formData.set('type', dataForm.type);
   formData.set('bikeType', dataForm.bikeType);
   formData.set('organizerId', organizerId);
 
