@@ -6,14 +6,7 @@ import type { TSaveFile } from '@/types/index.interface';
 /**
  * Сохраняет файл в облаке с уникальным суффиксом suffix и возвращает URL сохраненного файла.
  */
-export async function saveFile({
-  file,
-  type,
-  suffix,
-  cloudName,
-  domainCloudName,
-  bucketName,
-}: TSaveFile): Promise<string> {
+export async function saveFile({ file, type, suffix, cloudName }: TSaveFile): Promise<string> {
   if (!file) {
     throw new Error('Не получен файл для сохранения в Облаке!');
   }

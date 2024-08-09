@@ -296,9 +296,6 @@ export type TSaveFile = {
   file: File;
   type: 'image' | 'GPX' | 'pdf';
   suffix: string;
-  cloudName: 'vk';
-  domainCloudName: string;
-  bucketName: string;
 };
 
 /**

@@ -30,7 +30,7 @@ export class Cloud {
 
   maxSizeFileInMBytes: number;
 
-  constructor(cloudName: Clouds, maxSizeFileInMBytes?: number) {
+  constructor(cloudName: Clouds = 'vk', maxSizeFileInMBytes?: number) {
     // Получение соответствующего конфигурацию для облака "cloudName".
     const cloudConfig = new CloudConfig();
     const config = cloudConfig.get(cloudName);

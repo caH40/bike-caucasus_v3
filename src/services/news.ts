@@ -12,19 +12,15 @@ import { getHashtags } from '@/libs/utils/text';
 import { News as NewsModel } from '@/Models/News';
 import { serviceGetInteractiveToDto, dtoNewsGetOne } from '@/dto/news';
 import { errorLogger } from '@/errors/error';
-import type { TNews, TNewsBlockInfo } from '@/types/models.interface';
-import type {
-  ResponseServer,
-  TCloudConnect,
-  TNewsCreateFromClient,
-  TSaveFile,
-} from '@/types/index.interface';
-import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { millisecondsIn3Days } from '@/constants/date';
 import { saveFile } from './save-file';
 import { ErrorCustom } from './Error';
 import { getCurrentDocsOnPage } from '@/libs/utils/pagination';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
+import { fileNameFormUrl } from '@/constants/regex';
+import type { TNews, TNewsBlockInfo } from '@/types/models.interface';
+import type { ResponseServer, TNewsCreateFromClient, TSaveFile } from '@/types/index.interface';
+import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -43,11 +39,13 @@ export class News {
   /**
    * Создание новой новости.
    */
-  public async create(
-    formData: FormData,
-    { cloudName, bucketName, domainCloudName }: TCloudConnect,
-    author: string
-  ): Promise<ResponseServer<null>> {
+  public async create({
+    formData,
+    author,
+  }: {
+    formData: FormData;
+    author: string;
+  }): Promise<ResponseServer<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
@@ -66,9 +64,6 @@ export class News {
         file: news.poster as File,
         type: 'image',
         suffix: `${suffix}_image_title-`,
-        cloudName,
-        domainCloudName,
-        bucketName,
       });
 
       let filePdf;
@@ -78,9 +73,6 @@ export class News {
           file: news.filePdf as File,
           type: 'pdf',
           suffix: `${suffix}_pdf-`,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
       }
 
@@ -97,9 +89,6 @@ export class News {
           file: block.imageFile,
           type: 'image',
           suffix: `${suffix}_image_block-`,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
 
         news.blocks[index].image = urlSaved;
@@ -131,10 +120,7 @@ export class News {
   /**
    * Обновление отредактированной новости.
    */
-  public async put(
-    formData: FormData,
-    { cloudName, bucketName, domainCloudName }: TCloudConnect
-  ): Promise<ResponseServer<null>> {
+  public async put(formData: FormData): Promise<ResponseServer<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
@@ -161,9 +147,6 @@ export class News {
           file: news.filePdf as File,
           type: 'pdf',
           suffix: `${suffixForFilesNews}_pdf-`,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
       }
 
@@ -182,24 +165,24 @@ export class News {
           file: news.poster as File,
           type: 'image',
           suffix: suffixForSave,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
       }
 
-      // Инстанс сервиса работы с Облаком
-      const cloudService = new Cloud(cloudName);
+      // Экземпляр сервиса работы с Облаком
+      const cloudService = new Cloud();
 
       // Удаление старого файла постера, если он был обновлён.
-      const suffix = `https://${bucketName}.${domainCloudName}/`;
       if (news.poster && news.posterOldUrl) {
-        await cloudService.deleteFile(bucketName, news.posterOldUrl.replace(suffix, ''));
+        await cloudService.deleteFile({
+          prefix: news.posterOldUrl.replace(fileNameFormUrl, '$1'),
+        });
       }
 
       // Удаление старого файла pdf, если он был обновлён.
       if (filePdf && newsDB.filePdf) {
-        await cloudService.deleteFile(bucketName, newsDB.filePdf.replace(suffix, ''));
+        await cloudService.deleteFile({
+          prefix: newsDB.filePdf.replace(fileNameFormUrl, '$1'),
+        });
       }
 
       // Сохранение изображений из текстовых блоков.
@@ -214,7 +197,9 @@ export class News {
 
         // Если нет файла image и imageDeleted:true, то удаляем старое изображение из Облака.
         if (!block.image && block.imageDeleted && block.imageOldUrl) {
-          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+          await cloudService.deleteFile({
+            prefix: block.imageOldUrl.replace(fileNameFormUrl, '$1'),
+          });
           continue;
         }
 
@@ -222,14 +207,13 @@ export class News {
           file: block.imageFile!, // !!!! попробовать разобраться!
           type: 'image',
           suffix: suffixForSave,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
 
         // Удаление старого файла изображения блока, если оно было обновлён.
         if (block.imageOldUrl) {
-          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+          await cloudService.deleteFile({
+            prefix: block.imageOldUrl.replace(fileNameFormUrl, '$1'),
+          });
         }
 
         news.blocks[index].image = urlSaved;
@@ -554,10 +538,7 @@ export class News {
   /**
    * Удаление новости админом или модератором, который создал новость.
    */
-  public async delete(
-    { urlSlug, idUserDB }: { urlSlug: string; idUserDB: string },
-    { cloudName, bucketName, domainCloudName }: TCloudConnect
-  ) {
+  public async delete({ urlSlug, idUserDB }: { urlSlug: string; idUserDB: string }) {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -578,11 +559,13 @@ export class News {
         _id: ObjectId;
         createdAt: Date;
         poster: string;
+        filePdf: string;
         blocks: TNewsBlockInfo[];
       } | null = await NewsModel.findOne(query, {
         createdAt: true,
         poster: true,
         blocks: true,
+        filePdf: true,
       });
 
       if (!newsDB) {
@@ -594,15 +577,15 @@ export class News {
         throw new Error('Нельзя удалить новость, которая была создана больше 3 дней назад!');
       }
 
-      // Инстанс сервиса работы с Облаком
-      const cloudService = new Cloud(cloudName);
+      // Экземпляр сервиса работы с Облаком
+      const cloudService = new Cloud();
 
       // Удаление всех файлов новости с Облака.
-      const suffix = `https://${bucketName}.${domainCloudName}/`;
-      await cloudService.deleteFile(bucketName, newsDB.poster.replace(suffix, ''));
+      await cloudService.deleteFile({ prefix: newsDB.poster.replace(fileNameFormUrl, '$1') });
+      await cloudService.deleteFile({ prefix: newsDB.filePdf.replace(fileNameFormUrl, '$1') });
       for (const block of newsDB.blocks) {
         if (block.image) {
-          await cloudService.deleteFile(bucketName, block.image.replace(suffix, ''));
+          await cloudService.deleteFile({ prefix: block.image.replace(fileNameFormUrl, '$1') });
         }
       }
 

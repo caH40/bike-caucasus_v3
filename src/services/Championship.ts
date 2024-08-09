@@ -1,3 +1,5 @@
+import { Document, ObjectId } from 'mongoose';
+
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
@@ -8,7 +10,6 @@ import { dtoChampionship, dtoChampionships } from '@/dto/championship';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
-  TCloudConnect,
   TOrganizerPublic,
   TSaveFile,
 } from '@/types/index.interface';
@@ -24,9 +25,8 @@ import slugify from 'slugify';
 import { parseGPX } from '@/libs/utils/parse-gpx';
 import { getCoordStart } from '@/libs/utils/track';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
-import { Document, ObjectId } from 'mongoose';
 import { Cloud } from './cloud';
-import { CloudConfig } from '@/configs/clouds';
+import { fileNameFormUrl } from '@/constants/regex';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -38,18 +38,14 @@ export class ChampionshipService {
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
   private suffixTrackGpx: string;
-  private urlSuffix: string;
 
   constructor() {
-    const cloudConfig = new CloudConfig();
-
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.dbConnection = connectToMongo;
     this.saveFile = saveFile;
     this.suffixImagePoster = 'championship_image_poster-';
     this.suffixTrackGpx = 'championship_track_gpx-';
-    this.urlSuffix = cloudConfig.urlSuffix;
   }
 
   public async getOne({
@@ -134,11 +130,9 @@ export class ChampionshipService {
    */
   public async post({
     serializedFormData,
-    cloudOptions,
     creator,
   }: {
     serializedFormData: FormData;
-    cloudOptions: TCloudConnect;
     creator: string;
   }): Promise<ResponseServer<null>> {
     try {
@@ -152,9 +146,6 @@ export class ChampionshipService {
         file: deserializedFormData.posterFile as File,
         type: 'image',
         suffix: this.suffixImagePoster,
-        cloudName: cloudOptions.cloudName,
-        domainCloudName: cloudOptions.domainCloudName,
-        bucketName: cloudOptions.bucketName,
       });
 
       // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
@@ -162,9 +153,6 @@ export class ChampionshipService {
         file: deserializedFormData.trackGPXFile as File,
         type: 'GPX',
         suffix: this.suffixTrackGpx,
-        cloudName: cloudOptions.cloudName,
-        domainCloudName: cloudOptions.domainCloudName,
-        bucketName: cloudOptions.bucketName,
       });
 
       // Получаем файл GPX с облака, так как реализация через FileReader большая!
@@ -212,13 +200,7 @@ export class ChampionshipService {
   /**
    * Удаление Чемпионата.
    */
-  public async delete({
-    urlSlug,
-    cloudOptions,
-  }: {
-    urlSlug: string;
-    cloudOptions: TCloudConnect;
-  }): Promise<ResponseServer<null>> {
+  public async delete({ urlSlug }: { urlSlug: string }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -252,18 +234,18 @@ export class ChampionshipService {
       // Удаление документа Чемпионат
       await championshipDB.deleteOne();
 
-      // Инстанс сервиса работы с Облаком
-      const cloudService = new Cloud(cloudOptions.cloudName);
+      // Экземпляр сервиса работы с Облаком
+      const cloudService = new Cloud();
 
       // Удаление Постера с облака.
       await cloudService.deleteFile({
-        prefix: championshipDB.posterUrl.replace(this.urlSuffix, ''),
+        prefix: championshipDB.posterUrl.replace(fileNameFormUrl, '$1'),
       });
 
       // Удаление GPX трека с облака.
       if (championshipDB.trackGPX.url) {
         await cloudService.deleteFile({
-          prefix: championshipDB.trackGPX.url.replace(this.urlSuffix, ''),
+          prefix: championshipDB.trackGPX.url.replace(fileNameFormUrl, '$1'),
         });
       }
 
