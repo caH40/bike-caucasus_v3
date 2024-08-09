@@ -4,9 +4,8 @@ type Params = {
   dataForm: TFormChampionshipCreate;
   isEditing: boolean;
   championshipId: string | undefined;
-  posterUrl: string | undefined;
-  trackGPXUrl: string | null;
   organizerId: string; // _id Организатора.
+  needDelTrack?: boolean; // Удаление трека
 };
 
 /**
@@ -16,11 +15,9 @@ type Params = {
  */
 export function serializationChampionship({
   dataForm,
-  isEditing,
   championshipId,
-  posterUrl,
-  trackGPXUrl,
   organizerId,
+  needDelTrack,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -32,6 +29,7 @@ export function serializationChampionship({
   formData.set('type', dataForm.type);
   formData.set('bikeType', dataForm.bikeType);
   formData.set('organizerId', organizerId);
+  formData.set('needDelTrack', String(needDelTrack));
 
   // _id Чемпионата в БД, необходим для редактирования.
   if (championshipId) {
@@ -41,22 +39,9 @@ export function serializationChampionship({
   if (dataForm.posterFile) {
     formData.set('posterFile', dataForm.posterFile);
   }
-
   // dataForm.trackGPXFile может быть null при редактировании Чемпионата.
   if (dataForm.trackGPXFile) {
     formData.set('trackGPXFile', dataForm.trackGPXFile);
-  }
-
-  // Если это редактирование и Постер был изменен (dataForm.posterFile существует)
-  // то возвращается posterUrl, для удаления старого Постера из облака.
-  if (isEditing && posterUrl && dataForm.posterFile) {
-    formData.set('posterUrl', posterUrl);
-  }
-
-  // Если это редактирование и Постер был изменен (dataForm.posterFile существует)
-  // то возвращается posterUrl, для удаления старого Постера из облака.
-  if (isEditing && trackGPXUrl && dataForm.posterFile) {
-    formData.set('posterUrl', trackGPXUrl);
   }
 
   return formData;

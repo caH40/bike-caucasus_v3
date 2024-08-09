@@ -4,7 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FromChampionship from '@/components/UI/Forms/FromChampionship/FromChampionship';
 import IconChampionship from '@/components/Icons/IconChampionship';
-import { getChampionship } from '@/actions/championship';
+import { getChampionship, putChampionship } from '@/actions/championship';
 import { getOrganizer } from '@/actions/organizer';
 
 type Props = {
@@ -36,14 +36,12 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
       </h1>
     );
   }
-  // console.log(organizer);
-  // console.log(championship.data);
 
   return (
     <>
       <TitleAndLine title="Редактирование Чемпионата" hSize={1} Icon={IconChampionship} />
       <FromChampionship
-        // fetchChampionshipEdited={fetchChampionshipEdited}
+        putChampionship={putChampionship}
         championshipForEdit={championship.data}
         organizer={organizer}
       />

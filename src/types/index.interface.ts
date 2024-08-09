@@ -45,8 +45,11 @@ export type PropsBoxInputFile = {
   isLoading?: boolean;
   setTrack: Dispatch<SetStateAction<File | null>>;
   resetData: boolean; // Триггер сброса изображения.
-  isEditing: boolean; // Режим редактирования Маршрута?
+  value: string; // Режим редактирования Маршрута?
   validationText?: string; // Текст если есть ошибка валидации, иначе ''
+  isRequired?: boolean; // Обязателен ли файл к загрузке.
+  needDelTrack?: boolean;
+  setNeedDelTrack?: Dispatch<SetStateAction<boolean>>;
 };
 
 export type PropsBoxSelectSimple = {

@@ -20,19 +20,12 @@ import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import { bikeTypes } from '@/constants/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
 import { serializationChampionship } from '@/libs/utils/serialization/championship';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   organizer: TDtoOrganizer;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  fetchChampionshipEdited?: ({
-    // eslint-disable-next-line no-unused-vars
-    dataSerialized,
-    // eslint-disable-next-line no-unused-vars
-    organizerId,
-  }: {
-    dataSerialized: FormData;
-    organizerId: string;
-  }) => Promise<ResponseServer<any>>;
+  putChampionship?: (serializedFormData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   championshipForEdit?: TDtoChampionship;
 };
 
@@ -42,9 +35,11 @@ type Props = {
 export default function FromChampionship({
   organizer,
   fetchChampionshipCreated,
-  fetchChampionshipEdited,
+  putChampionship,
   championshipForEdit,
 }: Props) {
+  const router = useRouter();
+
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
 
@@ -52,10 +47,14 @@ export default function FromChampionship({
   const [posterUrl, setPosterUrl] = useState<string | null>(
     championshipForEdit ? championshipForEdit.posterUrl : null
   );
+
+  // Состояние, указывающее удалять или нет текущий трек.
+  const [needDelTrack, setNeedDelTrack] = useState<boolean>(false);
+
   // Постер Чемпионата существует при редактировании, url на изображение.
-  const [trackGPXUrl, setTrackGPXUrl] = useState<string | null>(
-    championshipForEdit?.trackGPX?.url ? championshipForEdit.trackGPX?.url : null
-  );
+  // const [trackGPXUrl, setTrackGPXUrl] = useState<string | null>(
+  //   championshipForEdit?.trackGPX?.url ? championshipForEdit.trackGPX?.url : null
+  // );
 
   const {
     register,
@@ -68,20 +67,18 @@ export default function FromChampionship({
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
-    // Старт отображение спинера загрузки.
+    // Старт отображение статуса загрузки.
     setLoading(true);
 
     // Сериализация данных перед отправкой на сервер.
     const isEditing = championshipForEdit ? true : false;
     const championshipId = championshipForEdit?._id;
-    const posterUrl = championshipForEdit?.posterUrl;
     const dataSerialized = serializationChampionship({
       dataForm,
       isEditing,
       championshipId,
-      posterUrl,
-      trackGPXUrl,
       organizerId: organizer._id,
+      needDelTrack,
     });
 
     // Отправка данных на сервер и получение ответа после завершения операции.
@@ -94,17 +91,21 @@ export default function FromChampionship({
 
     if (fetchChampionshipCreated) {
       response = await fetchChampionshipCreated(dataSerialized);
+    } else if (putChampionship) {
+      response = await putChampionship(dataSerialized);
     } else {
       return toast.error(messageErr);
     }
 
-    // Завершение отображение спинера загрузки.
+    // Завершение отображение статуса загрузки.
     setLoading(false);
 
     // Отображение статуса сохранения События в БД.
     if (response.ok) {
       reset();
       toast.success(response.message);
+
+      router.push('/moderation/championship/list');
     } else {
       toast.error(response.message);
     }
@@ -212,7 +213,8 @@ export default function FromChampionship({
         name="posterFile"
         control={control}
         defaultValue={null}
-        rules={{ required: 'Файл изображения обязателен' }}
+        // Если происходит редактирование, то Постер уже есть, поэтому не обязательно выбирать Постер.
+        rules={!!championshipForEdit ? {} : { required: 'Файл изображения обязателен' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Главное изображение (обложка):*'}
@@ -251,20 +253,25 @@ export default function FromChampionship({
         validationText={errors.bikeType ? errors.bikeType.message : ''}
       />
 
-      {/* Блок загрузки GPX трэка*/}
+      {/* Блок загрузки GPX трека*/}
       <Controller
         name="trackGPXFile"
         control={control}
         defaultValue={null}
-        rules={{ required: 'Файл трека обязателен' }}
+        // rules={{ required: 'Файл трека обязателен' }}
         render={({ field }) => (
           <BlockUploadTrack
-            title={'Трэк заезда:'}
+            title={'Трек заезда:'}
             setTrack={field.onChange}
             isLoading={isLoading}
             resetData={false}
-            isEditing={!!championshipForEdit}
+            isRequired={false}
+            value={
+              championshipForEdit?.trackGPX?.url ? championshipForEdit.trackGPX?.url : 'нет'
+            }
             validationText={errors.trackGPXFile?.message ? errors.trackGPXFile.message : ''}
+            needDelTrack={needDelTrack}
+            setNeedDelTrack={setNeedDelTrack}
           />
         )}
       />

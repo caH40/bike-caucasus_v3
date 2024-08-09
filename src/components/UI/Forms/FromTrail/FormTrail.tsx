@@ -429,7 +429,8 @@ export default function FormTrail({
           title={'Загрузка трэка в формате GPX:*'}
           setTrack={setTrack}
           resetData={resetData}
-          isEditing={!!trailForEdit}
+          value={trailForEdit?.trackGPX ? trailForEdit.trackGPX : 'нет'}
+          isRequired={true}
         />
 
         {/* Блок загрузки Главного изображения (обложки) */}

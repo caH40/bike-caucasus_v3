@@ -7,7 +7,7 @@ import { TFormChampionshipCreate } from '@/types/index.interface';
  */
 export function deserializeChampionship(serializedFormData: FormData) {
   const championship = {} as TFormChampionshipCreate & {
-    isEditing: boolean;
+    needDelTrack: boolean;
     organizerId?: string;
   } & {
     [key: string]: any;
@@ -16,6 +16,10 @@ export function deserializeChampionship(serializedFormData: FormData) {
   for (const [name, value] of serializedFormData.entries()) {
     switch (name) {
       case 'isEditing':
+        championship[name] = value === 'true' ? true : false;
+        break;
+
+      case 'needDelTrack':
         championship[name] = value === 'true' ? true : false;
         break;
 

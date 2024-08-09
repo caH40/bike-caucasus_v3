@@ -1,9 +1,10 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 import InputFileIcon from '../InputFile/InputFileIcon';
-import { convertBytesTo } from '@/libs/utils/handler-data';
 import BoxInputSimple from '../BoxInput/BoxInputSimple';
+import { convertBytesTo } from '@/libs/utils/handler-data';
 import { PropsBoxInputFile } from '@/types/index.interface';
 import styles from './BlockUploadTrack.module.css';
 
@@ -16,10 +17,14 @@ export default function BlockUploadTrack({
   setTrack,
   isLoading,
   resetData,
-  isEditing,
+  value,
+  isRequired,
   validationText,
+  needDelTrack, // Если выбор файла обязателен isRequired:true, то данные переменные не нужны.
+  setNeedDelTrack, // Если выбор файла обязателен isRequired:true, то данные переменные не нужны.
 }: PropsBoxInputFile) {
-  const [trackName, setTrackName] = useState<string>(isEditing ? 'Трэк не заменялся!' : '');
+  const [trackName, setTrackName] = useState<string>(value);
+
   // Сброс отображаемого изображения после отправки формы.
   useEffect(() => {
     setTrack(null);
@@ -43,6 +48,12 @@ export default function BlockUploadTrack({
     setTrack(file);
     setTrackName(file.name);
   };
+  const removeFile = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (setNeedDelTrack) {
+      setNeedDelTrack((prev) => !prev);
+    }
+  };
 
   return (
     <section className={styles.wrapper}>
@@ -50,27 +61,42 @@ export default function BlockUploadTrack({
         <h2 className={styles.title}>{title}</h2>
         <span className={styles.validate}>{validationText}</span>
       </div>
-      <InputFileIcon
-        name="uploadTrack"
-        icon={{
-          width: 26,
-          height: 22,
-          src: '/images/icons/gpx-upload.svg',
-          alt: 'Upload track',
-        }}
-        accept=".gpx"
-        getChange={getFile}
-        loading={isLoading}
-      />
+      <div className={styles.block__control}>
+        <InputFileIcon
+          name="uploadTrack"
+          icon={{
+            width: 26,
+            height: 22,
+            src: '/images/icons/gpx-upload.svg',
+            alt: 'Upload track',
+          }}
+          accept=".gpx"
+          getChange={getFile}
+          loading={isLoading}
+        />
+
+        {!isRequired && (
+          <button onClick={removeFile} className={styles.btn}>
+            <Image
+              width={26}
+              height={22}
+              src="/images/icons/delete-square.svg"
+              alt="Insert a link"
+              className={styles.icon__img}
+            />
+          </button>
+        )}
+      </div>
+
       <BoxInputSimple
-        value={trackName}
+        value={needDelTrack ? 'При обновлении трек будет удалён!' : trackName}
         disabled={true}
         id={'fileGPX'}
         name={'fileGPX'}
         autoComplete=""
         type="text"
         handlerInput={setTrackName}
-        validationText={trackName.length > 0 ? '' : 'Загрузите файл'}
+        validationText={isRequired ? (trackName.length > 3 ? '' : 'Загрузите файл') : ''}
       />
     </section>
   );

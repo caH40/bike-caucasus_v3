@@ -102,8 +102,22 @@ export class Cloud {
    * @param prefix - Имя файла, который нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файла.
    */
-  public async deleteFile({ prefix }: { prefix: string }): Promise<ResponseServer<null>> {
+  public async deleteFile({
+    prefix,
+  }: {
+    prefix: string | undefined;
+  }): Promise<ResponseServer<null>> {
     try {
+      // В большинстве случаях prefix:undefined нормальное поведение.
+      // Для исключения большего количества if проверок в родительском коде.
+      if (!prefix) {
+        return {
+          data: null,
+          ok: true,
+          message: 'Не получено название файла для удаления (prefix)!',
+        };
+      }
+
       // Создание параметров для команды удаления файла.
       const params: DeleteObjectCommandInput = {
         Bucket: this.bucketName,

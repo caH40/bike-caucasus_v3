@@ -29,3 +29,13 @@
   font-size: 0.9rem;
   color: var(--error);
 }
+.block__control {
+  display: flex;
+  gap: 5px;
+}
+.btn {
+  cursor: pointer;
+}
+.btn:hover {
+  opacity: 0.8;
+}

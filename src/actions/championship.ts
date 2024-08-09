@@ -8,7 +8,7 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
-import { TDtoChampionship } from '@/types/dto.types';
+import type { TDtoChampionship } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 
 /**
@@ -23,7 +23,6 @@ export async function getChampionship({
 }): Promise<ResponseServer<TDtoChampionship | null>> {
   try {
     const session = await getServerSession(authOptions);
-    const idUserDB = session?.user.idDB;
 
     if (forModeration) {
       // Проверка наличия прав на редактирование Чемпионатов.
@@ -116,6 +115,9 @@ export async function fetchChampionshipCreated(
 
     const res = await championshipService.post({ serializedFormData: formData, creator });
 
+    revalidatePath('/moderation/championship');
+    revalidatePath('championship');
+
     return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
@@ -139,6 +141,44 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
 
     const championshipService = new ChampionshipService();
     const response = await championshipService.delete({ urlSlug });
+
+    revalidatePath('/championship');
+    revalidatePath('/moderation/championship');
+
+    return response;
+  } catch (error) {
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен, обновления данных Чемпионата.
+ */
+export async function putChampionship(
+  serializedFormData: FormData
+): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const idUserDB = session?.user.idDB;
+    if (!idUserDB) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Проверка наличия прав на создание Чемпионата.
+    if (
+      !session.user.role.permissions.some(
+        (elm) => elm === 'moderation.championship.edit' || elm === 'all'
+      )
+    ) {
+      throw new Error('У вас нет прав для редактирования Чемпионата!');
+    }
+
+    const championshipService = new ChampionshipService();
+
+    const response = await championshipService.put({ serializedFormData });
 
     revalidatePath('/championship');
     revalidatePath('/moderation/championship');

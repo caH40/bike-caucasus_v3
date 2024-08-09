@@ -15,6 +15,7 @@ import type {
 } from '@/types/index.interface';
 import type {
   TChampionship,
+  TChampionshipDocument,
   TChampionshipStatus,
   TTrackGPXObj,
 } from '@/types/models.interface';
@@ -148,29 +149,33 @@ export class ChampionshipService {
         suffix: this.suffixImagePoster,
       });
 
-      // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
-      const trackGPXUrl = await this.saveFile({
-        file: deserializedFormData.trackGPXFile as File,
-        type: 'GPX',
-        suffix: this.suffixTrackGpx,
-      });
+      // Трек не обязателен, поэтому проверка для загрузки файла на облако.
+      let trackGPX = {} as TTrackGPXObj;
+      if (deserializedFormData.trackGPXFile) {
+        // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
+        const trackGPXUrl = await this.saveFile({
+          file: deserializedFormData.trackGPXFile as File,
+          type: 'GPX',
+          suffix: this.suffixTrackGpx,
+        });
 
-      // Получаем файл GPX с облака, так как реализация через FileReader большая!
-      const gpxParsed = await parseGPX(trackGPXUrl);
+        // Получаем файл GPX с облака, так как реализация через FileReader большая!
+        const gpxParsed = await parseGPX(trackGPXUrl);
 
-      const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+        const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
 
-      const trackGPX = {
-        url: trackGPXUrl,
-        coordStart,
-      };
+        trackGPX = {
+          url: trackGPXUrl,
+          coordStart,
+        };
+      }
 
       // Создание slug из name для url страницы Чемпионата.
       const sequenceValue = await getNextSequenceValue('championship');
       const stringRaw = `${sequenceValue}-${deserializedFormData.name}`;
       const urlSlug = slugify(stringRaw, { lower: true, strict: true });
 
-      const createData = {
+      const createData: any = {
         name: deserializedFormData.name,
         description: deserializedFormData.description,
         startDate: deserializedFormData.startDate,
@@ -179,10 +184,13 @@ export class ChampionshipService {
         bikeType: deserializedFormData.bikeType,
         organizer: deserializedFormData.organizerId,
         posterUrl,
-        trackGPX,
         creator,
         urlSlug,
       };
+
+      if (trackGPX.url) {
+        createData.trackGPX = trackGPX;
+      }
 
       const response = await ChampionshipModel.create(createData);
 
@@ -191,6 +199,104 @@ export class ChampionshipService {
       }
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновления данных Чемпионата.
+   */
+  public async put({
+    serializedFormData,
+  }: {
+    serializedFormData: FormData;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const deserializedFormData = deserializeChampionship(serializedFormData);
+
+      const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
+        _id: deserializedFormData.championshipId,
+      });
+
+      if (!championshipDB) {
+        throw new Error(
+          `Не найден Чемпионат ${deserializedFormData.name} для обновления данных!`
+        );
+      }
+
+      // Экземпляр сервиса работы с Облаком
+      const cloud = new Cloud();
+
+      // Если существует posterFile значит Постер был обновлён.
+      // Сохранение Постера.
+      let posterUrl = '';
+      if (deserializedFormData.posterFile) {
+        posterUrl = await this.saveFile({
+          file: deserializedFormData.posterFile as File,
+          type: 'image',
+          suffix: this.suffixImagePoster,
+        });
+
+        // Удаление старого Постера Чемпионата из облака.
+        await cloud.deleteFile({
+          prefix: championshipDB.posterUrl.replace(fileNameFormUrl, '$1'),
+        });
+      }
+
+      // Если существует trackGPXFile значит GPX трек был обновлён.
+      // Сохранение Постера.
+      let trackGPX: TTrackGPXObj | null = null;
+      if (deserializedFormData.trackGPXFile) {
+        const trackGPXUrl = await this.saveFile({
+          file: deserializedFormData.trackGPXFile as File,
+          type: 'GPX',
+          suffix: this.suffixTrackGpx,
+        });
+
+        // Получаем файл GPX с облака, так как реализация через FileReader большая!
+        const gpxParsed = await parseGPX(trackGPXUrl);
+
+        const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+
+        trackGPX = {
+          url: trackGPXUrl,
+          coordStart,
+        };
+
+        // Удаление старого GPX трек из облака.
+        await cloud.deleteFile({
+          prefix: championshipDB.trackGPX?.url?.replace(fileNameFormUrl, '$1'),
+        });
+      }
+
+      // Внимание! Добавлять соответствующие обновляемые свойства Чемпионата в ручную.
+      const updateData: any = {
+        name: deserializedFormData.name,
+        description: deserializedFormData.description,
+        startDate: deserializedFormData.startDate,
+        endDate: deserializedFormData.endDate,
+        type: deserializedFormData.type,
+        bikeType: deserializedFormData.bikeType,
+        ...(trackGPX && { trackGPX }), // Обновление только если trackGPX не null
+        ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
+      };
+
+      // При редактировании выбрана опция удаления Трека Чемпионата.
+      if (deserializedFormData.needDelTrack) {
+        await cloud.deleteFile({
+          prefix: championshipDB.trackGPX?.url.replace(fileNameFormUrl, '$1'),
+        });
+        updateData.trackGPX = {}; // Обновление поля trackGPX на пустой объект.
+      }
+
+      await ChampionshipModel.updateOne(updateData);
+
+      return { data: null, ok: true, message: 'Данные Чемпионата обновлены в БД!' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
