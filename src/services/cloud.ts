@@ -25,6 +25,8 @@ export class Cloud {
   private s3: S3Client;
   // eslint-disable-next-line no-unused-vars
   private errorLogger: (error: unknown) => Promise<void>;
+  private bucketName: string;
+  private endpointDomain: string;
 
   maxSizeFileInMBytes: number;
 
@@ -41,21 +43,23 @@ export class Cloud {
     this.config = config;
     this.s3 = new S3Client(this.config);
     this.errorLogger = errorLogger;
+    this.bucketName = cloudConfig.bucketName;
+    this.endpointDomain = cloudConfig.endpointDomain;
   }
 
   /**
    * Отправка файла на сохранение в облаке
-   * @param cloudName название облака ("vk")
    * @param file сохраняемый файл в формате File
    * @param fileName название файла с расширением, по умолчанию берется из входного параметра file
    */
-  public async postFile(
-    file: File,
-    bucketName: string,
-    fileName?: string
-  ): Promise<ResponseServer<ResponseMetadata>> {
-    if (!file || !bucketName) {
-      throw new Error('Переданы не все обязательные параметры');
+  public async postFile({ file, fileName }: { file: File; fileName?: string }): Promise<
+    ResponseServer<{
+      responseCloud: ResponseMetadata;
+      file: { bucketName: string; endpointDomain: string };
+    }>
+  > {
+    if (!file) {
+      throw new Error('Не получен файл!');
     }
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -68,7 +72,7 @@ export class Cloud {
 
     //
     const params: PutObjectCommandInput = {
-      Bucket: bucketName,
+      Bucket: this.bucketName,
       Body: buffer,
       Key: fileName ?? file.name,
       ContentType: file.type,
@@ -78,7 +82,13 @@ export class Cloud {
     const command = new PutObjectCommand(params);
     const response = await this.s3.send(command);
     return {
-      data: response.$metadata,
+      data: {
+        responseCloud: response.$metadata,
+        file: {
+          bucketName: this.bucketName,
+          endpointDomain: this.endpointDomain,
+        },
+      },
       ok: true,
       message: 'Ошибка при удалении файла из облака, смотри логи',
     };
@@ -89,19 +99,15 @@ export class Cloud {
 
   /**
    * Удаляет указанный файл из заданного ведра (bucket) в облаке.
-   * @param bucketName - Имя ведра (bucket) в облаке.
    * @param fileNamePrefix - Имя файла, который нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файла.
    */
-  public async deleteFile(
-    bucketName: string,
-    fileNamePrefix: string
-  ): Promise<ResponseServer<null>> {
+  public async deleteFile({ prefix }: { prefix: string }): Promise<ResponseServer<null>> {
     try {
       // Создание параметров для команды удаления файла.
       const params: DeleteObjectCommandInput = {
-        Bucket: bucketName,
-        Key: fileNamePrefix,
+        Bucket: this.bucketName,
+        Key: prefix,
       };
 
       // Создание команды удаления файла.
@@ -123,15 +129,14 @@ export class Cloud {
 
   /**
    * Удаляет все объекты с заданным префиксом из указанного ведра (bucket) в облаке.
-   * @param bucketName - Имя ведра (bucket) в облаке.
    * @param prefix - Префикс (путь) к объектам, которые нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файлов.
    */
-  public async deleteFiles(bucketName: string, prefix: string): Promise<ResponseServer<null>> {
+  public async deleteFiles({ prefix }: { prefix: string }): Promise<ResponseServer<null>> {
     try {
       // Создаем параметры запроса для получения списка объектов с заданным префиксом
       const params = {
-        Bucket: bucketName, // Имя ведра (bucket) в облаке
+        Bucket: this.bucketName, // Имя ведра (bucket) в облаке
         Prefix: prefix, // Префикс (путь) к объектам, которые нужно удалить
       };
 
@@ -149,7 +154,7 @@ export class Cloud {
           if (!object.Key) {
             continue; // Пропускаем объект, если у него нет ключа (имени файла)
           }
-          await this.deleteFile(bucketName, object.Key);
+          await this.deleteFile({ prefix: object.Key });
         }
       }
 

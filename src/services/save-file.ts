@@ -29,10 +29,14 @@ export async function saveFile({
     throw new Error(`Загружаемый файл ${file.name} не является ${typeCurrent.description}`);
   }
 
+  // Создание уникального имени благодаря timestamp с добавлением расширения файла.
   fileName = generateFileName(file, suffix);
 
   const cloud = new Cloud(cloudName);
-  await cloud.postFile(file, bucketName, fileName);
+  const { data } = await cloud.postFile({ file, fileName });
+  if (!data) {
+    throw new Error('Не получены данные для Url файла!');
+  }
 
-  return `https://${bucketName}.${domainCloudName}/${fileName}`;
+  return `https://${data.file.bucketName}.${data.file.endpointDomain}/${fileName}`;
 }

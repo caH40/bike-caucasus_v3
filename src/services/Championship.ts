@@ -26,6 +26,7 @@ import { getCoordStart } from '@/libs/utils/track';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { Document, ObjectId } from 'mongoose';
 import { Cloud } from './cloud';
+import { CloudConfig } from '@/configs/clouds';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -37,14 +38,18 @@ export class ChampionshipService {
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
   private suffixTrackGpx: string;
+  private urlSuffix: string;
 
   constructor() {
+    const cloudConfig = new CloudConfig();
+
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.dbConnection = connectToMongo;
     this.saveFile = saveFile;
     this.suffixImagePoster = 'championship_image_poster-';
     this.suffixTrackGpx = 'championship_track_gpx-';
+    this.urlSuffix = cloudConfig.urlSuffix;
   }
 
   public async getOne({
@@ -251,17 +256,15 @@ export class ChampionshipService {
       const cloudService = new Cloud(cloudOptions.cloudName);
 
       // Удаление Постера с облака.
-      await cloudService.deleteFile(
-        cloudOptions.bucketName,
-        championshipDB.posterUrl.replace(this.suffixImagePoster, '')
-      );
+      await cloudService.deleteFile({
+        prefix: championshipDB.posterUrl.replace(this.urlSuffix, ''),
+      });
 
       // Удаление GPX трека с облака.
       if (championshipDB.trackGPX.url) {
-        await cloudService.deleteFile(
-          cloudOptions.bucketName,
-          championshipDB.trackGPX.url.replace(this.suffixTrackGpx, '')
-        );
+        await cloudService.deleteFile({
+          prefix: championshipDB.trackGPX.url.replace(this.urlSuffix, ''),
+        });
       }
 
       return {

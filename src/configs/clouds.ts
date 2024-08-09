@@ -6,15 +6,20 @@ export class CloudConfig {
   private secretAccessKey: string;
   private region: string;
   private endpoint: string;
+  private endpointDomainFromEnv: string;
+  private bucketNameFromEnv: string;
 
   constructor() {
     const env = new Environment();
-    const { accessKeyId, secretAccessKey, region, endpoint } = env.getCloudVk();
+    const { accessKeyId, secretAccessKey, region, endpoint, endpointDomain, bucketName } =
+      env.getCloudVk();
 
     this.accessKeyId = accessKeyId;
     this.secretAccessKey = secretAccessKey;
     this.region = region;
     this.endpoint = endpoint;
+    this.endpointDomainFromEnv = endpointDomain;
+    this.bucketNameFromEnv = bucketName;
     if (!this.accessKeyId) {
       throw new Error('Нет данных');
     }
@@ -37,5 +42,20 @@ export class CloudConfig {
           defaultsMode: 'standard',
         };
     }
+  }
+
+  get bucketName() {
+    return this.bucketNameFromEnv;
+  }
+
+  get endpointDomain() {
+    return this.endpointDomainFromEnv;
+  }
+
+  /**
+   * Url файла до название файла, который храниться в Бакете.
+   */
+  get urlSuffix() {
+    return `https://${this.bucketName}.${this.endpointDomain}/`;
   }
 }

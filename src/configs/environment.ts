@@ -3,6 +3,8 @@ type TEnvCloudVk = {
   secretAccessKey: string;
   region: string;
   endpoint: string;
+  bucketName: string;
+  endpointDomain: string;
 };
 
 /**
@@ -27,11 +29,20 @@ export class Environment {
     const secretAccessKey = this.env.VK_AWS_CLOUD_SECRET_ID;
     const region = this.env.VK_AWS_REGION;
     const endpoint = this.env.VK_AWS_ENDPOINT;
+    const bucketName = this.env.VK_AWS_BUCKET_NAME;
+    const endpointDomain = this.env.VK_AWS_ENDPOINT_DOMAIN;
 
-    if (!accessKeyId || !secretAccessKey || !region || !endpoint) {
+    if (
+      !accessKeyId ||
+      !secretAccessKey ||
+      !region ||
+      !endpoint ||
+      !bucketName ||
+      !endpointDomain
+    ) {
       throw new Error('Не получены данные конфигурации для vk-cloud');
     }
 
-    return { accessKeyId, secretAccessKey, region, endpoint };
+    return { accessKeyId, secretAccessKey, region, endpoint, bucketName, endpointDomain };
   }
 }
