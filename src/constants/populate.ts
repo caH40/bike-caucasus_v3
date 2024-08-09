@@ -11,3 +11,8 @@ export const userPublicSelect = [
   'imageFromProvider',
   'image',
 ];
+
+/**
+ * Данные пользователя User для публичного доступа.
+ */
+export const organizerSelect = ['_id', 'name', 'urlSlug', 'logoUrl', 'contactInfo'];

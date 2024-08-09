@@ -1,37 +1,27 @@
-import { getServerSession } from 'next-auth';
-
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { fetchOrganizerEdited, getOrganizer } from '@/actions/organizer';
-import IconOrganizers from '@/components/Icons/IconOrganizers';
+import IconChampionship from '@/components/Icons/IconChampionship';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import FromOrganizer from '@/components/UI/Forms/FromOrganizer/FromOrganizer';
-import styles from './OrganizerEditPage.module.css';
+import styles from './ChampionshipEditPage.module.css';
 
-export default async function OrganizerEditPage() {
-  const session = await getServerSession(authOptions);
+type Props = {};
 
-  const userIdDB = session?.user.idDB;
-
-  const organizer = await getOrganizer({ creatorId: userIdDB });
-
-  if (!userIdDB) {
-    return <h1>Нет авторизации!</h1>;
-  }
-
+export default function ChampionshipEditPage({}: Props) {
   return (
     <>
       <TitleAndLine
-        title="Редактирование Организатора Чемпионатов"
+        title="Страница редактирования Чемпионата"
         hSize={1}
-        Icon={IconOrganizers}
+        Icon={IconChampionship}
       />
-      {!organizer.ok && <h2 className={styles.error}>{organizer.message}</h2>}
-      {organizer.data && (
-        <FromOrganizer
-          fetchOrganizerEdited={fetchOrganizerEdited}
-          organizerForEdit={organizer.data}
-        />
-      )}
+      <p className={styles.paragraph}>
+        Пользователь может удалять и редактировать Чемпионаты от Организатора, созданного
+        текущим пользователем. Чемпионат можно удалять до даты его старта. После завершения или
+        отмены, редактирование Чемпионата становится недоступным.
+      </p>
+      <p className={styles.paragraph}>Админ и модератор может только удалять Чемпионаты.</p>
+      <p className={styles.paragraph}>
+        Выберите Чемпионат для редактирования на странице &quot;<big>Список</big>
+        &quot;
+      </p>
     </>
   );
 }

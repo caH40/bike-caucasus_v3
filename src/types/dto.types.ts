@@ -1,3 +1,4 @@
+import { TOrganizerForClient } from './index.interface';
 import {
   IUserModel,
   TAuthorFromUser,
@@ -129,7 +130,7 @@ export type TDtoChampionship = Omit<
   'organizer' | '_id' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'
 > & {
   _id: string;
-  organizer: TAuthor;
+  organizer: TOrganizerForClient;
   startDate: string;
   endDate: string;
   createdAt: string;

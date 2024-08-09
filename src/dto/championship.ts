@@ -1,8 +1,8 @@
 // ДТО для получение данных из календаря.
 
 import { getDateTime } from '@/libs/utils/calendar';
-import type { TAuthor, TDtoChampionship } from '@/types/dto.types';
-import type { TChampionshipWithOrganizer } from '@/types/index.interface';
+import type { TDtoChampionship } from '@/types/dto.types';
+import type { TChampionshipWithOrganizer, TOrganizerForClient } from '@/types/index.interface';
 
 /**
  * ДТО массива Чемпионатов.
@@ -17,7 +17,7 @@ export function dtoChampionships(
  * ДТО Чемпионата.
  */
 export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoChampionship {
-  const organizer: TAuthor = {
+  const organizer: TOrganizerForClient = {
     ...championship.organizer,
     _id: String(championship.organizer._id),
   };

@@ -1,11 +1,5 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import {
-  TAuthorFromUser,
-  TChampionship,
-  TLogsErrorModel,
-  TNewsBlockInfo,
-  TOrganizer,
-} from './models.interface';
+import { TChampionship, TLogsErrorModel, TNewsBlockInfo, TOrganizer } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
@@ -442,11 +436,28 @@ export type TrackData = {
   metadata: MetadataParsed;
 };
 
+// /**
+//  * Данные Чемпионата с БД.
+//  */
+// export type TChampionshipWithUser = Omit<TChampionship, 'organizer'> & {
+//   organizer: TAuthorFromUser;
+// };
+
 /**
  * Данные Чемпионата с БД.
  */
+export type TOrganizerPublic = Pick<
+  TOrganizer,
+  '_id' | 'name' | 'urlSlug' | 'logoUrl' | 'contactInfo'
+>;
+export type TOrganizerForClient = Pick<
+  TOrganizer,
+  'name' | 'urlSlug' | 'logoUrl' | 'contactInfo'
+> & {
+  _id: string;
+};
 export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
-  organizer: TAuthorFromUser;
+  organizer: TOrganizerPublic;
 };
 
 /**

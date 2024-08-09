@@ -3,16 +3,16 @@ import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
-import { userPublicSelect } from '@/constants/populate';
+import { organizerSelect } from '@/constants/populate';
 import { dtoChampionship, dtoChampionships } from '@/dto/championship';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
   TCloudConnect,
+  TOrganizerPublic,
   TSaveFile,
 } from '@/types/index.interface';
 import type {
-  TAuthorFromUser,
   TChampionship,
   TChampionshipStatus,
   TTrackGPXObj,
@@ -61,7 +61,7 @@ export class ChampionshipService {
       )
         .populate({
           path: 'organizer',
-          select: userPublicSelect,
+          select: organizerSelect,
         })
         .lean();
 
@@ -107,11 +107,11 @@ export class ChampionshipService {
       }
 
       const championshipsDB: (Omit<TChampionship, 'organizer'> & {
-        organizer: TAuthorFromUser;
+        organizer: TOrganizerPublic;
       })[] = await ChampionshipModel.find(query)
         .populate({
           path: 'organizer',
-          select: userPublicSelect,
+          select: organizerSelect,
         })
         .lean();
 

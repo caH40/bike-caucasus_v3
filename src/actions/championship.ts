@@ -15,7 +15,46 @@ import { revalidatePath } from 'next/cache';
 const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
 /**
- * Экшен отправки созданной формы Чемпионата.
+ * Экшен получения данных запрашиваемого Чемпионата.
+ */
+export async function getChampionship({
+  urlSlug,
+  forModeration,
+}: {
+  urlSlug: string;
+  forModeration?: boolean;
+}): Promise<ResponseServer<TDtoChampionship | null>> {
+  try {
+    const session = await getServerSession(authOptions);
+    const idUserDB = session?.user.idDB;
+
+    if (forModeration) {
+      // Проверка наличия прав на редактирование Чемпионатов.
+      if (
+        !session?.user.role.permissions.some(
+          (elm) => elm === 'moderation.championship.edit' || elm === 'all'
+        )
+      ) {
+        throw new Error('У вас нет прав для редактирования Чемпионатов!');
+      }
+    }
+
+    const championshipService = new ChampionshipService();
+    const championship = await championshipService.getOne({ urlSlug });
+
+    if (!championship.ok) {
+      throw new Error('Ошибка при получении запрашиваемого Чемпионата');
+    }
+
+    return championship;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен получения данных Чемпионатов.
  */
 export async function getChampionships({
   forModeration,

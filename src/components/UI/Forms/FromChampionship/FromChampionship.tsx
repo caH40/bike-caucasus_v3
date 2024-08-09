@@ -42,7 +42,7 @@ type Props = {
 export default function FromChampionship({
   organizer,
   fetchChampionshipCreated,
-  // fetchChampionshipEdited,
+  fetchChampionshipEdited,
   championshipForEdit,
 }: Props) {
   const isLoading = useLoadingStore((state) => state.isLoading);
