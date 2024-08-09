@@ -107,9 +107,9 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
   }
 
   // при вводе в Input для свойства Video
-  function handlerInputVideo(value: string) {
-    handlerInputCommon('video', value);
-  }
+  // function handlerInputVideo(value: string) {
+  //   handlerInputCommon('video', value);
+  // }
 
   // удаление загруженного изображения
   const deleteImage = () => {
@@ -294,7 +294,8 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
         />
 
         {/* Ссылка на видео в Youtube */}
-        <BoxInputSimple
+        {/* Необязательный, но если есть, то должен начинаться с https://yout */}
+        {/* <BoxInputSimple
           id={`block-${block.video}`}
           name={`block-${block.video}`}
           value={block.video}
@@ -310,8 +311,7 @@ export default function BlockNewsTextAdd({ block, blocks, setBlocks, isLoading }
                 ? ''
                 : 'начало с https://www.yout'
               : ''
-          } // Необязательный, но если есть, то должен начинаться с https://yout
-        />
+          } /> */}
       </div>
     </section>
   );
