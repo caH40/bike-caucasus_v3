@@ -3,23 +3,35 @@ import mongoose, { Schema, model, models, Model } from 'mongoose';
 import { TChampionshipDocument } from '@/types/models.interface';
 
 // Трэк заезда.
-const trackGPXSchema = new Schema({
-  url: String,
-  coordStart: {
-    // Координаты старта заезда.
-    lat: Number,
-    lon: Number,
+const trackGPXSchema = new Schema(
+  {
+    url: String,
+    coordStart: {
+      // Координаты старта заезда.
+      lat: Number,
+      lon: Number,
+      _id: false,
+    },
   },
-});
+  { _id: false }
+);
 
 /**
  * Схема для чемпионата.
  */
 const championshipSchema = new Schema<TChampionshipDocument>(
   {
+    // Название может быть не уникальным,
+    // уникальный будет urlSlug из-за добавления номера из счетчика в каждое название.
     name: {
       type: String,
+
       required: true,
+    },
+    urlSlug: {
+      type: String,
+      required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -53,16 +65,17 @@ const championshipSchema = new Schema<TChampionshipDocument>(
     status: {
       type: String,
       enum: ['upcoming', 'ongoing', 'completed', 'cancelled'],
+      default: 'upcoming',
       required: true,
     },
-    championshipType: {
+    type: {
       type: String,
-      enum: ['Tour', 'Series', 'Single'],
+      default: 'single',
       required: true,
     },
     bikeType: {
       type: String,
-      enum: ['TimeTrial', 'Mountain', 'Road', 'Downhill'],
+      default: 'road',
       required: true,
     },
     trackGPX: { type: trackGPXSchema, default: null },

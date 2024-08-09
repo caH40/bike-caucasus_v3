@@ -7,8 +7,6 @@ import FormNews from '@/components/UI/Forms/FormNews/FormNews';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconNewspaper from '@/components/Icons/IconNewspaper';
 
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
-
 /**
  * Страница создания новости
  */
@@ -27,15 +25,7 @@ export default async function NewsCreatePage() {
     'use server';
 
     const news = new News();
-    const response = await news.create(
-      formData,
-      {
-        cloudName: 'vk',
-        domainCloudName: 'hb.vkcs.cloud',
-        bucketName,
-      },
-      author
-    );
+    const response = await news.create({ formData, author });
 
     revalidatePath(`/`);
 

@@ -14,4 +14,8 @@ export const translationForModeration = {
     m: 'разрешение',
     a: 'разрешения',
   },
+  championship: {
+    m: 'чемпионат',
+    a: 'чемпионата',
+  },
 } as { [key: string]: any };

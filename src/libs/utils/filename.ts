@@ -1,5 +1,5 @@
 /**
- * Создает имя файла для сохранения яв облаке.
+ * Создает имя файла для сохранения в облаке.
  * @returns название файла {suffix}{Date}.{extension}
  */
 export function generateFileName(file: File, suffix: string): string {

@@ -4,6 +4,7 @@ import { deleteNews } from '@/actions/news';
 import { deleteTrail } from '@/actions/trail';
 import { translationForModeration } from '@/constants/texts';
 import { ResponseServer } from '@/types/index.interface';
+import { deleteChampionship } from '@/actions/championship';
 
 type Params = {
   type: string;
@@ -29,6 +30,9 @@ export const deleteItem = async ({ type, urlSlug }: Params) => {
         break;
       case 'news':
         res = await deleteNews(urlSlug);
+        break;
+      case 'championship':
+        res = await deleteChampionship(urlSlug);
         break;
 
       default:

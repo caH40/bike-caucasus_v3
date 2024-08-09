@@ -127,10 +127,10 @@ export default function FromOrganizer({
         validationText={errors.name ? errors.name.message : ''}
       />
 
-      {/* Блок ввода Названия */}
+      {/* Блок ввода Описания */}
       <BoxTextarea
         label="Описание:*"
-        id="title"
+        id="description"
         autoComplete="off"
         type="text"
         defaultValue={organizerForEdit ? organizerForEdit.description : ''}
@@ -189,7 +189,7 @@ export default function FromOrganizer({
         name="posterFile"
         control={control}
         defaultValue={null}
-        // rules={{ required: 'Обязательно к заполнению' }}
+        rules={{ required: 'Файл изображения обязателен' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Главное изображение (обложка):*'}
@@ -197,16 +197,17 @@ export default function FromOrganizer({
             setPoster={field.onChange}
             posterUrl={posterUrl}
             setPosterUrl={setPosterUrl}
+            validationText={errors.posterFile?.message ? errors.posterFile.message : ''}
           />
         )}
       />
 
-      {/* Блок загрузки Главного изображения (обложки) */}
+      {/* Блок загрузки Логотипа */}
       <Controller
         name="logoFile"
         control={control}
         defaultValue={null}
-        // rules={{ required: 'Обязательно к заполнению' }}
+        rules={{ required: 'Файл изображения обязателен' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Логотип Организатора, желательно квадратный:*'}
@@ -215,6 +216,7 @@ export default function FromOrganizer({
             posterUrl={logoUrl}
             setPosterUrl={setLogoUrl}
             isSquare={true}
+            validationText={errors.logoFile?.message ? errors.logoFile.message : ''}
           />
         )}
       />

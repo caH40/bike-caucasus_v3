@@ -1,6 +1,6 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { ResponseServer, TCloudConnect, TSaveFile } from '@/types/index.interface';
+import { ResponseServer, TSaveFile } from '@/types/index.interface';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { dtoCOrganizer, dtoCOrganizers } from '@/dto/organizer';
 import { userPublicSelect } from '@/constants/populate';
@@ -12,6 +12,7 @@ import { saveFile } from './save-file';
 import { Cloud } from './cloud';
 import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
+import { fileNameFormUrl } from '@/constants/regex';
 
 type GetOneParams =
   | {
@@ -24,7 +25,7 @@ type GetOneParams =
     };
 
 /**
- * Класс сервиса работы с Календарем событий.
+ * Класс сервиса работы с сущностью Организатор.
  */
 export class OrganizerService {
   private errorLogger;
@@ -120,11 +121,9 @@ export class OrganizerService {
    */
   public async post({
     serializedFormData,
-    cloudOptions,
     creator,
   }: {
     serializedFormData: FormData;
-    cloudOptions: TCloudConnect;
     creator: string;
   }): Promise<ResponseServer<null>> {
     try {
@@ -146,9 +145,6 @@ export class OrganizerService {
         file: deserializedFormData.posterFile as File,
         type: 'image',
         suffix: this.suffixImagePoster,
-        cloudName: cloudOptions.cloudName,
-        domainCloudName: cloudOptions.domainCloudName,
-        bucketName: cloudOptions.bucketName,
       });
 
       // Сохранение изображения для Постера маршрута.
@@ -156,9 +152,6 @@ export class OrganizerService {
         file: deserializedFormData.logoFile as File,
         type: 'image',
         suffix: this.suffixImageLogo,
-        cloudName: cloudOptions.cloudName,
-        domainCloudName: cloudOptions.domainCloudName,
-        bucketName: cloudOptions.bucketName,
       });
 
       // Создание slug из name для url страницы Организатора.
@@ -190,10 +183,8 @@ export class OrganizerService {
    */
   public async put({
     serializedFormData,
-    cloudOptions,
   }: {
     serializedFormData: FormData;
-    cloudOptions: TCloudConnect;
   }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
@@ -201,45 +192,36 @@ export class OrganizerService {
 
       const deserializedFormData = deserializeOrganizer(serializedFormData);
 
-      // Инстанс сервиса работы с Облаком
-      const cloudService = new Cloud(cloudOptions.cloudName);
-      const suffixUrl = `https://${cloudOptions.bucketName}.${cloudOptions.domainCloudName}/`;
+      // Экземпляр сервиса работы с Облаком.
+      const cloudService = new Cloud();
+
       let posterUrl: null | string = null;
       // Если вернулся posterUrl, значит Постер был изменен и необходимо удалить старый из облака.
       if (deserializedFormData.posterUrl) {
-        await cloudService.deleteFile(
-          cloudOptions.bucketName,
-          deserializedFormData.posterUrl.replace(suffixUrl, '')
-        );
+        await cloudService.deleteFile({
+          prefix: deserializedFormData.posterUrl.replace(fileNameFormUrl, '$1'),
+        });
 
         // Сохранение изображения для Постера маршрута.
         posterUrl = await this.saveFile({
           file: deserializedFormData.posterFile as File,
           type: 'image',
           suffix: this.suffixImagePoster,
-          cloudName: cloudOptions.cloudName,
-          domainCloudName: cloudOptions.domainCloudName,
-          bucketName: cloudOptions.bucketName,
         });
       }
 
       let logoUrl: null | string = null;
       // Если вернулся posterUrl, значит Постер был изменен и необходимо удалить старый из облака.
       if (deserializedFormData.logoUrl) {
-        await cloudService.deleteFile(
-          cloudOptions.bucketName,
-          deserializedFormData.logoUrl.replace(suffixUrl, '')
-        );
+        await cloudService.deleteFile({
+          prefix: deserializedFormData.logoUrl.replace(fileNameFormUrl, '$1'),
+        });
 
-        // Сохранение изображения для Постера маршрута.
-        // Сохранение изображения для Постера маршрута.
+        // Сохранение изображения Логотипа Организатора.
         logoUrl = await this.saveFile({
           file: deserializedFormData.logoFile as File,
           type: 'image',
           suffix: this.suffixImageLogo,
-          cloudName: cloudOptions.cloudName,
-          domainCloudName: cloudOptions.domainCloudName,
-          bucketName: cloudOptions.bucketName,
         });
       }
 

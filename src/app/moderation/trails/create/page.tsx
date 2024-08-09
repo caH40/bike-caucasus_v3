@@ -11,8 +11,6 @@ import { Trail } from '@/services/Trail';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconRoute from '@/components/Icons/IconRoute';
 
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
-
 async function fetchTrailCreated(formData: FormData): Promise<ResponseServer<null>> {
   'use server';
   try {
@@ -32,15 +30,7 @@ async function fetchTrailCreated(formData: FormData): Promise<ResponseServer<nul
     }
 
     const trailService = new Trail();
-    const response = await trailService.post(
-      formData,
-      {
-        cloudName: 'vk',
-        domainCloudName: 'hb.vkcs.cloud',
-        bucketName,
-      },
-      author
-    );
+    const response = await trailService.post({ formData, author });
 
     revalidatePath(`/trails`);
 

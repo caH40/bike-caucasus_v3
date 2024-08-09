@@ -16,8 +16,6 @@ type ParamsNews = {
   query?: Partial<{ [K in keyof TNewsGetOneDto]: TNewsGetOneDto[K] }>;
 };
 
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
-
 /**
  * Серверный экшен получения новостей с БД.
  */
@@ -111,14 +109,7 @@ export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>>
 
     const newsService = new News();
 
-    const response = await newsService.delete(
-      { urlSlug, idUserDB },
-      {
-        cloudName: 'vk',
-        domainCloudName: 'hb.vkcs.cloud',
-        bucketName,
-      }
-    );
+    const response = await newsService.delete({ urlSlug, idUserDB });
 
     return response;
   } catch (error) {

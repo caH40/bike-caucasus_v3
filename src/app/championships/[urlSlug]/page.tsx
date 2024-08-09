@@ -13,8 +13,8 @@
  *
  */
 
-type Props = {};
+type Props = { params: { urlSlug: string } };
 
-export default function ChampionshipPage({}: Props) {
-  return <div>page</div>;
+export default function ChampionshipPage({ params: { urlSlug } }: Props) {
+  return <div>{urlSlug}</div>;
 }

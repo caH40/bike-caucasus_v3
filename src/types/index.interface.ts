@@ -1,5 +1,5 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TLogsErrorModel, TNewsBlockInfo, TOrganizer } from './models.interface';
+import { TChampionship, TLogsErrorModel, TNewsBlockInfo, TOrganizer } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
@@ -29,6 +29,26 @@ export type PropsBoxInput = {
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
 };
+
+/**
+ * Пропсы для Select использующего библиотеку react-hook-form.
+ */
+export type PropsBoxSelect = Omit<PropsBoxInput, 'type' | 'autoComplete'> & {
+  options: { id: number; translation: string; name: string }[];
+};
+
+/**
+ * Пропсы для Input загрузки файла трэка GPX.
+ */
+export type PropsBoxInputFile = {
+  title?: string;
+  isLoading?: boolean;
+  setTrack: Dispatch<SetStateAction<File | null>>;
+  resetData: boolean; // Триггер сброса изображения.
+  isEditing: boolean; // Режим редактирования Маршрута?
+  validationText?: string; // Текст если есть ошибка валидации, иначе ''
+};
+
 export type PropsBoxSelectSimple = {
   state: string;
   setState: Dispatch<SetStateAction<string>>;
@@ -115,7 +135,7 @@ export type TFormCalendar = {
   bikeType: string;
 };
 /**
- * Данные профиля для изменения в account/profile
+ * Данные формы создания Организатора.
  */
 export type TFormOrganizerCreate = Omit<
   TOrganizer,
@@ -260,14 +280,14 @@ export type CSSVariables = {
  */
 export type TLogsErrorParsed = Omit<TLogsErrorModel, 'createdAt' | 'updatedAt' | '_id'>;
 
-/**
- * Подключение к облаку.
- */
-export type TCloudConnect = {
-  cloudName: 'vk';
-  bucketName: string;
-  domainCloudName: string;
-};
+// /**
+//  * Подключение к облаку.
+//  */
+// export type TCloudConnect = {
+//   cloudName: 'vk';
+//   bucketName: string;
+//   domainCloudName: string;
+// };
 
 /**
  * Сохранение файла в облаке.
@@ -276,9 +296,6 @@ export type TSaveFile = {
   file: File;
   type: 'image' | 'GPX' | 'pdf';
   suffix: string;
-  cloudName: 'vk';
-  domainCloudName: string;
-  bucketName: string;
 };
 
 /**
@@ -359,7 +376,7 @@ type GpxMetadata = {
   link: GpxLink[];
   time: string[];
 };
-type GpxTrackPoint = {
+export type GpxTrackPoint = {
   $: {
     lat: string;
     lon: string;
@@ -414,4 +431,43 @@ export interface LatLng {
 export type TrackData = {
   positions: LatLng[];
   metadata: MetadataParsed;
+};
+
+// /**
+//  * Данные Чемпионата с БД.
+//  */
+// export type TChampionshipWithUser = Omit<TChampionship, 'organizer'> & {
+//   organizer: TAuthorFromUser;
+// };
+
+/**
+ * Данные Чемпионата с БД.
+ */
+export type TOrganizerPublic = Pick<
+  TOrganizer,
+  '_id' | 'name' | 'urlSlug' | 'logoUrl' | 'contactInfo'
+>;
+export type TOrganizerForClient = Pick<
+  TOrganizer,
+  'name' | 'urlSlug' | 'logoUrl' | 'contactInfo'
+> & {
+  _id: string;
+};
+export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
+  organizer: TOrganizerPublic;
+};
+
+/**
+ * Данные для формы создания Чемпионата.
+ */
+export type TFormChampionshipCreate = Omit<
+  TChampionship,
+  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX'
+> & {
+  posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
+  posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
+  startDate: string;
+  endDate: string;
+  trackGPXFile: File | null;
+  trackGPXUrl: string | null;
 };

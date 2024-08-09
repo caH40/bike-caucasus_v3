@@ -2,16 +2,12 @@ import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-
 import { TTrailDto } from '@/types/dto.types';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getTrail } from '@/actions/trail';
-
 import { Trail } from '@/services/Trail';
 import FormTrail from '@/components/UI/Forms/FromTrail/FormTrail';
 import IconRoute from '@/components/Icons/IconRoute';
-
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
 type Props = {
   params: { urlSlug: string };
@@ -47,11 +43,7 @@ export default async function TrailEditCurrentPage({ params }: Props) {
     'use server';
 
     const trailService = new Trail();
-    const response = await trailService.put(formData, {
-      cloudName: 'vk',
-      domainCloudName: 'hb.vkcs.cloud',
-      bucketName,
-    });
+    const response = await trailService.put({ formData });
 
     revalidatePath(`/`);
 
