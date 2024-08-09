@@ -12,7 +12,6 @@ import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
 import type {
   ResponseServer,
-  TCloudConnect,
   TSaveFile,
   TTrailCreateFromClient,
 } from '@/types/index.interface';
@@ -24,6 +23,7 @@ import { serviceGetInteractiveToDto } from '@/dto/news';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 // import { millisecondsIn3Days } from '@/constants/date';
 import { Cloud } from './cloud';
+import { fileNameFormUrl } from '@/constants/regex';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -150,14 +150,27 @@ export class Trail {
         // Пользователь может удалить только свой маршрут.
         query = { urlSlug, 'author._id': idUserDB };
       }
-      const commentDB = await TrailModel.findOneAndDelete(query);
+      const trailDeletedDB = await TrailModel.findOneAndDelete(query);
 
       // Если Пользователь не является автором маршрута, или модератор-пользователь у которого нет
       // прав на удаление маршрутов, отсутствует permissions - moderation.trail.delete то проброс исключения!
-      if (!commentDB) {
+      if (!trailDeletedDB) {
         throw new Error(
           `У вас нет прав на удаление маршрута с urlSlug:${urlSlug}. Запрос от пользователя bcId:${userDB.id}`
         );
+      }
+
+      // Экземпляр сервиса работы с Облаком
+      const cloud = new Cloud();
+      // Удаление всех файлов новости с Облака.
+      await cloud.deleteFile({ prefix: trailDeletedDB.poster.replace(fileNameFormUrl, '$1') });
+      await cloud.deleteFile({
+        prefix: trailDeletedDB.trackGPX.replace(fileNameFormUrl, '$1'),
+      });
+      for (const block of trailDeletedDB.blocks) {
+        if (block.image) {
+          await cloud.deleteFile({ prefix: block.image.replace(fileNameFormUrl, '$1') });
+        }
       }
 
       return {
@@ -287,11 +300,13 @@ export class Trail {
   /**
    * Создание нового маршрута (trail).
    */
-  public async post(
-    formData: FormData,
-    { cloudName, bucketName, domainCloudName }: TCloudConnect,
-    author: string
-  ): Promise<ResponseServer<null>> {
+  public async post({
+    formData,
+    author,
+  }: {
+    formData: FormData;
+    author: string;
+  }): Promise<ResponseServer<null>> {
     // Подключение к БД.
     await this.dbConnection();
 
@@ -304,9 +319,6 @@ export class Trail {
       file: trail.track as File,
       type: 'GPX',
       suffix: suffixTrack,
-      cloudName,
-      domainCloudName,
-      bucketName,
     });
 
     const suffixImage = 'trail_image_poster-';
@@ -315,9 +327,6 @@ export class Trail {
       file: trail.poster as File,
       type: 'image',
       suffix: suffixImage,
-      cloudName,
-      domainCloudName,
-      bucketName,
     });
 
     // Сохранение изображений из текстовых блоков.
@@ -335,9 +344,6 @@ export class Trail {
         file: block.imageFile,
         type: 'image',
         suffix: suffixImage,
-        cloudName,
-        domainCloudName,
-        bucketName,
       });
 
       trail.blocks[index].image = urlSaved;
@@ -477,10 +483,7 @@ export class Trail {
   /**
    * Сервис получения данных для интерактивного блока маршрута idTrail.
    */
-  public async put(
-    formData: FormData,
-    { cloudName, bucketName, domainCloudName }: TCloudConnect
-  ): Promise<ResponseServer<null>> {
+  public async put({ formData }: { formData: FormData }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       this.dbConnection();
@@ -488,9 +491,9 @@ export class Trail {
       // Десериализация данных, полученных с клиента.
       const trail = deserializeTrailCreate(formData);
 
-      const trailDB: { createdAt: Date } | null = await TrailModel.findOne(
+      const trailDB: { createdAt: Date; trackGPX: string } | null = await TrailModel.findOne(
         { urlSlug: trail.urlSlug },
-        { createdAt: true, _id: false }
+        { createdAt: true, trackGPX: true, _id: false }
       ).lean();
 
       if (!trailDB) {
@@ -504,6 +507,9 @@ export class Trail {
       //   );
       // }
 
+      // Экземпляр сервиса работы с Облаком
+      const cloud = new Cloud();
+
       const suffixTrack = 'trail_track_gpx-';
       // Сохранение файла трэка.
       let trackGPX = '';
@@ -513,9 +519,11 @@ export class Trail {
           file: trail.track as File,
           type: 'GPX',
           suffix: suffixTrack,
-          cloudName,
-          domainCloudName,
-          bucketName,
+        });
+
+        // Удаление старого трека из облака.
+        await cloud.deleteFile({
+          prefix: trailDB.trackGPX.replace(fileNameFormUrl, '$1'),
         });
       }
 
@@ -527,19 +535,14 @@ export class Trail {
           file: trail.poster as File,
           type: 'image',
           suffix: suffixForSave,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
       }
 
-      // Инстанс сервиса работы с Облаком
-      const cloudService = new Cloud(cloudName);
-
       // Удаление старого файла постера, если он был обновлён.
-      const suffix = `https://${bucketName}.${domainCloudName}/`;
       if (trail.poster && trail.posterOldUrl) {
-        await cloudService.deleteFile(bucketName, trail.posterOldUrl.replace(suffix, ''));
+        await cloud.deleteFile({
+          prefix: trail.posterOldUrl.replace(fileNameFormUrl, '$1'),
+        });
       }
 
       // Сохранение изображений из текстовых блоков.
@@ -554,7 +557,9 @@ export class Trail {
 
         // Если нет файла image и imageDeleted:true, то удаляем старое изображение из Облака.
         if (!block.image && block.imageDeleted && block.imageOldUrl) {
-          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+          await cloud.deleteFile({
+            prefix: block.imageOldUrl.replace(fileNameFormUrl, '$1'),
+          });
           continue;
         }
 
@@ -562,14 +567,13 @@ export class Trail {
           file: block.imageFile!, // !!!! попробовать разобраться!
           type: 'image',
           suffix: suffixForSave,
-          cloudName,
-          domainCloudName,
-          bucketName,
         });
 
         // Удаление старого файла изображения блока, если оно было обновлён.
         if (block.imageOldUrl) {
-          await cloudService.deleteFile(bucketName, block.imageOldUrl.replace(suffix, ''));
+          await cloud.deleteFile({
+            prefix: block.imageOldUrl.replace(fileNameFormUrl, '$1'),
+          });
         }
 
         trail.blocks[index].image = urlSaved;
