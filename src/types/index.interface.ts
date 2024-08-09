@@ -280,14 +280,14 @@ export type CSSVariables = {
  */
 export type TLogsErrorParsed = Omit<TLogsErrorModel, 'createdAt' | 'updatedAt' | '_id'>;
 
-/**
- * Подключение к облаку.
- */
-export type TCloudConnect = {
-  cloudName: 'vk';
-  bucketName: string;
-  domainCloudName: string;
-};
+// /**
+//  * Подключение к облаку.
+//  */
+// export type TCloudConnect = {
+//   cloudName: 'vk';
+//   bucketName: string;
+//   domainCloudName: string;
+// };
 
 /**
  * Сохранение файла в облаке.

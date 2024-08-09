@@ -4,10 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import FormProfile from '@/components/UI/Forms/FormProfile/FormProfile';
 import { UserService } from '@/services/user';
 import type { ResponseServer } from '@/types/index.interface';
+import type { TUserDto } from '@/types/dto.types';
 import styles from './AccountProfilePage.module.css';
-import { TUserDto } from '@/types/dto.types';
-
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
 
 /**
  * Страница изменения данных профиля
@@ -32,11 +30,7 @@ export default async function AccountProfilePage() {
   const putProfile = async (dataFromClient: FormData): Promise<ResponseServer<any>> => {
     'use server';
     const userService = new UserService();
-    const response = await userService.putProfile(dataFromClient, {
-      cloudName: 'vk',
-      domainCloudName: 'hb.vkcs.cloud',
-      bucketName,
-    });
+    const response = await userService.putProfile(dataFromClient);
 
     return response;
   };

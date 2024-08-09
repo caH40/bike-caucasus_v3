@@ -10,9 +10,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import type { TDtoOrganizer } from '@/types/dto.types';
-import type { ResponseServer, TCloudConnect } from '@/types/index.interface';
-
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
+import type { ResponseServer } from '@/types/index.interface';
 
 /**
  * Получение данных организатора или по _id Организатора или по _id(creatorId) создателя Организатора.
@@ -102,16 +100,9 @@ export async function fetchOrganizerEdited({
       throw new Error('У вас нет прав для редактирования Организатора!');
     }
 
-    const cloudOptions: TCloudConnect = {
-      cloudName: 'vk',
-      domainCloudName: 'hb.vkcs.cloud',
-      bucketName,
-    };
-
     const organizerService = new OrganizerService();
     const res = await organizerService.put({
       serializedFormData: dataSerialized,
-      cloudOptions,
     });
 
     revalidatePath('/moderation/organizer/edit');
@@ -146,16 +137,9 @@ export async function fetchOrganizerCreated(formData: FormData): Promise<Respons
       throw new Error('У вас нет прав для создания Организатора!');
     }
 
-    const cloudOptions: TCloudConnect = {
-      cloudName: 'vk',
-      domainCloudName: 'hb.vkcs.cloud',
-      bucketName,
-    };
-
     const organizerService = new OrganizerService();
     const res = await organizerService.post({
       serializedFormData: formData,
-      cloudOptions,
       creator,
     });
 

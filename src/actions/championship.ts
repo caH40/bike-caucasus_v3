@@ -1,18 +1,15 @@
 'use server';
 
 import { getServerSession } from 'next-auth';
+import { revalidatePath } from 'next/cache';
 
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-
-import type { ResponseServer, TCloudConnect } from '@/types/index.interface';
 import { ChampionshipService } from '@/services/Championship';
 import { TDtoChampionship } from '@/types/dto.types';
-import { revalidatePath } from 'next/cache';
-
-const bucketName = process.env.VK_AWS_BUCKET_NAME || 'bike-caucasus';
+import type { ResponseServer } from '@/types/index.interface';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -115,19 +112,9 @@ export async function fetchChampionshipCreated(
       throw new Error('У вас нет прав для создания Чемпионата!');
     }
 
-    const cloudOptions: TCloudConnect = {
-      cloudName: 'vk',
-      domainCloudName: 'hb.vkcs.cloud',
-      bucketName,
-    };
-
     const championshipService = new ChampionshipService();
 
-    const res = await championshipService.post({
-      serializedFormData: formData,
-      cloudOptions,
-      creator,
-    });
+    const res = await championshipService.post({ serializedFormData: formData, creator });
 
     return res;
   } catch (error) {
@@ -151,14 +138,7 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
     }
 
     const championshipService = new ChampionshipService();
-    const response = await championshipService.delete({
-      urlSlug,
-      cloudOptions: {
-        cloudName: 'vk',
-        domainCloudName: 'hb.vkcs.cloud',
-        bucketName,
-      },
-    });
+    const response = await championshipService.delete({ urlSlug });
 
     revalidatePath('/championship');
     revalidatePath('/moderation/championship');

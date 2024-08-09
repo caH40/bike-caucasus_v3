@@ -36,8 +36,8 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
       </h1>
     );
   }
-  console.log(organizer);
-  console.log(championship.data);
+  // console.log(organizer);
+  // console.log(championship.data);
 
   return (
     <>

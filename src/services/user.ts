@@ -150,14 +150,7 @@ export class UserService {
    * @param options.domainCloudName - Доменное имя облачного сервиса для формирования URL изображения.
    * @returns Объект с результатом операции или ошибкой.
    */
-  async putProfile(
-    profileEdited: FormData,
-    {
-      cloudName,
-      bucketName,
-      domainCloudName,
-    }: { cloudName: 'vk'; bucketName: string; domainCloudName: string }
-  ): Promise<ResponseServer<null>> {
+  async putProfile(profileEdited: FormData): Promise<ResponseServer<null>> {
     try {
       const profile = {} as TFormProfile;
 
@@ -173,7 +166,7 @@ export class UserService {
       await this.dbConnection();
 
       // Сохранение изображения для профиля, если оно загружено.
-      let fileNameFull = ''; // Название файла с расширением
+      let imageUrlForSave = ''; // URL до изображении, сохраненного в облаке.
       if (!!profile.image) {
         const file = profile.image;
         if (!file.type.startsWith('image/')) {
@@ -184,7 +177,7 @@ export class UserService {
         const fileNamePrefix = `user_${profile.id}_logo`;
 
         // создание объекта для управления файлами в облаке
-        const cloud = new Cloud(cloudName);
+        const cloud = new Cloud();
 
         const extension = file.name.split('.').pop();
         if (!extension) {
@@ -193,11 +186,17 @@ export class UserService {
 
         // Удаление предыдущих файлов лого пользователя.
         // !!! Если будет ошибка при сохранении файла, то предыдущий удалится, а новый не сохраниться.
-        await cloud.deleteFiles(bucketName, fileNamePrefix);
+        await cloud.deleteFiles({ prefix: fileNamePrefix });
 
         const suffix = Date.now();
-        fileNameFull = `${fileNamePrefix}-${suffix}.${extension}`;
-        await cloud.postFile(file, bucketName, fileNameFull);
+        // Название файла.
+        const fileNameFull = `${fileNamePrefix}-${suffix}.${extension}`;
+
+        const { data } = await cloud.postFile({ file, fileName: fileNameFull });
+        if (!data) {
+          throw new Error('Нет данных сохраненного изображения в Облаке');
+        }
+        imageUrlForSave = `https://${data.file.bucketName}.${data.file.endpointDomain}/${fileNameFull}`;
       }
 
       // Получение значения пола в нужной форме.
@@ -220,7 +219,7 @@ export class UserService {
 
       //если загружалась новая фотография
       if (profile.image) {
-        query.image = `https://${bucketName}.${domainCloudName}/${fileNameFull}`;
+        query.image = imageUrlForSave;
       }
 
       await User.findOneAndUpdate(

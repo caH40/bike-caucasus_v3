@@ -99,7 +99,7 @@ export class Cloud {
 
   /**
    * Удаляет указанный файл из заданного ведра (bucket) в облаке.
-   * @param fileNamePrefix - Имя файла, который нужно удалить.
+   * @param prefix - Имя файла, который нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файла.
    */
   public async deleteFile({ prefix }: { prefix: string }): Promise<ResponseServer<null>> {
