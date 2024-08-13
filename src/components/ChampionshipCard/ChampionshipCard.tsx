@@ -1,12 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import Button from '../UI/Button/Button';
+import StagesBox from '../StagesBox/StagesBox';
 import { blurBase64 } from '@/libs/image';
+import { bikeTypesMap } from '@/constants/trail';
+import { championshipTypesMap } from '@/constants/championship';
+import { getStagesCompleted, getStagesCurrent } from '@/libs/utils/championship';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './ChampionshipCard.module.css';
-import { bikeTypesMap } from '@/constants/trail';
-import { championshipStatusMap, championshipTypesMap } from '@/constants/championship';
-import Button from '../UI/Button/Button';
+import { initStages } from '@/mock/stages';
 
 type Props = {
   championship: TDtoChampionship;
@@ -78,11 +81,16 @@ export default function ChampionshipCard({ championship }: Props) {
       </div>
 
       <div className={styles.wrapper__stages}>
-        <div className={styles.block__stages}>Этапы</div>
-
-        <div className={styles.status}>
-          {championshipStatusMap.get(championship.status)?.translation}
+        <div className={styles.block__stages}>
+          <h3 className={styles.title__stages}>Этапы:</h3>
+          <StagesBox stages={initStages} />
+          <div className={styles.stages__completed}>
+            <span>завершено этапов: </span>
+            <span>{getStagesCompleted({ stages: initStages })}</span>
+          </div>
         </div>
+
+        <div className={styles.status}>{getStagesCurrent({ stages: initStages })}</div>
 
         <Button theme="green" name="Регистрация" />
       </div>

@@ -123,3 +123,22 @@ export function getDateTime(date?: Date): CurrentDateTime {
       dateCurrent.toISODate() || `${dateCurrent.year}-${dateCurrent.month}-${dateCurrent.day}`,
   };
 }
+
+/**
+ * Вычисляет количество полных дней между сегодняшним днем и заданной датой.
+ * @param date - Дата в формате JavaScript Date (например, new Date('2024-08-15')).
+ * @returns Количество полных дней между сегодняшним днем и заданной датой.
+ */
+export function getFullDaysFromToday(date: Date): number {
+  // Получение текущей даты
+  const today = DateTime.now().startOf('day');
+
+  // Создание объекта DateTime из объекта Date
+  const targetDate = DateTime.fromJSDate(date).startOf('day');
+
+  // Вычисление разницы в днях
+  const diffInDays = targetDate.diff(today, 'days').days;
+
+  // Возвращение количества полных дней
+  return Math.floor(diffInDays);
+}
