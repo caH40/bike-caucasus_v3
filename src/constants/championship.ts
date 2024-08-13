@@ -1,4 +1,4 @@
-import { TOptions } from '@/types/index.interface';
+import { TOptions, TOptionsMap } from '@/types/index.interface';
 
 /**
  * Тип Чемпионата.
@@ -10,6 +10,15 @@ export const championshipTypes: TOptions[] = [
 ];
 
 /**
+ * Тип Чемпионата.
+ */
+export const championshipTypesMap: TOptionsMap = new Map([
+  ['single', { translation: 'Одиночный' }],
+  ['series', { translation: 'Серия' }],
+  ['tour', { translation: 'Тур' }],
+]);
+
+/**
  * Статус Чемпионата.
  */
 export const championshipStatus: TOptions[] = [
@@ -18,3 +27,13 @@ export const championshipStatus: TOptions[] = [
   { id: 2, translation: 'Завершенный', name: 'completed' },
   { id: 3, translation: 'Отмененный', name: 'cancelled' },
 ];
+
+/**
+ * Статус Чемпионата.
+ */
+export const championshipStatusMap: TOptionsMap = new Map([
+  ['upcoming', { translation: 'Не начался' }],
+  ['ongoing', { translation: 'Происходящий' }],
+  ['completed', { translation: 'Завершенный' }],
+  ['cancelled', { translation: 'Отмененный' }],
+]);

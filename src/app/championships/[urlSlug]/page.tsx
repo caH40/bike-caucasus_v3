@@ -13,8 +13,18 @@
  *
  */
 
+import { getChampionship } from '@/actions/championship';
+
 type Props = { params: { urlSlug: string } };
 
-export default function ChampionshipPage({ params: { urlSlug } }: Props) {
-  return <div>{urlSlug}</div>;
+export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
+  const championship = await getChampionship({ urlSlug });
+
+  console.log(championship);
+
+  return (
+    <div>
+      <pre>{JSON.stringify(championship.data, null, 2)}</pre>
+    </div>
+  );
 }

@@ -72,7 +72,7 @@ export class ChampionshipService {
       }
 
       const championship = dtoChampionship(championshipDB);
-      return { data: championship, ok: true, message: 'Все Чемпионаты' };
+      return { data: championship, ok: true, message: 'Данные запрашиваемого Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

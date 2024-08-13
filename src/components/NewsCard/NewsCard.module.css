@@ -1,12 +1,17 @@
 .wrapper {
   display: grid;
-  grid-template-columns: 235px 1fr;
+  grid-template-columns: 245px 1fr;
   grid-gap: 1rem;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+}
+.wrapper__info {
+  padding: 1rem 1rem 1rem 0;
 }
 .box__img {
   position: relative;
-  width: 235px;
-  height: 156px;
+  width: 245px;
+  height: 166px;
 }
 .title {
   overflow-wrap: break-word;
@@ -39,6 +44,9 @@
   .wrapper {
     grid-template-columns: 1fr;
     grid-gap: 0.5rem;
+  }
+  .wrapper__info {
+    padding: 1rem;
   }
   .box__img {
     width: 100%;

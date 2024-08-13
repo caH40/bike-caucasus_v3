@@ -2,7 +2,7 @@ import IconBikeDH from '@/components/Icons/IconBikeDH';
 import IconBikeGravel from '@/components/Icons/IconBikeGravel';
 import IconBikeMTB from '@/components/Icons/IconBikeMTB';
 import IconBikeRoad from '@/components/Icons/IconBikeRoad';
-import { TOptions } from '@/types/index.interface';
+import { TOptions, TOptionsMap } from '@/types/index.interface';
 
 // Регион по которому проходит маршрут.
 export const regions: TOptions[] = [
@@ -32,8 +32,19 @@ export const bikeTypes: TOptions[] = [
   { id: 1, translation: 'Горный', name: 'mtb', icon: IconBikeMTB },
   { id: 3, translation: 'Грэвел', name: 'gravel', icon: IconBikeGravel },
   { id: 4, translation: 'Скоростной спуск', name: 'dh', icon: IconBikeDH },
-  { id: 5, translation: 'Тайм триал', name: 'tt', icon: IconBikeRoad },
+  { id: 5, translation: 'TimeTrial', name: 'tt', icon: IconBikeRoad },
 ];
+
+/**
+ * Типы велосипедов.
+ */
+export const bikeTypesMap: TOptionsMap = new Map([
+  ['road', { translation: 'Шоссейный', icon: IconBikeRoad }],
+  ['mtb', { translation: 'Горный', icon: IconBikeMTB }],
+  ['gravel', { translation: 'Грэвел', icon: IconBikeGravel }],
+  ['dh', { translation: 'Скоростной спуск', icon: IconBikeDH }],
+  ['tt', { translation: 'TimeTrial', icon: IconBikeRoad }],
+]);
 
 // Уровни сложности маршрута.
 export const sortCategories: TOptions[] = [

@@ -84,6 +84,18 @@ export type TOptions = {
   name: string;
   icon?: React.ComponentType<TIconProps>;
 };
+
+/**
+ * Типизация options когда структура данных Map.
+ */
+export type TOptionsMap = Map<
+  string,
+  {
+    translation: string;
+    icon?: React.ComponentType<TIconProps>;
+  }
+>;
+
 /**
  * Пропсы для BoxInputSimple
  */

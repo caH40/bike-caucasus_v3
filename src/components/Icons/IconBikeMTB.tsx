@@ -1,13 +1,30 @@
 'use client';
 
 import cn from 'classnames/bind';
+import { Tooltip } from 'react-tooltip';
 
-import type { TIconProps } from '@/types/index.interface';
+import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
 
-const cx = cn.bind(styles);
+import { generateIdFromFilename } from '@/libs/utils/ids';
 
-export default function IconBikeMTB({ isActive, squareSize = 24, getClick }: TIconProps) {
+const cx = cn.bind(styles);
+const id = generateIdFromFilename(new URL(import.meta.url).pathname);
+
+export default function IconBikeMTB({
+  isActive,
+  squareSize = 24,
+  getClick,
+  colors = { default: 'currentColor', active: 'currentColor', hover: 'currentColor' },
+  tooltip,
+}: TIconProps) {
+  const style: React.CSSProperties & CSSVariables = {
+    width: squareSize,
+    height: squareSize,
+    '--color-icon-default': colors.default,
+    '--color-icon-active': colors.active,
+    '--color-icon-hover': colors.hover,
+  };
   return (
     <div
       onClick={getClick}
@@ -15,7 +32,8 @@ export default function IconBikeMTB({ isActive, squareSize = 24, getClick }: TIc
         interactive: getClick,
         active: isActive,
       })}
-      style={{ width: squareSize, height: squareSize }}
+      style={{ ...style, width: squareSize, height: squareSize }}
+      id={id}
     >
       <svg
         aria-hidden="true"
@@ -31,6 +49,9 @@ export default function IconBikeMTB({ isActive, squareSize = 24, getClick }: TIc
           fill="currentColor"
         ></path>
       </svg>
+      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
+        {tooltip}
+      </Tooltip>
     </div>
   );
 }

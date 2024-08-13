@@ -23,16 +23,16 @@
   letter-spacing: 0;
 }
 .mtb {
-  background-color: var(--mtb);
+  background-color: var(--bg-mtb);
 }
 .road {
-  background-color: var(--road);
+  background-color: var(--bg-road);
 }
 .gravel {
-  background-color: var(--gravel);
+  background-color: var(--bg-gravel);
 }
 .dh {
-  background-color: var(--dh);
+  background-color: var(--bg-dh);
 }
 /* ====================================================================== */
 @media (max-width: 768px) {
