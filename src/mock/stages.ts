@@ -29,7 +29,7 @@ export const initStages: {
   },
   {
     number: 4,
-    status: 'completed',
+    status: 'upcoming',
     startDate: new Date('2024-09-23'),
     startEnd: new Date('2024-09-23'),
   },

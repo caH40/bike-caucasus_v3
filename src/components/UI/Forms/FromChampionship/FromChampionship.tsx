@@ -8,7 +8,7 @@ import cn from 'classnames';
 import { useLoadingStore } from '@/store/loading';
 import type { ResponseServer, TFormChampionshipCreate } from '@/types/index.interface';
 import { TDtoChampionship, TDtoOrganizer } from '@/types/dto.types';
-import { TextValidationService } from '@/libs/utils/text';
+import { content, TextValidationService } from '@/libs/utils/text';
 import styles from '../Form.module.css';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import BoxInput from '../../BoxInput/BoxInput';
@@ -21,6 +21,7 @@ import { bikeTypes } from '@/constants/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
 import { serializationChampionship } from '@/libs/utils/serialization/championship';
 import { useRouter } from 'next/navigation';
+import { formateAndStripContent } from './utils';
 
 type Props = {
   organizer: TDtoOrganizer;
@@ -73,8 +74,18 @@ export default function FromChampionship({
     // Сериализация данных перед отправкой на сервер.
     const isEditing = championshipForEdit ? true : false;
     const championshipId = championshipForEdit?._id;
+
+    const { nameStripedHtmlTags, descriptionStripedHtmlTags } = formateAndStripContent({
+      name: dataForm.name,
+      description: dataForm.description,
+    });
+
     const dataSerialized = serializationChampionship({
-      dataForm,
+      dataForm: {
+        ...dataForm,
+        name: nameStripedHtmlTags,
+        description: descriptionStripedHtmlTags,
+      },
       isEditing,
       championshipId,
       organizerId: organizer._id,
@@ -161,16 +172,18 @@ export default function FromChampionship({
         id="description"
         autoComplete="off"
         type="text"
-        defaultValue={championshipForEdit ? championshipForEdit.description : ''}
+        defaultValue={
+          championshipForEdit ? content.replaceBRtoCRLF(championshipForEdit.description) : ''
+        }
         loading={isLoading}
         register={register('description', {
           required: 'Это обязательное поле для заполнения',
           minLength: { value: 25, message: 'В описании должно быть больше 25х символов' },
           maxLength: {
-            value: 500,
-            message: 'В описании не может быть больше 500 символов',
+            value: 4000,
+            message: 'В описании не может быть больше 4000 символов',
           },
-          validate: textValidation.spaces,
+          // validate: textValidation.spaces,
         })}
         validationText={errors.description ? errors.description.message : ''}
       />
