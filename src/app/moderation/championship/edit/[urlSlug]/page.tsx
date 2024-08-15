@@ -1,10 +1,10 @@
 import { getServerSession } from 'next-auth';
 
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FromChampionship from '@/components/UI/Forms/FromChampionship/FromChampionship';
 import IconChampionship from '@/components/Icons/IconChampionship';
-import { getChampionship, putChampionship } from '@/actions/championship';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
 import { getOrganizer } from '@/actions/organizer';
 
 type Props = {
@@ -36,6 +36,7 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
       </h1>
     );
   }
+  const parentChampionships = await getToursAndSeries({ organizerId: organizer._id });
 
   return (
     <>
@@ -43,6 +44,7 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
       <FromChampionship
         putChampionship={putChampionship}
         championshipForEdit={championship.data}
+        parentChampionships={parentChampionships.data || []}
         organizer={organizer}
       />
     </>

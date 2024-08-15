@@ -9,16 +9,13 @@ export function deserializeChampionship(serializedFormData: FormData) {
   const championship = {} as TFormChampionshipCreate & {
     needDelTrack: boolean;
     organizerId?: string;
+    parentChampionshipId?: string;
   } & {
     [key: string]: any;
   };
 
   for (const [name, value] of serializedFormData.entries()) {
     switch (name) {
-      case 'isEditing':
-        championship[name] = value === 'true' ? true : false;
-        break;
-
       case 'needDelTrack':
         championship[name] = value === 'true' ? true : false;
         break;

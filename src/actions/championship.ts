@@ -188,3 +188,40 @@ export async function putChampionship(
     return handlerErrorDB(error);
   }
 }
+
+/**
+ * Экшен получения всех чемпионатов Туров и Серий для запрашиваемого организатора.
+ */
+export async function getToursAndSeries({
+  organizerId,
+}: {
+  organizerId: string;
+}): Promise<ResponseServer<{ _id: string; name: string }[] | null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const creator = session?.user.idDB;
+    if (!creator) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Проверка наличия прав на создание Чемпионата.
+    if (
+      !session.user.role.permissions.some(
+        (elm) => elm === 'moderation.championship.create' || elm === 'all'
+      )
+    ) {
+      throw new Error('У вас нет прав для создания Чемпионата!');
+    }
+
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.getTourAndSeries({ organizerId });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}

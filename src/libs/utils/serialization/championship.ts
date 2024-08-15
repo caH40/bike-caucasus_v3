@@ -2,8 +2,8 @@ import type { TFormChampionshipCreate } from '@/types/index.interface';
 
 type Params = {
   dataForm: TFormChampionshipCreate;
-  isEditing: boolean;
   championshipId: string | undefined;
+  parentChampionshipId: string | undefined;
   organizerId: string; // _id Организатора.
   needDelTrack?: boolean; // Удаление трека
 };
@@ -18,10 +18,10 @@ export function serializationChampionship({
   championshipId,
   organizerId,
   needDelTrack,
+  parentChampionshipId,
 }: Params): FormData {
   const formData = new FormData();
 
-  // formData.set('isEditing', String(isEditing));
   formData.set('name', dataForm.name);
   formData.set('description', dataForm.description);
   formData.set('startDate', dataForm.startDate);
@@ -34,6 +34,10 @@ export function serializationChampionship({
   // _id Чемпионата в БД, необходим для редактирования.
   if (championshipId) {
     formData.set('championshipId', championshipId);
+  }
+  // _id Чемпионата в БД, необходим для редактирования.
+  if (parentChampionshipId) {
+    formData.set('parentChampionshipId', parentChampionshipId);
   }
   // dataForm.posterFile может быть null при редактировании Чемпионата.
   if (dataForm.posterFile) {

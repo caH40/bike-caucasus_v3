@@ -477,7 +477,7 @@ export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
  */
 export type TFormChampionshipCreate = Omit<
   TChampionship,
-  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX'
+  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX' | 'parentChampionship'
 > & {
   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
@@ -485,4 +485,5 @@ export type TFormChampionshipCreate = Omit<
   endDate: string;
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
+  parentChampionship: { _id: string; name: string };
 };

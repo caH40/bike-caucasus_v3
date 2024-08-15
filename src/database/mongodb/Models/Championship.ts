@@ -42,12 +42,12 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       ref: 'Organizer',
       required: true,
     },
-    parentChampionshipUrl: {
+    parentChampionship: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Championship',
       default: null,
     },
-    childChampionshipUrls: [
+    stages: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Championship',

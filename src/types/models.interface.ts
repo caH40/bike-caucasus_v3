@@ -296,14 +296,22 @@ export type TChampionship = {
   urlSlug: string; // Уникальный url страницы чемпионата.
   description: string; // Описание, включая карту с местом старта.
   organizer: mongoose.Types.ObjectId; // Ссылка на объект Организатора.
-  parentChampionshipUrl: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
-  childChampionshipUrls: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
+  parentChampionship: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
+  stages: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
+  stage?: number; // Номер этапа, если это этап.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   trackGPX?: TTrackGPXObj;
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
-  type: 'tour' | 'series' | 'single'; // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
+  type: 'tour' | 'series' | 'single' | 'stage';
+  // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
+  // single Соревнование с одним этапом.
+  // series Соревнование несколькими этапами, за которые начисляются очки, в конце серии подводятся
+  // результаты, суммируя очки за все или определенные этапы.
+  // tour Соревнование в котором несколько этапов и суммируется время каждого этапа, выигрывает Тур .
+  // тот у кого общее время за все этапы будет минимальным.
+  // stage - этап в Туре или Серии, имеет свойство stage и ссылку на родительский чемпионат.
   bikeType: 'tt' | 'road' | 'mtb' | 'gravel' | 'downhill' | 'timeTrial'; // Тип используемого велосипеда (например, ТТ, горный, шоссейный, даунхильный).
   createdAt: Date;
   updatedAt: Date;

@@ -3,6 +3,7 @@
 import { getDateTime } from '@/libs/utils/calendar';
 import type { TDtoChampionship } from '@/types/dto.types';
 import type { TChampionshipWithOrganizer, TOrganizerForClient } from '@/types/index.interface';
+import { ObjectId } from 'mongoose';
 
 /**
  * ДТО массива Чемпионатов.
@@ -35,8 +36,8 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     urlSlug: championship.urlSlug,
     description: championship.description,
     trackGPX: championship.trackGPX,
-    parentChampionshipUrl: championship.parentChampionshipUrl,
-    childChampionshipUrls: championship.childChampionshipUrls,
+    parentChampionship: String(championship.parentChampionship),
+    stages: championship.stages,
     posterUrl: championship.posterUrl,
     status: championship.status,
     type: championship.type,
@@ -46,4 +47,16 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     createdAt,
     updatedAt,
   };
+}
+
+/**
+ * ДТО массива Туров и Серий.
+ */
+export function dtoToursAndSeries(
+  championships: { _id: ObjectId; name: string }[]
+): { _id: string; name: string }[] {
+  return championships.map((championship) => ({
+    _id: String(championship._id),
+    name: championship.name,
+  }));
 }

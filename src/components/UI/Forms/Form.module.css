@@ -51,7 +51,9 @@
   margin-bottom: 5px;
   display: block;
 }
-
+.error {
+  color: var(--error);
+}
 /* ====================================================================== */
 @media (max-width: 576px) {
   .wrapper__block {
