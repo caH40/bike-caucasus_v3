@@ -6,6 +6,7 @@ type Params = {
   parentChampionshipId: string | undefined;
   organizerId: string; // _id Организатора.
   needDelTrack?: boolean; // Удаление трека
+  isEditing: boolean; //
 };
 
 /**
@@ -19,6 +20,7 @@ export function serializationChampionship({
   organizerId,
   needDelTrack,
   parentChampionshipId,
+  isEditing,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -26,7 +28,12 @@ export function serializationChampionship({
   formData.set('description', dataForm.description);
   formData.set('startDate', dataForm.startDate);
   formData.set('endDate', dataForm.endDate);
-  formData.set('type', dataForm.type);
+
+  // Тип устанавливается только при создании Чемпионата.
+  if (!isEditing) {
+    formData.set('type', dataForm.type);
+  }
+
   formData.set('bikeType', dataForm.bikeType);
   formData.set('organizerId', organizerId);
   formData.set('needDelTrack', String(needDelTrack));

@@ -26,6 +26,11 @@ export default function SelectCustom({
 }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const handlerClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsOpen(true);
+  };
+
   const Icon = options.find((elm) => elm.name === state)?.icon || null;
   return (
     <div className={styles.wrapper} role="select">
@@ -34,7 +39,7 @@ export default function SelectCustom({
         {validationText && <span className={styles.validate}>{validationText}</span>}
       </div>
       <div className={styles.wrapper__select}>
-        <button className={styles.select} onClick={() => setIsOpen(true)}>
+        <button className={styles.select} onClick={handlerClick}>
           <div className={styles.select__name}>
             {Icon && <Icon squareSize={20} />}
             {options.find((elm) => elm.name === state)?.translation ||

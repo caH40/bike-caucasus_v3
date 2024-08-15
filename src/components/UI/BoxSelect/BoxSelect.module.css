@@ -44,6 +44,7 @@
 .select:disabled {
   background-color: var(--loading);
   color: var(--line);
+  cursor: default;
 }
 .checkmark {
   overflow: hidden;

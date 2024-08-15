@@ -236,7 +236,6 @@ export class ChampionshipService {
         description,
         startDate,
         endDate,
-        type,
         bikeType,
         needDelTrack,
         parentChampionshipId,
@@ -301,7 +300,6 @@ export class ChampionshipService {
         description,
         startDate,
         endDate,
-        type,
         bikeType,
         ...(trackGPX && { trackGPX }), // Обновление только если trackGPX не null
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
