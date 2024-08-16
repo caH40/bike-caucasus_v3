@@ -13,21 +13,44 @@
  *
  */
 
-import { getChampionship } from '@/actions/championship';
+import { getChampionship, getChampionships } from '@/actions/championship';
 import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockChampionshipHeader';
+import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
+import styles from './Championship.module.css';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = { params: { urlSlug: string } };
 
 export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
-  const championship = await getChampionship({ urlSlug });
+  // const championship = await getChampionship({ urlSlug });
+  // const championships = await getChampionships({ needTypes: ['stage'] });
 
-  // console.log(championship);
+  const [championship, championships] = await Promise.all([
+    getChampionship({ urlSlug }),
+    getChampionships({ needTypes: ['stage'] }),
+  ]);
+
+  // console.log(championships);
 
   return (
     <div>
       {championship.data && (
         <>
-          <BlockChampionshipHeader championship={championship.data} />
+          <div className={styles.block__header}>
+            <BlockChampionshipHeader championship={championship.data} />
+          </div>
+
+          {['series', 'tour'].includes(championship.data.type) && (
+            <>
+              <TitleAndLine hSize={2} title="Этапы" />
+              <div className={styles.wrapper__cards}>
+                {championships.data &&
+                  championships.data.map((champ) => (
+                    <ChampionshipCard championship={champ} key={champ._id} simple={true} />
+                  ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

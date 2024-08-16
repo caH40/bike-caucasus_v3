@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import cn from 'classnames/bind';
 
 import Button from '../UI/Button/Button';
 import StagesBox from '../StagesBox/StagesBox';
@@ -8,21 +9,24 @@ import { bikeTypesMap } from '@/constants/trail';
 import { championshipTypesMap } from '@/constants/championship';
 import { getStagesCompleted, getStagesCurrent } from '@/libs/utils/championship';
 import type { TDtoChampionship } from '@/types/dto.types';
-import styles from './ChampionshipCard.module.css';
 import { initStages } from '@/mock/stages';
+import styles from './ChampionshipCard.module.css';
+
+const cx = cn.bind(styles);
 
 type Props = {
   championship: TDtoChampionship;
+  simple?: boolean;
 };
 
-export default function ChampionshipCard({ championship }: Props) {
+export default function ChampionshipCard({ championship, simple }: Props) {
   const bike = bikeTypesMap.get(championship.bikeType);
   const IconBike = bike?.icon || null;
 
   return (
-    <div className={styles.wrapper}>
+    <div className={cx('wrapper', { 'wrapper-simple': simple })}>
       <Link href={`/championships/${championship.urlSlug}`} className={styles.link}>
-        <div className={styles.box__img}>
+        <div className={cx('box__img', { 'box__img-simple': simple })}>
           <Image
             src={championship.posterUrl}
             fill={true}
@@ -46,16 +50,20 @@ export default function ChampionshipCard({ championship }: Props) {
 
         <div className={styles.bike}>
           <dl className={styles.list}>
-            <dt className={styles.list__name}>Организатор:</dt>
-            <dd className={styles.list__desc}>
-              <Image
-                src={championship.organizer.logoUrl}
-                width={21}
-                height={21}
-                alt={`image ${championship.organizer.name}`}
-              />
-              {championship.organizer.name}
-            </dd>
+            {!simple && (
+              <>
+                <dt className={styles.list__name}>Организатор:</dt>
+                <dd className={styles.list__desc}>
+                  <Image
+                    src={championship.organizer.logoUrl}
+                    width={21}
+                    height={21}
+                    alt={`image ${championship.organizer.name}`}
+                  />
+                  {championship.organizer.name}
+                </dd>
+              </>
+            )}
 
             <dt className={styles.list__name}>Тип велосипеда:</dt>
             <dd className={styles.list__desc}>
@@ -67,11 +75,14 @@ export default function ChampionshipCard({ championship }: Props) {
                 />
               )}
             </dd>
-
-            <dt className={styles.list__name}>Тип соревнований:</dt>
-            <dd className={styles.list__desc}>
-              {championshipTypesMap.get(championship.type)?.translation || 'неизвестно'}
-            </dd>
+            {!simple && (
+              <>
+                <dt className={styles.list__name}>Тип соревнований:</dt>
+                <dd className={styles.list__desc}>
+                  {championshipTypesMap.get(championship.type)?.translation || 'неизвестно'}
+                </dd>
+              </>
+            )}
 
             {/* до появления протокола указывать количество зарегистрировавшихся, после протоколов - количество участвовавших участников */}
             <dt className={styles.list__name}>Участники:</dt>
@@ -80,15 +91,19 @@ export default function ChampionshipCard({ championship }: Props) {
         </div>
       </div>
 
-      <div className={styles.wrapper__stages}>
-        <div className={styles.block__stages}>
-          <h3 className={styles.title__stages}>Этапы:</h3>
-          <StagesBox stages={initStages} />
-          <div className={styles.stages__completed}>
-            <span>завершено этапов: </span>
-            <span>{getStagesCompleted({ stages: initStages })}</span>
-          </div>
-        </div>
+      <div className={cx('wrapper__stages', { 'wrapper__stages-simple': simple })}>
+        {!simple && (
+          <>
+            <div className={styles.block__stages}>
+              <h3 className={styles.title__stages}>Этапы:</h3>
+              <StagesBox stages={initStages} />
+              <div className={styles.stages__completed}>
+                <span>завершено этапов: </span>
+                <span>{getStagesCompleted({ stages: initStages })}</span>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className={styles.status}>{getStagesCurrent({ stages: initStages })}</div>
 

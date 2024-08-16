@@ -49,16 +49,6 @@ const columns: ColumnDef<TDtoChampionship & { index: number }>[] = [
     ),
   },
   {
-    header: 'Тип',
-    accessorKey: 'type',
-    cell: (props: any) => (
-      <span>
-        {championshipTypes.find((type) => type.name === props.getValue())?.translation ||
-          'не задан'}
-      </span>
-    ),
-  },
-  {
     header: 'Название',
     accessorKey: 'name',
     cell: (props: any) => {
@@ -69,6 +59,20 @@ const columns: ColumnDef<TDtoChampionship & { index: number }>[] = [
         </Link>
       );
     },
+  },
+  {
+    header: 'Тип',
+    accessorKey: 'type',
+    cell: (props: any) => (
+      <span>
+        {championshipTypes.find((type) => type.name === props.getValue())?.translation ||
+          'не задан'}
+      </span>
+    ),
+  },
+  {
+    header: 'Номер Этапа',
+    accessorKey: 'stage',
   },
   {
     header: 'Тип велосипеда',

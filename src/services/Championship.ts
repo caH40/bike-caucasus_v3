@@ -17,6 +17,7 @@ import type {
   TChampionship,
   TChampionshipDocument,
   TChampionshipStatus,
+  TChampionshipTypes,
   TTrackGPXObj,
 } from '@/types/models.interface';
 import type { TDtoChampionship } from '@/types/dto.types';
@@ -85,15 +86,18 @@ export class ChampionshipService {
   public async getMany({
     idUserDB,
     forModeration,
+    needTypes,
   }: {
     idUserDB?: string;
     forModeration?: boolean;
+    needTypes?: TChampionshipTypes[];
   }): Promise<ResponseServer<TDtoChampionship[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
-      let query = {};
+      let query: any = { ...(needTypes && { type: needTypes }) };
+
       // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные idUserDB.
       if (forModeration && idUserDB) {
         const organizer: { _id: ObjectId } | null = await OrganizerModel.findOne(
@@ -119,7 +123,11 @@ export class ChampionshipService {
 
       const championships = dtoChampionships(championshipsDB);
 
-      return { data: championships, ok: true, message: 'Все Чемпионаты' };
+      return {
+        data: championships,
+        ok: true,
+        message: `Чемпионаты ${needTypes ? 'типов: ' + needTypes.join(', ') : 'все'}`,
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

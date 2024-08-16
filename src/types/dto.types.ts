@@ -113,7 +113,7 @@ export type TDtoCalendarEvents = {
 };
 
 /**
- * ДТО для Организатора Организатора.
+ * ДТО для Организатора.
  */
 export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | 'updatedAt'> & {
   _id: string;
@@ -123,7 +123,7 @@ export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | '
 };
 
 /**
- * ДТО для Организатора Чемпионата.
+ * ДТО для Чемпионата.
  */
 export type TDtoChampionship = Omit<
   TChampionship,

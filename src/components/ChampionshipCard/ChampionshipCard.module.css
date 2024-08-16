@@ -6,6 +6,9 @@
   border-radius: 0.5rem;
   background-color: var(--white-12);
 }
+.wrapper-simple {
+  grid-template-columns: 200px 1fr auto;
+}
 .wrapper__info,
 .wrapper__stages {
   padding: 1rem 1rem 1rem 0;
@@ -17,11 +20,18 @@
 .wrapper__stages {
   min-width: 235px;
 }
+.wrapper__stages-simple {
+  min-width: 200px;
+}
 .box__img {
   position: relative;
   width: 294px;
   height: 100%;
   min-height: 220px;
+}
+.box__img-simple {
+  width: 200px;
+  min-height: 120px;
 }
 .title {
   overflow-wrap: break-word;
@@ -43,6 +53,7 @@
 .status {
   font-size: 1.1rem;
   text-transform: uppercase;
+  color: var(--color-orange);
 }
 .list {
   display: grid;

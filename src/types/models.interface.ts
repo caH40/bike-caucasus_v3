@@ -296,7 +296,7 @@ export type TChampionship = {
   urlSlug: string; // Уникальный url страницы чемпионата.
   description: string; // Описание, включая карту с местом старта.
   organizer: mongoose.Types.ObjectId; // Ссылка на объект Организатора.
-  type: 'tour' | 'series' | 'single' | 'stage';
+  type: TChampionshipTypes;
   quantityStages: number | null; // Количество этапов.
   parentChampionship: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
   stage: number | null; // Номер этапа, если это этап.
@@ -316,6 +316,7 @@ export type TChampionship = {
   createdAt: Date;
   updatedAt: Date;
 };
+export type TChampionshipTypes = 'tour' | 'series' | 'single' | 'stage';
 export type TTrackGPXObj = {
   url: string; // URL трек заезда в облаке.
   coordStart: { lat: number; lon: number }; // Координаты старта заезда.

@@ -10,6 +10,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
+import { TChampionshipTypes } from '@/types/models.interface';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -54,8 +55,10 @@ export async function getChampionship({
  */
 export async function getChampionships({
   forModeration,
+  needTypes,
 }: {
   forModeration?: boolean;
+  needTypes?: TChampionshipTypes[];
 }): Promise<ResponseServer<TDtoChampionship[] | null>> {
   try {
     const session = await getServerSession(authOptions);
@@ -74,7 +77,11 @@ export async function getChampionships({
     }
 
     const championshipService = new ChampionshipService();
-    const championship = await championshipService.getMany({ idUserDB, forModeration });
+    const championship = await championshipService.getMany({
+      idUserDB,
+      forModeration,
+      needTypes,
+    });
 
     if (!championship.ok) {
       throw new Error('Ошибка при получении списка Чемпионатов');

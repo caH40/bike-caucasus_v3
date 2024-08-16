@@ -13,7 +13,7 @@ export const metadata: Metadata = metadataChampionships;
  * Страница с карточками предстоящих и завершившихся чемпионатов.
  */
 export default async function ChampionshipsPage() {
-  const championships = await getChampionships({});
+  const championships = await getChampionships({ needTypes: ['series', 'tour', 'single'] });
   return (
     <>
       <TitleAndLine hSize={1} title="Чемпионаты по велоспорту" />
