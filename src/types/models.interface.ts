@@ -296,15 +296,15 @@ export type TChampionship = {
   urlSlug: string; // Уникальный url страницы чемпионата.
   description: string; // Описание, включая карту с местом старта.
   organizer: mongoose.Types.ObjectId; // Ссылка на объект Организатора.
+  type: 'tour' | 'series' | 'single' | 'stage';
+  quantityStages: number | null; // Количество этапов.
   parentChampionship: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
-  stages: mongoose.Types.ObjectId[]; // Ссылки на дочерние страницы чемпионата, если есть несколько этапов.
-  stage?: number; // Номер этапа, если это этап.
+  stage: number | null; // Номер этапа, если это этап.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   trackGPX?: TTrackGPXObj;
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
-  type: 'tour' | 'series' | 'single' | 'stage';
   // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   // single Соревнование с одним этапом.
   // series Соревнование несколькими этапами, за которые начисляются очки, в конце серии подводятся

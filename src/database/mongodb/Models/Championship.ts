@@ -47,13 +47,8 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       ref: 'Championship',
       default: null,
     },
-    stages: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Championship',
-        default: [],
-      },
-    ],
+    quantityStages: { type: Number, default: null },
+    stage: { type: Number, default: null },
     startDate: {
       type: Date,
       required: true,

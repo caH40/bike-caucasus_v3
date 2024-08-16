@@ -37,7 +37,8 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     description: championship.description,
     trackGPX: championship.trackGPX,
     parentChampionship: String(championship.parentChampionship),
-    stages: championship.stages,
+    quantityStages: championship.quantityStages,
+    stage: championship.stage,
     posterUrl: championship.posterUrl,
     status: championship.status,
     type: championship.type,
@@ -53,10 +54,11 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
  * ДТО массива Туров и Серий.
  */
 export function dtoToursAndSeries(
-  championships: { _id: ObjectId; name: string }[]
-): { _id: string; name: string }[] {
+  championships: { _id: ObjectId; name: string; availableStage: number[] }[]
+): { _id: string; name: string; availableStage: number[] }[] {
   return championships.map((championship) => ({
     _id: String(championship._id),
     name: championship.name,
+    availableStage: championship.availableStage,
   }));
 }

@@ -196,7 +196,7 @@ export async function getToursAndSeries({
   organizerId,
 }: {
   organizerId: string;
-}): Promise<ResponseServer<{ _id: string; name: string }[] | null>> {
+}): Promise<ResponseServer<{ _id: string; name: string; availableStage: number[] }[] | null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -217,7 +217,7 @@ export async function getToursAndSeries({
     }
 
     const championshipService = new ChampionshipService();
-    const response = await championshipService.getTourAndSeries({ organizerId });
+    const response = await championshipService.getToursAndSeries({ organizerId });
 
     return response;
   } catch (error) {

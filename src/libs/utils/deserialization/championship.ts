@@ -20,6 +20,14 @@ export function deserializeChampionship(serializedFormData: FormData) {
         championship[name] = value === 'true' ? true : false;
         break;
 
+      case 'quantityStages':
+        championship[name] = Number(value);
+        break;
+
+      case 'stage':
+        championship[name] = Number(value);
+        break;
+
       default:
         championship[name] = value === '' ? null : value;
     }

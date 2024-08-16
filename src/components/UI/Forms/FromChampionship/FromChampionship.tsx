@@ -25,15 +25,16 @@ import { bikeTypes } from '@/constants/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
 import { serializationChampionship } from '@/libs/utils/serialization/championship';
 import { useRouter } from 'next/navigation';
-import { formateAndStripContent, shouldShowTrackInput } from './utils';
+import { formateAndStripContent } from './utils';
 import SelectCustom from '../../SelectCustom/SelectCustom';
+import { useShowChampionshipForm } from '@/hooks/useShowChampionshipForm';
 
 type Props = {
   organizer: TDtoOrganizer;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   putChampionship?: (serializedFormData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   championshipForEdit?: TDtoChampionship;
-  parentChampionships: { _id: string; name: string }[];
+  parentChampionships: { _id: string; name: string; availableStage: number[] }[];
 };
 
 /**
@@ -69,16 +70,16 @@ export default function FromChampionship({
     formState: { errors },
   } = useForm<TFormChampionshipCreate>({ mode: 'all' });
 
-  // Условие отображения блока выбора родительского Чемпионата для серии.
-  const showTrackInput = shouldShowTrackInput({
+  // Отображения блоков в зависимости от использования формы и вводимых значений.
+  const { showTrackInput, showQuantityStage, showNumberStage } = useShowChampionshipForm({
     typeInInput: watch('type'),
     typeInDB: championshipForEdit?.type,
     isCreatingForm: !championshipForEdit,
   });
 
-  const initParentChampionshipId = parentChampionships.find(
+  const initParentChampionship = parentChampionships.find(
     (elm) => elm._id === championshipForEdit?.parentChampionship
-  )?._id;
+  );
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
@@ -159,6 +160,41 @@ export default function FromChampionship({
     return options;
   };
 
+  /**
+   * Создание массива Этапов.
+   */
+  const createStageNumbers = (): TOptions[] => {
+    // В массиве Туров и Серий находим выбранный parentChampionship.
+    // Если не найден такой Тур или Серия, это ошибка.
+    const parentChampionship = parentChampionships.find(
+      (elm) =>
+        elm._id ===
+        (watch('parentChampionship')?._id || championshipForEdit?.parentChampionship)
+    );
+
+    if (!parentChampionship) {
+      return [];
+    }
+
+    const options = parentChampionship.availableStage.map((elm) => ({
+      id: elm,
+      translation: String(elm),
+      name: String(elm),
+    }));
+
+    // Добавление текущего номера Этапа в Общий массив всех Свободных номеров Этапов в Серии или Туре.
+    if (championshipForEdit?.stage) {
+      options.push({
+        id: championshipForEdit?.stage,
+        translation: String(championshipForEdit?.stage),
+        name: String(championshipForEdit?.stage),
+      });
+      options.sort((a, b) => +a.name - +b.name);
+    }
+
+    return options;
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
       {/* Блок ввода Названия */}
@@ -181,16 +217,37 @@ export default function FromChampionship({
         options={championshipTypes}
         defaultValue={championshipForEdit ? championshipForEdit.type : 'single'}
         loading={isLoading}
-        register={
-          !championshipForEdit
-            ? register('type', {
-                required: 'Это обязательное поле для заполнения',
-              })
-            : undefined
-        }
+        register={register('type', {
+          ...(!championshipForEdit ? { required: 'Это обязательное поле для заполнения' } : {}),
+        })}
         disabled={!!championshipForEdit}
         validationText={errors.type ? errors.type.message : ''}
       />
+
+      {/* Блок установки количества Этапов в Серии или Туре*/}
+      {showQuantityStage && (
+        <BoxInput
+          label="Количество Этапов:*"
+          id="quantityStages"
+          autoComplete="off"
+          type="number"
+          defaultValue={
+            championshipForEdit?.quantityStages
+              ? String(championshipForEdit.quantityStages)
+              : '2'
+          }
+          loading={isLoading}
+          register={register('quantityStages', {
+            required: 'Это обязательное поле для заполнения',
+            min: { value: 2, message: 'Минимальное количество 2 Этапа' },
+            max: {
+              value: 30,
+              message: 'Не более 30 этапов!',
+            },
+          })}
+          validationText={errors.quantityStages ? errors.quantityStages.message : ''}
+        />
+      )}
 
       {/* Выбор родительской страницы Чемпионата только когда это Одиночное соревнование или Этап*/}
       {watch('type') === 'stage' &&
@@ -200,7 +257,7 @@ export default function FromChampionship({
             <Controller
               name="parentChampionship._id"
               control={control}
-              defaultValue={initParentChampionshipId ? initParentChampionshipId : ''}
+              defaultValue={initParentChampionship?._id ? initParentChampionship._id : ''}
               rules={{
                 required: 'Обязательно к заполнению',
               }}
@@ -224,6 +281,24 @@ export default function FromChampionship({
             этапы к ним!
           </h3>
         ))}
+
+      {/* Блок выбора номера Этапа */}
+      {showNumberStage && (
+        <BoxSelectNew
+          label="Порядковый номер Этапа:*"
+          id="stage"
+          options={createStageNumbers()}
+          defaultValue={championshipForEdit?.stage ? String(championshipForEdit.stage) : '1'}
+          loading={isLoading}
+          register={register('stage', {
+            ...(!championshipForEdit
+              ? { required: 'Это обязательное поле для заполнения' }
+              : {}),
+          })}
+          disabled={!createStageNumbers().length}
+          validationText={errors.stage ? errors.stage.message : ''}
+        />
+      )}
 
       {/* Блок ввода Названия */}
       <BoxInput

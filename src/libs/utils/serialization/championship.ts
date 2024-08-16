@@ -34,6 +34,16 @@ export function serializationChampionship({
     formData.set('type', dataForm.type);
   }
 
+  // Количество Этапов в Серии или Туре, если это Этап или Одиночный, то null.
+  if (dataForm.quantityStages) {
+    formData.set('quantityStages', String(dataForm.quantityStages));
+  }
+
+  // Номер Этапа у Этапа.
+  if (dataForm.stage) {
+    formData.set('stage', String(dataForm.stage));
+  }
+
   formData.set('bikeType', dataForm.bikeType);
   formData.set('organizerId', organizerId);
   formData.set('needDelTrack', String(needDelTrack));

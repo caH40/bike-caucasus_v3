@@ -151,6 +151,8 @@ export class ChampionshipService {
         bikeType,
         organizerId,
         parentChampionshipId,
+        quantityStages,
+        stage,
       } = deserializeChampionship(serializedFormData);
 
       // Сохранение изображения для Постера Чемпионата.
@@ -201,6 +203,8 @@ export class ChampionshipService {
           parentChampionship: parentChampionshipId,
         }),
         ...(trackGPX.url && { trackGPX }),
+        ...(quantityStages && { quantityStages }),
+        ...(stage && { stage }),
       };
 
       const response = await ChampionshipModel.create(createData);
@@ -239,6 +243,8 @@ export class ChampionshipService {
         bikeType,
         needDelTrack,
         parentChampionshipId,
+        quantityStages,
+        stage,
       } = deserializeChampionship(serializedFormData);
 
       const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
@@ -303,9 +309,11 @@ export class ChampionshipService {
         bikeType,
         ...(trackGPX && { trackGPX }), // Обновление только если trackGPX не null
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
+        ...(quantityStages && { quantityStages }),
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
         }),
+        ...(stage && { stage }),
       };
 
       // При редактировании выбрана опция удаления Трека Чемпионата.
@@ -389,27 +397,66 @@ export class ChampionshipService {
   }
 
   /**
-   * Удаление Чемпионата.
+   * Получение всех Туров и Серий у Организатора..
    */
-  public async getTourAndSeries({
+  public async getToursAndSeries({
     organizerId,
   }: {
     organizerId: string;
-  }): Promise<ResponseServer<{ _id: string; name: string }[] | null>> {
+  }): Promise<
+    ResponseServer<{ _id: string; name: string; availableStage: number[] }[] | null>
+  > {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
-      const championshipsDB: { _id: ObjectId; name: string }[] = await ChampionshipModel.find(
+      const championshipsDB: {
+        _id: ObjectId;
+        name: string;
+        quantityStages: number | null;
+      }[] = await ChampionshipModel.find(
         {
           organizer: organizerId,
           type: ['series', 'tour'],
         },
-        { name: true }
+        { name: true, quantityStages: true }
       ).lean();
 
+      const championshipsWithAvailableStageNumber: {
+        _id: ObjectId;
+        name: string;
+        quantityStages: number | null;
+        availableStage: number[];
+      }[] = [];
+
+      for (const camp of championshipsDB) {
+        // Если вдруг у Тура или Серии не указано количество Этапов.
+        if (!camp.quantityStages) {
+          continue;
+        }
+
+        const stageNumbersDB: { stage: number | null }[] = await ChampionshipModel.find(
+          {
+            parentChampionship: camp._id,
+          },
+          { stage: true, _id: false }
+        ).lean();
+
+        const availableStage: number[] = [];
+
+        for (let stage = 1; stage < camp.quantityStages + 1; stage++) {
+          const isOccupiedStage = stageNumbersDB.find((elm) => elm.stage === stage);
+
+          // Занятый номер Этапа не добавляется в возвращаемый массив.
+          if (!isOccupiedStage) {
+            availableStage.push(stage);
+          }
+        }
+        championshipsWithAvailableStageNumber.push({ ...camp, availableStage });
+      }
+
       return {
-        data: dtoToursAndSeries(championshipsDB),
+        data: dtoToursAndSeries(championshipsWithAvailableStageNumber),
         ok: true,
         message: `Список Серий и Туров.`,
       };

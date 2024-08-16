@@ -22,25 +22,3 @@ export function formateAndStripContent({ name, description }: Params) {
     descriptionStripedHtmlTags,
   };
 }
-
-/**
- * Условие отображения блока выбора родительского Чемпионата для серии.
- */
-export function shouldShowTrackInput({
-  typeInInput,
-  typeInDB,
-  isCreatingForm,
-}: {
-  typeInInput: string | undefined;
-  typeInDB: string | undefined;
-  isCreatingForm: boolean;
-}) {
-  const isStageOrSingle = typeInDB && ['single', 'stage'].includes(typeInDB);
-  const inputUndefined = typeof typeInInput === 'undefined';
-
-  return (
-    (isCreatingForm && inputUndefined) ||
-    (isStageOrSingle && inputUndefined) ||
-    ['single', 'stage'].includes(String(typeInInput))
-  );
-}
