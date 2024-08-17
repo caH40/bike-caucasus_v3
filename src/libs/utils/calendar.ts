@@ -140,12 +140,42 @@ export function getFullDaysFromDates({
 }): number {
   // Получение текущей даты
 
-  const startTargetDate = DateTime.fromJSDate(startDate).startOf('day');
-  const endTargetDate = DateTime.fromJSDate(endDate).startOf('day');
+  const startTargetDate = DateTime.fromJSDate(startDate).startOf('day').setLocale('ru');
+  const endTargetDate = DateTime.fromJSDate(endDate).startOf('day').setLocale('ru');
 
   // Вычисление разницы в днях
   const diffInDays = endTargetDate.diff(startTargetDate, 'days').days;
 
   // Возвращение количества полных дней
   return Math.floor(diffInDays);
+}
+
+/**
+ * Форматирует интервал дат в зависимости от их значений.
+ * @param startDate - Дата начала в формате JavaScript Date.
+ * @param endDate - Дата окончания в формате JavaScript Date.
+ * @returns Строка, представляющая интервал дат.
+ */
+export function formatDateInterval({
+  startDate,
+  endDate,
+}: {
+  startDate: Date;
+  endDate: Date;
+}): string {
+  const start = DateTime.fromJSDate(startDate).setLocale('ru');
+  const end = DateTime.fromJSDate(endDate).setLocale('ru');
+
+  // Проверка, совпадают ли startDate и endDate с точностью до дня
+  if (start.hasSame(end, 'day')) {
+    return start.toFormat('dd MMMM'); // Полный формат для одной даты
+  }
+  // Проверка, совпадают ли месяцы и годы
+  else if (start.hasSame(end, 'month')) {
+    return `${start.toFormat('dd')}-${end.toFormat('dd')} ${start.toFormat('MMMM yyyy')}`; // Формат дд-дд ммм
+  }
+  // Разные месяцы и годы
+  else {
+    return `${start.toFormat('dd MMMM')} - ${end.toFormat('dd MMMM')}`;
+  }
 }

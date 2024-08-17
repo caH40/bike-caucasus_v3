@@ -10,6 +10,7 @@ import { championshipTypesMap } from '@/constants/championship';
 import { getStagesCompleted, getStatusString } from '@/libs/utils/championship';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './ChampionshipCard.module.css';
+import { formatDateInterval } from '@/libs/utils/calendar';
 
 const cx = cn.bind(styles);
 
@@ -41,7 +42,12 @@ export default function ChampionshipCard({ championship, simple }: Props) {
 
       <div className={styles.wrapper__info}>
         <div>
-          <h3 className={styles.title__date}>{championship.startDate}</h3>
+          <h3 className={styles.title__date}>
+            {formatDateInterval({
+              startDate: new Date(championship.startDate),
+              endDate: new Date(championship.endDate),
+            })}
+          </h3>
 
           <Link href={`/championships/${championship.urlSlug}`} className={styles.link}>
             <h2 className={styles.title}>
