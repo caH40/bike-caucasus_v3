@@ -22,9 +22,6 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 type Props = { params: { urlSlug: string } };
 
 export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
-  // const championship = await getChampionship({ urlSlug });
-  // const championships = await getChampionships({ needTypes: ['stage'] });
-
   const [championship, championships] = await Promise.all([
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),

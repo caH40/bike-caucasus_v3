@@ -9,7 +9,6 @@ import { bikeTypesMap } from '@/constants/trail';
 import { championshipTypesMap } from '@/constants/championship';
 import { getStagesCompleted, getStagesCurrent } from '@/libs/utils/championship';
 import type { TDtoChampionship } from '@/types/dto.types';
-import { initStages } from '@/mock/stages';
 import styles from './ChampionshipCard.module.css';
 
 const cx = cn.bind(styles);
@@ -92,20 +91,31 @@ export default function ChampionshipCard({ championship, simple }: Props) {
       </div>
 
       <div className={cx('wrapper__stages', { 'wrapper__stages-simple': simple })}>
-        {!simple && (
+        {!simple && !!championship.stageDateDescription && (
           <>
             <div className={styles.block__stages}>
               <h3 className={styles.title__stages}>Этапы:</h3>
-              <StagesBox stages={initStages} />
+              <StagesBox stages={championship.stageDateDescription} />
               <div className={styles.stages__completed}>
                 <span>завершено этапов: </span>
-                <span>{getStagesCompleted({ stages: initStages })}</span>
+                <span>{getStagesCompleted({ stages: championship.stageDateDescription })}</span>
               </div>
             </div>
           </>
         )}
 
-        <div className={styles.status}>{getStagesCurrent({ stages: initStages })}</div>
+        {!!championship.stageDateDescription && (
+          <div className={styles.status}>
+            {getStagesCurrent({
+              stage: {
+                stage: championship.stage,
+                status: championship.status,
+                startDate: championship.startDate,
+                endDate: championship.endDate,
+              },
+            })}
+          </div>
+        )}
 
         <Button theme="green" name="Регистрация" />
       </div>

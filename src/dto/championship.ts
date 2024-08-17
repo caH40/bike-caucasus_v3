@@ -47,6 +47,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     endDate,
     createdAt,
     updatedAt,
+    stageDateDescription: championship.stageDateDescription,
   };
 }
 
