@@ -125,20 +125,57 @@ export function getDateTime(date?: Date): CurrentDateTime {
 }
 
 /**
- * Вычисляет количество полных дней между сегодняшним днем и заданной датой.
- * @param date - Дата в формате JavaScript Date (например, new Date('2024-08-15')).
- * @returns Количество полных дней между сегодняшним днем и заданной датой.
+ * Вычисляет количество полных дней между startDate и endDate.
+ * @param startDate - Начальная дата.
+ * @param endDate - Конечная дата.
+ * @returns Количество полных дней между датами.
  */
-export function getFullDaysFromToday(date: Date): number {
-  // Получение текущей даты
-  const today = DateTime.now().startOf('day');
 
-  // Создание объекта DateTime из объекта Date
-  const targetDate = DateTime.fromJSDate(date).startOf('day');
+export function getFullDaysFromDates({
+  startDate,
+  endDate,
+}: {
+  startDate: Date;
+  endDate: Date;
+}): number {
+  // Получение текущей даты
+
+  const startTargetDate = DateTime.fromJSDate(startDate).startOf('day').setLocale('ru');
+  const endTargetDate = DateTime.fromJSDate(endDate).startOf('day').setLocale('ru');
 
   // Вычисление разницы в днях
-  const diffInDays = targetDate.diff(today, 'days').days;
+  const diffInDays = endTargetDate.diff(startTargetDate, 'days').days;
 
   // Возвращение количества полных дней
   return Math.floor(diffInDays);
+}
+
+/**
+ * Форматирует интервал дат в зависимости от их значений.
+ * @param startDate - Дата начала в формате JavaScript Date.
+ * @param endDate - Дата окончания в формате JavaScript Date.
+ * @returns Строка, представляющая интервал дат.
+ */
+export function formatDateInterval({
+  startDate,
+  endDate,
+}: {
+  startDate: Date;
+  endDate: Date;
+}): string {
+  const start = DateTime.fromJSDate(startDate).setLocale('ru');
+  const end = DateTime.fromJSDate(endDate).setLocale('ru');
+
+  // Проверка, совпадают ли startDate и endDate с точностью до дня
+  if (start.hasSame(end, 'day')) {
+    return start.toFormat('dd MMMM'); // Полный формат для одной даты
+  }
+  // Проверка, совпадают ли месяцы и годы
+  else if (start.hasSame(end, 'month')) {
+    return `${start.toFormat('dd')}-${end.toFormat('dd')} ${start.toFormat('MMMM yyyy')}`; // Формат дд-дд ммм
+  }
+  // Разные месяцы и годы
+  else {
+    return `${start.toFormat('dd MMMM')} - ${end.toFormat('dd MMMM')}`;
+  }
 }

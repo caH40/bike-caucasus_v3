@@ -11,7 +11,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 330px;
+  height: 400px;
   border-radius: 1rem;
 }
 .poster {
@@ -21,7 +21,7 @@
 }
 .box__logo {
   position: absolute;
-  top: 280px;
+  top: 350px;
   left: 45px;
   width: 100px;
   height: 100px;
@@ -50,7 +50,7 @@
   object-position: center;
 }
 .block__text {
-  padding: 350px 2rem 2rem 180px;
+  padding: 420px 2rem 2rem 180px;
 }
 .title {
   margin-bottom: 6px;
@@ -60,7 +60,26 @@
 }
 
 /* ====================================================================== */
-@media (max-width: 768px) {
+@media (max-width: 1300px) {
+  .box__logo {
+    top: 280px;
+    left: 20px;
+  }
+  .box__date {
+    left: 20px;
+    padding: 2px 0.5rem;
+  }
+  .title__date {
+    font-size: 1.1em;
+  }
+  .block__text {
+    padding: 420px 2rem 2rem 2rem;
+  }
+}
+@media (max-width: 992px) {
+  .box__poster {
+    height: 330px;
+  }
   .box__logo {
     top: 210px;
     left: 20px;

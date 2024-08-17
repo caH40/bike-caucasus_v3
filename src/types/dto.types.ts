@@ -1,4 +1,4 @@
-import { TOrganizerForClient } from './index.interface';
+import { TOrganizerForClient, TStageDateDescription } from './index.interface';
 import {
   IUserModel,
   TAuthorFromUser,
@@ -140,6 +140,7 @@ export type TDtoChampionship = Omit<
   parentChampionship: string;
   startDate: string;
   endDate: string;
+  stageDateDescription: TStageDateDescription[];
   createdAt: string;
   updatedAt: string;
 };

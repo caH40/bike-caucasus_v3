@@ -1,5 +1,11 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { TChampionship, TLogsErrorModel, TNewsBlockInfo, TOrganizer } from './models.interface';
+import {
+  TChampionship,
+  TChampionshipStatus,
+  TLogsErrorModel,
+  TNewsBlockInfo,
+  TOrganizer,
+} from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
 export interface PropsBoxInputAuth {
@@ -470,6 +476,7 @@ export type TOrganizerForClient = Pick<
 };
 export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
   organizer: TOrganizerPublic;
+  stageDateDescription: TStageDateDescription[];
 };
 
 /**
@@ -486,4 +493,14 @@ export type TFormChampionshipCreate = Omit<
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
   parentChampionship: { _id: string; name: string };
+};
+
+/**
+ * Данные Этапа для формирования карточки Чемпионата.
+ */
+export type TStageDateDescription = {
+  stage: number;
+  status: TChampionshipStatus;
+  startDate: Date;
+  endDate: Date;
 };

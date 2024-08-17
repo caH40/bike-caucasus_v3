@@ -18,19 +18,32 @@ import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockC
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import styles from './Championship.module.css';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import { ChampionshipService } from '@/services/Championship';
 
 type Props = { params: { urlSlug: string } };
 
 export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
-  // const championship = await getChampionship({ urlSlug });
-  // const championships = await getChampionships({ needTypes: ['stage'] });
-
   const [championship, championships] = await Promise.all([
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),
   ]);
+  const champService = new ChampionshipService();
+  await champService.updateStatusChampionship();
 
-  // console.log(championships);
+  // !!! Продумать обработку или отображение ошибки.
+  if (!championships.ok) {
+    throw new Error(championships.message);
+  }
+
+  // Проверка наличия данных Этапов и их сортировка по возрастанию.
+  const stages = championships.data
+    ? championships.data.toSorted((a, b) => {
+        if (!a.stage || !b.stage) {
+          return 0;
+        }
+        return a.stage - b.stage;
+      })
+    : [];
 
   return (
     <div>
@@ -44,10 +57,9 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
             <>
               <TitleAndLine hSize={2} title="Этапы" />
               <div className={styles.wrapper__cards}>
-                {championships.data &&
-                  championships.data.map((champ) => (
-                    <ChampionshipCard championship={champ} key={champ._id} simple={true} />
-                  ))}
+                {stages.map((champ) => (
+                  <ChampionshipCard championship={champ} key={champ._id} simple={true} />
+                ))}
               </div>
             </>
           )}

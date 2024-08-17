@@ -7,7 +7,7 @@
   background-color: var(--white-12);
 }
 .wrapper-simple {
-  grid-template-columns: 200px 1fr auto;
+  grid-template-columns: 210px 1fr auto;
 }
 .wrapper__info,
 .wrapper__stages {
@@ -30,8 +30,8 @@
   min-height: 220px;
 }
 .box__img-simple {
-  width: 200px;
-  min-height: 120px;
+  width: 210px;
+  min-height: 140px;
 }
 .title {
   overflow-wrap: break-word;
@@ -54,6 +54,7 @@
   font-size: 1.1rem;
   text-transform: uppercase;
   color: var(--color-orange);
+  text-align: center;
 }
 .list {
   display: grid;

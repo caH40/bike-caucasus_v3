@@ -1,15 +1,12 @@
 import cn from 'classnames/bind';
 
-import { TChampionshipStatus } from '@/types/models.interface';
+import { TStageDateDescription } from '@/types/index.interface';
 import styles from './StagesBox.module.css';
 
 const cx = cn.bind(styles);
 
 type Props = {
-  stages: {
-    number: number;
-    status: TChampionshipStatus;
-  }[];
+  stages: TStageDateDescription[];
 };
 
 /**
@@ -27,7 +24,7 @@ export default function StagesBox({ stages }: Props) {
             end: length > 1 && index === length - 1,
             [stage.status]: [stage.status],
           })}
-          key={stage.number}
+          key={stage.stage}
         />
       ))}
     </div>
