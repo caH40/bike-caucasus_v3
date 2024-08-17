@@ -476,7 +476,7 @@ export type TOrganizerForClient = Pick<
 };
 export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
   organizer: TOrganizerPublic;
-  stageDateDescription?: TStageDateDescription[];
+  stageDateDescription: TStageDateDescription[];
 };
 
 /**

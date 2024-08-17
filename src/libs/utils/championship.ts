@@ -2,34 +2,100 @@ import { TChampionshipStatus } from '@/types/models.interface';
 import { declineDays } from './decline';
 import { TStageDateDescription } from '@/types/index.interface';
 import { getFullDaysFromDates } from './calendar';
+import { TDtoChampionship } from '@/types/dto.types';
 
-type Stage = {
-  stage: TStageDateDescription;
-};
 type Stages = {
-  stages: TStageDateDescription[];
+  stages: TStageDateDescription[] | undefined;
+};
+type Props = {
+  championship: TDtoChampionship;
 };
 
 /**
- * Получение подробного состояния Чемпионата.
- * Не начался, какой этап сегодня проходит, в ожидании следующего этапа, завершен, отменен.
+ * Получение статусов Туров и Серий, Этапов и Одиночного соревнования.
+ * Выбор функции обработки статуса.
  */
-export function getStagesCurrent({ stage }: Stage): string {
-  // const fullDaysFromToday = getFullDaysFromToday(stage.startDate);
+export function getStatusString({ championship }: Props) {
+  if (championship.type === 'single' || championship.type === 'stage') {
+    return getCSingleStatusStr(championship);
+  } else {
+    return getStatusStagesString({
+      stages: championship.stageDateDescription,
+    });
+  }
+}
+/**
+ * Формирование строки Статуса Серии и Тура на основе Этапов.
+ */
+function getStatusStagesString({ stages }: Stages): string {
+  if (!stages) {
+    return 'нет данных...';
+  }
 
-  // if (fullDaysFromToday === 0) {
-  //   return 'Проводится сегодня ';
-  // }
+  // Поиск проходящих сегодня Этапов.
+  const ongoingStage = stages.find((stage) => stage.status === 'ongoing');
 
-  // const remainingDaysString = declineDays(fullDaysFromToday);
-  // return `${stage.stage} этап через: ${remainingDaysString}`;
-  return 'test';
+  if (ongoingStage) {
+    return `Проводится сегодня ${ongoingStage.stage} Этап`;
+  }
+
+  const upcomingStage = stages.find((stage) => stage.status === 'upcoming');
+
+  // Если нет предстоящих (upcoming) Этапов, значит Чемпионат завершен.
+  // Проходящих сегодня (ongoing) не может быть, так как это условие проверялось раньше.
+  if (!upcomingStage) {
+    return 'Завершен';
+  }
+
+  const today = new Date();
+  const fullDaysFromToday = getFullDaysFromDates({
+    startDate: today,
+    endDate: upcomingStage.startDate,
+  });
+
+  const remainingDaysString = declineDays(fullDaysFromToday);
+  if (fullDaysFromToday === 1) {
+    return `Завтра старт ${upcomingStage.stage} Этапа`;
+  }
+  return `${upcomingStage.stage} Этап через: ${remainingDaysString}`;
+}
+
+/**
+ * Получение подробного состояния Одиночного ()single Чемпионата.
+ */
+function getCSingleStatusStr(championship: TDtoChampionship): string {
+  switch (championship.status) {
+    case 'upcoming':
+      const today = new Date();
+      const fullDaysFromToday = getFullDaysFromDates({
+        startDate: today,
+        endDate: new Date(championship.startDate),
+      });
+
+      const remainingDaysString = declineDays(fullDaysFromToday);
+      if (fullDaysFromToday === 1) {
+        return `Завтра старт`;
+      }
+      return `Старт через: ${remainingDaysString}`;
+
+    case 'ongoing':
+      return 'Проводится сегодня';
+
+    case 'completed':
+      return 'Завершен';
+
+    default:
+      return 'Отменен';
+  }
 }
 
 /**
  * Указывает общее количество  и количество завершенных этапов.
  */
 export function getStagesCompleted({ stages }: Stages): string {
+  if (!stages) {
+    return 'нет данных...';
+  }
   const total = stages.length || 1;
   const completed = stages.filter((stage) => stage.status === 'completed').length;
 

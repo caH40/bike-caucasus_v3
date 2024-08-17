@@ -348,7 +348,7 @@ export default function FromChampionship({
         id="startDate"
         autoComplete="off"
         type="date"
-        min={getDateTime(new Date()).isoDate}
+        // min={getDateTime(new Date()).isoDate}
         defaultValue={
           championshipForEdit ? championshipForEdit.startDate : getDateTime(new Date()).isoDate
         }

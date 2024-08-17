@@ -140,7 +140,7 @@ export type TDtoChampionship = Omit<
   parentChampionship: string;
   startDate: string;
   endDate: string;
-  stageDateDescription?: TStageDateDescription[];
+  stageDateDescription: TStageDateDescription[];
   createdAt: string;
   updatedAt: string;
 };

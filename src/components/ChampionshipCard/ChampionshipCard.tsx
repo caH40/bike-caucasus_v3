@@ -7,7 +7,7 @@ import StagesBox from '../StagesBox/StagesBox';
 import { blurBase64 } from '@/libs/image';
 import { bikeTypesMap } from '@/constants/trail';
 import { championshipTypesMap } from '@/constants/championship';
-import { getStagesCompleted, getStagesCurrent } from '@/libs/utils/championship';
+import { getStagesCompleted, getStatusString } from '@/libs/utils/championship';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './ChampionshipCard.module.css';
 
@@ -15,7 +15,7 @@ const cx = cn.bind(styles);
 
 type Props = {
   championship: TDtoChampionship;
-  simple?: boolean;
+  simple?: boolean; // Используется для Этапа
 };
 
 export default function ChampionshipCard({ championship, simple }: Props) {
@@ -42,8 +42,11 @@ export default function ChampionshipCard({ championship, simple }: Props) {
       <div className={styles.wrapper__info}>
         <div>
           <h3 className={styles.title__date}>{championship.startDate}</h3>
+
           <Link href={`/championships/${championship.urlSlug}`} className={styles.link}>
-            <h2 className={styles.title}>{championship.name}</h2>
+            <h2 className={styles.title}>
+              {simple ? `Этап ${championship.stage}: ${championship.name}` : championship.name}
+            </h2>
           </Link>
         </div>
 
@@ -90,33 +93,23 @@ export default function ChampionshipCard({ championship, simple }: Props) {
         </div>
       </div>
 
-      <div className={cx('wrapper__stages', { 'wrapper__stages-simple': simple })}>
-        {!simple && !!championship.stageDateDescription && (
-          <>
-            <div className={styles.block__stages}>
-              <h3 className={styles.title__stages}>Этапы:</h3>
-              <StagesBox stages={championship.stageDateDescription} />
-              <div className={styles.stages__completed}>
-                <span>завершено этапов: </span>
-                <span>{getStagesCompleted({ stages: championship.stageDateDescription })}</span>
-              </div>
-            </div>
-          </>
-        )}
+      <div
+        className={cx('wrapper__stages', {
+          'wrapper__stages-simple': simple,
+        })}
+      >
+        {/* {!simple && !!championship.stageDateDescription && ( */}
 
-        {/* {!!championship.stageDateDescription && ( */}
-        <div className={styles.status}>
-          {championship.status}
-          {/* {getStagesCurrent({
-              stage: {
-                stage: championship.stage,
-                status: championship.status,
-                startDate: championship.startDate,
-                endDate: championship.endDate,
-              },
-            })} */}
+        <div className={cx('block__stages')}>
+          {!simple && <h3 className={styles.title__stages}>Этапы:</h3>}
+          <StagesBox stages={championship.stageDateDescription} />
+          <div className={styles.stages__completed}>
+            <span>завершено этапов: </span>
+            <span>{getStagesCompleted({ stages: championship.stageDateDescription })}</span>
+          </div>
         </div>
-        {/* )} */}
+
+        <div className={styles.status}>{getStatusString({ championship })}</div>
 
         <Button theme="green" name="Регистрация" />
       </div>

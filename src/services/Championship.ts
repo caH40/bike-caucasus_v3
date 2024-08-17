@@ -129,7 +129,7 @@ export class ChampionshipService {
       // Получение Чемпионатов согласно запросу query.
       const championshipsDB: (Omit<TChampionship, 'organizer'> & {
         organizer: TOrganizerPublic;
-        stageDateDescription?: TStageDateDescription[];
+        stageDateDescription: TStageDateDescription[];
       })[] = await ChampionshipModel.find(query)
         .populate({
           path: 'organizer',
@@ -137,17 +137,30 @@ export class ChampionshipService {
         })
         .lean();
 
-      // Формирование данных для отображение Этапов в карточки Серии или Тура.
-      if (!!needTypes && needTypes.some((elm) => elm === 'series' || elm === 'tour')) {
-        for (const champ of championshipsDB) {
-          const stages: TStageDateDescription[] = await ChampionshipModel.find(
+      // Формирование данных для отображение Блока Этапов в карточке Чемпионата.
+      for (const champ of championshipsDB) {
+        let stages: TStageDateDescription[] = [];
+
+        if (champ.type === 'tour' || champ.type === 'series') {
+          stages = await ChampionshipModel.find(
             { parentChampionship: champ._id },
             { stage: true, status: true, startDate: true, endDate: true, _id: false }
           ).lean();
           stages.sort((a, b) => a.stage - b.stage);
-          champ.stageDateDescription = stages;
+        } else {
+          stages = [
+            {
+              stage: 1,
+              status: champ.status,
+              startDate: champ.startDate,
+              endDate: champ.endDate,
+            },
+          ];
         }
+
+        champ.stageDateDescription = stages;
       }
+      // }
 
       // ДТО формирование данных для Клиента.
       const championships = dtoChampionships(championshipsDB);
