@@ -30,6 +30,7 @@ import { getCoordStart } from '@/libs/utils/track';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
+import { getCurrentStatus } from '@/libs/utils/championship';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -41,6 +42,17 @@ export class ChampionshipService {
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
   private suffixTrackGpx: string;
+  private getCurrentStatus: ({
+    /* eslint-disable no-unused-vars */
+    status,
+    startDate,
+    endDate,
+  }: /* eslint-enable no-unused-vars */
+  {
+    status: TChampionshipStatus;
+    startDate: Date;
+    endDate: Date;
+  }) => TChampionshipStatus;
 
   constructor() {
     this.errorLogger = errorLogger;
@@ -49,6 +61,7 @@ export class ChampionshipService {
     this.saveFile = saveFile;
     this.suffixImagePoster = 'championship_image_poster-';
     this.suffixTrackGpx = 'championship_track_gpx-';
+    this.getCurrentStatus = getCurrentStatus;
   }
 
   public async getOne({
@@ -413,6 +426,58 @@ export class ChampionshipService {
         data: null,
         ok: true,
         message: `Чемпионат ${championshipDB.name} удалён!`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление статуса чемпионата.
+   * Скрипт запускает с периодичностью раз в сутки в 01:00.
+   * И при создании или обновлении данных Чемпионата.
+   */
+  public async updateStatusChampionship(): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const championshipsDB: {
+        _id: ObjectId;
+        status: TChampionshipStatus;
+        startDate: Date;
+        endDate: Date;
+        urlSlug: string;
+      }[] = await ChampionshipModel.find(
+        {
+          status: ['upcoming', 'ongoing'],
+        },
+        { _id: true, status: true, startDate: true, endDate: true, urlSlug: true }
+      ).lean();
+
+      // Подготовка данных для пакетного обновления
+      const bulkOps = championshipsDB.map((champ) => {
+        const currentStatus = this.getCurrentStatus({
+          status: champ.status,
+          startDate: champ.startDate,
+          endDate: champ.endDate,
+        });
+
+        return {
+          updateOne: {
+            filter: { _id: champ._id },
+            update: { $set: { status: currentStatus } },
+          },
+        };
+      });
+
+      await ChampionshipModel.bulkWrite(bulkOps);
+
+      return {
+        data: null,
+        ok: true,
+        message: `Обновление статусов Чемпионатов которые не завершились.`,
       };
     } catch (error) {
       this.errorLogger(error);

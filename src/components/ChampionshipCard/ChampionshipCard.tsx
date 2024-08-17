@@ -104,18 +104,19 @@ export default function ChampionshipCard({ championship, simple }: Props) {
           </>
         )}
 
-        {!!championship.stageDateDescription && (
-          <div className={styles.status}>
-            {getStagesCurrent({
+        {/* {!!championship.stageDateDescription && ( */}
+        <div className={styles.status}>
+          {championship.status}
+          {/* {getStagesCurrent({
               stage: {
                 stage: championship.stage,
                 status: championship.status,
                 startDate: championship.startDate,
                 endDate: championship.endDate,
               },
-            })}
-          </div>
-        )}
+            })} */}
+        </div>
+        {/* )} */}
 
         <Button theme="green" name="Регистрация" />
       </div>

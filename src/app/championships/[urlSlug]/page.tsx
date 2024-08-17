@@ -18,6 +18,7 @@ import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockC
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import styles from './Championship.module.css';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import { ChampionshipService } from '@/services/Championship';
 
 type Props = { params: { urlSlug: string } };
 
@@ -26,7 +27,8 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),
   ]);
-
+  const champService = new ChampionshipService();
+  await champService.updateStatusChampionship();
   // console.log(championships);
 
   return (

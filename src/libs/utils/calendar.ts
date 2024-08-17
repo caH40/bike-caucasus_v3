@@ -125,19 +125,26 @@ export function getDateTime(date?: Date): CurrentDateTime {
 }
 
 /**
- * Вычисляет количество полных дней между сегодняшним днем и заданной датой.
- * @param date - Дата в формате JavaScript Date (например, new Date('2024-08-15')).
- * @returns Количество полных дней между сегодняшним днем и заданной датой.
+ * Вычисляет количество полных дней между startDate и endDate.
+ * @param startDate - Начальная дата.
+ * @param endDate - Конечная дата.
+ * @returns Количество полных дней между датами.
  */
-export function getFullDaysFromToday(date: Date): number {
-  // Получение текущей даты
-  const today = DateTime.now().startOf('day');
 
-  // Создание объекта DateTime из объекта Date
-  const targetDate = DateTime.fromJSDate(date).startOf('day');
+export function getFullDaysFromDates({
+  startDate,
+  endDate,
+}: {
+  startDate: Date;
+  endDate: Date;
+}): number {
+  // Получение текущей даты
+
+  const startTargetDate = DateTime.fromJSDate(startDate).startOf('day');
+  const endTargetDate = DateTime.fromJSDate(endDate).startOf('day');
 
   // Вычисление разницы в днях
-  const diffInDays = targetDate.diff(today, 'days').days;
+  const diffInDays = endTargetDate.diff(startTargetDate, 'days').days;
 
   // Возвращение количества полных дней
   return Math.floor(diffInDays);
