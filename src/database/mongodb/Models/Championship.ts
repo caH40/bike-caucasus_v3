@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, models, Model } from 'mongoose';
 
-import { TChampionshipDocument } from '@/types/models.interface';
+import { TChampionshipDocument, TRace } from '@/types/models.interface';
 
 // Трэк заезда.
 const trackGPXSchema = new Schema(
@@ -12,6 +12,19 @@ const trackGPXSchema = new Schema(
       lon: Number,
       _id: false,
     },
+  },
+  { _id: false }
+);
+
+const raceSchema = new Schema<TRace>(
+  {
+    number: { type: Number, default: 1 }, // Порядковый номер.
+    name: String, // Должно быть уникальным в рамках одного Соревнования/Этапа.
+    description: String, // Краткие детали Заезда.
+    laps: { type: Number, default: 1 }, // Количество кругов.
+    distance: { type: Number, default: 1 }, // Дистанция Заезда в километрах.
+    ascent: { type: Number, default: 0 }, // Набор высоты на дистанции в метрах.
+    trackGPX: trackGPXSchema,
   },
   { _id: false }
 );
@@ -73,7 +86,7 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       default: 'road',
       required: true,
     },
-    trackGPX: { type: trackGPXSchema, default: null },
+    races: [{ type: raceSchema, default: [] }],
     posterUrl: { type: String, default: null },
   },
   {

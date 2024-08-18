@@ -20,6 +20,7 @@ import type {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TRace,
   TTrackGPXObj,
 } from '@/types/models.interface';
 import type { TDtoChampionship } from '@/types/dto.types';
@@ -202,7 +203,6 @@ export class ChampionshipService {
 
       const {
         posterFile,
-        trackGPXFile,
         name,
         description,
         startDate,
@@ -213,8 +213,10 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
+        races,
       } = deserializeChampionship(serializedFormData);
 
+      const racesForSave: TRace[] = [];
       // Сохранение изображения для Постера Чемпионата.
       const posterUrl = await this.saveFile({
         file: posterFile as File,
@@ -222,25 +224,38 @@ export class ChampionshipService {
         suffix: this.suffixImagePoster,
       });
 
-      // Трек не обязателен, поэтому проверка для загрузки файла на облако.
-      let trackGPX = {} as TTrackGPXObj;
-      if (trackGPXFile) {
-        // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
-        const trackGPXUrl = await this.saveFile({
-          file: trackGPXFile as File,
-          type: 'GPX',
-          suffix: this.suffixTrackGpx,
-        });
+      if (races) {
+        for (const race of races) {
+          // Трек не обязателен, поэтому проверка для загрузки файла на облако.
+          let trackGPX = {} as TTrackGPXObj;
+          const raceForSave = {} as TRace;
+          // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
+          const trackGPXUrl = await this.saveFile({
+            file: race.trackGPXFile as File,
+            type: 'GPX',
+            suffix: this.suffixTrackGpx,
+          });
 
-        // Получаем файл GPX с облака, так как реализация через FileReader большая!
-        const gpxParsed = await parseGPX(trackGPXUrl);
+          // Получаем файл GPX с облака, так как реализация через FileReader большая!
+          const gpxParsed = await parseGPX(trackGPXUrl);
 
-        const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+          const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
 
-        trackGPX = {
-          url: trackGPXUrl,
-          coordStart,
-        };
+          trackGPX = {
+            url: trackGPXUrl,
+            coordStart,
+          };
+
+          raceForSave.number = race.number;
+          raceForSave.name = race.name;
+          raceForSave.description = race.description;
+          raceForSave.laps = race.laps;
+          raceForSave.distance = race.distance;
+          raceForSave.ascent = race.ascent;
+          raceForSave.trackGPX = trackGPX;
+
+          racesForSave.push(raceForSave);
+        }
       }
 
       // Создание slug из name для url страницы Чемпионата.
@@ -262,7 +277,7 @@ export class ChampionshipService {
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
         }),
-        ...(trackGPX.url && { trackGPX }),
+        ...(races && { races: racesForSave }),
         ...(quantityStages && { quantityStages }),
         ...(stage && { stage }),
       };
