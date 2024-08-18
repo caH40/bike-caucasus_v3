@@ -2,15 +2,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import cn from 'classnames/bind';
 
-import Button from '../UI/Button/Button';
-import StagesBox from '../StagesBox/StagesBox';
 import { blurBase64 } from '@/libs/image';
 import { bikeTypesMap } from '@/constants/trail';
 import { championshipTypesMap } from '@/constants/championship';
 import { getStagesCompleted, getStatusString } from '@/libs/utils/championship';
+import { formatDateInterval } from '@/libs/utils/calendar';
+import StagesBox from '../StagesBox/StagesBox';
+import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './ChampionshipCard.module.css';
-import { formatDateInterval } from '@/libs/utils/calendar';
 
 const cx = cn.bind(styles);
 
@@ -33,7 +33,6 @@ export default function ChampionshipCard({ championship, simple }: Props) {
             sizes="(max-width: 992px) 100vw, 25vw"
             alt={`image ${championship.name}`}
             className={styles.img}
-            priority={true}
             placeholder="blur"
             blurDataURL={blurBase64}
           />
@@ -117,7 +116,11 @@ export default function ChampionshipCard({ championship, simple }: Props) {
 
         <div className={styles.status}>{getStatusString({ championship })}</div>
 
-        <Button theme="green" name="Регистрация" />
+        <BoxRegistrationChamp
+          type={championship.type}
+          status={championship.status}
+          urlSlugChamp={championship.urlSlug}
+        />
       </div>
     </div>
   );

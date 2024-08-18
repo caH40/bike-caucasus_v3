@@ -35,7 +35,6 @@
   background-color: var(--link-auth-color-hover);
   transition: all 0.3s; /* переход для кнопки при hover, если она не отключена */
 }
-
 .btn:active:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
@@ -57,14 +56,45 @@
   color: var(--main-color);
   background-color: var(--btn-bg);
 }
-.green:hover {
+.green:hover:not(:disabled) {
   transition: all 0.2s;
   background-color: var(--btn-bg-hover);
 }
-.green:active {
+.green:active:not(:disabled) {
   background-color: var(--btn-bg-active);
 }
 .green:focus {
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
+}
+
+.dark-green {
+  flex: 0 0 auto;
+  width: auto;
+  font-size: 1.1rem;
+  border: none;
+  color: var(--main-color);
+  background-color: darkcyan;
+}
+.dark-green:hover:not(:disabled) {
+  transition: all 0.2s;
+  background-color: rgb(0, 177, 177);
+}
+.dark-green:active:not(:disabled) {
+  background-color: darkcyan;
+}
+.dark-green:focus {
+  box-shadow: 0 0 5px 4px rgb(0, 177, 177);
+  outline: none;
+}
+
+.disabled-link {
+  pointer-events: none; /* Отключает все взаимодействия с элементом */
+  cursor: not-allowed; /* Устанавливает курсор как у отключенной кнопки */
+  background-color: tomato; /* Можно добавить стилизацию для disabled состояния */
+  text-decoration: none;
+}
+.disabled-link:focus {
+  box-shadow: 0 0 5px 4px rgb(255, 130, 108);
   outline: none;
 }
