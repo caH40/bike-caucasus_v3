@@ -5,6 +5,7 @@ import {
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
+  TRace,
 } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
@@ -487,16 +488,23 @@ export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { 
  */
 export type TFormChampionshipCreate = Omit<
   TChampionship,
-  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX' | 'parentChampionship'
+  | '_id'
+  | 'organizer'
+  | 'startDate'
+  | 'endDate'
+  | 'status'
+  | 'trackGPX'
+  | 'parentChampionship'
+  | 'races'
 > & {
   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
   startDate: string;
   endDate: string;
-  trackGPXFile: File | null;
-  trackGPXUrl: string | null;
+  races: TRaceForForm[];
   parentChampionship: { _id: string; name: string };
 };
+export type TRaceForForm = TRace & { trackGPXFile: File | null; trackGPXUrl: string | null };
 
 /**
  * Данные Этапа для формирования карточки Чемпионата.

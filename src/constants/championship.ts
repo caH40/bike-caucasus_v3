@@ -1,4 +1,4 @@
-import { TOptions, TOptionsMap } from '@/types/index.interface';
+import type { TOptions, TOptionsMap, TRaceForForm } from '@/types/index.interface';
 
 /**
  * Тип Чемпионата.
@@ -39,3 +39,18 @@ export const championshipStatusMap: TOptionsMap = new Map([
   ['completed', { translation: 'Завершенный' }],
   ['cancelled', { translation: 'Отмененный' }],
 ]);
+
+/**
+ * Начальные значения объекта Race (заезд) в Соревновании/Этапе.
+ */
+export const raceInit: TRaceForForm = {
+  number: 1,
+  name: '',
+  laps: 1,
+  description: '',
+  distance: 0,
+  ascent: 0,
+  trackGPX: undefined,
+  trackGPXFile: null,
+  trackGPXUrl: null,
+};

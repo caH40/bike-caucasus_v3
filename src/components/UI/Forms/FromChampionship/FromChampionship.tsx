@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
@@ -19,7 +19,7 @@ import BoxInput from '../../BoxInput/BoxInput';
 import Button from '../../Button/Button';
 import { getDateTime } from '@/libs/utils/calendar';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
-import { championshipTypes } from '@/constants/championship';
+import { championshipTypes, raceInit } from '@/constants/championship';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import { bikeTypes } from '@/constants/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
@@ -28,6 +28,8 @@ import { useRouter } from 'next/navigation';
 import { formateAndStripContent } from './utils';
 import SelectCustom from '../../SelectCustom/SelectCustom';
 import { useShowChampionshipForm } from '@/hooks/useShowChampionshipForm';
+import { TRace } from '@/types/models.interface';
+import BlockRaceAdd from '../../BlockRaceAdd/BlockRaceAdd';
 
 type Props = {
   organizer: TDtoOrganizer;
@@ -53,6 +55,8 @@ export default function FromChampionship({
   const setLoading = useLoadingStore((state) => state.setLoading);
   const isEditing = !!championshipForEdit;
 
+  // const [races, setRaces] = useState<TRace[]>(racesInit);
+
   // Постер Чемпионата существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
     championshipForEdit ? championshipForEdit.posterUrl : null
@@ -68,8 +72,18 @@ export default function FromChampionship({
     reset,
     watch,
     formState: { errors },
-  } = useForm<TFormChampionshipCreate>({ mode: 'all' });
+  } = useForm<TFormChampionshipCreate>({
+    mode: 'all',
+    defaultValues: {
+      races: [raceInit], // начальное значение массива races
+    },
+  });
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'races',
+  });
+  console.log(fields);
   // Отображения блоков в зависимости от использования формы и вводимых значений.
   const { showTrackInput, showQuantityStage, showNumberStage } = useShowChampionshipForm({
     typeInInput: watch('type'),
@@ -83,8 +97,10 @@ export default function FromChampionship({
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
+    console.log(dataForm);
+
     // Старт отображение статуса загрузки.
-    setLoading(true);
+    // setLoading(true);
 
     // Сериализация данных перед отправкой на сервер.
     const championshipId = championshipForEdit?._id;
@@ -108,34 +124,34 @@ export default function FromChampionship({
       isEditing,
     });
 
-    // Отправка данных на сервер и получение ответа после завершения операции.
-    const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
-    let response = {
-      data: null,
-      ok: false,
-      message: messageErr,
-    };
+    // // Отправка данных на сервер и получение ответа после завершения операции.
+    // const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
+    // let response = {
+    //   data: null,
+    //   ok: false,
+    //   message: messageErr,
+    // };
 
-    if (fetchChampionshipCreated) {
-      response = await fetchChampionshipCreated(dataSerialized);
-    } else if (putChampionship) {
-      response = await putChampionship(dataSerialized);
-    } else {
-      return toast.error(messageErr);
-    }
+    // if (fetchChampionshipCreated) {
+    //   response = await fetchChampionshipCreated(dataSerialized);
+    // } else if (putChampionship) {
+    //   response = await putChampionship(dataSerialized);
+    // } else {
+    //   return toast.error(messageErr);
+    // }
 
-    // Завершение отображение статуса загрузки.
-    setLoading(false);
+    // // Завершение отображение статуса загрузки.
+    // setLoading(false);
 
-    // Отображение статуса сохранения События в БД.
-    if (response.ok) {
-      reset();
-      toast.success(response.message);
+    // // Отображение статуса сохранения События в БД.
+    // if (response.ok) {
+    //   reset();
+    //   toast.success(response.message);
 
-      router.push('/moderation/championship/list');
-    } else {
-      toast.error(response.message);
-    }
+    //   router.push('/moderation/championship/list');
+    // } else {
+    //   toast.error(response.message);
+    // }
   };
 
   const textValidation = new TextValidationService();
@@ -211,7 +227,7 @@ export default function FromChampionship({
       </div>
 
       {/* Блок выбора типа Чемпионата. Выбирается при создании, при редактировании не доступен */}
-      <BoxSelectNew
+      {/* <BoxSelectNew
         label="Тип Чемпионата:*"
         id="type"
         options={championshipTypes}
@@ -222,10 +238,10 @@ export default function FromChampionship({
         })}
         disabled={!!championshipForEdit}
         validationText={errors.type ? errors.type.message : ''}
-      />
+      /> */}
 
       {/* Блок установки количества Этапов в Серии или Туре*/}
-      {showQuantityStage && (
+      {/* {showQuantityStage && (
         <BoxInput
           label="Количество Этапов:*"
           id="quantityStages"
@@ -247,10 +263,10 @@ export default function FromChampionship({
           })}
           validationText={errors.quantityStages ? errors.quantityStages.message : ''}
         />
-      )}
+      )} */}
 
       {/* Выбор родительской страницы Чемпионата только когда это Одиночное соревнование или Этап*/}
-      {watch('type') === 'stage' &&
+      {/* {watch('type') === 'stage' &&
         // Проверка на наличие созданных Туров или Серий у Организатора
         (!!parentChampionships?.length ? (
           <div className={styles.full__width}>
@@ -280,10 +296,10 @@ export default function FromChampionship({
             Для этапа необходим родительский Чемпионат, сначала создайте Тур или Серию, а затем
             этапы к ним!
           </h3>
-        ))}
+        ))} */}
 
       {/* Блок выбора номера Этапа */}
-      {showNumberStage && (
+      {/* {showNumberStage && (
         <BoxSelectNew
           label="Порядковый номер Этапа:*"
           id="stage"
@@ -298,10 +314,10 @@ export default function FromChampionship({
           disabled={!createStageNumbers().length}
           validationText={errors.stage ? errors.stage.message : ''}
         />
-      )}
+      )} */}
 
       {/* Блок ввода Названия */}
-      <BoxInput
+      {/* <BoxInput
         label="Название должно быть уникальным:*"
         id="name"
         autoComplete="off"
@@ -318,10 +334,10 @@ export default function FromChampionship({
           validate: textValidation.spaces,
         })}
         validationText={errors.name ? errors.name.message : ''}
-      />
+      /> */}
 
       {/* Блок ввода Описания */}
-      <BoxTextarea
+      {/* <BoxTextarea
         label="Описание:*"
         id="description"
         autoComplete="off"
@@ -340,10 +356,10 @@ export default function FromChampionship({
           // validate: textValidation.spaces,
         })}
         validationText={errors.description ? errors.description.message : ''}
-      />
+      /> */}
 
       {/* Блок ввода Даты старта */}
-      <BoxInput
+      {/* <BoxInput
         label="Дата старта:*"
         id="startDate"
         autoComplete="off"
@@ -357,10 +373,10 @@ export default function FromChampionship({
           required: 'Это обязательное поле для заполнения',
         })}
         validationText={errors.startDate ? errors.startDate.message : ''}
-      />
+      /> */}
 
       {/* Блок ввода Даты завершения Чемпионата/этапа */}
-      <BoxInput
+      {/* <BoxInput
         label="Дата завершения (последнего этапа):*"
         id="endDate"
         autoComplete="off"
@@ -374,10 +390,10 @@ export default function FromChampionship({
           validate: (value) => validateDates(watch('startDate'), value),
         })}
         validationText={errors.endDate ? errors.endDate.message : ''}
-      />
+      /> */}
 
       {/* Блок загрузки Главного изображения (обложки) */}
-      <Controller
+      {/* <Controller
         name="posterFile"
         control={control}
         defaultValue={null}
@@ -393,7 +409,7 @@ export default function FromChampionship({
             validationText={errors.posterFile?.message ? errors.posterFile.message : ''}
           />
         )}
-      />
+      /> */}
 
       {/* Блок выбора типа Велосипеда на котором проводится Заезд */}
       <BoxSelectNew
@@ -410,7 +426,7 @@ export default function FromChampionship({
 
       {/* Блок загрузки GPX трека*/}
       {/* Трек необходим только для страницы Одиночного Чемпионата или этапа. В Серии и туре только общее описание */}
-      {showTrackInput && (
+      {/* {showTrackInput && (
         <Controller
           name="trackGPXFile"
           control={control}
@@ -432,7 +448,21 @@ export default function FromChampionship({
             />
           )}
         />
-      )}
+      )} */}
+      {fields.map((race, index) => (
+        <BlockRaceAdd
+          race={race}
+          races={fields}
+          index={index}
+          register={register}
+          append={append}
+          remove={remove}
+          errors={errors}
+          control={control}
+          key={race.id}
+          isLoading={isLoading}
+        />
+      ))}
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>

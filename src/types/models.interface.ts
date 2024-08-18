@@ -303,6 +303,7 @@ export type TChampionship = {
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   trackGPX?: TTrackGPXObj;
+  races: TRace[];
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
   // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
@@ -322,3 +323,18 @@ export type TTrackGPXObj = {
   coordStart: { lat: number; lon: number }; // Координаты старта заезда.
 };
 export type TChampionshipStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+
+/**
+ * Тип схемы/модели для Заезда Чемпионата.
+ * Закрывается после завершения Этапа/Соревнования, где использовался Заезд.
+ * В последующем можно дублировать, для использования в другом Этапе/Соревновании.
+ */
+export type TRace = {
+  number: number; // Порядковый номер.
+  name: string; // Должно быть уникальным в рамках одного Соревнования/Этапа.
+  description: string; // Краткие детали Заезда.
+  laps: number; // Количество кругов.
+  distance: number; // Дистанция Заезда в километрах.
+  ascent?: number; // Набор высоты на дистанции в метрах.
+  trackGPX?: TTrackGPXObj;
+};
