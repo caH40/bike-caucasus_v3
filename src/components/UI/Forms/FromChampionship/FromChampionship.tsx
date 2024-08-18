@@ -78,7 +78,7 @@ export default function FromChampionship({
   });
 
   const initParentChampionship = parentChampionships.find(
-    (elm) => elm._id === championshipForEdit?.parentChampionship
+    (elm) => elm._id === championshipForEdit?.parentChampionship?._id
   );
 
   // Обработка формы после нажатия кнопки "Отправить".

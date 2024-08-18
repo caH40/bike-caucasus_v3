@@ -53,12 +53,12 @@ function getLinkConfig(
       return {
         href: `/championships/${urlSlugChamp}`,
         theme: 'green',
-        name: isTourOrSeries ? 'Регистрация' : 'Нет данных',
+        name: isTourOrSeries ? 'Подробнее' : 'Нет данных',
         disabled: !isTourOrSeries,
       };
     default:
       return {
-        href: `/championships/registration/${urlSlugChamp}`,
+        href: `/championships/${urlSlugChamp}`, // Необходимо прокручивание до таблиц с результатами.
         theme: 'dark-green',
         name: 'Результаты',
         disabled: false,
