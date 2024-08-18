@@ -2,7 +2,11 @@
 
 import { getDateTime } from '@/libs/utils/calendar';
 import type { TDtoChampionship } from '@/types/dto.types';
-import type { TChampionshipWithOrganizer, TOrganizerForClient } from '@/types/index.interface';
+import type {
+  TChampionshipWithOrganizer,
+  TOrganizerForClient,
+  TParentChampionshipForClient,
+} from '@/types/index.interface';
 import { ObjectId } from 'mongoose';
 
 /**
@@ -23,6 +27,11 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     _id: String(championship.organizer._id),
   };
 
+  const parentChampionship: TParentChampionshipForClient = championship.parentChampionship && {
+    ...championship.parentChampionship,
+    _id: String(championship.parentChampionship._id),
+  };
+
   // Приведение даты в вид yyyy-mm-dd
   const { isoDate: startDate } = getDateTime(championship.startDate);
   const { isoDate: endDate } = getDateTime(championship.endDate);
@@ -32,11 +41,11 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
   return {
     _id: String(championship._id),
     organizer,
+    parentChampionship,
     name: championship.name,
     urlSlug: championship.urlSlug,
     description: championship.description,
     trackGPX: championship.trackGPX,
-    parentChampionship: String(championship.parentChampionship),
     quantityStages: championship.quantityStages,
     stage: championship.stage,
     posterUrl: championship.posterUrl,

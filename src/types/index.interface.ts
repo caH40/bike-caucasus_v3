@@ -477,7 +477,10 @@ export type TOrganizerForClient = Pick<
 export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
   organizer: TOrganizerPublic;
   stageDateDescription: TStageDateDescription[];
+  parentChampionship: TParentChampionship;
 };
+export type TParentChampionship = Pick<TChampionship, '_id' | 'name' | 'stage' | 'type'>;
+export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { _id: string };
 
 /**
  * Данные для формы создания Чемпионата.

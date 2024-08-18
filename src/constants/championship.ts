@@ -4,7 +4,7 @@ import { TOptions, TOptionsMap } from '@/types/index.interface';
  * Тип Чемпионата.
  */
 export const championshipTypes: TOptions[] = [
-  { id: 0, translation: 'Одиночный', name: 'single' },
+  { id: 0, translation: 'Соревнование', name: 'single' },
   { id: 1, translation: 'Серия', name: 'series' },
   { id: 2, translation: 'Тур', name: 'tour' },
   { id: 3, translation: 'Этап', name: 'stage' },
@@ -14,7 +14,7 @@ export const championshipTypes: TOptions[] = [
  * Тип Чемпионата.
  */
 export const championshipTypesMap: TOptionsMap = new Map([
-  ['single', { translation: 'Одиночный' }],
+  ['single', { translation: 'Соревнование' }],
   ['series', { translation: 'Серия' }],
   ['tour', { translation: 'Тур' }],
   ['stage', { translation: 'Этап' }],

@@ -5,12 +5,13 @@ import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
-import { organizerSelect } from '@/constants/populate';
+import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
 import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/championship';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
   TOrganizerPublic,
+  TParentChampionship,
   TSaveFile,
   TStageDateDescription,
 } from '@/types/index.interface';
@@ -80,6 +81,10 @@ export class ChampionshipService {
           path: 'organizer',
           select: organizerSelect,
         })
+        .populate({
+          path: 'parentChampionship',
+          select: parentChampionshipSelect,
+        })
         .lean();
 
       if (!championshipDB) {
@@ -129,11 +134,16 @@ export class ChampionshipService {
       // Получение Чемпионатов согласно запросу query.
       const championshipsDB: (Omit<TChampionship, 'organizer'> & {
         organizer: TOrganizerPublic;
+        parentChampionship: TParentChampionship;
         stageDateDescription: TStageDateDescription[];
       })[] = await ChampionshipModel.find(query)
         .populate({
           path: 'organizer',
           select: organizerSelect,
+        })
+        .populate({
+          path: 'parentChampionship',
+          select: parentChampionshipSelect,
         })
         .lean();
 
