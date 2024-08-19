@@ -336,5 +336,5 @@ export type TRace = {
   laps: number; // Количество кругов.
   distance: number; // Дистанция Заезда в километрах.
   ascent?: number; // Набор высоты на дистанции в метрах.
-  trackGPX?: TTrackGPXObj;
+  trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
 };

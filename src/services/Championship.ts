@@ -216,7 +216,17 @@ export class ChampionshipService {
         races,
       } = deserializeChampionship(serializedFormData);
 
-      const racesForSave: TRace[] = [];
+      // Проверка на дубликат названия Чемпионата.
+      const championshipDuplicate = await ChampionshipModel.findOne(
+        { name },
+        { _id: true }
+      ).lean();
+      if (championshipDuplicate) {
+        throw new Error(
+          `Чемпионат с названием "${name}" уже существует! Придумайте уникальное название.`
+        );
+      }
+
       // Сохранение изображения для Постера Чемпионата.
       const posterUrl = await this.saveFile({
         file: posterFile as File,
@@ -224,6 +234,8 @@ export class ChampionshipService {
         suffix: this.suffixImagePoster,
       });
 
+      // Обработка данных Заездов (дистанций).
+      const racesForSave: TRace[] = [];
       if (races) {
         for (const race of races) {
           // Трек не обязателен, поэтому проверка для загрузки файла на облако.
@@ -421,7 +433,7 @@ export class ChampionshipService {
             status: TChampionshipStatus;
             name: string;
             posterUrl: string;
-            trackGPX: TTrackGPXObj;
+            races: TRace[];
           } & Document)
         | null = await ChampionshipModel.findOne(
         { urlSlug },
@@ -429,7 +441,7 @@ export class ChampionshipService {
           status: true,
           name: true,
           posterUrl: true,
-          trackGPX: true,
+          races: true,
         }
       );
 
@@ -454,10 +466,13 @@ export class ChampionshipService {
       });
 
       // Удаление GPX трека с облака.
-      if (championshipDB.trackGPX.url) {
-        await cloudService.deleteFile({
-          prefix: championshipDB.trackGPX.url.replace(fileNameFormUrl, '$1'),
-        });
+      if (championshipDB.races) {
+        // без await, нет необходимости ждать результата выполнения каждого Промиса.
+        for (const race of championshipDB.races) {
+          cloudService.deleteFile({
+            prefix: race.trackGPX.url.replace(fileNameFormUrl, '$1'),
+          });
+        }
       }
 
       return {

@@ -93,7 +93,7 @@ export default function FromChampionship({
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
     // Старт отображение статуса загрузки.
-    // setLoading(true);
+    setLoading(true);
 
     // Сериализация данных перед отправкой на сервер.
     const championshipId = championshipForEdit?._id;
@@ -132,18 +132,18 @@ export default function FromChampionship({
       return toast.error(messageErr);
     }
 
-    // // Завершение отображение статуса загрузки.
-    // setLoading(false);
+    // Завершение отображение статуса загрузки.
+    setLoading(false);
 
-    // // Отображение статуса сохранения События в БД.
-    // if (response.ok) {
-    //   reset();
-    //   toast.success(response.message);
+    // Отображение статуса сохранения События в БД.
+    if (response.ok) {
+      // reset();
+      toast.success(response.message);
 
-    //   router.push('/moderation/championship/list');
-    // } else {
-    //   toast.error(response.message);
-    // }
+      // router.push('/moderation/championship/list');
+    } else {
+      toast.error(response.message);
+    }
   };
 
   const textValidation = new TextValidationService();
