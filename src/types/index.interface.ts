@@ -6,6 +6,7 @@ import {
   TNewsBlockInfo,
   TOrganizer,
   TRace,
+  TTrackGPXObj,
 } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 
@@ -504,7 +505,11 @@ export type TFormChampionshipCreate = Omit<
   races: TRaceForForm[];
   parentChampionship: { _id: string; name: string };
 };
-export type TRaceForForm = TRace & { trackGPXFile: File | null; trackGPXUrl: string | null };
+export type TRaceForForm = Omit<TRace, 'trackGPX'> & {
+  trackGPXFile: File | null;
+  trackGPXUrl: string | null;
+  trackGPX?: TTrackGPXObj;
+};
 
 /**
  * Данные Этапа для формирования карточки Чемпионата.

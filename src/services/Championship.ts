@@ -238,7 +238,6 @@ export class ChampionshipService {
       const racesForSave: TRace[] = [];
       if (races) {
         for (const race of races) {
-          // Трек не обязателен, поэтому проверка для загрузки файла на облако.
           let trackGPX = {} as TTrackGPXObj;
           const raceForSave = {} as TRace;
           // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
@@ -322,16 +321,16 @@ export class ChampionshipService {
       const {
         championshipId,
         posterFile,
-        trackGPXFile,
         name,
         description,
         startDate,
         endDate,
         bikeType,
-        needDelTrack,
         parentChampionshipId,
         quantityStages,
         stage,
+        races,
+        urlTracksForDel,
       } = deserializeChampionship(serializedFormData);
 
       const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
@@ -361,30 +360,77 @@ export class ChampionshipService {
         });
       }
 
-      // Если существует trackGPXFile значит GPX трек был обновлён.
-      // Сохранение Постера.
-      let trackGPX: TTrackGPXObj | null = null;
-      if (trackGPXFile) {
-        const trackGPXUrl = await this.saveFile({
-          file: trackGPXFile as File,
-          type: 'GPX',
-          suffix: this.suffixTrackGpx,
-        });
+      // Обработка данных Заездов (дистанций).
+      const racesForSave: TRace[] = [];
+      if (races) {
+        for (const race of races) {
+          // Если race.trackGPXFile существует, значит трек изменялся.
+          if (race.trackGPXFile) {
+            // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
+            const trackGPXUrl = await this.saveFile({
+              file: race.trackGPXFile as File,
+              type: 'GPX',
+              suffix: this.suffixTrackGpx,
+            });
 
-        // Получаем файл GPX с облака, так как реализация через FileReader большая!
-        const gpxParsed = await parseGPX(trackGPXUrl);
+            // Получаем файл GPX с облака, так как реализация через FileReader большая!
+            const gpxParsed = await parseGPX(trackGPXUrl);
 
-        const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+            const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
 
-        trackGPX = {
-          url: trackGPXUrl,
-          coordStart,
-        };
+            const trackGPX = {
+              url: trackGPXUrl,
+              coordStart,
+            };
 
-        // Удаление старого GPX трек из облака.
-        await cloud.deleteFile({
-          prefix: championshipDB.trackGPX?.url?.replace(fileNameFormUrl, '$1'),
-        });
+            const raceForSave = {} as TRace;
+            raceForSave.trackGPX = trackGPX;
+            raceForSave.number = race.number;
+            raceForSave.name = race.name;
+            raceForSave.description = race.description;
+            raceForSave.laps = race.laps;
+            raceForSave.distance = race.distance;
+            raceForSave.ascent = race.ascent;
+
+            racesForSave.push(raceForSave);
+
+            // Удаление старого GPX трек из облака.
+            cloud.deleteFile({
+              prefix: race.trackGPXUrl?.replace(fileNameFormUrl, '$1'),
+            });
+          } else {
+            // Если race.trackGPXFile нет в объекте,пришедшем из формы клиента,
+            // то находим его в обновляемом документе championshipDB,
+            // если такой race не найден, значит race.number не существует,
+            // то есть данный рейс был удален в форме на клиенте.
+            const raceWithoutChangedTrack = championshipDB.races.find(
+              (elm) => elm.number === race.number
+            );
+
+            // trackGPXUrl чтобы удалить с Облака.
+            if (raceWithoutChangedTrack) {
+              const raceForSave = {} as TRace;
+              raceForSave.trackGPX = raceWithoutChangedTrack.trackGPX;
+              raceForSave.number = race.number;
+              raceForSave.name = race.name;
+              raceForSave.description = race.description;
+              raceForSave.laps = race.laps;
+              raceForSave.distance = race.distance;
+              raceForSave.ascent = race.ascent;
+
+              racesForSave.push(raceForSave);
+            }
+          }
+        }
+
+        // Удаление файлов трека с облака, если были удалены блоки Заездов.
+        if (urlTracksForDel) {
+          urlTracksForDel.forEach((url) => {
+            cloud.deleteFile({
+              prefix: url.replace(fileNameFormUrl, '$1'),
+            });
+          });
+        }
       }
 
       // Внимание! Добавлять соответствующие обновляемые свойства Чемпионата в ручную.
@@ -394,7 +440,7 @@ export class ChampionshipService {
         startDate,
         endDate,
         bikeType,
-        ...(trackGPX && { trackGPX }), // Обновление только если trackGPX не null
+        ...(races && { races: racesForSave }), // Обновление только если races не null
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
         ...(quantityStages && { quantityStages }),
         ...(parentChampionshipId && {
@@ -403,15 +449,7 @@ export class ChampionshipService {
         ...(stage && { stage }),
       };
 
-      // При редактировании выбрана опция удаления Трека Чемпионата.
-      if (needDelTrack) {
-        await cloud.deleteFile({
-          prefix: championshipDB.trackGPX?.url.replace(fileNameFormUrl, '$1'),
-        });
-        updateData.trackGPX = {}; // Обновление поля trackGPX на пустой объект.
-      }
-
-      await championshipDB.updateOne(updateData);
+      await championshipDB.updateOne({ $set: { ...updateData } });
 
       return { data: null, ok: true, message: 'Данные Чемпионата обновлены в БД!' };
     } catch (error) {

@@ -6,6 +6,7 @@ type Params = {
   parentChampionshipId: string | undefined;
   organizerId: string; // _id Организатора.
   isEditing: boolean; //
+  urlTracksForDel: string[]; // Массив url треков для удаления в облаке.
 };
 
 /**
@@ -19,6 +20,7 @@ export function serializationChampionship({
   organizerId,
   parentChampionshipId,
   isEditing,
+  urlTracksForDel,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -56,6 +58,10 @@ export function serializationChampionship({
   // dataForm.posterFile может быть null при редактировании Чемпионата.
   if (dataForm.posterFile) {
     formData.set('posterFile', dataForm.posterFile);
+  }
+
+  if (!!urlTracksForDel?.length) {
+    formData.set('urlTracksForDel', JSON.stringify(urlTracksForDel));
   }
 
   if (dataForm.races) {

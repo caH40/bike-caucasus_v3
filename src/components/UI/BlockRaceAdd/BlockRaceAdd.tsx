@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, MutableRefObject } from 'react';
 import Image from 'next/image';
 import {
   Control,
@@ -15,11 +15,10 @@ import BoxTextarea from '../BoxTextarea/BoxTextarea';
 import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
 import { raceInit } from '@/constants/championship';
 import type { TFormChampionshipCreate, TRaceForForm } from '@/types/index.interface';
-import type { TRace } from '@/types/models.interface';
 import styles from './BlockRaceAdd.module.css';
 
 type Props = {
-  race: TRace;
+  race: TRaceForForm;
   races: FieldArrayWithId<TFormChampionshipCreate, 'races', 'id'>[];
   index: number;
   register: UseFormRegister<TFormChampionshipCreate>;
@@ -28,6 +27,7 @@ type Props = {
   errors: FieldErrors<TFormChampionshipCreate>;
   control: Control<TFormChampionshipCreate, any>;
   isLoading: boolean;
+  urlTracksForDel: MutableRefObject<string[]>;
 };
 
 export default function BlockRaceAdd({
@@ -40,6 +40,7 @@ export default function BlockRaceAdd({
   errors,
   control,
   isLoading,
+  urlTracksForDel,
 }: Props) {
   // Добавление Заезда.
   const addRace = (e: MouseEvent<HTMLButtonElement>): void => {
@@ -59,6 +60,13 @@ export default function BlockRaceAdd({
   // Удаление Заезда.
   const deleteRace = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
+
+    // index начинается с нуля, а number c 1.
+    const trackGPXUrl = races.find((elm) => elm.number === index + 1)?.trackGPXUrl;
+    if (trackGPXUrl) {
+      urlTracksForDel.current.push(trackGPXUrl);
+    }
+
     remove(index);
   };
 
@@ -192,18 +200,16 @@ export default function BlockRaceAdd({
           name={`races.${index}.trackGPXFile`}
           control={control}
           defaultValue={null}
-          rules={{ required: 'Файл трека обязателен' }}
+          rules={races?.[index]?.trackGPXUrl ? {} : { required: 'Файл трека обязателен' }}
           render={({ field }) => (
             <BlockUploadTrack
               title={'Трек заезда:'}
               setTrack={field.onChange}
               isLoading={isLoading}
               resetData={false}
-              isRequired={false}
-              value={'нет'}
-              validationText={errors?.races?.[index]?.trackGPX?.message || ''}
-              // needDelTrack={needDelTrack}
-              // setNeedDelTrack={setNeedDelTrack}
+              isRequired={true}
+              value={race.trackGPXUrl || 'нет'}
+              validationText={errors?.races?.[index]?.trackGPXFile?.message || ''}
             />
           )}
         />

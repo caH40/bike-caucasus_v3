@@ -52,6 +52,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     status: championship.status,
     type: championship.type,
     bikeType: championship.bikeType,
+    races: championship.races,
     startDate,
     endDate,
     createdAt,

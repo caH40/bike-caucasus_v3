@@ -9,6 +9,7 @@ export function deserializeChampionship(serializedFormData: FormData) {
   const championship = {} as TFormChampionshipCreate & {
     organizerId?: string;
     parentChampionshipId?: string;
+    urlTracksForDel: string[];
   } & {
     [key: string]: any;
   };
@@ -48,6 +49,12 @@ export function deserializeChampionship(serializedFormData: FormData) {
             // Если ключ ascent то возвращается число.
             case 'quantityStages':
               return +value;
+
+            // Если ключ urlTracksForDel парсить.
+            case 'urlTracksForDel':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
 
             // Если ключ imageDeleted то возвращается булево значение.
             case 'imageDeleted':
