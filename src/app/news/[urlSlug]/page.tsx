@@ -16,10 +16,11 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 import BlockComments from '@/components/BlockComments/BlockComments';
 import { getComments } from '@/actions/comment';
-import MenuForNews from '@/components/UI/Menu/MenuControl/MenuForNews';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from './NewsPage.module.css';
 import PermissionCheck from '@/hoc/permission-check';
+import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
+import { getNavLinksNewsPopup } from '@/constants/navigation';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -99,7 +100,12 @@ export default async function NewsPage({ params }: Props) {
         {/* popup меня управления новостью */}
         <PermissionCheck permission={'admin'}>
           <div className={styles.ellipsis} id="popup-control-menu-news">
-            <MenuForNews newsUrlSlug={newsOne.urlSlug} />
+            <MenuEllipsisControl
+              urlSlug={newsOne.urlSlug}
+              id={'#popup-control-menu-news'}
+              messageTooltip="Управление новостью"
+              getMenuItems={getNavLinksNewsPopup}
+            />
           </div>
         </PermissionCheck>
 

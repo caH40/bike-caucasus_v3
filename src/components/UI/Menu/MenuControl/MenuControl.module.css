@@ -1,3 +1,10 @@
+.box__icon {
+  border-radius: 5px;
+  background-color: var(--white-20);
+}
+.box__icon:hover {
+  background-color: var(--color-orange);
+}
 .popup {
   position: absolute;
   z-index: 1001;

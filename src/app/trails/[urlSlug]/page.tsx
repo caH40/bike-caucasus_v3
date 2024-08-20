@@ -22,9 +22,10 @@ import { getComments } from '@/actions/comment';
 import Author from '@/components/Author/Author';
 const Weather = dynamic(() => import('@/components/Weather/Weather'), { ssr: false });
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
-import styles from './TrailPage.module.css';
 import PermissionCheck from '@/hoc/permission-check';
-import MenuForTrail from '@/components/UI/Menu/MenuControl/MenuForTrail';
+import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
+import { getNavLinksTrailPopup } from '@/constants/navigation';
+import styles from './TrailPage.module.css';
 
 const cx = cn.bind(styles);
 
@@ -64,7 +65,12 @@ export default async function TrailPage({ params }: Props) {
       {/* popup меня управления новостью */}
       <PermissionCheck permission={'admin'}>
         <div className={styles.ellipsis} id="popup-control-menu-trail">
-          <MenuForTrail trailUrlSlug={trail.urlSlug} />
+          <MenuEllipsisControl
+            urlSlug={trail.urlSlug}
+            id={'#popup-control-menu-trail'}
+            getMenuItems={getNavLinksTrailPopup}
+            messageTooltip={'Управление маршрутом'}
+          />
         </div>
       </PermissionCheck>
       <Wrapper

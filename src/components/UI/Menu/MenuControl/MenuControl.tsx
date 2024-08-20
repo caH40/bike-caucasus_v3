@@ -20,10 +20,12 @@ export default function MenuControl({ buttons }: Props) {
 
   return (
     <>
-      <IconEllipsisVertical
-        colors={{ hover: '#ec9c07' }}
-        getClick={() => setIsVisible((prev) => !prev)}
-      />
+      <div className={styles.box__icon}>
+        <IconEllipsisVertical
+          colors={{ default: '#ec9c07', hover: 'white' }}
+          getClick={() => setIsVisible((prev) => !prev)}
+        />
+      </div>
       {isVisible && (
         <div
           className={styles.popup}

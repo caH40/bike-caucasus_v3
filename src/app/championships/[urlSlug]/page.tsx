@@ -11,6 +11,9 @@ import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { ChampionshipService } from '@/services/Championship';
 import styles from './Championship.module.css';
+import PermissionCheck from '@/hoc/permission-check';
+import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
+import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 
 type Props = { params: { urlSlug: string } };
 
@@ -45,6 +48,17 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
       {championship.data && (
         <>
           <div className={styles.block__header}>
+            {/* popup меня управления новостью */}
+            <PermissionCheck permission={'admin'}>
+              <div className={styles.ellipsis} id="popup-control-menu-championship">
+                <MenuEllipsisControl
+                  urlSlug={championship.data.urlSlug}
+                  getMenuItems={getNavLinksChampionshipPopup}
+                  id={'#popup-control-menu-championship'}
+                  messageTooltip="Управление Чемпионатом"
+                />
+              </div>
+            </PermissionCheck>
             <BlockChampionshipHeader championship={championship.data} />
           </div>
 
