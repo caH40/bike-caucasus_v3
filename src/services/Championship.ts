@@ -6,12 +6,18 @@ import { connectToMongo } from '@/database/mongodb/mongoose';
 import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
-import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/championship';
+import {
+  dtoChampionship,
+  dtoChampionships,
+  dtoRegisteredRiders,
+  dtoToursAndSeries,
+} from '@/dto/championship';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
   TOrganizerPublic,
   TParentChampionship,
+  TRegisteredRiderFromDB,
   TSaveFile,
   TStageDateDescription,
 } from '@/types/index.interface';
@@ -33,6 +39,7 @@ import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
+import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -639,6 +646,104 @@ export class ChampionshipService {
         data: dtoToursAndSeries(championshipsWithAvailableStageNumber),
         ok: true,
         message: `Список Серий и Туров.`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Регистрация Райдера на Чемпионат.
+   */
+  public async register({
+    championshipId,
+    raceNumber,
+    riderId,
+    startNumber,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+    riderId: string;
+    startNumber: number;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+      console.log({ championshipId, raceNumber, riderId });
+
+      // Проверка занят ли выбранный стартовый номер для заезда.
+      const checkStartNumber = await RaceRegistrationModel.findOne({
+        championship: championshipId,
+        startNumber,
+        raceNumber,
+      });
+
+      if (checkStartNumber) {
+        throw new Error(`Стартовый номер: ${checkStartNumber} уже занят!`);
+      }
+
+      // Регистрация на выбранный Заезд Чемпионата.
+      const registered = await RaceRegistrationModel.create({
+        championship: championshipId,
+        rider: riderId,
+        raceNumber,
+        startNumber,
+        status: 'registered',
+      });
+
+      return {
+        data: null,
+        ok: true,
+        message: `Вы зарегистрировались`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение зарегистрированных Райдеров в Заезде (Race) Чемпионата.
+   */
+  public async getRegisteredRiders({
+    championshipId,
+    raceNumber,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(
+        {
+          championship: championshipId,
+          raceNumber,
+        },
+        { championship: false, payment: false }
+      )
+        .populate({
+          path: 'rider',
+          select: [
+            'city',
+            'team',
+            'teamVariable',
+            'person.firstName',
+            'person.lastName',
+            'person.birthday',
+            'person.gender',
+          ],
+        })
+        .lean();
+
+      const registeredRiders = await dtoRegisteredRiders(registeredRidersDb);
+      console.log(registeredRiders);
+      return {
+        data: null,
+        ok: true,
+        message: `Вы зарегистрировались`,
       };
     } catch (error) {
       this.errorLogger(error);

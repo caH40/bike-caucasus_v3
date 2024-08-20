@@ -12,17 +12,18 @@ const RaceRegistrationSchema: Schema = new Schema(
     raceNumber: { type: Number, required: true },
     rider: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
     startNumber: { type: Number, required: true },
+    team: { type: Schema.Types.ObjectId, required: true, ref: 'Team', default: null },
+    teamVariable: { type: String, default: null },
     status: {
       type: String,
       enum: ['registered', 'canceled', 'banned'],
       required: true,
     },
     payment: {
-      method: { type: String, enum: ['card', 'paymentSystem', 'cash'], required: true },
+      method: { type: String, enum: ['card', 'paymentSystem', 'cash'] },
       status: {
         type: String,
         enum: ['pending', 'paid', 'failed', 'refunded', 'free'],
-        required: true,
       },
       comment: { type: String, default: '' },
     },
@@ -32,5 +33,5 @@ const RaceRegistrationSchema: Schema = new Schema(
 
 // Модель для участника заезда
 export const RaceRegistrationModel: Model<TRaceRegistrationDocument> =
-  models.RaceRegistrationModel ||
+  models.RaceRegistration ||
   model<TRaceRegistrationDocument>('RaceRegistration', RaceRegistrationSchema);

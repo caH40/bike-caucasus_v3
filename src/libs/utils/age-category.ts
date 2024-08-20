@@ -7,6 +7,9 @@ type Params = {
   gender?: 'male' | 'female';
 };
 
+/**
+ * Преобразование даты рождения в Возрастную категорию.
+ */
 export async function getAgeCategory({
   birthday,
   ageCategoryVersion,

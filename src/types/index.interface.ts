@@ -6,9 +6,11 @@ import {
   TNewsBlockInfo,
   TOrganizer,
   TRace,
+  TRaceRegistrationStatus,
   TTrackGPXObj,
 } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
+import mongoose from 'mongoose';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -519,4 +521,28 @@ export type TStageDateDescription = {
   status: TChampionshipStatus;
   startDate: Date;
   endDate: Date;
+};
+
+/**
+ * Данные Зарегистрированного Райдера из БД.
+ */
+export type TRegisteredRiderFromDB = {
+  _id: mongoose.Types.ObjectId;
+  raceNumber: number;
+  rider: {
+    _id: mongoose.Types.ObjectId;
+    person: {
+      firstName: string;
+      lastName: string;
+      gender: 'male' | 'female';
+      birthday: Date;
+    };
+    team?: mongoose.Types.ObjectId;
+    teamVariable?: string;
+    city?: string;
+  };
+  startNumber: number;
+  status: TRaceRegistrationStatus;
+  createdAt: Date;
+  updatedAt: Date;
 };

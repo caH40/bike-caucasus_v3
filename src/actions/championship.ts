@@ -232,3 +232,65 @@ export async function getToursAndSeries({
     return handlerErrorDB(error);
   }
 }
+
+/**
+ * Экшен Регистрации на Чемпионат.
+ */
+export async function registerForChampionship({
+  championshipId,
+  raceNumber,
+  startNumber,
+}: {
+  championshipId: string;
+  raceNumber: number;
+  startNumber: number;
+}): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const riderId = session?.user.idDB;
+    if (!riderId) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.register({
+      championshipId,
+      raceNumber,
+      riderId,
+      startNumber,
+    });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
+ */
+export async function getRegisteredRiders({
+  championshipId,
+  raceNumber,
+}: {
+  championshipId: string;
+  raceNumber: number;
+}): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.getRegisteredRiders({
+      championshipId,
+      raceNumber,
+    });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}

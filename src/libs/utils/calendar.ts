@@ -179,3 +179,29 @@ export function formatDateInterval({
     return `${start.toFormat('dd MMMM')} - ${end.toFormat('dd MMMM')}`;
   }
 }
+
+/**
+ * Возвращает количество полных лет и количество неполных лет со дня рождения.
+ *
+ * @param {Date} birthDate - Дата рождения пользователя в формате объекта Date.
+ * @returns {{ fullYears: number, fractionalYears: number }} Объект с количеством полных лет и количеством неполных лет.
+ * - `fullYears`: Количество полных лет.
+ * - `fractionalYears`: Разница между текущим годом и годом рождения.
+ */
+export function getAgeDetails(birthDate: Date): { fullYears: number; fractionalYears: number } {
+  // Преобразуем объект Date в объект DateTime Luxon
+  const birth = DateTime.fromJSDate(birthDate);
+  // Получаем текущее время
+  const now = DateTime.now();
+
+  // Вычисляем количество полных лет
+  const fullYears = now.diff(birth, 'years').years;
+
+  // Вычисляем количество неполных лет как разницу между текущим годом и годом рождения
+  const fractionalYears = now.year - birth.year;
+
+  return {
+    fullYears: Math.floor(fullYears), // Полные годы
+    fractionalYears, // Неполные годы (текущий год минус год рождения)
+  };
+}

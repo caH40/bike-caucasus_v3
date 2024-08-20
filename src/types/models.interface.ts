@@ -352,6 +352,8 @@ export type TRaceRegistration = {
   raceNumber: number; // Номер заезда в Соревновании/Этапе.
   rider: mongoose.Types.ObjectId; // Ссылка на Юзера.
   startNumber: number; // Номер участника на старте.
+  team?: mongoose.Types.ObjectId; // Ссылка на Команду
+  teamVariable?: string; // Название команды, вводится в форме регистрации, если нет team.
   status: TRaceRegistrationStatus; // Статус регистрации. При отмене Документ не удаляется а устанавливается флаг canceled.
   payment: {
     method: TPaymentMethod; // Метод оплаты.
