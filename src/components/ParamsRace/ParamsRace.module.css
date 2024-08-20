@@ -1,0 +1,25 @@
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 2rem;
+  padding: 1rem 2rem;
+  background-color: var(--white-12);
+  border-radius: 0.5rem;
+}
+.box {
+  display: flex;
+  gap: 0 5px;
+}
+.description {
+  color: var(--main-color);
+}
+.title {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+}
+.title__sub {
+  font-weight: 400;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+}

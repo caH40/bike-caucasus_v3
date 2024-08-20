@@ -15,6 +15,8 @@ import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
 import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
+import BlockRaces from '@/components/BlockRaces/BlockRaces';
+import Wrapper from '@/components/Wrapper/Wrapper';
 
 type Props = { params: { urlSlug: string } };
 
@@ -68,6 +70,17 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
             <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
           </div>
 
+          <div className={styles.wrapper__races}>
+            <BlockRaces
+              races={championship.data.races}
+              registrationData={{
+                type: championship.data.type,
+                status: championship.data.status,
+                urlSlugChamp: championship.data.urlSlug,
+              }}
+            />
+          </div>
+
           {['series', 'tour'].includes(championship.data.type) && (
             <>
               <TitleAndLine hSize={2} title="Этапы" />
@@ -78,6 +91,10 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
               </div>
             </>
           )}
+
+          <Wrapper hSize={2} title={'Зарегистрированные участники'}>
+            таблица с зарегистрированными участниками
+          </Wrapper>
         </>
       )}
     </div>
