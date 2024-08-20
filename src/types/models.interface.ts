@@ -338,3 +338,26 @@ export type TRace = {
   ascent?: number; // Набор высоты на дистанции в метрах.
   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
 };
+
+/**
+ * Тип схемы регистрация Райдера (User) на Заезд Чемпионата.
+ */
+export type TPaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'free';
+export type TPaymentMethod = 'card' | 'paymentSystem' | 'cash';
+export type TRaceRegistrationStatus = 'registered' | 'canceled' | 'banned';
+export type TRaceRegistrationDocument = TRaceRegistration & Document;
+export type TRaceRegistration = {
+  _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции
+  championship: mongoose.Types.ObjectId; // Ссылка на чемпионат
+  raceNumber: number; // Номер заезда в Соревновании/Этапе.
+  rider: mongoose.Types.ObjectId; // Ссылка на Юзера.
+  startNumber: number; // Номер участника на старте.
+  status: TRaceRegistrationStatus; // Статус регистрации. При отмене Документ не удаляется а устанавливается флаг canceled.
+  payment: {
+    method: TPaymentMethod; // Метод оплаты.
+    status: TPaymentStatus; // Статус оплаты регистрации.
+    comment?: string; // Комментарий к платежу (например, детали ошибки или прочее).
+  };
+  createdAt: Date;
+  updatedAt: Date;
+};
