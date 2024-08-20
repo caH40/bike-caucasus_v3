@@ -14,6 +14,7 @@ import styles from './Championship.module.css';
 import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
 import { getNavLinksChampionshipPopup } from '@/constants/navigation';
+import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 
 type Props = { params: { urlSlug: string } };
 
@@ -25,6 +26,7 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),
   ]);
+
   const champService = new ChampionshipService();
   await champService.updateStatusChampionship();
 
@@ -60,6 +62,10 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
               </div>
             </PermissionCheck>
             <BlockChampionshipHeader championship={championship.data} />
+          </div>
+
+          <div className={styles.wrapper__contacts}>
+            <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
           </div>
 
           {['series', 'tour'].includes(championship.data.type) && (

@@ -51,7 +51,7 @@ export default async function OrganizerPage({ params: { urlSlug } }: Props) {
         <>
           <BlockOrganizerHeader organizer={organizer.data} />
           <div className={styles.wrapper__contacts}>
-            <BlockOrganizerContacts organizer={organizer.data} />
+            <BlockOrganizerContacts organizer={organizer.data.contactInfo} />
           </div>
         </>
       )}
