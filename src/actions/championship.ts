@@ -8,7 +8,7 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
-import type { TDtoChampionship } from '@/types/dto.types';
+import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import { TChampionshipTypes } from '@/types/models.interface';
 
@@ -279,7 +279,7 @@ export async function getRegisteredRiders({
 }: {
   championshipId: string;
   raceNumber: number;
-}): Promise<ResponseServer<null>> {
+}): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
   'use server';
   try {
     const championshipService = new ChampionshipService();

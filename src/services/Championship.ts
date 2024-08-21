@@ -29,7 +29,7 @@ import type {
   TRace,
   TTrackGPXObj,
 } from '@/types/models.interface';
-import type { TDtoChampionship } from '@/types/dto.types';
+import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
@@ -712,7 +712,7 @@ export class ChampionshipService {
   }: {
     championshipId: string;
     raceNumber: number;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -739,9 +739,9 @@ export class ChampionshipService {
         .lean();
 
       const registeredRiders = dtoRegisteredRiders(registeredRidersDb);
-      console.log(registeredRiders);
+
       return {
-        data: null,
+        data: registeredRiders,
         ok: true,
         message: `Вы зарегистрировались`,
       };

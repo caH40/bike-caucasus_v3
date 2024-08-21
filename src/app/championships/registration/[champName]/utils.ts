@@ -35,7 +35,7 @@ export function getTitle({
 }
 
 /**
- * Создание массива option для Select.
+ * Создание массива option для Select выбора Заезда.
  */
 export const createOptionsRaces = (races: TRace[]): TOptions[] => {
   const options = races.map((race) => ({
@@ -45,4 +45,14 @@ export const createOptionsRaces = (races: TRace[]): TOptions[] => {
   }));
 
   return options;
+};
+/**
+ * Создание массива option для Select выбора стартового номера.
+ */
+export const createOptionsStartNumbers = (startNumbers: number[]): TOptions[] => {
+  return startNumbers.map((number) => ({
+    id: number,
+    translation: number.toString(),
+    name: number.toString(),
+  }));
 };
