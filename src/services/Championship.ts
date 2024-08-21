@@ -738,7 +738,7 @@ export class ChampionshipService {
         })
         .lean();
 
-      const registeredRiders = await dtoRegisteredRiders(registeredRidersDb);
+      const registeredRiders = dtoRegisteredRiders(registeredRidersDb);
       console.log(registeredRiders);
       return {
         data: null,
