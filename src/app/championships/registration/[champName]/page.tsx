@@ -1,11 +1,11 @@
 import { getServerSession } from 'next-auth';
 
 import { getChampionship } from '@/actions/championship';
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getTitle } from './utils';
-import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import styles from './Registration.module.css';
 
 type Props = {
@@ -38,8 +38,6 @@ export default async function Registration({ params: { champName } }: Props) {
           stage: championship.stage,
         })}
       />
-
-      {/* <TitleAndLine hSize={2} title="Выбор заезда" /> */}
 
       {profile ? (
         <FormRaceRegistration

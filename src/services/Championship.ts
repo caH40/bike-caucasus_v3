@@ -18,6 +18,7 @@ import type {
   TOrganizerPublic,
   TParentChampionship,
   TRegisteredRiderFromDB,
+  TRegistrationRaceDataFromForm,
   TSaveFile,
   TStageDateDescription,
 } from '@/types/index.interface';
@@ -662,13 +663,7 @@ export class ChampionshipService {
     riderId,
     startNumber,
     teamVariable,
-  }: {
-    championshipId: string;
-    raceNumber: number;
-    riderId: string;
-    startNumber: number;
-    teamVariable?: string;
-  }): Promise<ResponseServer<null>> {
+  }: TRegistrationRaceDataFromForm & { riderId: string }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();

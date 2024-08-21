@@ -1,5 +1,6 @@
-import { TRaceRegistrationDocument } from '@/types/models.interface';
 import { Schema, Model, models, model } from 'mongoose';
+
+import { TRaceRegistrationDocument } from '@/types/models.interface';
 
 // Типы для статусов и методов оплаты
 export type TPaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'free';

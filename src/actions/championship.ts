@@ -9,7 +9,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ResponseServer, TRegistrationRaceDataFromForm } from '@/types/index.interface';
 import { TChampionshipTypes } from '@/types/models.interface';
 
 /**
@@ -241,12 +241,7 @@ export async function registerForChampionship({
   raceNumber,
   startNumber,
   teamVariable,
-}: {
-  championshipId: string;
-  raceNumber: number;
-  startNumber: number;
-  teamVariable?: string;
-}): Promise<ResponseServer<null>> {
+}: TRegistrationRaceDataFromForm): Promise<ResponseServer<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

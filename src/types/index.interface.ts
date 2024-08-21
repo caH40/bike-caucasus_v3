@@ -551,9 +551,21 @@ export type TRegisteredRiderFromDB = {
  * Данные райдера, в частности для Регистрации на Чемпионат.
  */
 export type TProfileForRegistration = {
-  firstName: string | undefined;
-  lastName: string | undefined;
-  ageCategory: string | undefined;
-  city: string | undefined;
+  firstName: string | null;
+  lastName: string | null;
+  ageCategory: string | null;
+  city: string | null;
   gender: 'male' | 'female';
+};
+// Получаем ключи из TProfileForRegistration
+export type TProfileKey = keyof TProfileForRegistration;
+
+/**
+ * Данные для регистрации в Заезде Соревнования/Этапа из формы с клиента.
+ */
+export type TRegistrationRaceDataFromForm = {
+  championshipId: string;
+  raceNumber: number;
+  startNumber: number;
+  teamVariable: string;
 };

@@ -13,9 +13,10 @@ import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import BoxInput from '../../BoxInput/BoxInput';
 import { TextValidationService } from '@/libs/utils/text';
-import { TProfileForRegistration } from '@/types/index.interface';
+import { TProfileForRegistration, TProfileKey } from '@/types/index.interface';
 import { TRace } from '@/types/models.interface';
 import styles from '../Form.module.css';
+import { getDefaultValue, validateRequiredFields } from './utils';
 
 type Props = {
   races: TRace[];
@@ -31,7 +32,7 @@ type TFormRaceRegistration = {
 
 const textValidation = new TextValidationService();
 
-export default function FormRaceRegistration({ championshipId, races }: Props) {
+export default function FormRaceRegistration({ championshipId, races, profile }: Props) {
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
 
@@ -69,25 +70,39 @@ export default function FormRaceRegistration({ championshipId, races }: Props) {
   useRegisteredRiders(raceNumber, championshipId);
 
   const onSubmit: SubmitHandler<TFormRaceRegistration> = async (dataForm) => {
-    setLoading(true);
-    console.log(dataForm);
+    try {
+      const profileEntries = Object.entries(profile) as [TProfileKey, string | undefined][];
 
-    const response = await registerForChampionship({
-      championshipId,
-      raceNumber: +dataForm.raceNumber,
-      startNumber: +dataForm.startNumber,
-      teamVariable: dataForm.teamVariable,
-    });
+      for (const [key, value] of profileEntries) {
+        const res = validateRequiredFields(value, key);
 
-    // Завершение отображение статуса загрузки.
-    setLoading(false);
+        if (!res.ok) {
+          throw new Error(res.message);
+        }
+      }
+      setLoading(true);
 
-    // Отображение статуса сохранения События в БД.
-    if (response.ok) {
+      const response = await registerForChampionship({
+        championshipId,
+        raceNumber: +dataForm.raceNumber,
+        startNumber: +dataForm.startNumber,
+        teamVariable: dataForm.teamVariable,
+      });
+
+      // Завершение отображение статуса загрузки.
+      setLoading(false);
+
+      // Отображение статуса сохранения События в БД.
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
+
       reset();
       toast.success(response.message);
-    } else {
-      toast.error(response.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
     }
   };
 
@@ -131,6 +146,71 @@ export default function FormRaceRegistration({ championshipId, races }: Props) {
         })}
         validationText={errors.teamVariable?.message || ''}
       />
+
+      {/* Блок ввода*/}
+      <div className={styles.box__input}>
+        <label className={styles.label} htmlFor="riderName">
+          Имя участника (данные из аккаунта):*
+        </label>
+        <input
+          name={'riderName'}
+          value={getDefaultValue(profile.firstName, 'firstName')}
+          className={styles.input}
+          disabled={true}
+        />
+      </div>
+
+      {/* Блок ввода*/}
+      <div className={styles.box__input}>
+        <label className={styles.label} htmlFor="riderName">
+          Фамилия участника (данные из аккаунта):*
+        </label>
+        <input
+          name={'riderName'}
+          value={getDefaultValue(profile.lastName, 'lastName')}
+          className={styles.input}
+          disabled={true}
+        />
+      </div>
+
+      {/* Блок ввода*/}
+      <div className={styles.box__input}>
+        <label className={styles.label} htmlFor="ageCategory">
+          Возрастная категория (данные из аккаунта):*
+        </label>
+        <input
+          name={'ageCategory'}
+          value={getDefaultValue(profile.ageCategory, 'ageCategory')}
+          className={styles.input}
+          disabled={true}
+        />
+      </div>
+
+      {/* Блок ввода*/}
+      <div className={styles.box__input}>
+        <label className={styles.label} htmlFor="gender">
+          Пол (данные из аккаунта):*
+        </label>
+        <input
+          name={'gender'}
+          value={getDefaultValue(profile.gender, 'gender')}
+          className={styles.input}
+          disabled={true}
+        />
+      </div>
+
+      {/* Блок ввода*/}
+      <div className={styles.box__input}>
+        <label className={styles.label} htmlFor="city">
+          Город (данные из аккаунта):*
+        </label>
+        <input
+          name={'city'}
+          value={getDefaultValue(profile.city, 'city')}
+          className={styles.input}
+          disabled={true}
+        />
+      </div>
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>

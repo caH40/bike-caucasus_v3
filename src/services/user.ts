@@ -83,8 +83,8 @@ export class UserService {
         ...userPrivate,
         person: {
           ...userPrivate.person,
-          firstName: userPrivate.person.firstName || 'Имя',
-          lastName: userPrivate.person.lastName || 'Фамилия',
+          firstName: userPrivate.person.firstName,
+          lastName: userPrivate.person.lastName,
         },
       };
 

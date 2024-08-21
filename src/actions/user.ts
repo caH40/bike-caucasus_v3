@@ -31,10 +31,10 @@ export async function getProfileForReg({
 
     const gender = res.data.person.gender;
     const profile = {
-      firstName: res.data.person.firstName,
-      lastName: res.data.person.lastName,
-      ageCategory: res.data.person.ageCategory,
-      city: res.data.city,
+      firstName: res.data.person.firstName || null,
+      lastName: res.data.person.lastName || null,
+      ageCategory: res.data.person.ageCategory || null,
+      city: res.data.city || null,
       gender,
     };
 

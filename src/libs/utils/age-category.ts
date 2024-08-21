@@ -14,7 +14,7 @@ export async function getAgeCategory({
   birthday,
   ageCategoryVersion,
   gender = 'male',
-}: Params): Promise<string> {
+}: Params): Promise<string | null> {
   try {
     const today = new Date();
     const birthDate = new Date(birthday);
@@ -51,6 +51,6 @@ export async function getAgeCategory({
     return ageCategoryDB.name;
   } catch (error) {
     errorLogger(error);
-    return 'нет категории';
+    return null;
   }
 }
