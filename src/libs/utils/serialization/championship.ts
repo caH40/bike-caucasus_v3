@@ -5,8 +5,8 @@ type Params = {
   championshipId: string | undefined;
   parentChampionshipId: string | undefined;
   organizerId: string; // _id Организатора.
-  needDelTrack?: boolean; // Удаление трека
   isEditing: boolean; //
+  urlTracksForDel: string[]; // Массив url треков для удаления в облаке.
 };
 
 /**
@@ -18,9 +18,9 @@ export function serializationChampionship({
   dataForm,
   championshipId,
   organizerId,
-  needDelTrack,
   parentChampionshipId,
   isEditing,
+  urlTracksForDel,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -46,7 +46,6 @@ export function serializationChampionship({
 
   formData.set('bikeType', dataForm.bikeType);
   formData.set('organizerId', organizerId);
-  formData.set('needDelTrack', String(needDelTrack));
 
   // _id Чемпионата в БД, необходим для редактирования.
   if (championshipId) {
@@ -60,9 +59,31 @@ export function serializationChampionship({
   if (dataForm.posterFile) {
     formData.set('posterFile', dataForm.posterFile);
   }
-  // dataForm.trackGPXFile может быть null при редактировании Чемпионата.
-  if (dataForm.trackGPXFile) {
-    formData.set('trackGPXFile', dataForm.trackGPXFile);
+
+  if (!!urlTracksForDel?.length) {
+    formData.set('urlTracksForDel', JSON.stringify(urlTracksForDel));
+  }
+
+  if (dataForm.races) {
+    dataForm.races.forEach((race, index) => {
+      formData.set(`races[${index}][number]`, race.number.toString());
+      formData.set(`races[${index}][name]`, race.name);
+      formData.set(`races[${index}][description]`, race.description);
+      formData.set(`races[${index}][distance]`, race.distance.toString());
+      formData.set(`races[${index}][laps]`, race.laps.toString());
+
+      if (race.ascent !== undefined) {
+        formData.set(`races[${index}][ascent]`, race.ascent.toString());
+      }
+
+      if (race.trackGPXFile) {
+        formData.set(`races[${index}][trackGPXFile]`, race.trackGPXFile);
+      }
+
+      if (race.trackGPXUrl) {
+        formData.set(`races[${index}][trackGPXUrl]`, race.trackGPXUrl);
+      }
+    });
   }
 
   return formData;

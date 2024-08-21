@@ -1,8 +1,19 @@
 .block__header {
+  position: relative;
   margin-bottom: 1rem;
 }
 .wrapper__cards {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+.wrapper__contacts,
+.wrapper__races {
+  margin-bottom: 1rem;
+}
+.ellipsis {
+  position: absolute;
+  top: 1rem;
+  right: 3px;
+  z-index: 100;
 }

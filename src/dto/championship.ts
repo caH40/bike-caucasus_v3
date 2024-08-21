@@ -1,11 +1,12 @@
 // ДТО для получение данных из календаря.
 
-import { getDateTime } from '@/libs/utils/calendar';
-import type { TDtoChampionship } from '@/types/dto.types';
+import { getAgeDetails, getDateTime } from '@/libs/utils/calendar';
+import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
 import type {
   TChampionshipWithOrganizer,
   TOrganizerForClient,
   TParentChampionshipForClient,
+  TRegisteredRiderFromDB,
 } from '@/types/index.interface';
 import { ObjectId } from 'mongoose';
 
@@ -52,6 +53,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     status: championship.status,
     type: championship.type,
     bikeType: championship.bikeType,
+    races: championship.races,
     startDate,
     endDate,
     createdAt,
@@ -71,4 +73,37 @@ export function dtoToursAndSeries(
     name: championship.name,
     availableStage: championship.availableStage,
   }));
+}
+
+/**
+ * ДТО Зарегистрированного райдера в Заезде.
+ */
+export function dtoRegisteredRider(rider: TRegisteredRiderFromDB): TRaceRegistrationDto {
+  const age = getAgeDetails(new Date('1979-09-01'));
+
+  const yearBirthday = getDateTime(rider.rider.person.birthday).year;
+  return {
+    _id: rider._id.toString(),
+    raceNumber: rider.raceNumber,
+    rider: {
+      _id: rider.rider._id.toString(),
+      firstName: rider.rider.person.firstName,
+      lastName: rider.rider.person.lastName,
+      gender: rider.rider.person.gender,
+      ...age,
+      yearBirthday,
+      team: rider.rider.teamVariable,
+      city: rider.rider.city,
+    },
+    startNumber: rider.startNumber,
+    status: rider.status,
+    createdAt: rider.createdAt.toISOString(),
+  };
+}
+
+/**
+ * ДТО Зарегистрированных райдеров в Заезде.
+ */
+export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegistrationDto[] {
+  return riders.map((rider) => dtoRegisteredRider(rider));
 }

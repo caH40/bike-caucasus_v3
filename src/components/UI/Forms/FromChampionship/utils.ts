@@ -1,6 +1,9 @@
 // Небольшие утилиты для компоненты FormChampionship
 
+import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
+import { TRaceForForm } from '@/types/index.interface';
+import { TRace } from '@/types/models.interface';
 
 type Params = {
   name: string;
@@ -21,4 +24,30 @@ export function formateAndStripContent({ name, description }: Params) {
     nameStripedHtmlTags,
     descriptionStripedHtmlTags,
   };
+}
+
+/**
+ * Инициализирует массив гонок для формы на основе данных о гонках.
+ *
+ * @param {TRace[] | undefined} races - Массив объектов гонок или undefined.
+ * @returns {TRaceForForm[]} Массив объектов гонок, подготовленных для использования в форме.
+ */
+export function getRacesInit(races: TRace[] | undefined): TRaceForForm[] {
+  // Если гонки отсутствуют, возвращаем массив с одной инициализированной гонкой.
+  if (!races) {
+    return [raceInit];
+  }
+
+  // Мапируем гонки в формат, подходящий для использования в форме.
+  return races.map((race) => ({
+    number: race.number, // Номер гонки, инициализируется как 1.
+    name: race.name, // Название гонки.
+    laps: race.laps, // Количество кругов в гонке.
+    description: race.description, // Описание гонки.
+    distance: race.distance, // Дистанция гонки.
+    ascent: race.ascent, // Набор высоты в гонке.
+    trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
+    trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
+    trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
+  }));
 }

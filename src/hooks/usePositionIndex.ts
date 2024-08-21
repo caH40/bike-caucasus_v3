@@ -8,6 +8,8 @@ type Props = {
   elevationData: ElevationData[];
 };
 
+const startPosition = 5;
+
 /**
  * Пользовательский хук, который вычисляет индекс данных высоты на основе позиции курсора на графике.
  * @param {Props} props - Свойства для хука.
@@ -16,7 +18,7 @@ type Props = {
  * @returns {number} Индекс данных высоты, соответствующий позиции курсора на графике.
  */
 export default function usePositionIndex({ refChartLine, elevationData }: Props): number {
-  const [positionIndex, setPositionIndex] = useState<number>(100);
+  const [positionIndex, setPositionIndex] = useState<number>(startPosition);
   useEffect(() => {
     // Получаем экземпляр графика из ссылки.
     const chart: any = refChartLine.current;

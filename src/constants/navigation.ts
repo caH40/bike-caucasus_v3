@@ -1,3 +1,5 @@
+'use client';
+
 import IconAdmin from '@/components/Icons/IconAdmin';
 import IconCalendar from '@/components/Icons/IconCalendar';
 import IconChampionship from '@/components/Icons/IconChampionship';
@@ -58,7 +60,7 @@ export const getNavLinksUserPopup = (userId: string | undefined): TMenuPopup[] =
 ];
 
 /**
- * Меню навигации у Чемпионатов в Popup.
+ * Меню навигации у Чемпионатов в Popup в шапке сайта.
  */
 export const getNavLinksChampionshipsPopup = (): TMenuPopup[] => [
   {
@@ -139,6 +141,28 @@ export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
     id: 1,
     name: 'Удаление',
     onClick: () => deleteItem({ type: 'trails', urlSlug }),
+    permission: 'admin',
+    icon: IconDelete,
+    classes: [],
+  },
+];
+
+/**
+ * Меню навигации для управления Чемпионатом в меню Popup.
+ */
+export const getNavLinksChampionshipPopup = (urlSlug: string): TMenuOnPage[] => [
+  {
+    id: 0,
+    name: 'Редактирование',
+    href: `/moderation/championship/edit/${urlSlug}`,
+    permission: 'admin',
+    icon: IconEditOld,
+    classes: [],
+  },
+  {
+    id: 1,
+    name: 'Удаление',
+    onClick: () => deleteItem({ type: 'championship', urlSlug }),
     permission: 'admin',
     icon: IconDelete,
     classes: [],

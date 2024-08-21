@@ -1,32 +1,34 @@
-// Страница описания Чемпионата как отдельного, так и серии заездов.
 /**
- * Название
  * Описание (обязательно: карта с местом старта)
- * Ссылка на регистрацию /championship/champName/registration
  * Ссылка на зарегистрированных
  * Ссылка на результаты
- * Лого и название Организатора
- * Ссылка на Родительскую страницу Чемпионата, если это один из Этапов
- * ССылки на Дочерние страницы Чемпионата, если родительски имеет несколько этапов
- *
  * !! Судьи и помощники в Чемпионате, для формирования итогового протокола Чемпионата
- *
  */
 
 import { getChampionship, getChampionships } from '@/actions/championship';
 import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockChampionshipHeader';
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
-import styles from './Championship.module.css';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { ChampionshipService } from '@/services/Championship';
+import styles from './Championship.module.css';
+import PermissionCheck from '@/hoc/permission-check';
+import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
+import { getNavLinksChampionshipPopup } from '@/constants/navigation';
+import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
+import BlockRaces from '@/components/BlockRaces/BlockRaces';
+import Wrapper from '@/components/Wrapper/Wrapper';
 
 type Props = { params: { urlSlug: string } };
 
+/**
+ * Страница описания Чемпионата как отдельного, так и серии заездов.
+ */
 export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
   const [championship, championships] = await Promise.all([
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),
   ]);
+
   const champService = new ChampionshipService();
   await champService.updateStatusChampionship();
 
@@ -50,7 +52,33 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
       {championship.data && (
         <>
           <div className={styles.block__header}>
+            {/* popup меня управления новостью */}
+            <PermissionCheck permission={'admin'}>
+              <div className={styles.ellipsis} id="popup-control-menu-championship">
+                <MenuEllipsisControl
+                  urlSlug={championship.data.urlSlug}
+                  getMenuItems={getNavLinksChampionshipPopup}
+                  id={'#popup-control-menu-championship'}
+                  messageTooltip="Управление Чемпионатом"
+                />
+              </div>
+            </PermissionCheck>
             <BlockChampionshipHeader championship={championship.data} />
+          </div>
+
+          <div className={styles.wrapper__contacts}>
+            <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
+          </div>
+
+          <div className={styles.wrapper__races}>
+            <BlockRaces
+              races={championship.data.races}
+              registrationData={{
+                type: championship.data.type,
+                status: championship.data.status,
+                urlSlugChamp: championship.data.urlSlug,
+              }}
+            />
           </div>
 
           {['series', 'tour'].includes(championship.data.type) && (
@@ -63,6 +91,10 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
               </div>
             </>
           )}
+
+          <Wrapper hSize={2} title={'Зарегистрированные участники'}>
+            таблица с зарегистрированными участниками
+          </Wrapper>
         </>
       )}
     </div>

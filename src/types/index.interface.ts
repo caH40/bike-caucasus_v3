@@ -5,8 +5,12 @@ import {
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
+  TRace,
+  TRaceRegistrationStatus,
+  TTrackGPXObj,
 } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
+import mongoose from 'mongoose';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -487,15 +491,26 @@ export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { 
  */
 export type TFormChampionshipCreate = Omit<
   TChampionship,
-  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'trackGPX' | 'parentChampionship'
+  | '_id'
+  | 'organizer'
+  | 'startDate'
+  | 'endDate'
+  | 'status'
+  | 'trackGPX'
+  | 'parentChampionship'
+  | 'races'
 > & {
   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
   startDate: string;
   endDate: string;
+  races: TRaceForForm[];
+  parentChampionship: { _id: string; name: string };
+};
+export type TRaceForForm = Omit<TRace, 'trackGPX'> & {
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
-  parentChampionship: { _id: string; name: string };
+  trackGPX?: TTrackGPXObj;
 };
 
 /**
@@ -506,4 +521,51 @@ export type TStageDateDescription = {
   status: TChampionshipStatus;
   startDate: Date;
   endDate: Date;
+};
+
+/**
+ * Данные Зарегистрированного Райдера из БД.
+ */
+export type TRegisteredRiderFromDB = {
+  _id: mongoose.Types.ObjectId;
+  raceNumber: number;
+  rider: {
+    _id: mongoose.Types.ObjectId;
+    person: {
+      firstName: string;
+      lastName: string;
+      gender: 'male' | 'female';
+      birthday: Date;
+    };
+    team?: mongoose.Types.ObjectId;
+    teamVariable?: string;
+    city?: string;
+  };
+  startNumber: number;
+  status: TRaceRegistrationStatus;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+/**
+ * Данные райдера, в частности для Регистрации на Чемпионат.
+ */
+export type TProfileForRegistration = {
+  firstName: string | null;
+  lastName: string | null;
+  ageCategory: string | null;
+  city: string | null;
+  gender: 'male' | 'female';
+};
+// Получаем ключи из TProfileForRegistration
+export type TProfileKey = keyof TProfileForRegistration;
+
+/**
+ * Данные для регистрации в Заезде Соревнования/Этапа из формы с клиента.
+ */
+export type TRegistrationRaceDataFromForm = {
+  championshipId: string;
+  raceNumber: number;
+  startNumber: number;
+  teamVariable: string;
 };

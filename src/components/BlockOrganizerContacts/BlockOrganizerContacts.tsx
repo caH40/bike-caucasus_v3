@@ -1,99 +1,96 @@
 import IconEmail from '../Icons/IconEmail';
-import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from './BlockOrganizerContacts.module.css';
 import IconPhone from '../Icons/IconPhone';
 import IconWWW from '../Icons/IconWWW';
 import IconTelegram from '../Icons/IconTelegram';
 import IconVk from '../Icons/IconVk';
+import { OrganizerContactInfo } from '@/types/models.interface';
+import Wrapper from '../Wrapper/Wrapper';
 
-type Props = { organizer: TDtoOrganizer };
+type Props = { organizer: OrganizerContactInfo };
 
 /**
  * Блок-заголовок для страницы Организатора Чемпионатов.
  */
 export default function BlockOrganizerContacts({ organizer }: Props) {
   return (
-    <div className={styles.wrapper}>
-      <h2 className={styles.title}>Контакты</h2>
-
+    <Wrapper hSize={2} title="Контакты">
       <div className={styles.block__contacts}>
-        {organizer.contactInfo.email && (
+        {organizer.email && (
           <div className={styles.box__contacts}>
             <IconEmail squareSize={20} />
-            <a className={styles.link} href={`mailto:${organizer.contactInfo.email}`}>
-              {organizer.contactInfo.email}
+            <a className={styles.link} href={`mailto:${organizer.email}`}>
+              {organizer.email}
             </a>
           </div>
         )}
 
-        {organizer.contactInfo.phone && (
+        {organizer.phone && (
           <div className={styles.box__contacts}>
             <IconPhone squareSize={20} />
-            <a className={styles.link} href={`tel:${organizer.contactInfo.phone}`}>
-              {organizer.contactInfo.phone}
+            <a className={styles.link} href={`tel:${organizer.phone}`}>
+              {organizer.phone}
             </a>
           </div>
         )}
 
-        {organizer.contactInfo.website && (
+        {organizer.website && (
           <div className={styles.box__contacts}>
             <IconWWW squareSize={20} />
             <a
               className={styles.link}
-              href={organizer.contactInfo.website}
+              href={organizer.website}
               rel={'noopener noreferrer'}
               target="_blank"
             >
-              {organizer.contactInfo.website.length > 25
-                ? 'Сайт организатора'
-                : organizer.contactInfo.website}
+              {organizer.website.length > 25 ? 'Сайт организатора' : organizer.website}
             </a>
           </div>
         )}
 
-        {organizer.contactInfo.socialMedia?.telegram && (
+        {organizer.socialMedia?.telegram && (
           <div className={styles.box__contacts}>
             <IconTelegram squareSize={20} />
 
             <a
               className={styles.link}
-              href={organizer.contactInfo.socialMedia?.telegram}
+              href={organizer.socialMedia?.telegram}
               rel={'noopener noreferrer'}
               target="_blank"
             >
-              {organizer.contactInfo.socialMedia?.telegram}
+              {organizer.socialMedia?.telegram}
             </a>
           </div>
         )}
 
-        {organizer.contactInfo.socialMedia?.telegramGroup && (
+        {organizer.socialMedia?.telegramGroup && (
           <div className={styles.box__contacts}>
             <IconTelegram squareSize={20} />
             <a
               className={styles.link}
-              href={organizer.contactInfo.socialMedia?.telegramGroup}
+              href={organizer.socialMedia?.telegramGroup}
               rel={'noopener noreferrer'}
               target="_blank"
             >
-              {organizer.contactInfo.socialMedia?.telegramGroup}
+              {organizer.socialMedia?.telegramGroup}
             </a>
           </div>
         )}
 
-        {organizer.contactInfo.socialMedia?.vk && (
+        {organizer.socialMedia?.vk && (
           <div className={styles.box__contacts}>
             <IconVk squareSize={20} />
             <a
               className={styles.link}
-              href={organizer.contactInfo.socialMedia?.vk}
+              href={organizer.socialMedia?.vk}
               rel={'noopener noreferrer'}
               target="_blank"
             >
-              {organizer.contactInfo.socialMedia?.vk}
+              {organizer.socialMedia?.vk}
             </a>
           </div>
         )}
       </div>
-    </div>
+    </Wrapper>
   );
 }

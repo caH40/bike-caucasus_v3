@@ -18,7 +18,7 @@ export function dtoGetUser(user: Omit<IUserModel, 'role'> & { role: TRoleModel }
  * Дто Пользователя User (Профиль пользователя), данные для публичного доступа.
  * Дата рождения изменена на Возрастную группу, email удалён.
  */
-export function dtoGetUserPublic(user: TUserDto, ageCategory: string): TUserDtoPublic {
+export function dtoGetUserPublic(user: TUserDto, ageCategory: string | null): TUserDtoPublic {
   // eslint-disable-next-line no-unused-vars
   const { email, phone, ...userDto } = {
     ...user,

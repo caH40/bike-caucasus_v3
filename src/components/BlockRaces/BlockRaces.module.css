@@ -1,0 +1,17 @@
+.title {
+  margin-bottom: 5px;
+  text-decoration: underline;
+}
+.description {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.wrapper__params {
+  margin-bottom: 1rem;
+}
+.wrapper__races {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}

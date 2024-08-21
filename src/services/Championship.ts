@@ -6,12 +6,19 @@ import { connectToMongo } from '@/database/mongodb/mongoose';
 import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
-import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/championship';
+import {
+  dtoChampionship,
+  dtoChampionships,
+  dtoRegisteredRiders,
+  dtoToursAndSeries,
+} from '@/dto/championship';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
   TOrganizerPublic,
   TParentChampionship,
+  TRegisteredRiderFromDB,
+  TRegistrationRaceDataFromForm,
   TSaveFile,
   TStageDateDescription,
 } from '@/types/index.interface';
@@ -20,9 +27,10 @@ import type {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TRace,
   TTrackGPXObj,
 } from '@/types/models.interface';
-import type { TDtoChampionship } from '@/types/dto.types';
+import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
@@ -32,6 +40,7 @@ import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
+import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -202,7 +211,6 @@ export class ChampionshipService {
 
       const {
         posterFile,
-        trackGPXFile,
         name,
         description,
         startDate,
@@ -213,7 +221,19 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
+        races,
       } = deserializeChampionship(serializedFormData);
+
+      // Проверка на дубликат названия Чемпионата.
+      const championshipDuplicate = await ChampionshipModel.findOne(
+        { name },
+        { _id: true }
+      ).lean();
+      if (championshipDuplicate) {
+        throw new Error(
+          `Чемпионат с названием "${name}" уже существует! Придумайте уникальное название.`
+        );
+      }
 
       // Сохранение изображения для Постера Чемпионата.
       const posterUrl = await this.saveFile({
@@ -222,25 +242,39 @@ export class ChampionshipService {
         suffix: this.suffixImagePoster,
       });
 
-      // Трек не обязателен, поэтому проверка для загрузки файла на облако.
-      let trackGPX = {} as TTrackGPXObj;
-      if (trackGPXFile) {
-        // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
-        const trackGPXUrl = await this.saveFile({
-          file: trackGPXFile as File,
-          type: 'GPX',
-          suffix: this.suffixTrackGpx,
-        });
+      // Обработка данных Заездов (дистанций).
+      const racesForSave: TRace[] = [];
+      if (races) {
+        for (const race of races) {
+          let trackGPX = {} as TTrackGPXObj;
+          const raceForSave = {} as TRace;
+          // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
+          const trackGPXUrl = await this.saveFile({
+            file: race.trackGPXFile as File,
+            type: 'GPX',
+            suffix: this.suffixTrackGpx,
+          });
 
-        // Получаем файл GPX с облака, так как реализация через FileReader большая!
-        const gpxParsed = await parseGPX(trackGPXUrl);
+          // Получаем файл GPX с облака, так как реализация через FileReader большая!
+          const gpxParsed = await parseGPX(trackGPXUrl);
 
-        const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+          const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
 
-        trackGPX = {
-          url: trackGPXUrl,
-          coordStart,
-        };
+          trackGPX = {
+            url: trackGPXUrl,
+            coordStart,
+          };
+
+          raceForSave.number = race.number;
+          raceForSave.name = race.name;
+          raceForSave.description = race.description;
+          raceForSave.laps = race.laps;
+          raceForSave.distance = race.distance;
+          raceForSave.ascent = race.ascent;
+          raceForSave.trackGPX = trackGPX;
+
+          racesForSave.push(raceForSave);
+        }
       }
 
       // Создание slug из name для url страницы Чемпионата.
@@ -262,7 +296,7 @@ export class ChampionshipService {
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
         }),
-        ...(trackGPX.url && { trackGPX }),
+        ...(races && { races: racesForSave }),
         ...(quantityStages && { quantityStages }),
         ...(stage && { stage }),
       };
@@ -295,16 +329,16 @@ export class ChampionshipService {
       const {
         championshipId,
         posterFile,
-        trackGPXFile,
         name,
         description,
         startDate,
         endDate,
         bikeType,
-        needDelTrack,
         parentChampionshipId,
         quantityStages,
         stage,
+        races,
+        urlTracksForDel,
       } = deserializeChampionship(serializedFormData);
 
       const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
@@ -334,30 +368,77 @@ export class ChampionshipService {
         });
       }
 
-      // Если существует trackGPXFile значит GPX трек был обновлён.
-      // Сохранение Постера.
-      let trackGPX: TTrackGPXObj | null = null;
-      if (trackGPXFile) {
-        const trackGPXUrl = await this.saveFile({
-          file: trackGPXFile as File,
-          type: 'GPX',
-          suffix: this.suffixTrackGpx,
-        });
+      // Обработка данных Заездов (дистанций).
+      const racesForSave: TRace[] = [];
+      if (races) {
+        for (const race of races) {
+          // Если race.trackGPXFile существует, значит трек изменялся.
+          if (race.trackGPXFile) {
+            // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
+            const trackGPXUrl = await this.saveFile({
+              file: race.trackGPXFile as File,
+              type: 'GPX',
+              suffix: this.suffixTrackGpx,
+            });
 
-        // Получаем файл GPX с облака, так как реализация через FileReader большая!
-        const gpxParsed = await parseGPX(trackGPXUrl);
+            // Получаем файл GPX с облака, так как реализация через FileReader большая!
+            const gpxParsed = await parseGPX(trackGPXUrl);
 
-        const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
+            const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
 
-        trackGPX = {
-          url: trackGPXUrl,
-          coordStart,
-        };
+            const trackGPX = {
+              url: trackGPXUrl,
+              coordStart,
+            };
 
-        // Удаление старого GPX трек из облака.
-        await cloud.deleteFile({
-          prefix: championshipDB.trackGPX?.url?.replace(fileNameFormUrl, '$1'),
-        });
+            const raceForSave = {} as TRace;
+            raceForSave.trackGPX = trackGPX;
+            raceForSave.number = race.number;
+            raceForSave.name = race.name;
+            raceForSave.description = race.description;
+            raceForSave.laps = race.laps;
+            raceForSave.distance = race.distance;
+            raceForSave.ascent = race.ascent;
+
+            racesForSave.push(raceForSave);
+
+            // Удаление старого GPX трек из облака.
+            cloud.deleteFile({
+              prefix: race.trackGPXUrl?.replace(fileNameFormUrl, '$1'),
+            });
+          } else {
+            // Если race.trackGPXFile нет в объекте,пришедшем из формы клиента,
+            // то находим его в обновляемом документе championshipDB,
+            // если такой race не найден, значит race.number не существует,
+            // то есть данный рейс был удален в форме на клиенте.
+            const raceWithoutChangedTrack = championshipDB.races.find(
+              (elm) => elm.number === race.number
+            );
+
+            // trackGPXUrl чтобы удалить с Облака.
+            if (raceWithoutChangedTrack) {
+              const raceForSave = {} as TRace;
+              raceForSave.trackGPX = raceWithoutChangedTrack.trackGPX;
+              raceForSave.number = race.number;
+              raceForSave.name = race.name;
+              raceForSave.description = race.description;
+              raceForSave.laps = race.laps;
+              raceForSave.distance = race.distance;
+              raceForSave.ascent = race.ascent;
+
+              racesForSave.push(raceForSave);
+            }
+          }
+        }
+
+        // Удаление файлов трека с облака, если были удалены блоки Заездов.
+        if (urlTracksForDel) {
+          urlTracksForDel.forEach((url) => {
+            cloud.deleteFile({
+              prefix: url.replace(fileNameFormUrl, '$1'),
+            });
+          });
+        }
       }
 
       // Внимание! Добавлять соответствующие обновляемые свойства Чемпионата в ручную.
@@ -367,7 +448,7 @@ export class ChampionshipService {
         startDate,
         endDate,
         bikeType,
-        ...(trackGPX && { trackGPX }), // Обновление только если trackGPX не null
+        ...(races && { races: racesForSave }), // Обновление только если races не null
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
         ...(quantityStages && { quantityStages }),
         ...(parentChampionshipId && {
@@ -376,15 +457,7 @@ export class ChampionshipService {
         ...(stage && { stage }),
       };
 
-      // При редактировании выбрана опция удаления Трека Чемпионата.
-      if (needDelTrack) {
-        await cloud.deleteFile({
-          prefix: championshipDB.trackGPX?.url.replace(fileNameFormUrl, '$1'),
-        });
-        updateData.trackGPX = {}; // Обновление поля trackGPX на пустой объект.
-      }
-
-      await championshipDB.updateOne(updateData);
+      await championshipDB.updateOne({ $set: { ...updateData } });
 
       return { data: null, ok: true, message: 'Данные Чемпионата обновлены в БД!' };
     } catch (error) {
@@ -406,7 +479,7 @@ export class ChampionshipService {
             status: TChampionshipStatus;
             name: string;
             posterUrl: string;
-            trackGPX: TTrackGPXObj;
+            races: TRace[];
           } & Document)
         | null = await ChampionshipModel.findOne(
         { urlSlug },
@@ -414,7 +487,7 @@ export class ChampionshipService {
           status: true,
           name: true,
           posterUrl: true,
-          trackGPX: true,
+          races: true,
         }
       );
 
@@ -439,10 +512,13 @@ export class ChampionshipService {
       });
 
       // Удаление GPX трека с облака.
-      if (championshipDB.trackGPX.url) {
-        await cloudService.deleteFile({
-          prefix: championshipDB.trackGPX.url.replace(fileNameFormUrl, '$1'),
-        });
+      if (championshipDB.races) {
+        // без await, нет необходимости ждать результата выполнения каждого Промиса.
+        for (const race of championshipDB.races) {
+          cloudService.deleteFile({
+            prefix: race.trackGPX.url.replace(fileNameFormUrl, '$1'),
+          });
+        }
       }
 
       return {
@@ -571,6 +647,136 @@ export class ChampionshipService {
         data: dtoToursAndSeries(championshipsWithAvailableStageNumber),
         ok: true,
         message: `Список Серий и Туров.`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Регистрация Райдера на Чемпионат.
+   */
+  public async register({
+    championshipId,
+    raceNumber,
+    riderId,
+    startNumber,
+    teamVariable,
+  }: TRegistrationRaceDataFromForm & { riderId: string }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Проверка существования Чемпионата и запрашиваемого заезда для регистрации.
+      const champ: { _id: ObjectId; name: string; races: TRace[] } | null =
+        await ChampionshipModel.findOne(
+          {
+            _id: championshipId,
+            'races.number': raceNumber,
+          },
+          { races: true, name: true }
+        );
+
+      if (!champ) {
+        throw new Error('Не найден Чемпионат с Заездом!');
+      }
+
+      // Проверка зарегистрирован ли уже регистрирующийся райдер в данном Соревновании/Этапе.
+      // Можно регистрироваться только в один заезд на Соревновании/Этапе.
+      const checkRegistrationStatus: { raceNumber: number } | null =
+        await RaceRegistrationModel.findOne(
+          {
+            championship: championshipId,
+            rider: riderId,
+          },
+          { _id: false, raceNumber: true }
+        ).lean();
+
+      if (checkRegistrationStatus) {
+        const raceName = champ.races.find(
+          (race) => race.number === checkRegistrationStatus.raceNumber
+        )?.name;
+        throw new Error(`Вы уже зарегистрированы в данном Чемпионате, в заезде: ${raceName}!`);
+      }
+
+      // Проверка занят ли выбранный стартовый номер для заезда.
+      const checkStartNumber = await RaceRegistrationModel.findOne({
+        championship: championshipId,
+        startNumber,
+        raceNumber,
+      });
+
+      if (checkStartNumber) {
+        throw new Error(`Стартовый номер: ${startNumber} уже занят!`);
+      }
+
+      // Регистрация на выбранный Заезд Чемпионата.
+      await RaceRegistrationModel.create({
+        championship: championshipId,
+        rider: riderId,
+        raceNumber,
+        startNumber,
+        status: 'registered',
+        ...(teamVariable && { teamVariable }),
+      });
+
+      const messageSuccess = `Вы зарегистрировались, Чемпионат: ${champ.name}, заезд: "${
+        champ.races.find((race) => race.number === raceNumber)?.name || '!нет названия!'
+      }", стартовый номер: ${startNumber}`;
+
+      return {
+        data: null,
+        ok: true,
+        message: messageSuccess,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение зарегистрированных Райдеров в Заезде (Race) Чемпионата.
+   */
+  public async getRegisteredRiders({
+    championshipId,
+    raceNumber,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+  }): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(
+        {
+          championship: championshipId,
+          raceNumber,
+        },
+        { championship: false, payment: false }
+      )
+        .populate({
+          path: 'rider',
+          select: [
+            'city',
+            'team',
+            'teamVariable',
+            'person.firstName',
+            'person.lastName',
+            'person.birthday',
+            'person.gender',
+          ],
+        })
+        .lean();
+
+      const registeredRiders = dtoRegisteredRiders(registeredRidersDb);
+
+      return {
+        data: registeredRiders,
+        ok: true,
+        message: `Вы зарегистрировались`,
       };
     } catch (error) {
       this.errorLogger(error);
