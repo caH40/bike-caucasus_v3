@@ -50,7 +50,19 @@
   letter-spacing: 0.03rem;
 }
 .mtb {
-  background-color: var(--mtb);
+  background-color: var(--bg-mtb);
+}
+.road {
+  background-color: var(--bg-road);
+}
+.gravel {
+  background-color: var(--bg-gravel);
+}
+.dh {
+  background-color: var(--bg-dh);
+}
+.tt {
+  background-color: var(--bg-tt);
 }
 .card:hover {
   transform: translateY(-5px);
@@ -101,7 +113,6 @@
   .box__img {
     height: 204px;
   }
-
   .description {
     padding: 0.8rem 1.1rem;
   }

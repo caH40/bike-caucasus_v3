@@ -5,10 +5,10 @@ import cn from 'classnames/bind';
 import IconEye from '../Icons/IconEye';
 import IconHandThumbUp from '../Icons/IconHandThumbUp';
 import { bikeTypes, regions } from '@/constants/trail';
-import type { TTrailDto } from '@/types/dto.types';
-import styles from './TrailCard.module.css';
 import { blurBase64 } from '@/libs/image';
 import { formatNumberShort } from '@/libs/utils/text';
+import type { TTrailDto } from '@/types/dto.types';
+import styles from './TrailCard.module.css';
 
 type Props = {
   trail: TTrailDto;
@@ -20,7 +20,7 @@ export default function TrailCard({ trail }: Props) {
   return (
     <Link
       href={`/trails/${trail.urlSlug}`}
-      className={cx('card', { mtb: trail.bikeType === 'mtb' })}
+      className={cx('card', { [trail.bikeType]: trail.bikeType })}
     >
       <div className={styles.box__img}>
         <Image
