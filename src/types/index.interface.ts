@@ -546,3 +546,14 @@ export type TRegisteredRiderFromDB = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Данные райдера, в частности для Регистрации на Чемпионат.
+ */
+export type TProfileForRegistration = {
+  firstName: string | undefined;
+  lastName: string | undefined;
+  ageCategory: string | undefined;
+  city: string | undefined;
+  gender: 'male' | 'female';
+};

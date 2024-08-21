@@ -39,9 +39,7 @@ export class UserService {
     id,
     isPrivate = false,
     ageCategoryVersion = 'simple',
-  }: ParamsGetProfile): Promise<
-    ResponseServer<TUserDto | TUserDtoPublic> | ResponseServer<null>
-  > {
+  }: ParamsGetProfile): Promise<ResponseServer<TUserDto | TUserDtoPublic | null>> {
     try {
       // подключение к БД
       await this.dbConnection();

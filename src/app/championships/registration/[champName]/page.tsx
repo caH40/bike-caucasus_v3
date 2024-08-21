@@ -5,6 +5,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getTitle } from './utils';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getProfileForReg } from '@/actions/user';
 import styles from './Registration.module.css';
 
 type Props = {
@@ -18,6 +19,8 @@ type Props = {
  */
 export default async function Registration({ params: { champName } }: Props) {
   const session = await getServerSession(authOptions);
+
+  const profile = await getProfileForReg({ idDB: session?.user?.idDB });
 
   const { data: championship } = await getChampionship({ urlSlug: champName });
   if (!championship) {
@@ -38,7 +41,19 @@ export default async function Registration({ params: { champName } }: Props) {
 
       {/* <TitleAndLine hSize={2} title="Выбор заезда" /> */}
 
-      <FormRaceRegistration championshipId={championship._id} races={championship.races} />
+      {profile ? (
+        <FormRaceRegistration
+          profile={profile}
+          championshipId={championship._id}
+          races={championship.races}
+        />
+      ) : (
+        <h3>
+          Для регистрации в Чемпионатах вам необходимо сначала зарегистрироваться на сайте, если
+          вы еще не сделали этого. Если у вас уже есть учетная запись, пожалуйста, войдите в
+          нее.
+        </h3>
+      )}
     </div>
   );
 }

@@ -2,8 +2,7 @@
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-
-import { TRace } from '@/types/models.interface';
+import { useEffect } from 'react';
 
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import { createOptionsRaces } from '@/app/championships/registration/[champName]/utils';
@@ -14,12 +13,14 @@ import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import BoxInput from '../../BoxInput/BoxInput';
 import { TextValidationService } from '@/libs/utils/text';
+import { TProfileForRegistration } from '@/types/index.interface';
+import { TRace } from '@/types/models.interface';
 import styles from '../Form.module.css';
-import { useEffect } from 'react';
 
 type Props = {
   races: TRace[];
   championshipId: string;
+  profile: TProfileForRegistration;
 };
 
 type TFormRaceRegistration = {
