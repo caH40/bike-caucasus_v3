@@ -84,7 +84,6 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           loading={loading}
           maxSizeFileInMBytes={7} // Максимальный разрешенный размер загружаемого файла.
         />
-
         <BoxInput
           label="Фамилия:*"
           id="lastName"
