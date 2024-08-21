@@ -13,8 +13,8 @@ export const useRegisteredRiders = (raceNumber: number, championshipId: string) 
   useEffect(() => {
     async function fetchRegisteredRiders() {
       const registeredRiders = await getRegisteredRiders({ championshipId, raceNumber });
-      if (registeredRiders.ok) {
-        setRegisteredRiders(registeredRiders.data || []);
+      if (registeredRiders.ok && registeredRiders.data) {
+        setRegisteredRiders(registeredRiders.data);
       } else {
         toast.error(registeredRiders.message);
       }

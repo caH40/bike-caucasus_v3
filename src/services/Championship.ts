@@ -661,11 +661,13 @@ export class ChampionshipService {
     raceNumber,
     riderId,
     startNumber,
+    teamVariable,
   }: {
     championshipId: string;
     raceNumber: number;
     riderId: string;
     startNumber: number;
+    teamVariable?: string;
   }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
@@ -721,6 +723,7 @@ export class ChampionshipService {
         raceNumber,
         startNumber,
         status: 'registered',
+        ...(teamVariable && { teamVariable }),
       });
 
       const messageSuccess = `Вы зарегистрировались, Чемпионат: ${champ.name}, заезд: "${

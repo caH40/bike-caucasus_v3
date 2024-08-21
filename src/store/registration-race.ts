@@ -1,7 +1,8 @@
-import { createOptionsStartNumbers } from '@/app/championships/registration/[champName]/utils';
-import { TRaceRegistrationDto } from '@/types/dto.types';
-import { TOptions } from '@/types/index.interface';
 import { create } from 'zustand';
+
+import { createOptionsStartNumbers } from '@/app/championships/registration/[champName]/utils';
+import type { TRaceRegistrationDto } from '@/types/dto.types';
+import type { TOptions } from '@/types/index.interface';
 
 type TRegistrationRace = {
   registeredRiders: TRaceRegistrationDto[];
@@ -11,6 +12,7 @@ type TRegistrationRace = {
   selectOptions: TOptions[];
   // eslint-disable-next-line no-unused-vars
   setSelectOptions: (startNumbersOccupied: number[]) => void;
+  startNumberFree: number | undefined;
 };
 
 // Инициализация массива свободных стартовых номеров.
@@ -23,23 +25,27 @@ const initStartNumbersFree = Array(50)
  */
 export const useRegistrationRace = create<TRegistrationRace>((set, get) => ({
   selectOptions: createOptionsStartNumbers(initStartNumbersFree),
-  /**
-   * Создание массива option для select выбора свободно стартового номера при регистрации на Заезд.
-   */
+
+  // Свободный стартовый номер для инициализации Select. Так как формирование массива options
+  // происходит не при монтировании компонента, а после получение данных выбранного Заезда в другом Select.
+  startNumberFree: 1,
+
+  // Создание массива option для select выбора свободно стартового номера при регистрации на Заезд.
   setSelectOptions: (startNumbersOccupied) => {
     const startNumbersFree: number[] = initStartNumbersFree.filter(
       (elm) => !startNumbersOccupied.includes(elm)
     );
-    set(() => ({ selectOptions: createOptionsStartNumbers(startNumbersFree) }));
+    set(() => ({
+      selectOptions: createOptionsStartNumbers(startNumbersFree),
+      startNumberFree: startNumbersFree[0],
+    }));
   },
 
   // Зарегистрированные райдеры.
   registeredRiders: [],
 
-  /**
-   * Установка зарегистрированных райдеров.
-   * Обновление массива свободных номеров для регистрации.
-   */
+  // Установка зарегистрированных райдеров.
+  // Обновление массива свободных номеров для регистрации.
   setRegisteredRiders: (registeredRiders) => {
     const startNumbersOccupied = registeredRiders.map(
       (registeredRide) => registeredRide.startNumber

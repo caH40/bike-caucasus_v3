@@ -1,7 +1,10 @@
+import { getServerSession } from 'next-auth';
+
 import { getChampionship } from '@/actions/championship';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getTitle } from './utils';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import styles from './Registration.module.css';
 
 type Props = {
@@ -10,7 +13,12 @@ type Props = {
   };
 };
 
+/**
+ * Страница регистрации на Соревнование/Этап.
+ */
 export default async function Registration({ params: { champName } }: Props) {
+  const session = await getServerSession(authOptions);
+
   const { data: championship } = await getChampionship({ urlSlug: champName });
   if (!championship) {
     return <h2>Не получены данные с сервера о Чемпионате </h2>;

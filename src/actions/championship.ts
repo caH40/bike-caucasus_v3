@@ -240,10 +240,12 @@ export async function registerForChampionship({
   championshipId,
   raceNumber,
   startNumber,
+  teamVariable,
 }: {
   championshipId: string;
   raceNumber: number;
   startNumber: number;
+  teamVariable?: string;
 }): Promise<ResponseServer<null>> {
   'use server';
   try {
@@ -261,6 +263,7 @@ export async function registerForChampionship({
       raceNumber,
       riderId,
       startNumber,
+      teamVariable,
     });
 
     return response;
