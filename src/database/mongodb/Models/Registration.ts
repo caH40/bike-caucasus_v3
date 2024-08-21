@@ -12,7 +12,7 @@ const RaceRegistrationSchema: Schema = new Schema(
     raceNumber: { type: Number, required: true },
     rider: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
     startNumber: { type: Number, required: true },
-    team: { type: Schema.Types.ObjectId, required: true, ref: 'Team', default: null },
+    team: { type: Schema.Types.ObjectId, ref: 'Team', default: null },
     teamVariable: { type: String, default: null },
     status: {
       type: String,

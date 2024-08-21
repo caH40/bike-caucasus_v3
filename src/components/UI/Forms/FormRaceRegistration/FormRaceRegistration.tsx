@@ -54,9 +54,8 @@ export default function FormRaceRegistration({ championshipId, races }: Props) {
 
     const response = await registerForChampionship({
       championshipId,
-      raceNumber: dataForm.raceNumber,
-      startNumber: 7,
-      // startNumber: dataForm.startNumber,
+      raceNumber: +dataForm.raceNumber,
+      startNumber: +dataForm.startNumber,
     });
 
     // Завершение отображение статуса загрузки.

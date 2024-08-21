@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { toast } from 'sonner';
+
 import { useRegistrationRace } from '@/store/registration-race';
 import { getRegisteredRiders } from '@/actions/championship';
 
@@ -14,8 +16,7 @@ export const useRegisteredRiders = (raceNumber: number, championshipId: string) 
       if (registeredRiders.ok) {
         setRegisteredRiders(registeredRiders.data || []);
       } else {
-        // Handle the error appropriately
-        throw new Error('Данные зарегистрированных пользователей в Заезде не получены!');
+        toast.error(registeredRiders.message);
       }
     }
 

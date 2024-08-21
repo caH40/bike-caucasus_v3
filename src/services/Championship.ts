@@ -670,7 +670,38 @@ export class ChampionshipService {
     try {
       // Подключение к БД.
       await this.dbConnection();
-      console.log({ championshipId, raceNumber, riderId });
+
+      // Проверка существования Чемпионата и запрашиваемого заезда для регистрации.
+      const champ: { _id: ObjectId; name: string; races: TRace[] } | null =
+        await ChampionshipModel.findOne(
+          {
+            _id: championshipId,
+            'races.number': raceNumber,
+          },
+          { races: true, name: true }
+        );
+
+      if (!champ) {
+        throw new Error('Не найден Чемпионат с Заездом!');
+      }
+
+      // Проверка зарегистрирован ли уже регистрирующийся райдер в данном Соревновании/Этапе.
+      // Можно регистрироваться только в один заезд на Соревновании/Этапе.
+      const checkRegistrationStatus: { raceNumber: number } | null =
+        await RaceRegistrationModel.findOne(
+          {
+            championship: championshipId,
+            rider: riderId,
+          },
+          { _id: false, raceNumber: true }
+        ).lean();
+
+      if (checkRegistrationStatus) {
+        const raceName = champ.races.find(
+          (race) => race.number === checkRegistrationStatus.raceNumber
+        )?.name;
+        throw new Error(`Вы уже зарегистрированы в данном Чемпионате, в заезде: ${raceName}!`);
+      }
 
       // Проверка занят ли выбранный стартовый номер для заезда.
       const checkStartNumber = await RaceRegistrationModel.findOne({
@@ -680,11 +711,11 @@ export class ChampionshipService {
       });
 
       if (checkStartNumber) {
-        throw new Error(`Стартовый номер: ${checkStartNumber} уже занят!`);
+        throw new Error(`Стартовый номер: ${startNumber} уже занят!`);
       }
 
       // Регистрация на выбранный Заезд Чемпионата.
-      const registered = await RaceRegistrationModel.create({
+      await RaceRegistrationModel.create({
         championship: championshipId,
         rider: riderId,
         raceNumber,
@@ -692,10 +723,14 @@ export class ChampionshipService {
         status: 'registered',
       });
 
+      const messageSuccess = `Вы зарегистрировались, Чемпионат: ${champ.name}, заезд: "${
+        champ.races.find((race) => race.number === raceNumber)?.name || '!нет названия!'
+      }", стартовый номер: ${startNumber}`;
+
       return {
         data: null,
         ok: true,
-        message: `Вы зарегистрировались`,
+        message: messageSuccess,
       };
     } catch (error) {
       this.errorLogger(error);
