@@ -1,11 +1,14 @@
-import IconCreate from '@/components/Icons/IconCreate';
-import IconEdit from '@/components/Icons/IconEdit';
-import IconView from '@/components/Icons/IconView';
+import IconChampionship from '@/components/Icons/IconChampionship';
+import IconInfo from '@/components/Icons/IconInfo';
+import IconRegistration from '@/components/Icons/IconRegistration';
+import IconResults from '@/components/Icons/IconResults';
+import IconTeam from '@/components/Icons/IconTeam';
 
 import type { TMenuOnPage } from '@/types/index.interface';
 
 /**
  * Кнопки для меню на странице Чемпионата /championships
+ * Используются как серверный компонент.
  */
 export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
   {
@@ -14,7 +17,7 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
     href: `/championships/${urlSlug}`,
     permission: null,
-    icon: IconCreate,
+    icon: IconInfo,
   },
   {
     id: 1,
@@ -22,7 +25,7 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
     href: `/championships/registered/${urlSlug}`,
     permission: null,
-    icon: IconEdit,
+    icon: IconTeam,
   },
   {
     id: 2,
@@ -30,7 +33,7 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
     href: `/championships/results/${urlSlug}`,
     permission: null,
-    icon: IconView,
+    icon: IconResults,
   },
   {
     id: 3,
@@ -38,7 +41,7 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
     href: `/championships/registration/${urlSlug}`,
     permission: null,
-    icon: IconView,
+    icon: IconRegistration,
   },
   {
     id: 4,
@@ -46,6 +49,6 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
     href: `/championships`,
     permission: null,
-    icon: IconView,
+    icon: IconChampionship,
   },
 ];
