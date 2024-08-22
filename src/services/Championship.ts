@@ -760,6 +760,7 @@ export class ChampionshipService {
         .populate({
           path: 'rider',
           select: [
+            'id',
             'city',
             'team',
             'teamVariable',
@@ -767,6 +768,9 @@ export class ChampionshipService {
             'person.lastName',
             'person.birthday',
             'person.gender',
+            'image',
+            'imageFromProvider',
+            'provider.image',
           ],
         })
         .lean();

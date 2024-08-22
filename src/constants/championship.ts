@@ -31,6 +31,18 @@ export const championshipStatus: TOptions[] = [
 ];
 
 /**
+ * Статус Зарегистрированного на Чемпионат.
+ */
+export const registrationStatus: TOptions[] = [
+  { id: 0, translation: 'Активен', name: 'registered' },
+  { id: 1, translation: 'Аннулирован', name: 'canceled' },
+  { id: 2, translation: 'Запрещен', name: 'banned' },
+];
+export const registrationStatusMap: TOptionsMap = new Map(
+  registrationStatus.map((elm) => [elm.name, { translation: elm.translation }])
+);
+
+/**
  * Статус Чемпионата.
  */
 export const championshipStatusMap: TOptionsMap = new Map([

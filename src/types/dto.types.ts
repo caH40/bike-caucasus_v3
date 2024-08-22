@@ -180,18 +180,21 @@ export type TPermissionDto = {
 export type TRaceRegistrationDto = {
   _id: string; // Ссылка _id на документ RaceRegistration в строковом формате.
   raceNumber: number; // Номер заезда.
-  rider: {
-    _id: string; // Ссылка _id на документ User в строковом формате.
-    firstName: string; // Имя райдера.
-    lastName: string; // Фамилия райдера.
-    gender: 'male' | 'female'; // Пол райдера.
-    fullYears: number; // Полные годы райдера.
-    fractionalYears: number; // Неполные годы райдера.
-    yearBirthday: number; // Год рождения райдера.
-    team?: string; // Команда райдера.
-    city?: string; // Город райдера.
-  };
+  rider: TRaceRegistrationRiderDto;
   startNumber: number; // Номер участника на старте.
   status: TRaceRegistrationStatus; // Статус регистрации.
   createdAt: string; // Дата создания в формате ISO 8601.
+};
+export type TRaceRegistrationRiderDto = {
+  _id: string; // Ссылка _id на документ User в строковом формате.
+  id: number; // id Райдера на сайте.
+  firstName: string; // Имя райдера.
+  lastName: string; // Фамилия райдера.
+  gender: 'male' | 'female'; // Пол райдера.
+  fullYears: number; // Полные годы райдера.
+  fractionalYears: number; // Неполные годы райдера.
+  yearBirthday: number; // Год рождения райдера.
+  team?: string; // Команда райдера.
+  city?: string; // Город райдера.
+  image?: string; // Лого райдера.
 };

@@ -1,0 +1,17 @@
+.wrapper {
+  width: 115px;
+  padding: 3px 0px;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+.registered {
+  background-color: var(--success);
+}
+.canceled {
+  background-color: var(--warning);
+}
+.banned {
+  background-color: var(--error);
+}

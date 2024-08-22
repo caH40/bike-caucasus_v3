@@ -18,12 +18,19 @@
   font-size: 1.1em;
   font-weight: 700;
 }
+.hidden {
+  width: 0px;
+  height: 0px;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  line-height: 0px;
+}
 .trh {
   text-transform: uppercase;
   background-color: #ffffff10;
   padding: 1rem;
 }
-
 .th {
   text-align: left;
   padding: 1rem 8px;

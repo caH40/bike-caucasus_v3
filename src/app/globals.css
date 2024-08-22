@@ -29,6 +29,8 @@
   --color-orange: #ec9c07;
   --purple: #5c288a;
 
+  --startNumber: darkcyan;
+
   /* цвета типов велосипедов для фона */
   --bg-mtb: rgba(114, 39, 39, 0.6);
   --bg-road: rgba(255, 255, 255, 0.12);

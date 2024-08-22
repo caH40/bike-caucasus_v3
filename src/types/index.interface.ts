@@ -531,16 +531,22 @@ export type TRegisteredRiderFromDB = {
   raceNumber: number;
   rider: {
     _id: mongoose.Types.ObjectId;
+    id: number;
     person: {
       firstName: string;
       lastName: string;
       gender: 'male' | 'female';
       birthday: Date;
     };
+    provider: {
+      image?: string;
+    };
+    image?: string;
+    imageFromProvider: boolean;
     team?: mongoose.Types.ObjectId;
-    teamVariable?: string;
     city?: string;
   };
+  teamVariable?: string;
   startNumber: number;
   status: TRaceRegistrationStatus;
   createdAt: Date;

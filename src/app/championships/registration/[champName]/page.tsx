@@ -7,6 +7,7 @@ import { getProfileForReg } from '@/actions/user';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import styles from './Registration.module.css';
+import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
 
 type Props = {
   params: {
@@ -52,6 +53,9 @@ export default async function Registration({ params: { champName } }: Props) {
           нее.
         </h3>
       )}
+
+      <TitleAndLine hSize={2} title="Зарегистрированные участники" />
+      <ContainerTableRegisteredRace />
     </div>
   );
 }

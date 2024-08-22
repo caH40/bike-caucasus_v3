@@ -78,26 +78,34 @@ export function dtoToursAndSeries(
 /**
  * ДТО Зарегистрированного райдера в Заезде.
  */
-export function dtoRegisteredRider(rider: TRegisteredRiderFromDB): TRaceRegistrationDto {
-  const age = getAgeDetails(new Date('1979-09-01'));
+export function dtoRegisteredRider(
+  riderRegistered: TRegisteredRiderFromDB
+): TRaceRegistrationDto {
+  const age = getAgeDetails(new Date(riderRegistered.rider.person.birthday));
 
-  const yearBirthday = getDateTime(rider.rider.person.birthday).year;
+  const image = riderRegistered.rider.imageFromProvider
+    ? riderRegistered.rider.provider.image
+    : riderRegistered.rider.image;
+
+  const yearBirthday = getDateTime(riderRegistered.rider.person.birthday).year;
   return {
-    _id: rider._id.toString(),
-    raceNumber: rider.raceNumber,
+    _id: riderRegistered._id.toString(),
+    raceNumber: riderRegistered.raceNumber,
     rider: {
-      _id: rider.rider._id.toString(),
-      firstName: rider.rider.person.firstName,
-      lastName: rider.rider.person.lastName,
-      gender: rider.rider.person.gender,
+      _id: riderRegistered.rider._id.toString(),
+      id: riderRegistered.rider.id,
+      firstName: riderRegistered.rider.person.firstName,
+      lastName: riderRegistered.rider.person.lastName,
+      gender: riderRegistered.rider.person.gender,
       ...age,
       yearBirthday,
-      team: rider.rider.teamVariable,
-      city: rider.rider.city,
+      team: riderRegistered.teamVariable,
+      city: riderRegistered.rider.city,
+      image,
     },
-    startNumber: rider.startNumber,
-    status: rider.status,
-    createdAt: rider.createdAt.toISOString(),
+    startNumber: riderRegistered.startNumber,
+    status: riderRegistered.status,
+    createdAt: riderRegistered.createdAt.toISOString(),
   };
 }
 
