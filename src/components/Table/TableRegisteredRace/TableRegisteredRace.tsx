@@ -56,7 +56,12 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
     header: 'Статус',
     accessorKey: 'status',
     cell: (props: any) => (
-      <BlockRegRaceStatus status={props.getValue()} userIdDb={props.row.original.rider._id} />
+      <BlockRegRaceStatus
+        status={props.getValue()}
+        userIdDb={props.row.original.rider._id}
+        championshipId={props.row.original.championship}
+        raceNumber={props.row.original.raceNumber}
+      />
     ),
   },
   {
@@ -76,7 +81,7 @@ export default function TableRegisteredRace({
   const data = useMemo(() => {
     return [...registeredRidersInRace.raceRegistrationRider]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .map((trail, index) => ({ ...trail, index: index + 1 }));
+      .map((riderReg, index) => ({ ...riderReg, index: index + 1 }));
   }, [registeredRidersInRace.raceRegistrationRider]);
 
   const table = useReactTable({

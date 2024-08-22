@@ -95,6 +95,7 @@ export function dtoRegisteredRider(
   const yearBirthday = getDateTime(riderRegistered.rider.person.birthday).year;
   return {
     _id: riderRegistered._id.toString(),
+    championship: riderRegistered.championship.toString(),
     raceNumber: riderRegistered.raceNumber,
     rider: {
       _id: riderRegistered.rider._id.toString(),

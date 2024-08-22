@@ -29,6 +29,7 @@ import type {
   TChampionshipStatus,
   TChampionshipTypes,
   TRace,
+  TRaceRegistrationStatus,
   TTrackGPXObj,
 } from '@/types/models.interface';
 import type {
@@ -760,7 +761,7 @@ export class ChampionshipService {
           championship: championshipId,
           raceNumber,
         },
-        { championship: false, payment: false }
+        { payment: false }
       )
         .populate({
           path: 'rider',
@@ -819,7 +820,7 @@ export class ChampionshipService {
         {
           championship: champ._id,
         },
-        { championship: false, payment: false }
+        { payment: false }
       )
         .populate({
           path: 'rider',
@@ -848,6 +849,75 @@ export class ChampionshipService {
         data: registeredRiders,
         ok: true,
         message: `Зарегистрированные райдеры на Чемпионат Этапа/Соревнования`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление данных по регистрации Райдера в Заезд Чемпионата.
+   *
+   * Эта функция обновляет данные регистрации Райдера в конкретном заезде чемпионата,
+   * основываясь на динамическом URL страницы чемпионата и номере заезда.
+   *
+   * @param {Object} params - Параметры для обновления регистрации.
+   * @param {string} params.urlSlug - Динамический URL страницы чемпионата.
+   * @param {number} params.raceNumber - Номер заезда в чемпионате.
+   * @param {Object} params.updates - Объект с обновляемыми данными регистрации.
+   * @param {TRaceRegistrationStatus} params.updates.status - Новый статус регистрации Райдера.
+   *
+   * @returns {Promise<ResponseServer<null>>} Промис с результатом операции обновления.
+   * @throws {Error} Если не удаётся найти чемпионат с заданным URL и номером заезда.
+   */
+  public async putRegistration({
+    championshipId,
+    raceNumber,
+    riderId,
+    updates,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+    riderId: string;
+    updates: { status: TRaceRegistrationStatus; startNumber?: number | null };
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      if (!raceNumber || !championshipId || !riderId) {
+        throw new Error('Получены не все данные для обновления Регистрации райдера на Заезд!');
+      }
+
+      // Проверка существования Чемпионата.
+      const champ: { _id: ObjectId } | null = await ChampionshipModel.findOne(
+        { _id: championshipId, 'races.number': raceNumber },
+        { _id: true, races: true }
+      ).lean();
+
+      if (!champ) {
+        throw new Error('Не найден Чемпионат с Заездом!');
+      }
+
+      // При отмене регистрации выбранный ранее райдером стартовый номер освобождается.
+      if (updates.status === 'canceled') {
+        updates.startNumber = null;
+      }
+
+      await RaceRegistrationModel.findOneAndUpdate(
+        {
+          championship: champ._id,
+          raceNumber,
+          rider: riderId,
+        },
+        { $set: { ...updates } }
+      );
+
+      return {
+        data: null,
+        ok: true,
+        message: `Обновлены данные регистрации Райдера.`,
       };
     } catch (error) {
       this.errorLogger(error);

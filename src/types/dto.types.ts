@@ -179,6 +179,7 @@ export type TPermissionDto = {
  */
 export type TRaceRegistrationDto = {
   _id: string; // Ссылка _id на документ RaceRegistration в строковом формате.
+  championship: string; // Ссылка _id нЧемпионат.
   raceNumber: number; // Номер заезда.
   rider: TRaceRegistrationRiderDto;
   startNumber: number; // Номер участника на старте.

@@ -14,7 +14,7 @@ import type {
   TRaceRegistrationDto,
 } from '@/types/dto.types';
 import type { ResponseServer, TRegistrationRaceDataFromForm } from '@/types/index.interface';
-import { TChampionshipTypes } from '@/types/models.interface';
+import { TChampionshipTypes, TRaceRegistrationStatus } from '@/types/models.interface';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -311,6 +311,39 @@ export async function getRegisteredRidersChamp({
     const response = await championshipService.getRegisteredRidersChamp({
       urlSlug,
     });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен обновления данных по регистрации Райдера в Заезд Чемпионата.
+ */
+export async function putRegistrationRiderChamp({
+  championshipId,
+  raceNumber,
+  riderId,
+  updates,
+}: {
+  championshipId: string;
+  raceNumber: number;
+  riderId: string;
+  updates: { status: TRaceRegistrationStatus };
+}): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
+  'use server';
+  try {
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.putRegistration({
+      championshipId,
+      raceNumber,
+      riderId,
+      updates,
+    });
+
+    revalidatePath('/championships');
 
     return response;
   } catch (error) {

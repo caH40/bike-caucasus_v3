@@ -528,6 +528,7 @@ export type TStageDateDescription = {
  */
 export type TRegisteredRiderFromDB = {
   _id: mongoose.Types.ObjectId;
+  championship: mongoose.Types.ObjectId;
   raceNumber: number;
   raceName?: string;
   rider: {
