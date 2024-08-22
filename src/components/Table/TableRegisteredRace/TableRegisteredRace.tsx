@@ -12,17 +12,18 @@ import cn from 'classnames/bind';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
 
-import type { TRaceRegistrationDto } from '@/types/dto.types';
+import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
 import TdRider from '../Td/TdRider';
 import BlockStartNumber from '@/components/BlockStartNumber/BlockStartNumber';
 
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
+import { getDateTime } from '@/libs/utils/calendar';
 
 const cx = cn.bind(styles);
 
 type Props = {
-  registeredRiders: TRaceRegistrationDto[];
+  registeredRidersInRace: TChampRegistrationRiderDto;
   docsOnPage?: number;
 };
 
@@ -60,17 +61,25 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
       <BlockRegRaceStatus status={props.getValue()} userIdDb={props.row.original.rider._id} />
     ),
   },
+  {
+    header: 'Дата',
+    accessorKey: 'createdAt',
+    cell: (props: any) => getDateTime(new Date(props.getValue())).dateDDMMYYYY,
+  },
 ];
 
 /**
  * Таблица Чемпионатов.
  */
-export default function TableRegisteredRace({ registeredRiders, docsOnPage = 10 }: Props) {
+export default function TableRegisteredRace({
+  registeredRidersInRace,
+  docsOnPage = 10,
+}: Props) {
   const data = useMemo(() => {
-    return [...registeredRiders]
+    return [...registeredRidersInRace.raceRegistrationRider]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .map((trail, index) => ({ ...trail, index: index + 1 }));
-  }, [registeredRiders]);
+  }, [registeredRidersInRace.raceRegistrationRider]);
 
   const table = useReactTable({
     data,
@@ -94,7 +103,9 @@ export default function TableRegisteredRace({ registeredRiders, docsOnPage = 10 
     <div className={styles.wrapper}>
       <div className={styles.wrapper__wide}>
         <table className={styles.table}>
-          <caption className={cx('caption', 'hidden')}>Зарегистрированные участники</caption>
+          <caption className={cx('caption')}>
+            {registeredRidersInRace.raceName ? registeredRidersInRace.raceName : ''}
+          </caption>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={cx('trh')} key={headerGroup.id}>

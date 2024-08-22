@@ -10,6 +10,7 @@ import {
   dtoChampionship,
   dtoChampionships,
   dtoRegisteredRiders,
+  dtoRegisteredRidersChamp,
   dtoToursAndSeries,
 } from '@/dto/championship';
 import type {
@@ -30,7 +31,11 @@ import type {
   TRace,
   TTrackGPXObj,
 } from '@/types/models.interface';
-import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
+import type {
+  TChampRegistrationRiderDto,
+  TDtoChampionship,
+  TRaceRegistrationDto,
+} from '@/types/dto.types';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
@@ -739,7 +744,7 @@ export class ChampionshipService {
   /**
    * Получение зарегистрированных Райдеров в Заезде (Race) Чемпионата.
    */
-  public async getRegisteredRiders({
+  public async getRegisteredRidersRace({
     championshipId,
     raceNumber,
   }: {
@@ -781,6 +786,68 @@ export class ChampionshipService {
         data: registeredRiders,
         ok: true,
         message: `Вы зарегистрировались`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах.
+   */
+  public async getRegisteredRidersChamp({
+    urlSlug,
+  }: {
+    urlSlug: string;
+  }): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Проверка существования Чемпионата.
+      const champ: { _id: ObjectId; races: TRace[] } | null = await ChampionshipModel.findOne(
+        { urlSlug },
+        { _id: true, races: true }
+      ).lean();
+
+      if (!champ) {
+        throw new Error('Не найден Чемпионат с Заездом!');
+      }
+
+      const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(
+        {
+          championship: champ._id,
+        },
+        { championship: false, payment: false }
+      )
+        .populate({
+          path: 'rider',
+          select: [
+            'id',
+            'city',
+            'team',
+            'teamVariable',
+            'person.firstName',
+            'person.lastName',
+            'person.birthday',
+            'person.gender',
+            'image',
+            'imageFromProvider',
+            'provider.image',
+          ],
+        })
+        .lean();
+
+      const registeredRiders = dtoRegisteredRidersChamp({
+        riders: registeredRidersDb,
+        races: champ.races,
+      });
+
+      return {
+        data: registeredRiders,
+        ok: true,
+        message: `Зарегистрированные райдеры на Чемпионат Этапа/Соревнования`,
       };
     } catch (error) {
       this.errorLogger(error);

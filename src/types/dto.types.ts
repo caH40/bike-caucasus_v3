@@ -198,3 +198,12 @@ export type TRaceRegistrationRiderDto = {
   city?: string; // Город райдера.
   image?: string; // Лого райдера.
 };
+
+/**
+ * Массив Заездов из Чемпионата с зарегистрированными райдерами.
+ */
+export type TChampRegistrationRiderDto = {
+  raceNumber: number;
+  raceName: string;
+  raceRegistrationRider: TRaceRegistrationDto[];
+};

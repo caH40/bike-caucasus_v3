@@ -1,13 +1,18 @@
 // ДТО для получение данных из календаря.
 
 import { getAgeDetails, getDateTime } from '@/libs/utils/calendar';
-import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
+import type {
+  TChampRegistrationRiderDto,
+  TDtoChampionship,
+  TRaceRegistrationDto,
+} from '@/types/dto.types';
 import type {
   TChampionshipWithOrganizer,
   TOrganizerForClient,
   TParentChampionshipForClient,
   TRegisteredRiderFromDB,
 } from '@/types/index.interface';
+import { TRace } from '@/types/models.interface';
 import { ObjectId } from 'mongoose';
 
 /**
@@ -114,4 +119,22 @@ export function dtoRegisteredRider(
  */
 export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegistrationDto[] {
   return riders.map((rider) => dtoRegisteredRider(rider));
+}
+
+/**
+ * ДТО Зарегистрированных райдеров в Чемпионате во всех заездах.
+ */
+export function dtoRegisteredRidersChamp({
+  riders,
+  races,
+}: {
+  riders: TRegisteredRiderFromDB[];
+  races: TRace[];
+}): TChampRegistrationRiderDto[] {
+  const ridersAfterDto = riders.map((rider) => dtoRegisteredRider(rider));
+  return races.map((race) => ({
+    raceNumber: race.number,
+    raceName: race.name,
+    raceRegistrationRider: ridersAfterDto.filter((rider) => rider.raceNumber === race.number),
+  }));
 }

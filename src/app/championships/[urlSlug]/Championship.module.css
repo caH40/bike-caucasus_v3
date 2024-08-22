@@ -17,3 +17,6 @@
   right: 3px;
   z-index: 100;
 }
+.wrapper__table {
+  margin-bottom: 2rem;
+}

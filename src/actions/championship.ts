@@ -8,7 +8,11 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
-import type { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
+import type {
+  TChampRegistrationRiderDto,
+  TDtoChampionship,
+  TRaceRegistrationDto,
+} from '@/types/dto.types';
 import type { ResponseServer, TRegistrationRaceDataFromForm } from '@/types/index.interface';
 import { TChampionshipTypes } from '@/types/models.interface';
 
@@ -271,7 +275,7 @@ export async function registerForChampionship({
 /**
  * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
  */
-export async function getRegisteredRiders({
+export async function getRegisteredRidersRace({
   championshipId,
   raceNumber,
 }: {
@@ -281,9 +285,31 @@ export async function getRegisteredRiders({
   'use server';
   try {
     const championshipService = new ChampionshipService();
-    const response = await championshipService.getRegisteredRiders({
+    const response = await championshipService.getRegisteredRidersRace({
       championshipId,
       raceNumber,
+    });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
+ */
+export async function getRegisteredRidersChamp({
+  urlSlug,
+}: {
+  urlSlug: string;
+}): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
+  'use server';
+  try {
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.getRegisteredRidersChamp({
+      urlSlug,
     });
 
     return response;

@@ -93,6 +93,7 @@ type CurrentDateTime = {
   second: number;
   milliseconds: number;
   isoDate: string;
+  dateDDMMYYYY: string;
 };
 
 /**
@@ -121,6 +122,7 @@ export function getDateTime(date?: Date): CurrentDateTime {
     milliseconds: dateCurrent.toMillis(),
     isoDate:
       dateCurrent.toISODate() || `${dateCurrent.year}-${dateCurrent.month}-${dateCurrent.day}`,
+    dateDDMMYYYY: dateCurrent.toFormat('dd.MM.yyyy'), // Формат dd.mm.yyyy
   };
 }
 

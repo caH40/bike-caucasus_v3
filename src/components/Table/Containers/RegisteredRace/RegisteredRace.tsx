@@ -13,7 +13,14 @@ export default function ContainerTableRegisteredRace() {
   return (
     <>
       {/* Таблица */}
-      <TableRegisteredRace registeredRiders={registeredRiders} docsOnPage={10} />
+      <TableRegisteredRace
+        registeredRidersInRace={{
+          raceRegistrationRider: registeredRiders,
+          raceNumber: registeredRiders[0]?.raceNumber || 0,
+          raceName: '',
+        }}
+        docsOnPage={10}
+      />
     </>
   );
 }
