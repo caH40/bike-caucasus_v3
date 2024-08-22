@@ -690,20 +690,28 @@ export class ChampionshipService {
 
       // Проверка зарегистрирован ли уже регистрирующийся райдер в данном Соревновании/Этапе.
       // Можно регистрироваться только в один заезд на Соревновании/Этапе.
-      const checkRegistrationStatus: { raceNumber: number } | null =
-        await RaceRegistrationModel.findOne(
-          {
-            championship: championshipId,
-            rider: riderId,
-          },
-          { _id: false, raceNumber: true }
-        ).lean();
+      const checkRegistrationStatus: {
+        raceNumber: number;
+        status: TRaceRegistrationStatus;
+      } | null = await RaceRegistrationModel.findOne(
+        {
+          championship: championshipId,
+          rider: riderId,
+        },
+        { _id: false, raceNumber: true, status: true }
+      ).lean();
 
-      if (checkRegistrationStatus) {
+      if (checkRegistrationStatus && checkRegistrationStatus.status === 'registered') {
         const raceName = champ.races.find(
           (race) => race.number === checkRegistrationStatus.raceNumber
         )?.name;
         throw new Error(`Вы уже зарегистрированы в данном Чемпионате, в заезде: ${raceName}!`);
+      }
+
+      // Если статус был canceled, то производить обновление документа, а не создание
+      let needUpdateDocument = false;
+      if (checkRegistrationStatus?.status === 'canceled') {
+        needUpdateDocument = true;
       }
 
       // Проверка занят ли выбранный стартовый номер для заезда.
@@ -717,15 +725,33 @@ export class ChampionshipService {
         throw new Error(`Стартовый номер: ${startNumber} уже занят!`);
       }
 
-      // Регистрация на выбранный Заезд Чемпионата.
-      await RaceRegistrationModel.create({
-        championship: championshipId,
-        rider: riderId,
-        raceNumber,
-        startNumber,
-        status: 'registered',
-        ...(teamVariable && { teamVariable }),
-      });
+      if (!needUpdateDocument) {
+        // Регистрация на выбранный Заезд Чемпионата.
+        await RaceRegistrationModel.create({
+          championship: championshipId,
+          rider: riderId,
+          raceNumber,
+          startNumber,
+          status: 'registered',
+          ...(teamVariable && { teamVariable }),
+        });
+      } else {
+        await RaceRegistrationModel.findOneAndUpdate(
+          {
+            championship: championshipId,
+            rider: riderId,
+          },
+          {
+            $set: {
+              startNumber,
+              raceNumber,
+              status: 'registered',
+              ...(teamVariable && { teamVariable }),
+            },
+          },
+          { new: true }
+        );
+      }
 
       const messageSuccess = `Вы зарегистрировались, Чемпионат: ${champ.name}, заезд: "${
         champ.races.find((race) => race.number === raceNumber)?.name || '!нет названия!'
