@@ -5,11 +5,7 @@
  * !! Судьи и помощники в Чемпионате, для формирования итогового протокола Чемпионата
  */
 
-import {
-  getChampionship,
-  getChampionships,
-  getRegisteredRidersChamp,
-} from '@/actions/championship';
+import { getChampionship, getChampionships } from '@/actions/championship';
 import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockChampionshipHeader';
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
@@ -20,7 +16,6 @@ import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisCo
 import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 import BlockRaces from '@/components/BlockRaces/BlockRaces';
-import ContainerTableRegisteredChamp from '@/components/Table/Containers/RegisteredChamp/RegisteredChamp';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
@@ -31,10 +26,9 @@ type Props = { params: { urlSlug: string } };
  * Страница описания Чемпионата как отдельного, так и серии заездов.
  */
 export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
-  const [championship, championships, registeredRidersChamp] = await Promise.all([
+  const [championship, championships] = await Promise.all([
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),
-    getRegisteredRidersChamp({ urlSlug }),
   ]);
 
   const champService = new ChampionshipService();
@@ -101,14 +95,6 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
               </div>
             </>
           )}
-          {/* registeredRidersChamp */}
-          <TitleAndLine hSize={2} title={'Зарегистрированные участники'} />
-          {registeredRidersChamp.data &&
-            registeredRidersChamp.data.map((race) => (
-              <div className={styles.wrapper__table} key={race.raceName}>
-                <ContainerTableRegisteredChamp registeredRidersInRace={race} />
-              </div>
-            ))}
         </div>
       )}
 

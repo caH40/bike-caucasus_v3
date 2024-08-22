@@ -1,8 +1,10 @@
 import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import { getRegisteredRidersChamp } from '@/actions/championship';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import ContainerTableRegisteredChamp from '@/components/Table/Containers/RegisteredChamp/RegisteredChamp';
 import styles from './ChampionshipRegistered.module.css';
-import Wrapper from '@/components/Wrapper/Wrapper';
 
 type Props = {
   params: {
@@ -10,14 +12,19 @@ type Props = {
   };
 };
 
-export default function ChampionshipRegistered({ params: { urlSlug } }: Props) {
+export default async function ChampionshipRegistered({ params: { urlSlug } }: Props) {
+  const registeredRidersChamp = await getRegisteredRidersChamp({ urlSlug });
   const buttons = buttonsMenuChampionshipPage(urlSlug);
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <Wrapper hSize={1} title="Зарегистрированные участники">
-          участники
-        </Wrapper>
+        <TitleAndLine hSize={1} title={'Зарегистрированные участники'} />
+        {registeredRidersChamp.data &&
+          registeredRidersChamp.data.map((race) => (
+            <div className={styles.wrapper__table} key={race.raceName}>
+              <ContainerTableRegisteredChamp registeredRidersInRace={race} />
+            </div>
+          ))}
       </div>
 
       {/* левая боковая панель */}

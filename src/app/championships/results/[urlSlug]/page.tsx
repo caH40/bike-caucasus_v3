@@ -15,8 +15,8 @@ export default function ChampionshipResults({ params: { urlSlug } }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <Wrapper hSize={1} title="Результаты Чемпионата">
-          Тут результаты
+        <Wrapper hSize={1} title="Результаты заездов Чемпионата">
+          Тут будут результаты. В разработке...
         </Wrapper>
       </div>
 
