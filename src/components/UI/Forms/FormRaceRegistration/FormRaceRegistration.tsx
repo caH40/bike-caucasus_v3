@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useEffect } from 'react';
 
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
-import { createOptionsRaces } from '@/app/championships/registration/[champName]/utils';
+import { createOptionsRaces } from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
 import Button from '../../Button/Button';
 import { registerForChampionship } from '@/actions/championship';

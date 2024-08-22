@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { createOptionsStartNumbers } from '@/app/championships/registration/[champName]/utils';
+import { createOptionsStartNumbers } from '@/app/championships/registration/[urlSlug]/utils';
 import type { TRaceRegistrationDto } from '@/types/dto.types';
 import type { TOptions } from '@/types/index.interface';
 

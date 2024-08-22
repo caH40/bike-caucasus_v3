@@ -21,6 +21,9 @@ import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 import BlockRaces from '@/components/BlockRaces/BlockRaces';
 import ContainerTableRegisteredChamp from '@/components/Table/Containers/RegisteredChamp/RegisteredChamp';
+import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
+import AdContainer from '@/components/AdContainer/AdContainer';
+import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 
 type Props = { params: { urlSlug: string } };
 
@@ -52,10 +55,12 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
       })
     : [];
 
+  const buttons = buttonsMenuChampionshipPage(urlSlug);
+
   return (
-    <div>
+    <div className={styles.wrapper}>
       {championship.data && (
-        <>
+        <div className={styles.wrapper__main}>
           <div className={styles.block__header}>
             {/* popup меня управления новостью */}
             <PermissionCheck permission={'admin'}>
@@ -104,8 +109,16 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
                 <ContainerTableRegisteredChamp registeredRidersInRace={race} />
               </div>
             ))}
-        </>
+        </div>
       )}
+
+      {/* левая боковая панель */}
+      <aside className={styles.wrapper__aside}>
+        <div className={styles.spacer__menu}>
+          <MenuOnPage buttons={buttons} />
+        </div>
+        <AdContainer adsNumber={6} />
+      </aside>
     </div>
   );
 }

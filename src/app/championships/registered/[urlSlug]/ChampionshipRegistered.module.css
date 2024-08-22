@@ -6,20 +6,12 @@
 .wrapper__main {
   position: relative;
 }
-.wrapper__aside {
-  margin-top: 39px;
-}
-.wrapper__trails {
-  display: grid;
-  grid-gap: 1rem 2rem;
-  grid-template-columns: repeat(auto-fit, 308px);
+.spacer__menu {
+  margin-bottom: 2rem;
 }
 /* ====================================================================== */
 @media (max-width: 992px) {
   .wrapper {
     grid-template-columns: 100%;
-  }
-  .wrapper__aside {
-    margin-top: 0px;
   }
 }

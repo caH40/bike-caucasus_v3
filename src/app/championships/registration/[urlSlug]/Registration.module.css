@@ -1,16 +1,13 @@
-.wrapper__cards {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
 .wrapper {
   display: grid;
   grid-gap: 1rem 20px;
   grid-template-columns: 1fr 468px;
 }
+.spacer__menu {
+  margin-bottom: 2rem;
+}
 /* ====================================================================== */
-/* @media (max-width: 992px) { */
-@media (max-width: 1360px) {
+@media (max-width: 992px) {
   .wrapper {
     grid-template-columns: 100%;
   }

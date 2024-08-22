@@ -26,9 +26,9 @@ type Props = {
  */
 export default function MenuOnPage({ buttons, buttonAdditional }: Props) {
   const router = useRouter();
-  const path = usePathname();
+  const currentPath = usePathname();
 
-  // Дополнительная кнопка в меню, обычно возврат на определенный адрес (path)
+  // Дополнительная кнопка в меню, обычно возврат на определенный адрес (path).
   const buttonBack: TMenuOnPage = {
     id: 100,
     name: buttonAdditional?.name || 'Вернуться',
@@ -42,10 +42,26 @@ export default function MenuOnPage({ buttons, buttonAdditional }: Props) {
   const buttonList = [...buttons, buttonBack]
     .filter((button) => button.id !== 100 || (button.id === 100 && buttonAdditional))
     .map((button) => {
-      if (button.href && path.includes(button.href) && !button.classes.includes('active')) {
-        // Выделение кнопки активной страницы.
+      // Если ссылка пуста, не обрабатываем кнопку.
+      if (!button.href) {
+        return button;
+      }
+
+      // Проверка, является ли путь точным совпадением.
+      const isExactMatch = currentPath === button.href;
+
+      // Проверка, начинается ли текущий путь с href.
+      // /championships добавлено как исключение.
+      const isPrefixMatch =
+        currentPath.startsWith(button.href) && button.href !== '/championships';
+
+      // Учитываем корневой маршрут, чтобы он не активировал дочерние ссылки.
+      const isActive = isExactMatch || isPrefixMatch;
+
+      if (isActive && !button.classes.includes('active')) {
         return { ...button, classes: [...button.classes, 'active'] };
       }
+
       return button;
     });
 
