@@ -17,10 +17,6 @@
   right: 3px;
   z-index: 100;
 }
-.wrapper__table {
-  margin-bottom: 2rem;
-}
-
 .wrapper {
   display: grid;
   grid-gap: 1rem 20px;

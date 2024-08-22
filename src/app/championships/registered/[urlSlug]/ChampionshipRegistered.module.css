@@ -9,6 +9,9 @@
 .spacer__menu {
   margin-bottom: 2rem;
 }
+.wrapper__table {
+  margin-bottom: 2rem;
+}
 /* ====================================================================== */
 @media (max-width: 992px) {
   .wrapper {

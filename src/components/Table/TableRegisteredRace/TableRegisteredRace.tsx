@@ -10,8 +10,6 @@ import {
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
-import Pagination from '@/components/UI/Pagination/Pagination';
-
 import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
 import TdRider from '../Td/TdRider';
@@ -135,14 +133,6 @@ export default function TableRegisteredRace({
           </tbody>
         </table>
       </div>
-
-      <Pagination
-        isFirstPage={!table.getCanPreviousPage()}
-        isLastPage={!table.getCanNextPage()}
-        quantityPages={table.getPageCount()}
-        page={table.getState().pagination.pageIndex}
-        setPage={table.setPageIndex}
-      />
     </div>
   );
 }
