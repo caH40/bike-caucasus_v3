@@ -6,11 +6,11 @@
 .wrapper {
   display: grid;
   grid-gap: 1rem 20px;
-  grid-template-columns: 1fr 468px;
+  grid-template-columns: 1fr 350px;
 }
 /* ====================================================================== */
 /* @media (max-width: 992px) { */
-@media (max-width: 1360px) {
+@media (max-width: 1300px) {
   .wrapper {
     grid-template-columns: 100%;
   }

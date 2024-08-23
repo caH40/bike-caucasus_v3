@@ -1,16 +1,17 @@
 .wrapper {
   display: grid;
   grid-gap: 1rem 20px;
-  grid-template-columns: 1fr 468px;
+  grid-template-columns: 1fr 350px;
 }
 .wrapper__main {
   position: relative;
+  min-width: 100%;
 }
 .spacer__menu {
   margin-bottom: 2rem;
 }
 /* ====================================================================== */
-@media (max-width: 992px) {
+@media (max-width: 120px) {
   .wrapper {
     grid-template-columns: 100%;
   }

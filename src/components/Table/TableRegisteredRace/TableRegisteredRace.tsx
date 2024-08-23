@@ -122,14 +122,9 @@ export default function TableRegisteredRace({
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr
-                className={styles.tr}
-                key={row.id}
-                // onClick={() => getLink(String(row.getValue('title')))}
-                // onClick={() => getLink(String(row.original.urlSlug))}
-              >
+              <tr className={styles.tr} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <td className={cx('td', 'tdWithImg')} key={cell.id}>
+                  <td className={cx('td')} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

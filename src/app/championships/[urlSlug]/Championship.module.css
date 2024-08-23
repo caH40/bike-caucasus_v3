@@ -20,7 +20,7 @@
 .wrapper {
   display: grid;
   grid-gap: 1rem 20px;
-  grid-template-columns: 1fr 468px;
+  grid-template-columns: 1fr 350px;
 }
 .wrapper__main {
   position: relative;
