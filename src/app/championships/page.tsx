@@ -17,13 +17,15 @@ export default async function ChampionshipsPage() {
   const championships = await getChampionships({ needTypes: ['series', 'tour', 'single'] });
   return (
     <div className={styles.wrapper}>
-      <TitleAndLine hSize={1} title="Чемпионаты по велоспорту" />
+      <div>
+        <TitleAndLine hSize={1} title="Чемпионаты по велоспорту" />
 
-      <div className={styles.wrapper__cards}>
-        {championships.data &&
-          championships.data.map((champ) => (
-            <ChampionshipCard championship={champ} key={champ._id} />
-          ))}
+        <div className={styles.wrapper__cards}>
+          {championships.data &&
+            championships.data.map((champ) => (
+              <ChampionshipCard championship={champ} key={champ._id} />
+            ))}
+        </div>
       </div>
 
       <aside className={styles.wrapper__aside}>

@@ -110,49 +110,51 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <BoxSelectNew
-        label="Выбор заезда:*"
-        id="raceNumber"
-        options={createOptionsRaces(races)}
-        loading={isLoading}
-        register={register('raceNumber', {
-          required: 'Это обязательное поле для заполнения',
-        })}
-        validationText={errors.raceNumber?.message || ''}
-      />
-      <BoxSelectNew
-        label="Выбор стартового номера:*"
-        id="startNumber"
-        options={selectOptions}
-        loading={isLoading}
-        register={register('startNumber', {
-          required: 'Это обязательное поле для заполнения',
-        })}
-        validationText={errors.startNumber?.message || ''}
-      />
-      <BoxInput
-        label="Название команды:"
-        id="teamVariable"
-        autoComplete="off"
-        type="text"
-        loading={isLoading}
-        register={register('teamVariable', {
-          minLength: { value: 2, message: 'Не меньше 2х символов' },
-          maxLength: {
-            value: 30,
-            message: 'Не больше 30 символов',
-          },
-          validate: textValidation.spaces,
-        })}
-        validationText={errors.teamVariable?.message || ''}
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form__registration}>
+      <div className={styles.wrapper__inputs}>
+        <BoxSelectNew
+          label="Выбор заезда:*"
+          id="raceNumber"
+          options={createOptionsRaces(races)}
+          loading={isLoading}
+          register={register('raceNumber', {
+            required: 'Это обязательное поле для заполнения',
+          })}
+          validationText={errors.raceNumber?.message || ''}
+        />
+        <BoxSelectNew
+          label="Выбор стартового номера:*"
+          id="startNumber"
+          options={selectOptions}
+          loading={isLoading}
+          register={register('startNumber', {
+            required: 'Это обязательное поле для заполнения',
+          })}
+          validationText={errors.startNumber?.message || ''}
+        />
+        <BoxInput
+          label="Название команды:"
+          id="teamVariable"
+          autoComplete="off"
+          type="text"
+          loading={isLoading}
+          register={register('teamVariable', {
+            minLength: { value: 2, message: 'Не меньше 2х символов' },
+            maxLength: {
+              value: 30,
+              message: 'Не больше 30 символов',
+            },
+            validate: textValidation.spaces,
+          })}
+          validationText={errors.teamVariable?.message || ''}
+        />
+      </div>
 
       {/* Блок отображения данных профиля для регистрации */}
       <BlockProfileRegRace profile={profile} />
 
       {/* Кнопка отправки формы. */}
-      <div className={styles.box__button}>
+      <div className={styles.box__button_registration}>
         <Button name={'Зарегистрироваться'} theme="green" loading={isLoading} />
       </div>
     </form>

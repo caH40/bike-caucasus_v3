@@ -9,7 +9,7 @@
 .spacer__menu,
 .spacer__form,
 .spacer {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .error {
   color: var(--error);
@@ -25,5 +25,8 @@
   }
   .wrapper__aside {
     margin-top: 0px;
+  }
+  .spacer {
+    margin-bottom: 0;
   }
 }

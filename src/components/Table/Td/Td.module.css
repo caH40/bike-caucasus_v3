@@ -2,10 +2,11 @@
   text-decoration: underline;
   text-decoration-color: transparent;
   color: var(--link-color);
+  width: 100%;
 }
 .name {
   font-weight: 500;
-  min-width: 100px;
+  min-width: 140px;
 }
 .rider {
   display: flex;
