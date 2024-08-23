@@ -3,6 +3,7 @@ import { News } from '@/services/news';
 import { MetadataRoute } from 'next';
 import { Trail } from '@/services/Trail';
 import { OrganizerService } from '@/services/Organizer';
+import { ChampionshipService } from '@/services/Championship';
 
 const host = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -25,6 +26,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Генерация sitemap данных для страниц Организаторов.
   const organizersSitemap = await generateSitemapOrganizerPages();
+
+  // Генерация sitemap данных для страниц Чемпионат.
+  const championshipsSitemap = await generateSitemapChampionshipPages();
+
+  // Генерация sitemap данных для страниц Регистрации на Чемпионат.
+  const championshipsRegistrationSitemap = await generateSitemapChampionshipRegistrationPages();
+
+  // Генерация sitemap данных для страниц зарегистрированных на Чемпионат.
+  const championshipsRegisteredSitemap = await generateSitemapChampionshipRegisteredPages();
 
   return [
     {
@@ -62,6 +72,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...newsSitemap, // news
     ...trailsSitemap, // trails
     ...organizersSitemap, // organizers
+    ...championshipsSitemap, // championship pages
+    ...championshipsRegistrationSitemap, // championship registration pages
+    ...championshipsRegisteredSitemap, // championship registered pages
   ];
 }
 
@@ -129,6 +142,7 @@ async function generateSitemapTrailPages(): Promise<MetadataRoute.Sitemap> {
     return [];
   }
 }
+
 /**
  * Генерирует sitemap данных для страниц Организаторов /organizers/urlSlug
  */
@@ -142,6 +156,69 @@ async function generateSitemapOrganizerPages(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(organizer.updatedAt).toISOString(),
       changeFrequency: 'monthly',
       priority: 0.6,
+    }));
+
+    return trailsSitemap;
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Генерирует sitemap данных для страниц Чемпионата /championships/[urlSlug]
+ */
+async function generateSitemapChampionshipPages(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const championshipService = new ChampionshipService();
+    const championships = await championshipService.getMany({});
+
+    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => ({
+      url: `${host}/championships/${champ.urlSlug}`,
+      lastModified: new Date(champ.updatedAt).toISOString(),
+      changeFrequency: 'hourly',
+      priority: 0.9,
+    }));
+
+    return trailsSitemap;
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Генерирует sitemap данных для страниц Регистрации на Чемпионат /championships/registration/[urlSlug]
+ */
+async function generateSitemapChampionshipRegistrationPages(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const championshipService = new ChampionshipService();
+    const championships = await championshipService.getMany({});
+
+    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => ({
+      url: `${host}/championships/registration/${champ.urlSlug}`,
+      lastModified: new Date(champ.updatedAt).toISOString(),
+      changeFrequency: 'weekly',
+      priority: 0.2,
+    }));
+
+    return trailsSitemap;
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Генерирует sitemap данных для страниц зарегистрированных на Чемпионат /championships/registered/[urlSlug]
+ */
+async function generateSitemapChampionshipRegisteredPages(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const championshipService = new ChampionshipService();
+    const championships = await championshipService.getMany({});
+
+    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => ({
+      url: `${host}/championships/registered/${champ.urlSlug}`,
+      lastModified: new Date(champ.updatedAt).toISOString(),
+      changeFrequency: 'weekly',
+      priority: 0.2,
     }));
 
     return trailsSitemap;
