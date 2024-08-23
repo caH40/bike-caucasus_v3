@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { Metadata } from 'next';
 
 import { getChampionship } from '@/actions/championship';
-import { getH1ForREgistration } from '../../utils';
+import { getH1ForRegistration } from '../../utils';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
@@ -11,12 +11,12 @@ import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/For
 import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
-import { generateMetadataChampReg } from '@/meta/meta';
+import { generateMetadataChampRegistration } from '@/meta/meta';
 import styles from './Registration.module.css';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataChampReg(props);
+  return await generateMetadataChampRegistration(props);
 }
 
 type Props = {
@@ -45,7 +45,7 @@ export default async function Registration({ params: { urlSlug } }: Props) {
         <div className={styles.spacer__form}>
           <TitleAndLine
             hSize={1}
-            title={getH1ForREgistration({
+            title={getH1ForRegistration({
               name: championship.name,
               parentChampionship: championship.parentChampionship,
               type: championship.type,

@@ -11,9 +11,11 @@ import { OrganizerService } from '@/services/Organizer';
 import { getChampionship } from '@/actions/championship';
 import {
   getDescriptionChampionship,
-  getDescriptionForREgistration,
+  getDescriptionForRegistered,
+  getDescriptionForRegistration,
   getTitleChampionship,
-  getTitleForREgistration,
+  getTitleForRegistered,
+  getTitleForRegistration,
 } from '@/app/championships/utils';
 
 type Props = {
@@ -313,7 +315,7 @@ export async function generateMetadataChampionship({
 /**
  * Метаданные для страницы Регистрация на Чемпионат "/championships/registration/[urlSlug]".
  */
-export async function generateMetadataChampReg({
+export async function generateMetadataChampRegistration({
   params: { urlSlug },
 }: Props): Promise<Metadata> {
   const { data } = await getChampionship({ urlSlug });
@@ -322,8 +324,36 @@ export async function generateMetadataChampReg({
     return metadata404Page;
   }
 
-  const title = getTitleForREgistration({ champ: data });
-  const description = getDescriptionForREgistration({ champ: data });
+  const title = getTitleForRegistration({ champ: data });
+  const description = getDescriptionForRegistration({ champ: data });
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: [data.posterUrl],
+      type: 'website',
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Регистрация на Чемпионат "/championships/registered/[urlSlug]".
+ */
+export async function generateMetadataChampRegistered({
+  params: { urlSlug },
+}: Props): Promise<Metadata> {
+  const { data } = await getChampionship({ urlSlug });
+
+  if (!data) {
+    return metadata404Page;
+  }
+
+  const title = getTitleForRegistered({ champ: data });
+  const description = getDescriptionForRegistered({ champ: data });
 
   return {
     title,

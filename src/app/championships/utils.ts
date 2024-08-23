@@ -7,7 +7,7 @@ import type { TChampionshipTypes } from '@/types/models.interface';
 /**
  * Формирование h1 для страницы Регистрации.
  */
-export function getH1ForREgistration({
+export function getH1ForRegistration({
   name,
   parentChampionship,
   type,
@@ -39,7 +39,7 @@ export function getH1ForREgistration({
 /**
  * Формирование Title для страницы Регистрации.
  */
-export function getTitleForREgistration({ champ }: { champ: TDtoChampionship }) {
+export function getTitleForRegistration({ champ }: { champ: TDtoChampionship }) {
   switch (champ.type) {
     case 'single': {
       return `Открыта регистрация на велогонку: ${champ.name}. Дата старта ${
@@ -55,11 +55,11 @@ export function getTitleForREgistration({ champ }: { champ: TDtoChampionship }) 
         }". Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
       }
 
-      return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
-        champ.name
-      }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
-        champ.parentChampionship.name
-      }". Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+      return `Регистрируйтесь на велогонку на ${champ.stage} Этап: "${champ.name}". ${
+        championshipTypesMap.get(champ.parentChampionship.type)?.translation
+      } "${champ.parentChampionship.name}". Дата старта ${
+        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+      }`;
     }
   }
 }
@@ -67,26 +67,22 @@ export function getTitleForREgistration({ champ }: { champ: TDtoChampionship }) 
 /**
  * Формирование Description для страницы Регистрации.
  */
-export function getDescriptionForREgistration({ champ }: { champ: TDtoChampionship }) {
+export function getDescriptionForRegistration({ champ }: { champ: TDtoChampionship }) {
   switch (champ.type) {
     case 'single': {
-      return `Открыта регистрация на велогонку: ${champ.name}. Дата старта ${
+      return `Регистрируйтесь на велогонку по велоспорту: ${champ.name}. Дата старта ${
         getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
-      }. Присоединяйтесь к соревнованиям на велосипеде тип: ${
-        bikeTypesMap.get(champ.bikeType)?.translation
-      }!`;
+      }. Присоединяйтесь к соревнованиям, испытайте себя!`;
     }
 
     default: {
       // Если не поступили данные о Родительском чемпионате.
       if (!champ.parentChampionship) {
-        return `Открыта регистрация на велогонку на ${champ.stage} Этап: "${
+        return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
           champ.name
         }". Дата старта ${
           getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
-        } Присоединяйтесь к соревнованиям на велосипеде тип: ${
-          bikeTypesMap.get(champ.bikeType)?.translation
-        }!`;
+        } Присоединяйтесь к соревнованиям, испытайте себя!`;
       }
 
       return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
@@ -95,12 +91,110 @@ export function getDescriptionForREgistration({ champ }: { champ: TDtoChampionsh
         champ.parentChampionship.name
       }". Дата старта ${
         getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
-      } Присоединяйтесь к соревнованиям на велосипеде тип: ${
-        bikeTypesMap.get(champ.bikeType)?.translation
-      }!`;
+      } Присоединяйтесь к соревнованиям, испытайте себя!`;
     }
   }
 }
+
+// ==============================================================================================
+// ==============================================================================================
+
+/**
+ * Формирование h1 для страницы Зарегистрированные участники.
+ */
+// export function getH1ForRegistered({
+//   name,
+//   parentChampionship,
+//   type,
+//   stage,
+// }: {
+//   name: string;
+//   parentChampionship?: TParentChampionshipForClient;
+//   type: TChampionshipTypes;
+//   stage: number | null;
+// }) {
+//   switch (type) {
+//     case 'single': {
+//       return `Зарегистрированные участники на велогонку: ${name}`;
+//     }
+
+//     default: {
+//       // Если не поступили данные о Родительском чемпионате.
+//       if (!parentChampionship) {
+//         return `Регистрация на ${stage} Этап: "${name}"`;
+//       }
+
+//       return `Регистрация на ${stage} Этап: "${name}". ${
+//         championshipTypesMap.get(parentChampionship.type)?.translation
+//       } "${parentChampionship.name}"`;
+//     }
+//   }
+// }
+
+/**
+ * Формирование Title для страницы Зарегистрированные участники.
+ */
+export function getTitleForRegistered({ champ }: { champ: TDtoChampionship }) {
+  switch (champ.type) {
+    case 'single': {
+      return `Зарегистрированные участники на велогонку: ${champ.name}, которая стартует ${
+        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+      }`;
+    }
+
+    default: {
+      // Если не поступили данные о Родительском чемпионате.
+      if (!champ.parentChampionship) {
+        return `Зарегистрированные участники на велогонку на ${champ.stage} Этап: "${
+          champ.name
+        }". Стартует ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+      }
+
+      return `Зарегистрированные участники на велогонку на ${champ.stage} Этап: "${
+        champ.name
+      }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
+        champ.parentChampionship.name
+      }". Стартует ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+    }
+  }
+}
+
+/**
+ * Формирование Description для страницы Зарегистрированные участники.
+ */
+export function getDescriptionForRegistered({ champ }: { champ: TDtoChampionship }) {
+  switch (champ.type) {
+    case 'single': {
+      return `Зарегистрированные участники на велогонку по велоспорту: ${
+        champ.name
+      }. Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}. Тип велосипеда: ${
+        bikeTypesMap.get(champ.bikeType)?.translation
+      }!`;
+    }
+
+    default: {
+      // Если не поступили данные о Родительском чемпионате.
+      if (!champ.parentChampionship) {
+        return `Зарегистрированные участники на велогонку по велоспорту на ${
+          champ.stage
+        } Этап: "${champ.name}". Дата старта ${
+          getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        } Тип велосипеда: ${bikeTypesMap.get(champ.bikeType)?.translation}!`;
+      }
+
+      return `Зарегистрированные участники на велогонку по велоспорту на ${
+        champ.stage
+      } Этап: "${champ.name}". ${
+        championshipTypesMap.get(champ.parentChampionship.type)?.translation
+      } "${champ.parentChampionship.name}". Дата старта ${
+        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+      } Тип велосипеда: ${bikeTypesMap.get(champ.bikeType)?.translation}!`;
+    }
+  }
+}
+
+// ==============================================================================================
+// ==============================================================================================
 
 /**
  * Формирование h1 для страницы Чемпионат описание.

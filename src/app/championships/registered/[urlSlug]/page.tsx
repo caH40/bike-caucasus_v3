@@ -1,10 +1,18 @@
+import { Metadata } from 'next';
+
 import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
-import { getRegisteredRidersChamp } from '@/actions/championship';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import ContainerTableRegisteredChamp from '@/components/Table/Containers/RegisteredChamp/RegisteredChamp';
+import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import { getRegisteredRidersChamp } from '@/actions/championship';
+import { generateMetadataChampRegistered } from '@/meta/meta';
 import styles from './ChampionshipRegistered.module.css';
+
+// Создание динамических meta данных.
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataChampRegistered(props);
+}
 
 type Props = {
   params: {
