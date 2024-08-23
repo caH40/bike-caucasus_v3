@@ -9,7 +9,12 @@ import { ParamsWithId } from '@/types/index.interface';
 import { UserService } from '@/services/user';
 import { OrganizerService } from '@/services/Organizer';
 import { getChampionship } from '@/actions/championship';
-import { getDescriptionChampionship, getH1Championship } from '@/app/championships/utils';
+import {
+  getDescriptionChampionship,
+  getDescriptionForREgistration,
+  getTitleChampionship,
+  getTitleForREgistration,
+} from '@/app/championships/utils';
 
 type Props = {
   params: {
@@ -289,8 +294,36 @@ export async function generateMetadataChampionship({
     return metadata404Page;
   }
 
-  const title = getH1Championship({ champ: data });
+  const title = getTitleChampionship({ champ: data });
   const description = getDescriptionChampionship({ champ: data });
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: [data.posterUrl],
+      type: 'website',
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Регистрация на Чемпионат "/championships/registration/[urlSlug]".
+ */
+export async function generateMetadataChampReg({
+  params: { urlSlug },
+}: Props): Promise<Metadata> {
+  const { data } = await getChampionship({ urlSlug });
+
+  if (!data) {
+    return metadata404Page;
+  }
+
+  const title = getTitleForREgistration({ champ: data });
+  const description = getDescriptionForREgistration({ champ: data });
 
   return {
     title,

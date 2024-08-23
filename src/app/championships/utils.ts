@@ -1,12 +1,13 @@
 import { championshipTypesMap } from '@/constants/championship';
 import { bikeTypesMap } from '@/constants/trail';
+import { getDateTime } from '@/libs/utils/calendar';
 import { TDtoChampionship } from '@/types/dto.types';
 import type { TParentChampionshipForClient } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 /**
- * Формирование заголовка для страницы Регистрации.
+ * Формирование h1 для страницы Регистрации.
  */
-export function getTitleForREgistration({
+export function getH1ForREgistration({
   name,
   parentChampionship,
   type,
@@ -36,9 +37,75 @@ export function getTitleForREgistration({
 }
 
 /**
- * Формирование заголовка для страницы Чемпионат описание.
+ * Формирование Title для страницы Регистрации.
  */
-export function getTitleChampionship({
+export function getTitleForREgistration({ champ }: { champ: TDtoChampionship }) {
+  switch (champ.type) {
+    case 'single': {
+      return `Открыта регистрация на велогонку: ${champ.name}. Дата старта ${
+        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+      }`;
+    }
+
+    default: {
+      // Если не поступили данные о Родительском чемпионате.
+      if (!champ.parentChampionship) {
+        return `Открыта регистрация на велогонку на ${champ.stage} Этап: "${
+          champ.name
+        }". Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+      }
+
+      return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
+        champ.name
+      }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
+        champ.parentChampionship.name
+      }". Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+    }
+  }
+}
+
+/**
+ * Формирование Description для страницы Регистрации.
+ */
+export function getDescriptionForREgistration({ champ }: { champ: TDtoChampionship }) {
+  switch (champ.type) {
+    case 'single': {
+      return `Открыта регистрация на велогонку: ${champ.name}. Дата старта ${
+        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+      }. Присоединяйтесь к соревнованиям на велосипеде тип: ${
+        bikeTypesMap.get(champ.bikeType)?.translation
+      }!`;
+    }
+
+    default: {
+      // Если не поступили данные о Родительском чемпионате.
+      if (!champ.parentChampionship) {
+        return `Открыта регистрация на велогонку на ${champ.stage} Этап: "${
+          champ.name
+        }". Дата старта ${
+          getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        } Присоединяйтесь к соревнованиям на велосипеде тип: ${
+          bikeTypesMap.get(champ.bikeType)?.translation
+        }!`;
+      }
+
+      return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
+        champ.name
+      }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
+        champ.parentChampionship.name
+      }". Дата старта ${
+        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+      } Присоединяйтесь к соревнованиям на велосипеде тип: ${
+        bikeTypesMap.get(champ.bikeType)?.translation
+      }!`;
+    }
+  }
+}
+
+/**
+ * Формирование h1 для страницы Чемпионат описание.
+ */
+export function getH1Championship({
   name,
   parentChampionship,
   type,
@@ -68,11 +135,11 @@ export function getTitleChampionship({
 }
 
 /**
- * Формирование заголовка для страницы Чемпионат описание.
+ * Формирование Title для страницы Чемпионат описание.
  */
-export function getH1Championship({ champ }: { champ: TDtoChampionship }) {
-  const messageNotForStage = `Чемпионат по велоспорту ${champ.name}, в дисциплине велосипед ${
-    bikeTypesMap.get(champ.type)?.translation
+export function getTitleChampionship({ champ }: { champ: TDtoChampionship }) {
+  const messageNotForStage = `Чемпионат по велоспорту ${champ.name} в дисциплине велосипед ${
+    bikeTypesMap.get(champ.bikeType)?.translation
   }`;
   switch (champ.type) {
     case 'single': {
@@ -93,7 +160,7 @@ export function getH1Championship({ champ }: { champ: TDtoChampionship }) {
 }
 
 /**
- * Формирование заголовка для страницы Чемпионат описание.
+ * Формирование Description для страницы Чемпионат описание.
  */
 export function getDescriptionChampionship({ champ }: { champ: TDtoChampionship }) {
   const messageNotForStage = `Примите участие в Чемпионате по велоспорту ${
