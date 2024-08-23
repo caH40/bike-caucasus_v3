@@ -17,6 +17,7 @@ function TdRider({ rider }: Props) {
   return (
     <Link className={cx('link__news')} href={`/profile/${rider.id}`}>
       <div className={cx('rider')}>
+        {/* Логотип райдера */}
         <div className={cx('rider__logo')}>
           {rider.image ? (
             <Image
@@ -35,6 +36,7 @@ function TdRider({ rider }: Props) {
           )}
         </div>
 
+        {/* Имя Фамилия */}
         <div className={cx('name')}>{riderName}</div>
       </div>
     </Link>

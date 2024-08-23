@@ -62,10 +62,10 @@ export default async function Registration({ params: { urlSlug } }: Props) {
         </div>
 
         {profile && (
-          <div className={styles.spacer}>
-            <TitleAndLine hSize={2} title="Зарегистрированные участники" />
-            <ContainerTableRegisteredRace />
-          </div>
+          // <div className={styles.spacer}>
+          // <TitleAndLine hSize={2} title="Зарегистрированные участники" />
+          <ContainerTableRegisteredRace />
+          // </div>
         )}
       </div>
 

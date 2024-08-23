@@ -1,7 +1,10 @@
 .wrapper {
   display: grid;
-  grid-gap: 1rem 20px;
-  grid-template-columns: 1fr 468px;
+  gap: 1rem 20px;
+  grid-template-columns: 1fr 300px;
+}
+.wrapper__main {
+  min-width: 100%;
 }
 .spacer__menu,
 .spacer__form,
@@ -12,9 +15,13 @@
   color: var(--error);
 }
 /* ====================================================================== */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .wrapper {
     grid-template-columns: 100%;
+  }
+  .wrapper__main {
+    padding-right: 0px;
+    overflow: unset;
   }
   .wrapper__aside {
     margin-top: 0px;
