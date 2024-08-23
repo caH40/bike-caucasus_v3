@@ -4,14 +4,14 @@ import { getChampionship } from '@/actions/championship';
 import { getTitle } from './utils';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
+import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+
 import styles from './Registration.module.css';
-import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 
 type Props = {
   params: {
@@ -62,16 +62,10 @@ export default async function Registration({ params: { urlSlug } }: Props) {
         </div>
 
         {profile && (
-          <>
-            <div className={styles.spacer}>
-              <BlockProfileRegRace profile={profile} />{' '}
-            </div>
-
-            <div className={styles.spacer}>
-              <TitleAndLine hSize={2} title="Зарегистрированные участники" />
-              <ContainerTableRegisteredRace />
-            </div>
-          </>
+          <div className={styles.spacer}>
+            <TitleAndLine hSize={2} title="Зарегистрированные участники" />
+            <ContainerTableRegisteredRace />
+          </div>
         )}
       </div>
 

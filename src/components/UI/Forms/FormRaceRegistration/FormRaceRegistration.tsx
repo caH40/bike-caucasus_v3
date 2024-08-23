@@ -17,6 +17,7 @@ import { TextValidationService } from '@/libs/utils/text';
 import { TProfileForRegistration, TProfileKey } from '@/types/index.interface';
 import { TRace } from '@/types/models.interface';
 import styles from '../Form.module.css';
+import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 
 type Props = {
   races: TRace[];
@@ -99,7 +100,7 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
         throw new Error(response.message);
       }
 
-      reset();
+      reset({ teamVariable: '' });
       toast.success(response.message);
     } catch (error) {
       if (error instanceof Error) {
@@ -120,7 +121,6 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
         })}
         validationText={errors.raceNumber?.message || ''}
       />
-
       <BoxSelectNew
         label="Выбор стартового номера:*"
         id="startNumber"
@@ -131,7 +131,6 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
         })}
         validationText={errors.startNumber?.message || ''}
       />
-
       <BoxInput
         label="Название команды:"
         id="teamVariable"
@@ -148,6 +147,9 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
         })}
         validationText={errors.teamVariable?.message || ''}
       />
+
+      {/* Блок отображения данных профиля для регистрации */}
+      <BlockProfileRegRace profile={profile} />
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
