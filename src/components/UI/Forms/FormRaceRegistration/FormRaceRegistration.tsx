@@ -33,6 +33,7 @@ type TFormRaceRegistration = {
 const textValidation = new TextValidationService();
 
 export default function FormRaceRegistration({ championshipId, races, profile }: Props) {
+  const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
 
@@ -57,6 +58,7 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
   // Отслеживание изменения свойства raceNumber в форме.
   const raceNumber = watch('raceNumber');
 
+  // Обновление массива свободных стартовых номеров.
   useEffect(() => {
     if (!startNumberFree) {
       toast.error('Закончились свободные стартовые номера!');
@@ -81,7 +83,7 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
         }
       }
       setLoading(true);
-
+      toggleTrigger();
       const response = await registerForChampionship({
         championshipId,
         raceNumber: +dataForm.raceNumber,

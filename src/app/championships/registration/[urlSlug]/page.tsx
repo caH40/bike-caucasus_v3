@@ -6,11 +6,11 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
-import styles from './Registration.module.css';
 import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import styles from './Registration.module.css';
 
 type Props = {
   params: {

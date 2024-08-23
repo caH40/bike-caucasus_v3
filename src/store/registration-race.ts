@@ -5,6 +5,8 @@ import type { TRaceRegistrationDto } from '@/types/dto.types';
 import type { TOptions } from '@/types/index.interface';
 
 type TRegistrationRace = {
+  trigger: boolean;
+  toggleTrigger: () => void;
   registeredRiders: TRaceRegistrationDto[];
   // eslint-disable-next-line no-unused-vars
   setRegisteredRiders: (registeredRiders: TRaceRegistrationDto[]) => void;
@@ -25,6 +27,12 @@ const initStartNumbersFree = Array(numbersTotal)
  * Стор работы при регистрации в Заезд Чемпионата.
  */
 export const useRegistrationRace = create<TRegistrationRace>((set, get) => ({
+  // Триггер для запроса зарегистрированных райдеров в useEffect.
+  trigger: false,
+  toggleTrigger: () => {
+    set((state) => ({ trigger: !state.trigger }));
+  },
+
   selectOptions: createOptionsStartNumbers(initStartNumbersFree),
 
   // Свободный стартовый номер для инициализации Select. Так как формирование массива options

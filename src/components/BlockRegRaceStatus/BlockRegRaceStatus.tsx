@@ -5,11 +5,12 @@ import { toast } from 'sonner';
 import cn from 'classnames/bind';
 
 import { TRaceRegistrationStatus } from '@/types/models.interface';
-import styles from './BlockRegRaceStatus.module.css';
 import BoxRegRaceStatus from '../BoxRegRaceStatus/BoxRegRaceStatus';
 import IconDelete from '../Icons/IconDelete';
 import { putRegistrationRiderChamp } from '@/actions/championship';
 import { useLoadingStore } from '@/store/loading';
+import styles from './BlockRegRaceStatus.module.css';
+import { useRegistrationRace } from '@/store/registration-race';
 
 const cx = cn.bind(styles);
 
@@ -30,6 +31,7 @@ export default function BlockRegRaceStatus({
   raceNumber,
 }: Props) {
   const setLoading = useLoadingStore((state) => state.setLoading);
+  const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
 
   const { data: session } = useSession();
   const idDB = session?.user.idDB;
@@ -57,6 +59,7 @@ export default function BlockRegRaceStatus({
 
     if (res.ok) {
       toast.success(res.message);
+      toggleTrigger();
     } else {
       toast.error(res.message);
     }

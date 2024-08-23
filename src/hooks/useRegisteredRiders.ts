@@ -9,6 +9,7 @@ import { getRegisteredRidersRace } from '@/actions/championship';
  */
 export const useRegisteredRiders = (raceNumber: number, championshipId: string) => {
   const setRegisteredRiders = useRegistrationRace((state) => state.setRegisteredRiders);
+  const trigger = useRegistrationRace((state) => state.trigger);
 
   useEffect(() => {
     async function fetchRegisteredRiders() {
@@ -23,5 +24,5 @@ export const useRegisteredRiders = (raceNumber: number, championshipId: string) 
     if (raceNumber) {
       fetchRegisteredRiders();
     }
-  }, [raceNumber, championshipId, setRegisteredRiders]);
+  }, [raceNumber, championshipId, setRegisteredRiders, trigger]);
 };
