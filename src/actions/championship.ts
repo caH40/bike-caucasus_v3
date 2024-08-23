@@ -300,11 +300,13 @@ export async function getRegisteredRidersRace({
 /**
  * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
  */
-export async function getRegisteredRidersChamp({
-  urlSlug,
-}: {
-  urlSlug: string;
-}): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
+export async function getRegisteredRidersChamp({ urlSlug }: { urlSlug: string }): Promise<
+  ResponseServer<{
+    champRegistrationRiders: TChampRegistrationRiderDto[];
+    championshipName: string;
+    championshipType: TChampionshipTypes;
+  } | null>
+> {
   'use server';
   try {
     const championshipService = new ChampionshipService();

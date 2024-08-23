@@ -12,7 +12,7 @@ import type {
   TParentChampionshipForClient,
   TRegisteredRiderFromDB,
 } from '@/types/index.interface';
-import { TRace } from '@/types/models.interface';
+import { TChampionshipTypes, TRace } from '@/types/models.interface';
 import { ObjectId } from 'mongoose';
 
 /**
@@ -128,14 +128,25 @@ export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegi
 export function dtoRegisteredRidersChamp({
   riders,
   races,
+  championshipName,
+  championshipType,
 }: {
   riders: TRegisteredRiderFromDB[];
   races: TRace[];
-}): TChampRegistrationRiderDto[] {
+  championshipName: string;
+  championshipType: TChampionshipTypes;
+}): {
+  champRegistrationRiders: TChampRegistrationRiderDto[];
+  championshipName: string;
+  championshipType: TChampionshipTypes;
+} {
   const ridersAfterDto = riders.map((rider) => dtoRegisteredRider(rider));
-  return races.map((race) => ({
+
+  const champRegistrationRiders = races.map((race) => ({
     raceNumber: race.number,
     raceName: race.name,
     raceRegistrationRider: ridersAfterDto.filter((rider) => rider.raceNumber === race.number),
   }));
+
+  return { championshipName, championshipType, champRegistrationRiders };
 }
