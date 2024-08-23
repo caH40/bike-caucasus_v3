@@ -53,8 +53,6 @@ export default function FromChampionship({
   const setLoading = useLoadingStore((state) => state.setLoading);
   const isEditing = !!championshipForEdit;
 
-  // const [races, setRaces] = useState<TRace[]>(racesInit);
-
   // Постер Чемпионата существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
     championshipForEdit ? championshipForEdit.posterUrl : null
@@ -85,11 +83,12 @@ export default function FromChampionship({
   const urlTracksForDel = useRef<string[]>([]);
 
   // Отображения блоков в зависимости от использования формы и вводимых значений.
-  const { showTrackInput, showQuantityStage, showNumberStage } = useShowChampionshipForm({
-    typeInInput: watch('type'),
-    typeInDB: championshipForEdit?.type,
-    isCreatingForm: !championshipForEdit,
-  });
+  const { showTrackInput, showQuantityStage, showNumberStage, isSeriesOrTourInForm } =
+    useShowChampionshipForm({
+      typeInInput: watch('type'),
+      typeInDB: championshipForEdit?.type,
+      isCreatingForm: !championshipForEdit,
+    });
 
   const initParentChampionship = parentChampionships.find(
     (elm) => elm._id === championshipForEdit?.parentChampionship?._id
@@ -108,6 +107,11 @@ export default function FromChampionship({
       name: dataForm.name,
       description: dataForm.description,
     });
+
+    // Если Серия или Тур, то убрать объект инициализации из races.
+    if (isSeriesOrTourInForm) {
+      dataForm.races = [];
+    }
 
     const dataSerialized = serializationChampionship({
       dataForm: {

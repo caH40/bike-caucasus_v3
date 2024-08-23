@@ -30,5 +30,5 @@ export function useShowChampionshipForm({
 
   const showNumberStage = (isCreatingForm && isStageInForm) || isStage;
 
-  return { showTrackInput, showQuantityStage, showNumberStage };
+  return { showTrackInput, showQuantityStage, showNumberStage, isSeriesOrTourInForm };
 }

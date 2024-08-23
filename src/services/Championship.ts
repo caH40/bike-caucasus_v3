@@ -250,6 +250,7 @@ export class ChampionshipService {
 
       // Обработка данных Заездов (дистанций).
       const racesForSave: TRace[] = [];
+
       if (races) {
         for (const race of races) {
           let trackGPX = {} as TTrackGPXObj;

@@ -81,6 +81,7 @@ export default function ChampionshipCard({ championship, simple }: Props) {
                   colors={{ default: `var(--${championship.bikeType})` }}
                 />
               )}
+              {bike?.translation || 'неизвестно'}
             </dd>
             {!simple && (
               <>
