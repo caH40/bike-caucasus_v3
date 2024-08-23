@@ -5,18 +5,18 @@ import { toast } from 'sonner';
 import { useEffect } from 'react';
 
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
+import Button from '../../Button/Button';
+import BoxInput from '../../BoxInput/BoxInput';
 import { createOptionsRaces } from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
-import Button from '../../Button/Button';
 import { registerForChampionship } from '@/actions/championship';
 import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
-import BoxInput from '../../BoxInput/BoxInput';
+import { validateRequiredFields } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
 import { TProfileForRegistration, TProfileKey } from '@/types/index.interface';
 import { TRace } from '@/types/models.interface';
 import styles from '../Form.module.css';
-import { getDefaultValue, validateRequiredFields } from './utils';
 
 type Props = {
   races: TRace[];
@@ -148,71 +148,6 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
         })}
         validationText={errors.teamVariable?.message || ''}
       />
-
-      {/* Блок ввода*/}
-      <div className={styles.box__input}>
-        <label className={styles.label} htmlFor="riderName">
-          Имя участника (данные из аккаунта):*
-        </label>
-        <input
-          name={'riderName'}
-          value={getDefaultValue(profile.firstName, 'firstName')}
-          className={styles.input}
-          disabled={true}
-        />
-      </div>
-
-      {/* Блок ввода*/}
-      <div className={styles.box__input}>
-        <label className={styles.label} htmlFor="riderName">
-          Фамилия участника (данные из аккаунта):*
-        </label>
-        <input
-          name={'riderName'}
-          value={getDefaultValue(profile.lastName, 'lastName')}
-          className={styles.input}
-          disabled={true}
-        />
-      </div>
-
-      {/* Блок ввода*/}
-      <div className={styles.box__input}>
-        <label className={styles.label} htmlFor="ageCategory">
-          Возрастная категория (данные из аккаунта):*
-        </label>
-        <input
-          name={'ageCategory'}
-          value={getDefaultValue(profile.ageCategory, 'ageCategory')}
-          className={styles.input}
-          disabled={true}
-        />
-      </div>
-
-      {/* Блок ввода*/}
-      <div className={styles.box__input}>
-        <label className={styles.label} htmlFor="gender">
-          Пол (данные из аккаунта):*
-        </label>
-        <input
-          name={'gender'}
-          value={getDefaultValue(profile.gender, 'gender')}
-          className={styles.input}
-          disabled={true}
-        />
-      </div>
-
-      {/* Блок ввода*/}
-      <div className={styles.box__input}>
-        <label className={styles.label} htmlFor="city">
-          Город (данные из аккаунта):*
-        </label>
-        <input
-          name={'city'}
-          value={getDefaultValue(profile.city, 'city')}
-          className={styles.input}
-          disabled={true}
-        />
-      </div>
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>

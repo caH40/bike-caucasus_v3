@@ -11,6 +11,7 @@ import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import styles from './Registration.module.css';
+import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 
 type Props = {
   params: {
@@ -35,32 +36,43 @@ export default async function Registration({ params: { urlSlug } }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <TitleAndLine
-          hSize={1}
-          title={getTitle({
-            name: championship.name,
-            parentChampionship: championship.parentChampionship,
-            type: championship.type,
-            stage: championship.stage,
-          })}
-        />
-
-        {profile ? (
-          <FormRaceRegistration
-            profile={profile}
-            championshipId={championship._id}
-            races={championship.races}
+        <div className={styles.spacer__form}>
+          <TitleAndLine
+            hSize={1}
+            title={getTitle({
+              name: championship.name,
+              parentChampionship: championship.parentChampionship,
+              type: championship.type,
+              stage: championship.stage,
+            })}
           />
-        ) : (
-          <h3>
-            Для регистрации в Чемпионатах вам необходимо сначала зарегистрироваться на сайте,
-            если вы еще не сделали этого. Если у вас уже есть учетная запись, пожалуйста,
-            войдите в нее.
-          </h3>
-        )}
 
-        <TitleAndLine hSize={2} title="Зарегистрированные участники" />
-        <ContainerTableRegisteredRace />
+          {profile ? (
+            <FormRaceRegistration
+              profile={profile}
+              championshipId={championship._id}
+              races={championship.races}
+            />
+          ) : (
+            <h3 className={styles.error}>
+              Для регистрации в Чемпионатах необходимо зарегистрироваться на сайте, если вы еще
+              не сделали этого. Если у вас уже есть учетная запись, пожалуйста, войдите в нее.
+            </h3>
+          )}
+        </div>
+
+        {profile && (
+          <>
+            <div className={styles.spacer}>
+              <BlockProfileRegRace profile={profile} />{' '}
+            </div>
+
+            <div className={styles.spacer}>
+              <TitleAndLine hSize={2} title="Зарегистрированные участники" />
+              <ContainerTableRegisteredRace />
+            </div>
+          </>
+        )}
       </div>
 
       {/* левая боковая панель */}

@@ -3,8 +3,13 @@
   grid-gap: 1rem 20px;
   grid-template-columns: 1fr 468px;
 }
-.spacer__menu {
+.spacer__menu,
+.spacer__form,
+.spacer {
   margin-bottom: 2rem;
+}
+.error {
+  color: var(--error);
 }
 /* ====================================================================== */
 @media (max-width: 992px) {
