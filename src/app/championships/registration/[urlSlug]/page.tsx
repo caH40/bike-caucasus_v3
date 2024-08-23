@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 
 import { getChampionship } from '@/actions/championship';
-import { getTitle } from './utils';
+import { getTitleForREgistration } from '../../utils';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
@@ -10,7 +10,6 @@ import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/For
 import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
-
 import styles from './Registration.module.css';
 
 type Props = {
@@ -39,7 +38,7 @@ export default async function Registration({ params: { urlSlug } }: Props) {
         <div className={styles.spacer__form}>
           <TitleAndLine
             hSize={1}
-            title={getTitle({
+            title={getTitleForREgistration({
               name: championship.name,
               parentChampionship: championship.parentChampionship,
               type: championship.type,

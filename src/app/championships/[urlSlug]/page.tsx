@@ -4,21 +4,28 @@
  * Ссылка на результаты
  * !! Судьи и помощники в Чемпионате, для формирования итогового протокола Чемпионата
  */
+import { Metadata } from 'next';
 
 import { getChampionship, getChampionships } from '@/actions/championship';
+import { ChampionshipService } from '@/services/Championship';
+import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockChampionshipHeader';
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { ChampionshipService } from '@/services/Championship';
-import styles from './Championship.module.css';
 import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
-import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 import BlockRaces from '@/components/BlockRaces/BlockRaces';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import { generateMetadataChampionship } from '@/meta/meta';
+import styles from './Championship.module.css';
+
+// Создание динамических meta данных.
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataChampionship(props);
+}
 
 type Props = { params: { urlSlug: string } };
 

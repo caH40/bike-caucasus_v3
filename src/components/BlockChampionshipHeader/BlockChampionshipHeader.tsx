@@ -4,6 +4,7 @@ import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './BlockChampionshipHeader.module.css';
 import { blurBase64 } from '@/libs/image';
 import { formatDateInterval } from '@/libs/utils/calendar';
+import { getTitleChampionship } from '@/app/championships/utils';
 
 type Props = { championship: TDtoChampionship };
 
@@ -47,7 +48,7 @@ export default function BlockChampionshipHeader({ championship }: Props) {
 
       <section className={styles.block__text}>
         <div className={styles.box__title}>
-          <h1 className={styles.title}>{championship.name}</h1>
+          <h1 className={styles.title}>{getTitleChampionship(championship)}</h1>
         </div>
 
         <div

@@ -8,6 +8,8 @@ import { metadata404Page } from './meta404';
 import { ParamsWithId } from '@/types/index.interface';
 import { UserService } from '@/services/user';
 import { OrganizerService } from '@/services/Organizer';
+import { getChampionship } from '@/actions/championship';
+import { getDescriptionChampionship, getH1Championship } from '@/app/championships/utils';
 
 type Props = {
   params: {
@@ -274,3 +276,31 @@ export const metadataChampionships: Metadata = {
     type: 'website',
   },
 };
+
+/**
+ * Метаданные для страницы Чемпионат "/championships/[urlSlug]".
+ */
+export async function generateMetadataChampionship({
+  params: { urlSlug },
+}: Props): Promise<Metadata> {
+  const { data } = await getChampionship({ urlSlug });
+
+  if (!data) {
+    return metadata404Page;
+  }
+
+  const title = getH1Championship({ champ: data });
+  const description = getDescriptionChampionship({ champ: data });
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: [data.posterUrl],
+      type: 'website',
+    },
+  };
+}
