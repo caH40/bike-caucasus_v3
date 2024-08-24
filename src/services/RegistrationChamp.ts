@@ -8,7 +8,7 @@ import {
   dtoRegisteredRiders,
   dtoRegisteredRidersChamp,
   DtoRegistrationsRider,
-} from '@/dto/championship';
+} from '@/dto/registration-champ';
 import type {
   ResponseServer,
   TRegisteredRiderFromDB,
