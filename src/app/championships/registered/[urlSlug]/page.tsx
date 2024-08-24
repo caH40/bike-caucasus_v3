@@ -5,7 +5,7 @@ import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import ContainerTableRegisteredChamp from '@/components/Table/Containers/RegisteredChamp/RegisteredChamp';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
-import { getRegisteredRidersChamp } from '@/actions/championship';
+import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import { generateMetadataChampRegistered } from '@/meta/meta';
 import styles from './ChampionshipRegistered.module.css';
 

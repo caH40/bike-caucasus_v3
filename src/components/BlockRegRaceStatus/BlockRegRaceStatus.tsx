@@ -7,7 +7,7 @@ import cn from 'classnames/bind';
 import { TRaceRegistrationStatus } from '@/types/models.interface';
 import BoxRegRaceStatus from '../BoxRegRaceStatus/BoxRegRaceStatus';
 import IconDelete from '../Icons/IconDelete';
-import { putRegistrationRiderChamp } from '@/actions/championship';
+import { putRegistrationRiderChamp } from '@/actions/registration-champ';
 import { useLoadingStore } from '@/store/loading';
 import styles from './BlockRegRaceStatus.module.css';
 import { useRegistrationRace } from '@/store/registration-race';

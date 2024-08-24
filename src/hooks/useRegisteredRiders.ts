@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { useRegistrationRace } from '@/store/registration-race';
-import { getRegisteredRidersRace } from '@/actions/championship';
+import { getRegisteredRidersRace } from '@/actions/registration-champ';
 
 /**
  * Хук для загрузки зарегистрированных райдеров по номеру заезда.

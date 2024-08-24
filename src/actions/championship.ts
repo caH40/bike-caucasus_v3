@@ -8,13 +8,9 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
-import type {
-  TChampRegistrationRiderDto,
-  TDtoChampionship,
-  TRaceRegistrationDto,
-} from '@/types/dto.types';
-import type { ResponseServer, TRegistrationRaceDataFromForm } from '@/types/index.interface';
-import { TChampionshipTypes, TRaceRegistrationStatus } from '@/types/models.interface';
+import type { TDtoChampionship } from '@/types/dto.types';
+import type { ResponseServer } from '@/types/index.interface';
+import type { TChampionshipTypes } from '@/types/models.interface';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -229,123 +225,6 @@ export async function getToursAndSeries({
 
     const championshipService = new ChampionshipService();
     const response = await championshipService.getToursAndSeries({ organizerId });
-
-    return response;
-  } catch (error) {
-    errorHandlerClient(parseError(error));
-    return handlerErrorDB(error);
-  }
-}
-
-/**
- * Экшен Регистрации на Чемпионат.
- */
-export async function registerForChampionship({
-  championshipId,
-  raceNumber,
-  startNumber,
-  teamVariable,
-}: TRegistrationRaceDataFromForm): Promise<ResponseServer<null>> {
-  'use server';
-  try {
-    const session = await getServerSession(authOptions);
-
-    // Проверка авторизации и наличия idUserDB.
-    const riderId = session?.user.idDB;
-    if (!riderId) {
-      throw new Error('Нет авторизации, нет idDB!');
-    }
-
-    const championshipService = new ChampionshipService();
-    const response = await championshipService.register({
-      championshipId,
-      raceNumber,
-      riderId,
-      startNumber,
-      teamVariable,
-    });
-
-    return response;
-  } catch (error) {
-    errorHandlerClient(parseError(error));
-    return handlerErrorDB(error);
-  }
-}
-
-/**
- * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
- */
-export async function getRegisteredRidersRace({
-  championshipId,
-  raceNumber,
-}: {
-  championshipId: string;
-  raceNumber: number;
-}): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
-  'use server';
-  try {
-    const championshipService = new ChampionshipService();
-    const response = await championshipService.getRegisteredRidersRace({
-      championshipId,
-      raceNumber,
-    });
-
-    return response;
-  } catch (error) {
-    errorHandlerClient(parseError(error));
-    return handlerErrorDB(error);
-  }
-}
-
-/**
- * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
- */
-export async function getRegisteredRidersChamp({ urlSlug }: { urlSlug: string }): Promise<
-  ResponseServer<{
-    champRegistrationRiders: TChampRegistrationRiderDto[];
-    championshipName: string;
-    championshipType: TChampionshipTypes;
-  } | null>
-> {
-  'use server';
-  try {
-    const championshipService = new ChampionshipService();
-    const response = await championshipService.getRegisteredRidersChamp({
-      urlSlug,
-    });
-
-    return response;
-  } catch (error) {
-    errorHandlerClient(parseError(error));
-    return handlerErrorDB(error);
-  }
-}
-
-/**
- * Экшен обновления данных по регистрации Райдера в Заезд Чемпионата.
- */
-export async function putRegistrationRiderChamp({
-  championshipId,
-  raceNumber,
-  riderId,
-  updates,
-}: {
-  championshipId: string;
-  raceNumber: number;
-  riderId: string;
-  updates: { status: TRaceRegistrationStatus };
-}): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
-  'use server';
-  try {
-    const championshipService = new ChampionshipService();
-    const response = await championshipService.putRegistration({
-      championshipId,
-      raceNumber,
-      riderId,
-      updates,
-    });
-
-    revalidatePath('/championships');
 
     return response;
   } catch (error) {

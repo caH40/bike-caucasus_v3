@@ -9,7 +9,7 @@ import Button from '../../Button/Button';
 import BoxInput from '../../BoxInput/BoxInput';
 import { createOptionsRaces } from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
-import { registerForChampionship } from '@/actions/championship';
+import { registerForChampionship } from '@/actions/registration-champ';
 import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import { validateRequiredFields } from './utils';
