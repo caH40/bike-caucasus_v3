@@ -11,7 +11,7 @@
   margin-bottom: 2rem;
 }
 /* ====================================================================== */
-@media (max-width: 120px) {
+@media (max-width: 1200px) {
   .wrapper {
     grid-template-columns: 100%;
   }
