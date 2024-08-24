@@ -11,6 +11,9 @@ import { blurBase64 } from '@/libs/image';
 import styles from './ProfilePage.module.css';
 import { generateMetadataProfile } from '@/meta/meta';
 import { getRegistrationsRider } from '@/actions/registration-champ';
+import TableRegistrationsRider from '@/components/Table/TableRegistrationsRider/TableRegistrationsRider';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 
 type Props = {
   params: {
@@ -31,17 +34,19 @@ const userService = new UserService();
 export default async function ProfilePage({ params: { id } }: Props) {
   const { data: profile } = await userService.getProfile({ id: +id });
 
-  const profileImage = getLogoProfile(
-    profile?.imageFromProvider,
-    profile?.provider?.image,
-    profile?.image
-  );
-
-  const registrationsRider = await getRegistrationsRider({ riderId: id });
-
   if (!profile) {
     notFound();
   }
+  const session = await getServerSession(authOptions);
+  const userIdDbFromSession = session?.user.idDB;
+
+  const profileImage = getLogoProfile(
+    profile.imageFromProvider,
+    profile.provider?.image,
+    profile.image
+  );
+
+  const registrationsRider = await getRegistrationsRider({ riderId: id });
 
   return (
     <div className={styles.wrapper}>
@@ -98,10 +103,18 @@ export default async function ProfilePage({ params: { id } }: Props) {
           <hr className={styles.line} />
           <p className={styles.paragraph}>Нет данных</p>
         </article>
+
         <article className={styles.races}>
           <h2 className={styles.title__races}>Зарегистрирован в соревнованиях</h2>
           <hr className={styles.line} />
-          <p className={styles.paragraph}>Нет данных</p>
+          {registrationsRider.data ? (
+            <TableRegistrationsRider
+              registrationsRider={registrationsRider.data}
+              userIdDbFromSession={userIdDbFromSession}
+            />
+          ) : (
+            <p className={styles.paragraph}>Нет данных</p>
+          )}
         </article>
       </div>
     </div>

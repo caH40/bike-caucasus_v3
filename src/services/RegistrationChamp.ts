@@ -7,7 +7,7 @@ import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import {
   dtoRegisteredRiders,
   dtoRegisteredRidersChamp,
-  DtoRegistrationsRider,
+  dtoRegistrationsRider,
 } from '@/dto/registration-champ';
 import type {
   ResponseServer,
@@ -421,7 +421,7 @@ export class RegistrationChampService {
         (reg) => reg.championship && reg.championship.status === 'upcoming'
       );
 
-      const registrationsRiderAfterDto = DtoRegistrationsRider(registrationsFiltered);
+      const registrationsRiderAfterDto = dtoRegistrationsRider(registrationsFiltered);
 
       return {
         data: registrationsRiderAfterDto,

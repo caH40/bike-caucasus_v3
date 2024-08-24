@@ -218,6 +218,7 @@ export type TChampRegistrationRiderDto = {
  */
 export type TRegistrationRiderDto = {
   _id: string;
+  riderId: string;
   championship: {
     _id: string;
     name: string;
@@ -226,7 +227,7 @@ export type TRegistrationRiderDto = {
     endDate: Date;
     status: 'upcoming';
     type: TChampionshipTypes;
-    races: TRaceClient[];
+    race: TRaceClient;
     posterUrl: string;
   };
   parentChampionship: { name: string; urlSlug: string; type: TChampionshipTypes } | null;

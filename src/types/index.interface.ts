@@ -589,6 +589,7 @@ export type TRegistrationRiderFromDB = {
     races: TRace[];
     posterUrl: string;
   };
+  rider: mongoose.Types.ObjectId;
   raceNumber: number;
   startNumber: number;
   status: TRaceRegistrationStatus;

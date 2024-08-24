@@ -5,26 +5,30 @@
 }
 .profile__image {
   border-radius: 1rem;
-  margin-bottom: 24px;
+  margin-bottom: 1.8rem;
   object-fit: cover;
 }
 .empty {
   width: 300px;
   height: 300px;
   background-color: green;
-  border-radius: 1rem;
+  margin-bottom: 1.8rem;
   margin-bottom: 24px;
 }
 .wrapper__aside {
+  max-width: 300px;
+}
+.menu {
   max-width: 300px;
 }
 .wrapper__main {
   display: flex;
   flex-direction: column;
   gap: 34px 0;
+  min-width: 100%;
 }
 .wrapper__details {
-  margin-bottom: 24px;
+  margin-bottom: 1.8rem;
 }
 .title__races {
   font-size: 1.6rem;
@@ -45,7 +49,7 @@
 }
 .list {
   display: grid;
-  grid-template-columns: 0.5fr 1fr;
+  grid-template-columns: 140px auto;
   font-size: 1.1rem;
   gap: 8px 0;
   margin-bottom: 5px;
@@ -58,8 +62,30 @@
 }
 
 /* ====================================================================== */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .wrapper {
     grid-template-columns: 1fr;
+  }
+  .profile__image {
+    margin-bottom: 0;
+  }
+  .wrapper__aside {
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 300px auto;
+    gap: 1rem 2rem;
+  }
+  .wrapper__details {
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 650px) {
+  .wrapper__aside {
+    grid-template-columns: 100%;
+  }
+}
+@media (max-width: 576px) {
+  .menu {
+    max-width: 100%;
   }
 }

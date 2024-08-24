@@ -19,6 +19,7 @@ type Props = {
   userIdDb: string | undefined;
   championshipId: string;
   raceNumber: number;
+  showBtn?: boolean;
 };
 
 /**
@@ -29,13 +30,14 @@ export default function BlockRegRaceStatus({
   userIdDb,
   championshipId,
   raceNumber,
+  showBtn,
 }: Props) {
   const setLoading = useLoadingStore((state) => state.setLoading);
   const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
 
   const { data: session } = useSession();
   const idDB = session?.user.idDB;
-  const isCurrentUser = userIdDb === idDB;
+  const isCurrentUser = showBtn || userIdDb === idDB;
 
   const handlerClick = async () => {
     if (!idDB) {
