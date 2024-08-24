@@ -1,6 +1,7 @@
 import {
   TOrganizerForClient,
   TParentChampionshipForClient,
+  TRaceClient,
   TStageDateDescription,
 } from './index.interface';
 import {
@@ -139,6 +140,7 @@ export type TDtoChampionship = Omit<
   | 'createdAt'
   | 'updatedAt'
   | 'parentChampionship'
+  | 'races'
 > & {
   _id: string;
   organizer: TOrganizerForClient;
@@ -148,6 +150,7 @@ export type TDtoChampionship = Omit<
   stageDateDescription: TStageDateDescription[];
   createdAt: string;
   updatedAt: string;
+  races: TRaceClient[];
 };
 
 /**

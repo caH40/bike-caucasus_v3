@@ -749,10 +749,32 @@ export class ChampionshipService {
               status: 'registered',
               ...(teamVariable && { teamVariable }),
             },
-          },
+          }
+        );
+
+        // Удаление riderId из массива зарегистрированных, для дальнейшего обновления.
+        await ChampionshipModel.findByIdAndUpdate(
+          { _id: champ._id },
+          { $pull: { 'races.$[].registeredRiders': riderId } },
           { new: true }
         );
       }
+
+      // Добавление _id Райдера в массив зарегистрированных в документ Чемпионата в соответствующий Заезд.
+      await ChampionshipModel.findByIdAndUpdate(
+        { _id: champ._id },
+        {
+          // Добавить riderId в массив registeredRiders заезда с указанным номером
+          $addToSet: {
+            'races.$[race].registeredRiders': riderId,
+          },
+        },
+        {
+          // Обновить все подходящие элементы в массиве races.
+          // race.number это свойство number в объекте race.
+          arrayFilters: [{ 'race.number': raceNumber }],
+        }
+      );
 
       const messageSuccess = `Вы зарегистрировались, Чемпионат: ${champ.name}, заезд: "${
         champ.races.find((race) => race.number === raceNumber)?.name || '!нет названия!'

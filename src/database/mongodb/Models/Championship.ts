@@ -25,6 +25,13 @@ const raceSchema = new Schema<TRace>(
     distance: { type: Number, default: 1 }, // Дистанция Заезда в километрах.
     ascent: { type: Number, default: 0 }, // Набор высоты на дистанции в метрах.
     trackGPX: trackGPXSchema,
+    registeredRiders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: [],
+      },
+    ],
   },
   { _id: false }
 );

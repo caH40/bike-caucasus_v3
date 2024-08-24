@@ -65,4 +65,5 @@ export const raceInit: TRaceForForm = {
   trackGPX: undefined,
   trackGPXFile: null,
   trackGPXUrl: null,
+  registeredRiders: [],
 };

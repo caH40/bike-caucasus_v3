@@ -94,7 +94,10 @@ export default function ChampionshipCard({ championship, simple }: Props) {
 
             {/* до появления протокола указывать количество зарегистрировавшихся, после протоколов - количество участвовавших участников */}
             <dt className={styles.list__name}>Участники:</dt>
-            <dd className={styles.list__desc}>{10} чел. </dd>
+            <dd className={styles.list__desc}>
+              {championship.races.reduce((acc, cur) => (acc += cur.registeredRiders.length), 0)}{' '}
+              чел.{' '}
+            </dd>
           </dl>
         </div>
       </div>

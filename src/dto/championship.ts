@@ -1,4 +1,4 @@
-// ДТО для получение данных из календаря.
+import { ObjectId } from 'mongoose';
 
 import { getAgeDetails, getDateTime } from '@/libs/utils/calendar';
 import type {
@@ -13,7 +13,6 @@ import type {
   TRegisteredRiderFromDB,
 } from '@/types/index.interface';
 import { TChampionshipTypes, TRace } from '@/types/models.interface';
-import { ObjectId } from 'mongoose';
 
 /**
  * ДТО массива Чемпионатов.
@@ -38,6 +37,11 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     _id: String(championship.parentChampionship._id),
   };
 
+  const races = championship.races.map((race) => {
+    const registeredRiders = race.registeredRiders.map((rider) => String(rider));
+    return { ...race, registeredRiders };
+  });
+
   // Приведение даты в вид yyyy-mm-dd
   const { isoDate: startDate } = getDateTime(championship.startDate);
   const { isoDate: endDate } = getDateTime(championship.endDate);
@@ -58,7 +62,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     status: championship.status,
     type: championship.type,
     bikeType: championship.bikeType,
-    races: championship.races,
+    races,
     startDate,
     endDate,
     createdAt,

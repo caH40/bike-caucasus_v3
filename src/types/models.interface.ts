@@ -337,6 +337,7 @@ export type TRace = {
   distance: number; // Дистанция Заезда в километрах.
   ascent?: number; // Набор высоты на дистанции в метрах.
   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
+  registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
 };
 
 /**

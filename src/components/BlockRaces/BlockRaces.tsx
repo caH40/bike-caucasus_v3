@@ -2,16 +2,17 @@
 
 import dynamic from 'next/dynamic';
 
-import { TChampionshipStatus, TChampionshipTypes, TRace } from '@/types/models.interface';
+import { TChampionshipStatus, TChampionshipTypes } from '@/types/models.interface';
 import Wrapper from '../Wrapper/Wrapper';
 import styles from './BlockRaces.module.css';
 import ParamsRace from '../ParamsRace/ParamsRace';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
+import { TRaceClient } from '@/types/index.interface';
 
 const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 
 type Props = {
-  races: TRace[];
+  races: TRaceClient[];
   registrationData: {
     type: TChampionshipTypes;
     status: TChampionshipStatus;

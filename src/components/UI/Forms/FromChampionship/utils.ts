@@ -2,8 +2,7 @@
 
 import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
-import { TRaceForForm } from '@/types/index.interface';
-import { TRace } from '@/types/models.interface';
+import { TRaceClient, TRaceForForm } from '@/types/index.interface';
 
 type Params = {
   name: string;
@@ -32,7 +31,7 @@ export function formateAndStripContent({ name, description }: Params) {
  * @param {TRace[] | undefined} races - Массив объектов гонок или undefined.
  * @returns {TRaceForForm[]} Массив объектов гонок, подготовленных для использования в форме.
  */
-export function getRacesInit(races: TRace[] | undefined): TRaceForForm[] {
+export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
   // Если гонки отсутствуют, возвращаем массив с одной инициализированной гонкой.
   if (!races) {
     return [raceInit];
@@ -49,5 +48,6 @@ export function getRacesInit(races: TRace[] | undefined): TRaceForForm[] {
     trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
     trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
     trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
+    registeredRiders: [],
   }));
 }

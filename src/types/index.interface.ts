@@ -577,3 +577,5 @@ export type TRegistrationRaceDataFromForm = {
   startNumber: number;
   teamVariable: string;
 };
+
+export type TRaceClient = Omit<TRace, 'registeredRiders'> & { registeredRiders: string[] };

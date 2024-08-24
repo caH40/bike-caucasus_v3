@@ -14,13 +14,12 @@ import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import { validateRequiredFields } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
-import { TProfileForRegistration, TProfileKey } from '@/types/index.interface';
-import { TRace } from '@/types/models.interface';
+import { TProfileForRegistration, TProfileKey, TRaceClient } from '@/types/index.interface';
 import styles from '../Form.module.css';
 import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 
 type Props = {
-  races: TRace[];
+  races: TRaceClient[];
   championshipId: string;
   profile: TProfileForRegistration;
 };

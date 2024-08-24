@@ -40,6 +40,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'bike-caucasus.hb.bizmrg.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'gw.cmo.sai.msu.ru',
         port: '',
         pathname: '/**',
