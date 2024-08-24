@@ -5,7 +5,6 @@ import { getNewsOne } from '@/app/news/[urlSlug]/page';
 import { ResolvingMetadata, type Metadata } from 'next';
 import { bikeTypes, regions } from '../constants/trail';
 import { metadata404Page } from './meta404';
-import { ParamsWithId } from '@/types/index.interface';
 import { UserService } from '@/services/user';
 import { OrganizerService } from '@/services/Organizer';
 import { getChampionship } from '@/actions/championship';
@@ -196,7 +195,9 @@ export function generateMetadataCalendar(): Metadata {
 /**
  * Метаданные для страницы Профиль "/profile/[id]".
  */
-export async function generateMetadataProfile({ params }: ParamsWithId): Promise<Metadata> {
+export async function generateMetadataProfile({ params }: {params: {
+  id: string;
+}}): Promise<Metadata> {
   const userService = new UserService();
 
   const { data: profile } = await userService.getProfile({ id: +params.id });

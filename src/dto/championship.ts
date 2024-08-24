@@ -5,12 +5,14 @@ import type {
   TChampRegistrationRiderDto,
   TDtoChampionship,
   TRaceRegistrationDto,
+  TRegistrationRiderDto,
 } from '@/types/dto.types';
 import type {
   TChampionshipWithOrganizer,
   TOrganizerForClient,
   TParentChampionshipForClient,
   TRegisteredRiderFromDB,
+  TRegistrationRiderFromDB,
 } from '@/types/index.interface';
 import { TChampionshipTypes, TRace } from '@/types/models.interface';
 
@@ -37,11 +39,6 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     _id: String(championship.parentChampionship._id),
   };
 
-  const races = championship.races.map((race) => {
-    const registeredRiders = race.registeredRiders.map((rider) => String(rider));
-    return { ...race, registeredRiders };
-  });
-
   // Приведение даты в вид yyyy-mm-dd
   const { isoDate: startDate } = getDateTime(championship.startDate);
   const { isoDate: endDate } = getDateTime(championship.endDate);
@@ -62,7 +59,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     status: championship.status,
     type: championship.type,
     bikeType: championship.bikeType,
-    races,
+    races: formatTRacesToClient(championship.races),
     startDate,
     endDate,
     createdAt,
@@ -153,4 +150,46 @@ export function dtoRegisteredRidersChamp({
   }));
 
   return { championshipName, championshipType, champRegistrationRiders };
+}
+
+/**
+ * Дто данных по Регистрации Райдера в Чемпионате.
+ */
+function dtoRegistrationRider(registration: TRegistrationRiderFromDB): TRegistrationRiderDto {
+  return {
+    _id: registration._id.toString(),
+    championship: {
+      _id: registration._id.toString(),
+      name: registration.championship.name,
+      urlSlug: registration.championship.urlSlug,
+      startDate: registration.championship.startDate,
+      endDate: registration.championship.endDate,
+      status: registration.championship.status,
+      type: registration.championship.type,
+      races: formatTRacesToClient(registration.championship.races),
+      posterUrl: registration.championship.posterUrl,
+    },
+    parentChampionship: registration.championship.parentChampionship,
+    raceNumber: registration.raceNumber,
+    startNumber: registration.startNumber,
+    status: registration.status,
+    createdAt: registration.createdAt,
+  };
+}
+
+/**
+ * Дто данных по Регистраций (все регистрации) Райдера в Чемпионатах.
+ */
+export function DtoRegistrationsRider(
+  registrations: TRegistrationRiderFromDB[]
+): TRegistrationRiderDto[] {
+  return registrations.map((registration) => dtoRegistrationRider(registration));
+}
+
+// ===================================================================================
+function formatTRacesToClient(races: TRace[]) {
+  return races.map((race) => {
+    const registeredRiders = race.registeredRiders.map((rider) => String(rider));
+    return { ...race, registeredRiders };
+  });
 }

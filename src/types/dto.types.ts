@@ -8,6 +8,7 @@ import {
   IUserModel,
   TAuthorFromUser,
   TChampionship,
+  TChampionshipTypes,
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
@@ -210,4 +211,27 @@ export type TChampRegistrationRiderDto = {
   raceNumber: number;
   raceName: string;
   raceRegistrationRider: TRaceRegistrationDto[];
+};
+
+/**
+ * Массив Заездов из Чемпионата с зарегистрированными райдерами.
+ */
+export type TRegistrationRiderDto = {
+  _id: string;
+  championship: {
+    _id: string;
+    name: string;
+    urlSlug: string;
+    startDate: Date;
+    endDate: Date;
+    status: 'upcoming';
+    type: TChampionshipTypes;
+    races: TRaceClient[];
+    posterUrl: string;
+  };
+  parentChampionship: { name: string; urlSlug: string; type: TChampionshipTypes } | null;
+  raceNumber: number;
+  startNumber: number;
+  status: TRaceRegistrationStatus;
+  createdAt: Date;
 };

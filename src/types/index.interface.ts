@@ -2,6 +2,7 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 import {
   TChampionship,
   TChampionshipStatus,
+  TChampionshipTypes,
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
@@ -212,15 +213,6 @@ export type ProfileProvider = {
   name?: string; // google
   picture: string; // google
   photo_100: string; // vk
-};
-
-/**
- * Входные параметры функции передаваемые динамически route next
- */
-export type ParamsWithId = {
-  params: {
-    id: string;
-  };
 };
 
 /**
@@ -579,3 +571,26 @@ export type TRegistrationRaceDataFromForm = {
 };
 
 export type TRaceClient = Omit<TRace, 'registeredRiders'> & { registeredRiders: string[] };
+
+/**
+ * Данные по Регистрации Райдера в Чемпионате.
+ */
+export type TRegistrationRiderFromDB = {
+  _id: mongoose.Types.ObjectId;
+  championship: {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    urlSlug: string;
+    parentChampionship: { name: string; urlSlug: string; type: TChampionshipTypes };
+    startDate: Date;
+    endDate: Date;
+    status: 'upcoming';
+    type: TChampionshipTypes;
+    races: TRace[];
+    posterUrl: string;
+  };
+  raceNumber: number;
+  startNumber: number;
+  status: TRaceRegistrationStatus;
+  createdAt: Date;
+};

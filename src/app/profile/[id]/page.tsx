@@ -7,12 +7,19 @@ import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/user';
 import { getLogoProfile } from '@/libs/utils/profile';
 import { blurBase64 } from '@/libs/image';
-import type { ParamsWithId } from '@/types/index.interface';
+
 import styles from './ProfilePage.module.css';
 import { generateMetadataProfile } from '@/meta/meta';
+import { getRegistrationsRider } from '@/actions/registration-champ';
+
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
 // Создание динамических meta данных
-export async function generateMetadata(props: ParamsWithId): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
   return await generateMetadataProfile(props);
 }
 
@@ -21,13 +28,16 @@ const userService = new UserService();
 /**
  * Страница профиля пользователя
  */
-export default async function ProfilePage({ params }: ParamsWithId) {
-  const { data: profile } = await userService.getProfile({ id: +params.id });
+export default async function ProfilePage({ params: { id } }: Props) {
+  const { data: profile } = await userService.getProfile({ id: +id });
+
   const profileImage = getLogoProfile(
     profile?.imageFromProvider,
     profile?.provider?.image,
     profile?.image
   );
+
+  const registrationsRider = await getRegistrationsRider({ riderId: id });
 
   if (!profile) {
     notFound();
@@ -78,7 +88,7 @@ export default async function ProfilePage({ params }: ParamsWithId) {
 
         {/* меню профиля */}
         <div className={styles.menu}>
-          <MenuProfile profileId={params.id} />
+          <MenuProfile profileId={id} />
         </div>
       </aside>
 

@@ -8,7 +8,11 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { RegistrationChampService } from '@/services/RegistrationChamp';
-import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
+import type {
+  TChampRegistrationRiderDto,
+  TRaceRegistrationDto,
+  TRegistrationRiderDto,
+} from '@/types/dto.types';
 import type { ResponseServer, TRegistrationRaceDataFromForm } from '@/types/index.interface';
 import type { TChampionshipTypes, TRaceRegistrationStatus } from '@/types/models.interface';
 
@@ -121,6 +125,24 @@ export async function putRegistrationRiderChamp({
     revalidatePath('/championships');
 
     return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+export async function getRegistrationsRider({
+  riderId,
+}: {
+  riderId: string;
+}): Promise<ResponseServer<TRegistrationRiderDto[] | null>> {
+  'use server';
+  try {
+    const registrationsRider = await regService.getCurrentRider({
+      riderId,
+    });
+
+    return registrationsRider;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

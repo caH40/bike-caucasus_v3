@@ -4,19 +4,29 @@ import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
-import { dtoRegisteredRiders, dtoRegisteredRidersChamp } from '@/dto/championship';
+import {
+  dtoRegisteredRiders,
+  dtoRegisteredRidersChamp,
+  DtoRegistrationsRider,
+} from '@/dto/championship';
 import type {
   ResponseServer,
   TRegisteredRiderFromDB,
   TRegistrationRaceDataFromForm,
+  TRegistrationRiderFromDB,
 } from '@/types/index.interface';
 import type {
   TChampionshipTypes,
   TRace,
   TRaceRegistrationStatus,
 } from '@/types/models.interface';
-import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
+import type {
+  TChampRegistrationRiderDto,
+  TRaceRegistrationDto,
+  TRegistrationRiderDto,
+} from '@/types/dto.types';
 import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
+import { User } from '@/database/mongodb/Models/User';
 
 /**
  * Класс работы с сущностью Регистрация на Чемпионат.
@@ -347,6 +357,76 @@ export class RegistrationChampService {
         data: null,
         ok: true,
         message: `Обновлены данные регистрации Райдера.`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение всех текущих (upcoming) регистраций запрашиваемого райдера.
+   * @param {Object} params - Параметры для запроса.
+   * @param {string} params.riderId - Идентификатор райдера на сайте.
+   */
+  public async getCurrentRider({
+    riderId,
+  }: {
+    riderId: string;
+  }): Promise<ResponseServer<TRegistrationRiderDto[] | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Запрос для получения _id Rider.
+      const riderDB: { _id: ObjectId } | null = await User.findOne(
+        { id: riderId },
+        { _id: true }
+      ).lean();
+
+      if (!riderDB) {
+        throw new Error(`Не найден Пользователь в БД с id на сайте: ${riderId} `);
+      }
+
+      const registrationsDb: TRegistrationRiderFromDB[] = await RaceRegistrationModel.find(
+        {
+          rider: riderDB._id,
+        },
+        {
+          rider: true,
+          raceNumber: true,
+          startNumber: true,
+          status: true,
+          createdAt: true,
+        }
+      )
+        .populate({
+          path: 'championship',
+          select: [
+            'status',
+            'name',
+            'races',
+            'posterUrl',
+            'startDate',
+            'endDate',
+            'urlSlug',
+            'type',
+            'parentChampionship',
+          ],
+          populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
+        })
+        .lean();
+
+      const registrationsFiltered = registrationsDb.filter(
+        (reg) => reg.championship && reg.championship.status === 'upcoming'
+      );
+
+      const registrationsRiderAfterDto = DtoRegistrationsRider(registrationsFiltered);
+
+      return {
+        data: registrationsRiderAfterDto,
+        ok: true,
+        message: `Все актуальные регистрации запрашиваемого райдера с id: ${riderId}`,
       };
     } catch (error) {
       this.errorLogger(error);
