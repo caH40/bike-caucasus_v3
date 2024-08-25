@@ -43,7 +43,7 @@ export function getTitleForRegistration({ champ }: { champ: TDtoChampionship }) 
   switch (champ.type) {
     case 'single': {
       return `Открыта регистрация на велогонку: ${champ.name}. Дата старта ${
-        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        getDateTime(new Date(champ.startDate)).dateDDMMYYYY
       }`;
     }
 
@@ -52,13 +52,13 @@ export function getTitleForRegistration({ champ }: { champ: TDtoChampionship }) 
       if (!champ.parentChampionship) {
         return `Открыта регистрация на велогонку на ${champ.stage} Этап: "${
           champ.name
-        }". Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+        }". Дата старта ${getDateTime(new Date(champ.startDate)).dateDDMMYYYY}`;
       }
 
       return `Регистрируйтесь на велогонку на ${champ.stage} Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}". Дата старта ${
-        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        getDateTime(new Date(champ.startDate)).dateDDMMYYYY
       }`;
     }
   }
@@ -71,7 +71,7 @@ export function getDescriptionForRegistration({ champ }: { champ: TDtoChampionsh
   switch (champ.type) {
     case 'single': {
       return `Регистрируйтесь на велогонку по велоспорту: ${champ.name}. Дата старта ${
-        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        getDateTime(new Date(champ.startDate)).dateDDMMYYYY
       }. Присоединяйтесь к соревнованиям, испытайте себя!`;
     }
 
@@ -81,7 +81,7 @@ export function getDescriptionForRegistration({ champ }: { champ: TDtoChampionsh
         return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
           champ.name
         }". Дата старта ${
-          getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+          getDateTime(new Date(champ.startDate)).dateDDMMYYYY
         } Присоединяйтесь к соревнованиям, испытайте себя!`;
       }
 
@@ -90,7 +90,7 @@ export function getDescriptionForRegistration({ champ }: { champ: TDtoChampionsh
       }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
         champ.parentChampionship.name
       }". Дата старта ${
-        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        getDateTime(new Date(champ.startDate)).dateDDMMYYYY
       } Присоединяйтесь к соревнованиям, испытайте себя!`;
     }
   }
@@ -138,7 +138,7 @@ export function getTitleForRegistered({ champ }: { champ: TDtoChampionship }) {
   switch (champ.type) {
     case 'single': {
       return `Зарегистрированные участники на велогонку: ${champ.name}, которая стартует ${
-        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        getDateTime(new Date(champ.startDate)).dateDDMMYYYY
       }`;
     }
 
@@ -147,14 +147,14 @@ export function getTitleForRegistered({ champ }: { champ: TDtoChampionship }) {
       if (!champ.parentChampionship) {
         return `Зарегистрированные участники на велогонку на ${champ.stage} Этап: "${
           champ.name
-        }". Стартует ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+        }". Стартует ${getDateTime(new Date(champ.startDate)).dateDDMMYYYY}`;
       }
 
       return `Зарегистрированные участники на велогонку на ${champ.stage} Этап: "${
         champ.name
       }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
         champ.parentChampionship.name
-      }". Стартует ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}`;
+      }". Стартует ${getDateTime(new Date(champ.startDate)).dateDDMMYYYY}`;
     }
   }
 }
@@ -167,7 +167,7 @@ export function getDescriptionForRegistered({ champ }: { champ: TDtoChampionship
     case 'single': {
       return `Зарегистрированные участники на велогонку по велоспорту: ${
         champ.name
-      }. Дата старта ${getDateTime(new Date(champ.createdAt)).dateDDMMYYYY}. Тип велосипеда: ${
+      }. Дата старта ${getDateTime(new Date(champ.startDate)).dateDDMMYYYY}. Тип велосипеда: ${
         bikeTypesMap.get(champ.bikeType)?.translation
       }!`;
     }
@@ -178,7 +178,7 @@ export function getDescriptionForRegistered({ champ }: { champ: TDtoChampionship
         return `Зарегистрированные участники на велогонку по велоспорту на ${
           champ.stage
         } Этап: "${champ.name}". Дата старта ${
-          getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+          getDateTime(new Date(champ.startDate)).dateDDMMYYYY
         } Тип велосипеда: ${bikeTypesMap.get(champ.bikeType)?.translation}!`;
       }
 
@@ -187,7 +187,7 @@ export function getDescriptionForRegistered({ champ }: { champ: TDtoChampionship
       } Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}". Дата старта ${
-        getDateTime(new Date(champ.createdAt)).dateDDMMYYYY
+        getDateTime(new Date(champ.startDate)).dateDDMMYYYY
       } Тип велосипеда: ${bikeTypesMap.get(champ.bikeType)?.translation}!`;
     }
   }
