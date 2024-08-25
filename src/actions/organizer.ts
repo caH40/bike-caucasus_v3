@@ -106,7 +106,7 @@ export async function fetchOrganizerEdited({
     });
 
     revalidatePath('/moderation/organizer/edit');
-    revalidatePath('/organizer');
+    revalidatePath('/organizers');
 
     return res;
   } catch (error) {
@@ -143,7 +143,7 @@ export async function fetchOrganizerCreated(formData: FormData): Promise<Respons
       creator,
     });
 
-    revalidatePath('/organizer');
+    revalidatePath('/organizers');
 
     return res;
   } catch (error) {
