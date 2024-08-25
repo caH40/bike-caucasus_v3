@@ -3,6 +3,7 @@
 // import { useRouter } from 'next/navigation';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import cn from 'classnames/bind';
 // import { toast } from 'sonner';
 
@@ -20,7 +21,7 @@ type Props = {
 
 const columns: ColumnDef<TUserDto>[] = [
   {
-    header: 'Дата создания',
+    header: 'Дата регистрации',
     accessorKey: 'createdAt',
     cell: (props) => <span>{getTimerLocal(props.getValue<Date>(), 'DDMMYYHm')}</span>,
   },
@@ -32,6 +33,11 @@ const columns: ColumnDef<TUserDto>[] = [
   {
     header: 'Спортсмен',
     accessorFn: (row) => `${row.person.firstName} ${row.person.lastName}`,
+    cell: (props) => (
+      <Link href={`/admin/users/${props.row.original.id}`} className="link__news">
+        {props.getValue<string>()}
+      </Link>
+    ),
   },
 
   {
@@ -101,7 +107,7 @@ export default function TableUsersAdmin({ users, docsOnPage = 5 }: Props) {
           <tbody>
             {table.getRowModel().rows.map((row) => (
               <tr
-                className={cx('tr', 'tr__link')}
+                className={cx('tr')}
                 key={row.id}
                 // onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
               >
