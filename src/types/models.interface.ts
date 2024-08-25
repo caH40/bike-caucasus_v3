@@ -61,6 +61,7 @@ export type TAuthorFromUser = {
   person: {
     firstName: string;
     lastName: string;
+    patronymic?: string;
   };
 };
 /**

@@ -63,9 +63,9 @@ export default async function ProfilePage({ params: { id } }: Props) {
         />
 
         <section className={styles.wrapper__details}>
-          <h1
-            className={styles.title}
-          >{`${profile.person.lastName} ${profile.person.firstName}`}</h1>
+          <h1 className={styles.title}>{`${profile.person.lastName} ${
+            profile.person.firstName
+          }${profile.person.patronymic ? ' ' + profile.person.patronymic : ''}`}</h1>
           <dl className={styles.list}>
             <dt className={styles.desc__title}>Город</dt>
             <dd className={styles.desc__detail}>{profile.city ?? 'нет данных'}</dd>

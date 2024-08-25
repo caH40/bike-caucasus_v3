@@ -35,7 +35,9 @@ export default function Author({ data }: Props) {
       </Link>
       {data.author ? (
         <Link href={`/profile/${data.author?.id}`} className={styles.author__name}>
-          {data.author?.person.firstName} {data.author?.person.lastName}
+          {data.author?.person.firstName}
+          {data.author?.person.patronymic ? ' ' + data.author?.person.patronymic : ''}{' '}
+          {data.author?.person.lastName}
         </Link>
       ) : (
         <span>Неизвестный</span>

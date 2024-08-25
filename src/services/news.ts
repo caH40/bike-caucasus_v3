@@ -284,6 +284,7 @@ export class News {
           select: [
             'id',
             'person.firstName',
+            'person.patronymic',
             'person.lastName',
             'provider.image',
             'imageFromProvider',
@@ -357,6 +358,7 @@ export class News {
           select: [
             'id',
             'person.firstName',
+            'person.patronymic',
             'person.lastName',
             'provider.image',
             'imageFromProvider',

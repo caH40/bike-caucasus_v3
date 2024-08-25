@@ -128,7 +128,11 @@ export default function BlockComments({
               <div className={styles.block__comment}>
                 {/* ФИО автора комментария */}
                 <div className={styles.author}>
-                  {`${comment.author.person.lastName} ${comment.author.person.firstName}`}
+                  {`${comment.author.person.lastName} ${comment.author.person.firstName}${
+                    comment.author.person.patronymic
+                      ? ' ' + comment.author.person.patronymic
+                      : ''
+                  }`}
                   {authorId === comment.author.id && (
                     <>
                       <span className={styles.dot}></span>

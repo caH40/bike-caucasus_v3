@@ -42,6 +42,7 @@ export class CommentService {
             'id',
             'likedBy',
             'person.firstName',
+            'person.patronymic',
             'person.lastName',
             'provider.image',
             'imageFromProvider',
