@@ -1,6 +1,6 @@
 .title {
   text-align: center;
-  font-size: 24px;
+  font-size: 1.8rem;
   font-weight: 500;
   margin-bottom: 20px;
 }
@@ -12,7 +12,7 @@
   background: var(--main-bg-color);
 }
 .credentials {
-  margin-top: 15px;
+  margin: 1rem 0;
 }
 .entering {
   height: 221px;
@@ -32,4 +32,11 @@
   transition: ease-in-out 0.2s;
   height: 0;
   overflow: hidden;
+}
+.announcement {
+  font-size: 0.9rem;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--white-20);
 }

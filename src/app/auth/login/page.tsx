@@ -12,6 +12,7 @@ import AuthBlock from '../../../components/UI/AuthBlock/AuthBlock';
 import FormLogin from '@/components/UI/Forms/FormLogin/FormLogin';
 import { IRegistrationForm } from '@/types/index.interface';
 import AuthProviderBlock from '@/components/AuthProviderBlock/AuthProviderBlock';
+import t from '@/locales/ru/authorization.json';
 
 import styles from './page.module.css';
 import Button from '@/components/UI/Button/Button';
@@ -41,10 +42,10 @@ export default function LoginPage() {
     const response = await signIn('credentials', { ...dataForm, redirect: false });
 
     if (!response?.ok) {
-      toast.error('Неверный логин или пароль');
-      setValidationAll('Неверный логин или пароль');
+      toast.error(t.login.toast.error);
+      setValidationAll(t.login.toast.error);
     } else {
-      toast.success('Успешная аутентификация');
+      toast.success(t.login.toast.success);
       router.back();
 
       setValidationAll('');
@@ -57,7 +58,7 @@ export default function LoginPage() {
 
   return (
     <AuthBlock>
-      <h2 className={styles.title}>Вход на Bike-Caucasus</h2>
+      <h2 className={styles.title}>{t.login.title}</h2>
       <section className={styles.block}>
         <Suspense>
           <AuthWithSearchParams />
@@ -66,7 +67,7 @@ export default function LoginPage() {
       <hr className={styles.line} />
       <div className={styles.block__btn}>
         <Button
-          name={showCredentials ? 'закрыть' : 'логин/пароль'}
+          name={showCredentials ? t.login.btn.close : t.login.btn.loginAndPass}
           getClick={openCredentials}
         />
       </div>
@@ -78,6 +79,9 @@ export default function LoginPage() {
           </div>
         )}
       </Transition>
+
+      {/* блок информации */}
+      {!showCredentials && <div className={styles.announcement}>{t.login.announcement}</div>}
     </AuthBlock>
   );
 }
