@@ -137,10 +137,10 @@ export default function FromOrganizer({
         loading={isLoading}
         register={register('description', {
           required: 'Это обязательное поле для заполнения',
-          minLength: { value: 25, message: 'В описании должно быть больше 25х символов' },
+          minLength: { value: 25, message: 'В описании должно быть не меньше 25х символов' },
           maxLength: {
-            value: 500,
-            message: 'В описании не может быть больше 500 символов',
+            value: 4000,
+            message: 'В описании не может быть больше 4000 символов',
           },
           validate: textValidation.spaces,
         })}
