@@ -1,7 +1,6 @@
 'use client';
 
 import IconAccount from '@/components/Icons/IconAccount';
-import IconFinish from '@/components/Icons/IconFinish';
 import IconCalendar from '@/components/Icons/IconCalendar';
 import IconNewspaper from '@/components/Icons/IconNewspaper';
 import IconRoute from '@/components/Icons/IconRoute';
@@ -94,14 +93,6 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
   },
   {
     id: 2,
-    name: 'Соревнования',
-    classes: [],
-    href: '/moderation/championship',
-    permission: 'moderation.championship',
-    icon: IconFinish,
-  },
-  {
-    id: 3,
     name: 'Календарь',
     classes: [],
     href: '/moderation/calendar',
@@ -109,7 +100,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     icon: IconCalendar,
   },
   {
-    id: 4,
+    id: 3,
     name: 'Чемпионат',
     classes: [],
     href: '/moderation/championship',
@@ -117,7 +108,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     icon: IconChampionship,
   },
   {
-    id: 5,
+    id: 4,
     name: 'Организатор',
     classes: [],
     href: '/moderation/organizer',
