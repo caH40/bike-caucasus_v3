@@ -25,7 +25,13 @@
 .box .tooltip {
   background-color: var(--tooltip-bg);
   color: var(--tooltip-color);
+  font-size: 0.9rem;
+  font-weight: 500;
   font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  max-width: 330px;
+  z-index: 100;
 }
 /* ====================================================================== */
 .icon__custom {

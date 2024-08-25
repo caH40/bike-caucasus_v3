@@ -39,3 +39,8 @@
 .btn:hover {
   opacity: 0.8;
 }
+.box__info {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}

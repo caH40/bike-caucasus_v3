@@ -7,6 +7,7 @@ import BoxInputSimple from '../BoxInput/BoxInputSimple';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import { PropsBoxInputFile } from '@/types/index.interface';
 import styles from './BlockUploadTrack.module.css';
+import IconInfo from '@/components/Icons/IconInfo';
 
 /**
  * Блок для загрузки GPX.
@@ -22,6 +23,7 @@ export default function BlockUploadTrack({
   validationText,
   needDelTrack, // Если выбор файла обязателен isRequired:true, то данные переменные не нужны.
   setNeedDelTrack, // Если выбор файла обязателен isRequired:true, то данные переменные не нужны.
+  tooltip,
 }: PropsBoxInputFile) {
   const [trackName, setTrackName] = useState<string>(value);
 
@@ -58,7 +60,12 @@ export default function BlockUploadTrack({
   return (
     <section className={styles.wrapper}>
       <div className={styles.box__title}>
-        <h2 className={styles.title}>{title}</h2>
+        <h2 className={styles.title}>
+          <div className={styles.box__info}>
+            {title}
+            {tooltip && <IconInfo squareSize={20} tooltip={tooltip} />}
+          </div>
+        </h2>
         <span className={styles.validate}>{validationText}</span>
       </div>
       <div className={styles.block__control}>

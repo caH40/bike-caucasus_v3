@@ -46,3 +46,8 @@
   right: 0.5rem;
   top: calc(50% - 9px);
 }
+.box__info {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}

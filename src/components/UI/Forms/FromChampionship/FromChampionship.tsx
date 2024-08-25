@@ -27,6 +27,7 @@ import type {
   TOptions,
 } from '@/types/index.interface';
 import type { TDtoChampionship, TDtoOrganizer } from '@/types/dto.types';
+import t from '@/locales/ru/moderation/championship.json';
 import styles from '../Form.module.css';
 
 type Props = {
@@ -127,7 +128,7 @@ export default function FromChampionship({
     });
 
     // Отправка данных на сервер и получение ответа после завершения операции.
-    const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';
+    const messageErr = t.errors.hasNotPropsFunction;
     let response = {
       data: null,
       ok: false,
@@ -160,7 +161,7 @@ export default function FromChampionship({
 
   const validateDates = (startDate: string, endDate: string) => {
     if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
-      return 'Дата завершения не может быть меньше даты старта';
+      return t.validation.texts.endDate;
     }
     return true;
   };
@@ -219,7 +220,7 @@ export default function FromChampionship({
         {/* Блок ввода Названия */}
         <div className={styles.box__input}>
           <label className={styles.label} htmlFor="organizer">
-            Организатор Чемпионата:
+            {t.labels.organizer}
           </label>
           <input
             name={'organizer'}
@@ -231,24 +232,23 @@ export default function FromChampionship({
 
         {/* Блок выбора типа Чемпионата. Выбирается при создании, при редактировании не доступен */}
         <BoxSelectNew
-          label="Тип Чемпионата:*"
+          label={t.labels.type}
           id="type"
           options={championshipTypes}
           defaultValue={championshipForEdit ? championshipForEdit.type : 'single'}
           loading={isLoading}
           register={register('type', {
-            ...(!championshipForEdit
-              ? { required: 'Это обязательное поле для заполнения' }
-              : {}),
+            ...(!championshipForEdit ? { required: t.required } : {}),
           })}
           disabled={!!championshipForEdit}
           validationText={errors.type ? errors.type.message : ''}
+          tooltip={{ text: t.tooltips.typeChampionship, id: 'type' }}
         />
 
         {/* Блок установки количества Этапов в Серии или Туре*/}
         {showQuantityStage && (
           <BoxInput
-            label="Количество Этапов:*"
+            label={t.labels.quantityStages}
             id="quantityStages"
             autoComplete="off"
             type="number"
@@ -259,11 +259,11 @@ export default function FromChampionship({
             }
             loading={isLoading}
             register={register('quantityStages', {
-              required: 'Это обязательное поле для заполнения',
-              min: { value: 2, message: 'Минимальное количество 2 Этапа' },
+              required: t.required,
+              min: { value: 2, message: t.min.quantityStages },
               max: {
                 value: 30,
-                message: 'Не более 30 этапов!',
+                message: t.max.quantityStages,
               },
             })}
             validationText={errors.quantityStages ? errors.quantityStages.message : ''}
@@ -280,15 +280,15 @@ export default function FromChampionship({
                 control={control}
                 defaultValue={initParentChampionship?._id ? initParentChampionship._id : ''}
                 rules={{
-                  required: 'Обязательно к заполнению',
+                  required: t.required,
                 }}
                 render={({ field }) => (
                   <SelectCustom
                     state={field.value}
                     setState={field.onChange}
                     options={createParentOptions()}
-                    label="Выберите Родительский Чемпионат для Этапа:*"
-                    defaultValue={'нет фильтров'}
+                    label={t.labels.parentChampionshipId}
+                    defaultValue={t.hasNotFilters}
                     validationText={
                       errors.parentChampionship?._id && errors.parentChampionship._id.message
                     }
@@ -297,24 +297,19 @@ export default function FromChampionship({
               />
             </div>
           ) : (
-            <h3 className={styles.error}>
-              Для этапа необходим родительский Чемпионат, сначала создайте Тур или Серию, а
-              затем этапы к ним!
-            </h3>
+            <h3 className={styles.error}>{t.needTourAndSeries}</h3>
           ))}
 
         {/* Блок выбора номера Этапа */}
         {showNumberStage && (
           <BoxSelectNew
-            label="Порядковый номер Этапа:*"
+            label={t.labels.stage}
             id="stage"
             options={createStageNumbers()}
             defaultValue={championshipForEdit?.stage ? String(championshipForEdit.stage) : '1'}
             loading={isLoading}
             register={register('stage', {
-              ...(!championshipForEdit
-                ? { required: 'Это обязательное поле для заполнения' }
-                : {}),
+              ...(!championshipForEdit ? { required: t.required } : {}),
             })}
             disabled={!createStageNumbers().length}
             validationText={errors.stage ? errors.stage.message : ''}
@@ -323,27 +318,28 @@ export default function FromChampionship({
 
         {/* Блок ввода Названия */}
         <BoxInput
-          label="Название должно быть уникальным:*"
+          label={t.labels.nameChampionship}
           id="name"
           autoComplete="off"
           type="text"
           defaultValue={championshipForEdit ? championshipForEdit.name : ''}
           loading={isLoading}
           register={register('name', {
-            required: 'Это обязательное поле для заполнения',
-            minLength: { value: 3, message: 'Название должно быть больше 2х символов' },
+            required: t.required,
+            minLength: { value: 3, message: t.min.nameChampionship },
             maxLength: {
               value: 50,
-              message: 'Название не может быть больше 50 символов',
+              message: t.max.nameChampionship,
             },
             validate: textValidation.spaces,
           })}
           validationText={errors.name ? errors.name.message : ''}
+          tooltip={{ text: t.tooltips.nameChampionship, id: 'nameChampionship' }}
         />
 
         {/* Блок ввода Описания */}
         <BoxTextarea
-          label="Описание:*"
+          label={t.labels.descriptionChampionship}
           id="description"
           autoComplete="off"
           type="text"
@@ -352,20 +348,21 @@ export default function FromChampionship({
           }
           loading={isLoading}
           register={register('description', {
-            required: 'Это обязательное поле для заполнения',
-            minLength: { value: 25, message: 'В описании должно быть больше 25х символов' },
+            required: t.required,
+            minLength: { value: 25, message: t.min.descriptionChampionship },
             maxLength: {
               value: 4000,
-              message: 'В описании не может быть больше 4000 символов',
+              message: t.max.descriptionChampionship,
             },
             // validate: textValidation.spaces,
           })}
           validationText={errors.description ? errors.description.message : ''}
+          tooltip={{ text: t.tooltips.descriptionChampionship, id: 'descriptionChampionship' }}
         />
 
         {/* Блок ввода Даты старта */}
         <BoxInput
-          label="Дата старта:*"
+          label={t.labels.startDate}
           id="startDate"
           autoComplete="off"
           type="date"
@@ -377,14 +374,14 @@ export default function FromChampionship({
           }
           loading={isLoading}
           register={register('startDate', {
-            required: 'Это обязательное поле для заполнения',
+            required: t.required,
           })}
           validationText={errors.startDate ? errors.startDate.message : ''}
         />
 
         {/* Блок ввода Даты завершения Чемпионата/этапа */}
         <BoxInput
-          label="Дата завершения (последнего этапа):*"
+          label={t.labels.endDate}
           id="endDate"
           autoComplete="off"
           type="date"
@@ -393,7 +390,7 @@ export default function FromChampionship({
           }
           loading={isLoading}
           register={register('endDate', {
-            required: 'Это обязательное поле для заполнения',
+            required: t.required,
             validate: (value) => validateDates(watch('startDate'), value),
           })}
           validationText={errors.endDate ? errors.endDate.message : ''}
@@ -405,30 +402,32 @@ export default function FromChampionship({
           control={control}
           defaultValue={null}
           // Если происходит редактирование, то Постер уже есть, поэтому не обязательно выбирать Постер.
-          rules={!!championshipForEdit ? {} : { required: 'Файл изображения обязателен' }}
+          rules={!!championshipForEdit ? {} : { required: t.requiredPoster }}
           render={({ field }) => (
             <BlockUploadImage
-              title={'Главное изображение (обложка):*'}
+              title={t.labels.posterFile}
               poster={field.value}
               setPoster={field.onChange}
               posterUrl={posterUrl}
               setPosterUrl={setPosterUrl}
               validationText={errors.posterFile?.message ? errors.posterFile.message : ''}
+              tooltip={{ text: t.tooltips.poster, id: 'posterFile' }}
             />
           )}
         />
 
         {/* Блок выбора типа Велосипеда на котором проводится Заезд */}
         <BoxSelectNew
-          label="Тип используемого велосипеда:*"
+          label={t.labels.bikeType}
           id="bikeType"
           options={bikeTypes}
           defaultValue={championshipForEdit ? championshipForEdit.bikeType : 'road'}
           loading={isLoading}
           register={register('bikeType', {
-            required: 'Это обязательное поле для заполнения',
+            required: t.required,
           })}
           validationText={errors.bikeType ? errors.bikeType.message : ''}
+          tooltip={{ text: t.tooltips.bikeType, id: 'bikeType' }}
         />
       </div>
 
@@ -456,7 +455,7 @@ export default function FromChampionship({
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
         <Button
-          name={championshipForEdit ? 'Обновить' : 'Добавить'}
+          name={championshipForEdit ? t.btn.update : t.btn.add}
           theme="green"
           loading={isLoading}
         />

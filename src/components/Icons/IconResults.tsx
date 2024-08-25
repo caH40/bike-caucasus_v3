@@ -63,7 +63,7 @@ export default function IconResults({
         <rect x="11" y="2" width="2" height="2" fill="currentColor" />
       </svg>
       <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip}
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
       </Tooltip>
     </div>
   );

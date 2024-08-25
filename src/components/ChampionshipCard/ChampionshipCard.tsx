@@ -77,7 +77,10 @@ export default function ChampionshipCard({ championship, simple }: Props) {
               {IconBike && (
                 <IconBike
                   squareSize={21}
-                  tooltip={bike?.translation || 'неизвестно'}
+                  tooltip={{
+                    text: bike?.translation || 'неизвестно',
+                    id: 'ChampionshipCard_IconBike',
+                  }}
                   colors={{ default: `var(--${championship.bikeType})` }}
                 />
               )}

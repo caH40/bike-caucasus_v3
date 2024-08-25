@@ -76,7 +76,7 @@ export default function BlockRegRaceStatus({
         <IconDelete
           squareSize={18}
           colors={{ default: 'red', hover: 'orange' }}
-          tooltip="Отмена регистрации"
+          tooltip={{ text: 'Отмена регистрации', id: 'boxRegRaceStatus' }}
           getClick={handlerClick}
         />
       )}

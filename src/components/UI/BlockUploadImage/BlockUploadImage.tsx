@@ -6,6 +6,7 @@ import InputFileIcon from '../InputFile/InputFileIcon';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import ButtonClose from '../ButtonClose/ButtonClose';
 import styles from './BlockUploadImage.module.css';
+import IconInfo from '@/components/Icons/IconInfo';
 
 const cx = cn.bind(styles);
 
@@ -19,6 +20,7 @@ type Props = {
   setPosterUrl: Dispatch<SetStateAction<string | null>>;
   isSquare?: boolean; // true если квадратное изображение
   validationText?: string; // Текст если есть ошибка валидации, иначе ''
+  tooltip?: { text: string; id: string };
 };
 const noImage = '/images/icons/noimage.svg';
 
@@ -36,6 +38,7 @@ export default function BlockUploadImage({
   setPosterUrl,
   isSquare,
   validationText,
+  tooltip,
 }: Props) {
   const [imageTitle, setImageTitle] = useState<string>(noImage);
 
@@ -85,7 +88,12 @@ export default function BlockUploadImage({
   return (
     <section className={styles.wrapper}>
       <div className={styles.box__title}>
-        <h2 className={styles.title}>{title}</h2>
+        <h2 className={styles.title}>
+          <div className={styles.box__info}>
+            {title}
+            {tooltip && <IconInfo squareSize={20} tooltip={tooltip} />}
+          </div>
+        </h2>
         <span className={styles.validate}>{validationText}</span>
       </div>
 

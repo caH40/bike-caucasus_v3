@@ -53,13 +53,13 @@ export default function BlockModeration({
 
   return (
     <div className={styles.wrapper}>
-      {icons.map((icon) => (
+      {icons.map((icon, index) => (
         <icon.icon
           getClick={icon.getClick}
           key={icon.id}
           squareSize={20}
           colors={{ hover: '#ec9c07' }}
-          tooltip={icon.tooltip}
+          tooltip={{ text: icon.tooltip, id: `blockModeration${index}` }}
         />
       ))}
     </div>

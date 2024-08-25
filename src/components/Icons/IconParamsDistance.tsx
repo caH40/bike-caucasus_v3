@@ -51,7 +51,7 @@ export default function IconParamsDistance({
         />
       </svg>
       <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip}
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
       </Tooltip>
     </div>
   );

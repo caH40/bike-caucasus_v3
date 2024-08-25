@@ -28,3 +28,8 @@
   object-fit: cover;
   border-radius: 0.5rem;
 }
+.box__info {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}

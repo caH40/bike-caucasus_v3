@@ -2,6 +2,7 @@ import type { TOptions } from '@/types/index.interface';
 import styles from './SelectCustom.module.css';
 import { Dispatch, SetStateAction, useState } from 'react';
 import IconChevronDown from '@/components/Icons/IconChevronDown';
+import IconInfo from '@/components/Icons/IconInfo';
 
 type Props = {
   defaultValue?: string;
@@ -10,7 +11,7 @@ type Props = {
   label?: string;
   options: TOptions[];
   validationText?: string;
-  // icon?: React.ComponentType<TIconProps>;
+  tooltip?: { text: string; id: string };
 };
 
 /**
@@ -23,6 +24,7 @@ export default function SelectCustom({
   label,
   defaultValue,
   validationText,
+  tooltip,
 }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -35,7 +37,10 @@ export default function SelectCustom({
   return (
     <div className={styles.wrapper} role="select">
       <div className={styles.label}>
-        {label}
+        <div className={styles.box__info}>
+          {label}
+          {tooltip && <IconInfo squareSize={20} tooltip={tooltip} />}
+        </div>
         {validationText && <span className={styles.validate}>{validationText}</span>}
       </div>
       <div className={styles.wrapper__select}>

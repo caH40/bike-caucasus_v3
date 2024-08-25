@@ -14,8 +14,10 @@ import BoxInput from '../BoxInput/BoxInput';
 import BoxTextarea from '../BoxTextarea/BoxTextarea';
 import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
 import { raceInit } from '@/constants/championship';
+import IconInfo from '@/components/Icons/IconInfo';
 import type { TFormChampionshipCreate, TRaceForForm } from '@/types/index.interface';
 import styles from './BlockRaceAdd.module.css';
+import t from '@/locales/ru/moderation/championship.json';
 
 type Props = {
   race: TRaceForForm;
@@ -70,9 +72,17 @@ export default function BlockRaceAdd({
     remove(index);
   };
 
+  const tooltip = { text: t.tooltips.raceBlock, id: 'raceBlock' };
+
   return (
     <div className={styles.wrapper}>
-      <h3 className={styles.title}>{`Блок данных Заезда (дистанции) №${race.number}`}</h3>
+      <h3 className={styles.title}>
+        {' '}
+        <div className={styles.box__info}>
+          {`${t.titleBlockRaceAdd} №${race.number}`}
+          {<IconInfo squareSize={20} tooltip={tooltip} />}
+        </div>
+      </h3>
 
       <div className={styles.wrapper__inputs}>
         <div className={styles.block__icons_right}>
@@ -101,58 +111,60 @@ export default function BlockRaceAdd({
 
         {/* Блок ввода Названия */}
         <BoxInput
-          label="Название должно быть уникальным:*"
+          label={t.labels.nameChampionship}
           id={`races.${index}.name`}
           autoComplete="off"
           type="text"
           defaultValue={''}
           loading={isLoading}
           register={register(`races.${index}.name`, {
-            required: 'Это обязательное поле для заполнения',
-            minLength: { value: 3, message: 'Название должно быть больше 2х символов' },
+            required: t.required,
+            minLength: { value: 3, message: t.min.nameRace },
             maxLength: {
               value: 50,
-              message: 'Название не может быть больше 50 символов',
+              message: t.max.nameRace,
             },
             // validate: textValidation.spaces,
           })}
           validationText={errors?.races?.[index]?.name?.message || ''}
+          tooltip={{ text: t.tooltips.nameRace, id: 'nameRace' }}
         />
 
         {/* Блок ввода Описания */}
         <BoxTextarea
-          label="Описание:*"
+          label={t.labels.descriptionRace}
           id={`races.${index}.description`}
           autoComplete="off"
           type="text"
           defaultValue={''}
           loading={isLoading}
           register={register(`races.${index}.description`, {
-            required: 'Это обязательное поле для заполнения',
-            minLength: { value: 25, message: 'В описании должно быть больше 25х символов' },
+            required: t.required,
+            minLength: { value: 20, message: t.min.descriptionRace },
             maxLength: {
-              value: 4000,
-              message: 'В описании не может быть больше 4000 символов',
+              value: 100,
+              message: t.max.descriptionRace,
             },
             // validate: textValidation.spaces,
           })}
           validationText={errors?.races?.[index]?.description?.message || ''}
+          tooltip={{ text: t.tooltips.descriptionRace, id: 'descriptionRace' }}
         />
 
         {/* Блок заполнения количества кругов */}
         <BoxInput
-          label="Количество кругов:*"
+          label={t.labels.laps}
           id={`races.${index}.laps`}
           autoComplete="off"
           type="number"
           defaultValue={''}
           loading={isLoading}
           register={register(`races.${index}.laps`, {
-            required: 'Это обязательное поле для заполнения',
-            min: { value: 1, message: 'Минимальное количество 1 круг' },
+            required: t.required,
+            min: { value: 1, message: t.min.laps },
             max: {
               value: 100,
-              message: 'Не более 100 кругов',
+              message: t.max.laps,
             },
           })}
           validationText={errors?.races?.[index]?.laps?.message || ''}
@@ -160,18 +172,18 @@ export default function BlockRaceAdd({
 
         {/* Блок заполнения длины дистанции в километрах */}
         <BoxInput
-          label="Общая длина дистанции в километрах:*"
+          label={t.labels.distance}
           id={`races.${index}.distance`}
           autoComplete="off"
           type="number"
           defaultValue={''}
           loading={isLoading}
           register={register(`races.${index}.distance`, {
-            required: 'Это обязательное поле для заполнения',
-            min: { value: 2, message: 'Минимальное количество 1км' },
+            required: t.required,
+            min: { value: 2, message: t.min.distance },
             max: {
               value: 20000,
-              message: 'Не более 20000 км',
+              message: t.max.distance,
             },
           })}
           validationText={errors?.races?.[index]?.distance?.message || ''}
@@ -179,7 +191,7 @@ export default function BlockRaceAdd({
 
         {/* Блок заполнения общего набора высоты */}
         <BoxInput
-          label="Общий набор высоты на дистанции в метрах:"
+          label={t.labels.ascent}
           id={`races.${index}.ascent`}
           autoComplete="off"
           type="number"
@@ -189,7 +201,7 @@ export default function BlockRaceAdd({
             // required: 'Это обязательное поле для заполнения',
             max: {
               value: 20000,
-              message: 'Не более 20000 метров',
+              message: t.max.ascent,
             },
           })}
           validationText={errors?.races?.[index]?.ascent?.message || ''}
@@ -200,16 +212,17 @@ export default function BlockRaceAdd({
           name={`races.${index}.trackGPXFile`}
           control={control}
           defaultValue={null}
-          rules={races?.[index]?.trackGPXUrl ? {} : { required: 'Файл трека обязателен' }}
+          rules={races?.[index]?.trackGPXUrl ? {} : { required: t.trackGPXFile }}
           render={({ field }) => (
             <BlockUploadTrack
-              title={'Трек заезда:'}
+              title={t.labels.trackGPXFile}
               setTrack={field.onChange}
               isLoading={isLoading}
               resetData={false}
               isRequired={true}
-              value={race.trackGPXUrl || 'нет'}
+              value={race.trackGPXUrl || t.not}
               validationText={errors?.races?.[index]?.trackGPXFile?.message || ''}
+              tooltip={{ text: t.tooltips.track, id: 'track' }}
             />
           )}
         />

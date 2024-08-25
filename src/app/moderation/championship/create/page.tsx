@@ -6,7 +6,7 @@ import IconChampionship from '@/components/Icons/IconChampionship';
 import FromChampionship from '@/components/UI/Forms/FromChampionship/FromChampionship';
 import { fetchChampionshipCreated, getToursAndSeries } from '@/actions/championship';
 import { getOrganizer } from '@/actions/organizer';
-// import styles from './Championship.module.css';
+import t from '@/locales/ru/moderation/championship.json';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,18 +23,14 @@ export default async function ChampionshipCreatePage() {
   const { data: organizer } = await getOrganizer({ creatorId: userIdDB });
 
   if (!organizer) {
-    return (
-      <h1>
-        Не найден Организатора, перед созданием Чемпионата необходимо создать Организатора!
-      </h1>
-    );
+    return <h1>{t.notFoundOrganizer}</h1>;
   }
 
   const parentChampionships = await getToursAndSeries({ organizerId: organizer._id });
 
   return (
     <>
-      <TitleAndLine title="Создание Чемпионата" hSize={1} Icon={IconChampionship} />
+      <TitleAndLine title={t.titleCreate} hSize={1} Icon={IconChampionship} />
       <FromChampionship
         organizer={organizer}
         fetchChampionshipCreated={fetchChampionshipCreated}

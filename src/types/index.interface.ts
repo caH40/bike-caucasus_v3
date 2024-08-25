@@ -39,6 +39,7 @@ export type PropsBoxInput = {
   max?: string;
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
+  tooltip?: { text: string; id: string };
 };
 
 /**
@@ -61,6 +62,7 @@ export type PropsBoxInputFile = {
   isRequired?: boolean; // Обязателен ли файл к загрузке.
   needDelTrack?: boolean;
   setNeedDelTrack?: Dispatch<SetStateAction<boolean>>;
+  tooltip?: { text: string; id: string };
 };
 
 export type PropsBoxSelectSimple = {
@@ -279,7 +281,7 @@ export type TIconProps = {
   getClick?: () => void;
   // Наборы цветов под разные случаи.
   colors?: IconColors;
-  tooltip?: string;
+  tooltip?: { text: string; id: string };
 };
 type IconColors = {
   default?: string;

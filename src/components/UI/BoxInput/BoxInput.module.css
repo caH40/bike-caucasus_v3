@@ -48,3 +48,8 @@
   /* инвертируем цвет значка */
   filter: invert(1);
 }
+.box__info {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
