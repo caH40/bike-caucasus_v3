@@ -354,7 +354,6 @@ export default function FromChampionship({
               value: 4000,
               message: t.max.descriptionChampionship,
             },
-            // validate: textValidation.spaces,
           })}
           validationText={errors.description ? errors.description.message : ''}
           tooltip={{ text: t.tooltips.descriptionChampionship, id: 'descriptionChampionship' }}

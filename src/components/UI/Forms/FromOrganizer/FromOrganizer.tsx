@@ -142,7 +142,6 @@ export default function FromOrganizer({
             value: 4000,
             message: 'В описании не может быть больше 4000 символов',
           },
-          validate: textValidation.spaces,
         })}
         validationText={errors.description ? errors.description.message : ''}
       />

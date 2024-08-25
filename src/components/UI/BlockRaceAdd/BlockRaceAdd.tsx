@@ -16,6 +16,7 @@ import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
 import { raceInit } from '@/constants/championship';
 import IconInfo from '@/components/Icons/IconInfo';
 import type { TFormChampionshipCreate, TRaceForForm } from '@/types/index.interface';
+import { TextValidationService } from '@/libs/utils/text';
 import styles from './BlockRaceAdd.module.css';
 import t from '@/locales/ru/moderation/championship.json';
 
@@ -31,6 +32,8 @@ type Props = {
   isLoading: boolean;
   urlTracksForDel: MutableRefObject<string[]>;
 };
+
+const textValidation = new TextValidationService();
 
 export default function BlockRaceAdd({
   race,
@@ -124,7 +127,7 @@ export default function BlockRaceAdd({
               value: 50,
               message: t.max.nameRace,
             },
-            // validate: textValidation.spaces,
+            validate: textValidation.spaces,
           })}
           validationText={errors?.races?.[index]?.name?.message || ''}
           tooltip={{ text: t.tooltips.nameRace, id: 'nameRace' }}
@@ -145,7 +148,6 @@ export default function BlockRaceAdd({
               value: 100,
               message: t.max.descriptionRace,
             },
-            // validate: textValidation.spaces,
           })}
           validationText={errors?.races?.[index]?.description?.message || ''}
           tooltip={{ text: t.tooltips.descriptionRace, id: 'descriptionRace' }}
