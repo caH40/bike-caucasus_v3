@@ -56,14 +56,26 @@ export function chartAltitude(elevationData: ElevationData[]): {
         ticks: {
           color: '#ffffff80',
         },
-        beginAtZero: true, // Начало оси Y с нуля.
+        // beginAtZero: true, // Начало оси Y с нуля.
       },
     },
+
     plugins: {
       tooltip: {
-        enabled: false, // Отключение всплывающих подсказок.
+        enabled: true, // Включение всплывающих подсказок.
         mode: 'index',
         intersect: false,
+        callbacks: {
+          // Размерность в подсказке для оси Y.
+          label: function (tooltipItem) {
+            if (typeof tooltipItem.raw === 'number') {
+              const value = Math.trunc(tooltipItem.raw);
+              return `${value} м`;
+            } else {
+              ('н/д');
+            }
+          },
+        },
       },
       crosshair: {
         line: {

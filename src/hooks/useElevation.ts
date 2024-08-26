@@ -41,7 +41,7 @@ export default function useElevation({ trackData }: Props): ElevationData[] {
 
         // Добавляем в массив данных объект с текущей дистанцией и высотой.
         data.push({
-          distance: Math.trunc(cumulativeDistance / 1000), // Distance in km
+          distance: Math.trunc(cumulativeDistance / 100) / 10, // Distance in km
           elevation: cur.ele || 0, // Добавляем значение высоты
         });
       }
