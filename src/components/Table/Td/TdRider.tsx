@@ -2,12 +2,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import cn from 'classnames/bind';
 
-import styles from './Td.module.css';
-import { TRaceRegistrationRiderDto } from '@/types/dto.types';
 import { blurBase64 } from '@/libs/image';
+import styles from './Td.module.css';
 
 type Props = {
-  rider: TRaceRegistrationRiderDto;
+  rider: {
+    firstName: string;
+    lastName: string;
+    image?: string;
+    id: string;
+  };
 };
 
 const cx = cn.bind(styles);

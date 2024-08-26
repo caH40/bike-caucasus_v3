@@ -52,6 +52,10 @@
 .tr__link {
   cursor: pointer;
 }
+.box__sorting {
+  display: flex;
+  cursor: pointer;
+}
 .tr:nth-of-type(2n) {
   background-color: #ffffff20;
 }
