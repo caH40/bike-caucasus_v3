@@ -501,10 +501,11 @@ export type TFormChampionshipCreate = Omit<
   races: TRaceForForm[];
   parentChampionship: { _id: string; name: string };
 };
-export type TRaceForForm = Omit<TRace, 'trackGPX'> & {
+export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders'> & {
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
   trackGPX?: TTrackGPXObj;
+  registeredRiders: string[];
 };
 
 /**

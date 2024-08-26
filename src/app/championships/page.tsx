@@ -15,6 +15,7 @@ export const metadata: Metadata = metadataChampionships;
  */
 export default async function ChampionshipsPage() {
   const championships = await getChampionships({ needTypes: ['series', 'tour', 'single'] });
+
   return (
     <div className={styles.wrapper}>
       <div>

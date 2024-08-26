@@ -152,6 +152,7 @@ export class ChampionshipService {
       for (const champ of championshipsDB) {
         let stages: TStageDateDescription[] = [];
 
+        // поиск Этапов к Турам и Сериям
         if (champ.type === 'tour' || champ.type === 'series') {
           stages = await ChampionshipModel.find(
             { parentChampionship: champ._id },
@@ -235,7 +236,7 @@ export class ChampionshipService {
       });
 
       // Обработка данных Заездов (дистанций).
-      const racesForSave: TRace[] = [];
+      const racesForSave = [];
 
       if (races) {
         for (const race of races) {
@@ -362,7 +363,11 @@ export class ChampionshipService {
       }
 
       // Обработка данных Заездов (дистанций).
-      const racesForSave: TRace[] = [];
+      const racesForSave = [] as unknown as Omit<TRace, 'registeredRiders'> &
+        {
+          registeredRiders: string[];
+        }[];
+
       if (races) {
         for (const race of races) {
           // Если race.trackGPXFile существует, значит трек изменялся.
@@ -384,7 +389,9 @@ export class ChampionshipService {
               coordStart,
             };
 
-            const raceForSave = {} as TRace;
+            const raceForSave = {} as Omit<TRace, 'registeredRiders'> & {
+              registeredRiders: string[];
+            };
             raceForSave.trackGPX = trackGPX;
             raceForSave.number = race.number;
             raceForSave.name = race.name;
@@ -392,6 +399,7 @@ export class ChampionshipService {
             raceForSave.laps = race.laps;
             raceForSave.distance = race.distance;
             raceForSave.ascent = race.ascent;
+            raceForSave.registeredRiders = race.registeredRiders;
 
             racesForSave.push(raceForSave);
 
@@ -410,7 +418,9 @@ export class ChampionshipService {
 
             // trackGPXUrl чтобы удалить с Облака.
             if (raceWithoutChangedTrack) {
-              const raceForSave = {} as TRace;
+              const raceForSave = {} as Omit<TRace, 'registeredRiders'> & {
+                registeredRiders: string[];
+              };
               raceForSave.trackGPX = raceWithoutChangedTrack.trackGPX;
               raceForSave.number = race.number;
               raceForSave.name = race.name;
@@ -418,6 +428,7 @@ export class ChampionshipService {
               raceForSave.laps = race.laps;
               raceForSave.distance = race.distance;
               raceForSave.ascent = race.ascent;
+              raceForSave.registeredRiders = race.registeredRiders;
 
               racesForSave.push(raceForSave);
             }

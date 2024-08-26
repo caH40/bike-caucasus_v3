@@ -56,6 +56,12 @@ export function deserializeChampionship(serializedFormData: FormData) {
                 return JSON.parse(value);
               }
 
+            // Если ключ registeredRiders парсить.
+            case 'registeredRiders':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
             // Если ключ imageDeleted то возвращается булево значение.
             case 'imageDeleted':
               return value === 'true' ? true : false;

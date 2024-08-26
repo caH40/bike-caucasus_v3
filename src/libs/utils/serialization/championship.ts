@@ -71,6 +71,7 @@ export function serializationChampionship({
       formData.set(`races[${index}][description]`, race.description);
       formData.set(`races[${index}][distance]`, race.distance.toString());
       formData.set(`races[${index}][laps]`, race.laps.toString());
+      formData.set(`races[${index}][registeredRiders]`, JSON.stringify(race.registeredRiders));
 
       if (race.ascent !== undefined) {
         formData.set(`races[${index}][ascent]`, race.ascent.toString());
