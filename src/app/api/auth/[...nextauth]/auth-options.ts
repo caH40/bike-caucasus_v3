@@ -73,7 +73,7 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     signIn: '/auth/login', // Путь к вашей пользовательской странице входа
-    error: '/auth/login/access-denied', // Путь к вашей пользовательской странице входа
+    error: '/auth/login/access-denied?error=', // Путь к вашей пользовательской странице входа
   },
 
   callbacks: {
@@ -158,6 +158,14 @@ export const authOptions: AuthOptions = {
             },
           };
 
+          const emailExists = await User.findOne({ email });
+
+          if (emailExists) {
+            throw new Error(
+              'email из провайдера уже есть у другого пользователя. Вы могли входить на сайт через другого провайдера (соцсеть), где указан такой же email как у текущего.'
+            );
+          }
+
           const userCreated = await User.create(userNew);
 
           if (!userCreated) {
@@ -177,7 +185,9 @@ export const authOptions: AuthOptions = {
 
         // ошибка, email из провайдера уже у другого пользователя !!!!!!!!!!
         if (userWithCurrentEmailDB) {
-          throw new Error('email из провайдера уже у другого пользователя.');
+          throw new Error(
+            'email из провайдера уже есть у другого пользователя. Вы могли входить на сайт через другого провайдера (соцсеть), где указан такой же email как у текущего.'
+          );
         }
 
         // значит пользователь выполняющий аутентификацию изменил свой email у провайдера
@@ -188,6 +198,10 @@ export const authOptions: AuthOptions = {
         return true;
       } catch (error) {
         errorLogger(error); // eslint-disable-line
+        if (error instanceof Error) {
+          const encodedError = encodeURIComponent(error.message);
+          return `/auth/login/access-denied?error=${encodedError}`;
+        }
         return false;
       }
     },
