@@ -8,8 +8,6 @@ import { Tooltip } from 'react-tooltip';
 
 const cx = cn.bind(styles);
 
-const id = 'IconEditOld';
-
 export default function IconEditOld({
   isActive,
   squareSize = 24,
@@ -32,7 +30,7 @@ export default function IconEditOld({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
-      id={id}
+      id={tooltip?.id}
     >
       <svg
         width="24"
@@ -51,8 +49,8 @@ export default function IconEditOld({
           fill="currentColor"
         />
       </svg>
-      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
     </div>
   );

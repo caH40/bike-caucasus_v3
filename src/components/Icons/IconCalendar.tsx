@@ -7,7 +7,6 @@ import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
 
 const cx = cn.bind(styles);
-const id = 'IconDelete';
 
 export default function IconCalendar({
   isActive,
@@ -31,7 +30,7 @@ export default function IconCalendar({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
-      id={id}
+      id={tooltip?.id}
     >
       <svg>
         <svg
@@ -49,8 +48,8 @@ export default function IconCalendar({
           />
         </svg>
       </svg>
-      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
     </div>
   );

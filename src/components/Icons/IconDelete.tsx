@@ -8,8 +8,6 @@ import { Tooltip } from 'react-tooltip';
 
 const cx = cn.bind(styles);
 
-const id = 'IconDelete';
-
 export default function IconDelete({
   isActive,
   squareSize = 24,
@@ -24,6 +22,7 @@ export default function IconDelete({
     '--color-icon-active': colors.active,
     '--color-icon-hover': colors.hover,
   };
+
   return (
     <div
       onClick={getClick}
@@ -32,7 +31,7 @@ export default function IconDelete({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
-      id={id}
+      id={tooltip?.id}
     >
       <svg
         width="24"
@@ -59,8 +58,8 @@ export default function IconDelete({
           strokeWidth="2"
         />
       </svg>
-      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
     </div>
   );

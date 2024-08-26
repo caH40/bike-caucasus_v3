@@ -6,10 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
 
-import { generateIdFromFilename } from '@/libs/utils/ids';
-
 const cx = cn.bind(styles);
-const id = generateIdFromFilename(new URL(import.meta.url).pathname);
 
 export default function IconBikeRoad({
   isActive,
@@ -33,7 +30,7 @@ export default function IconBikeRoad({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
-      id={id}
+      id={tooltip?.id}
     >
       <svg
         // aria-hidden="true"
@@ -58,8 +55,8 @@ export default function IconBikeRoad({
         ></path>
       </svg>
 
-      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
     </div>
   );

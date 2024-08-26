@@ -7,7 +7,6 @@ import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
 
 const cx = cn.bind(styles);
-const id = 'IconDelete';
 
 /**
  * Иконка роли и разрешения для пользователя.
@@ -34,7 +33,7 @@ export default function IconRole({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
-      id={id}
+      id={tooltip?.id}
     >
       <svg
         width="24"
@@ -57,8 +56,8 @@ export default function IconRole({
         />
       </svg>
 
-      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
     </div>
   );

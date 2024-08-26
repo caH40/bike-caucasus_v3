@@ -3,12 +3,10 @@
 import cn from 'classnames/bind';
 import { Tooltip } from 'react-tooltip';
 
-import { generateIdFromFilename } from '@/libs/utils/ids';
 import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
 
 const cx = cn.bind(styles);
-const id = generateIdFromFilename(new URL(import.meta.url).pathname);
 
 export default function IconResults({
   isActive,
@@ -32,7 +30,7 @@ export default function IconResults({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
-      id={id}
+      id={tooltip?.id}
     >
       <svg
         width="24"
@@ -62,8 +60,8 @@ export default function IconResults({
         <rect x="7" y="2" width="2" height="2" fill="#6996D3" />
         <rect x="11" y="2" width="2" height="2" fill="currentColor" />
       </svg>
-      <Tooltip anchorSelect={`#${id}`} place="top" className={cx('tooltip')}>
-        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip }} />}
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
     </div>
   );
