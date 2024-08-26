@@ -104,7 +104,8 @@ export default function FromChampionship({
     const championshipId = championshipForEdit?._id;
     const parentChampionshipId = dataForm.parentChampionship?._id;
 
-    const { nameStripedHtmlTags, descriptionStripedHtmlTags } = formateAndStripContent({
+    // Обработка текстов.
+    const { nameStripedHtmlTags, descriptionFormatted } = formateAndStripContent({
       name: dataForm.name,
       description: dataForm.description,
     });
@@ -118,7 +119,7 @@ export default function FromChampionship({
       dataForm: {
         ...dataForm,
         name: nameStripedHtmlTags,
-        description: descriptionStripedHtmlTags,
+        description: descriptionFormatted,
       },
       championshipId,
       parentChampionshipId,
@@ -344,7 +345,9 @@ export default function FromChampionship({
           autoComplete="off"
           type="text"
           defaultValue={
-            championshipForEdit ? content.replaceBRtoCRLF(championshipForEdit.description) : ''
+            championshipForEdit
+              ? content.formatTextForTextarea(championshipForEdit.description)
+              : ''
           }
           loading={isLoading}
           register={register('description', {

@@ -15,13 +15,14 @@ type Params = {
  */
 export function formateAndStripContent({ name, description }: Params) {
   const nameStripedHtmlTags = content.stripHtmlTags(name);
-  const descriptionStripedHtmlTags = content.replaceCRLFtoBR(
-    content.stripHtmlTags(description)
-  );
+
+  const textStripedHtmlTags = content.stripHtmlTags(description);
+  const descriptionStripedHtmlTags = content.replaceCRLFtoBR(textStripedHtmlTags);
+  const descriptionFormatted = content.replaceWithUrl(descriptionStripedHtmlTags);
 
   return {
     nameStripedHtmlTags,
-    descriptionStripedHtmlTags,
+    descriptionFormatted,
   };
 }
 

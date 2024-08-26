@@ -80,8 +80,26 @@ export const content = {
   /**
    * Заменяет url (https://www.link.ru) на Тэг <a> с соответствующим url.
    */
-  replaceWithUrl: (text: string): string => {
-    return text.replace(/((http|https):\/\/[^\s]+)/g, '<a  class="link" href="$1">$1</a>');
+  replaceWithUrl: (text: string): string =>
+    text.replace(
+      /((http|https):\/\/[^\s<]+)/gi,
+      '<a  class="link__news" target="_blank" href="$1">$1</a>'
+    ),
+
+  /**
+   * Заменяет Тэг <a> с соответствующим url на url (https://www.link.ru).
+   */
+  replaceWithPlainUrl: (text: string): string =>
+    text.replace(/<a\s+[^>]*href="([^"]+)"[^>]*>[^<]*<\/a>/gi, '$1'),
+
+  /**
+   * Форматирование текста с html тегами для поля Textarea
+   * Замена символов <br> на символ CRLF перевода строк \n.
+   * Заменяет Тэг <a> с соответствующим url на url (https://www.link.ru).
+   */
+  formatTextForTextarea: (text: string): string => {
+    const textWithReplacedBRtoCRLF = content.replaceBRtoCRLF(text);
+    return content.replaceWithPlainUrl(textWithReplacedBRtoCRLF);
   },
 };
 
