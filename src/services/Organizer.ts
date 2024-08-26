@@ -191,6 +191,7 @@ export class OrganizerService {
       await this.dbConnection();
 
       const deserializedFormData = deserializeOrganizer(serializedFormData);
+      console.log(deserializedFormData);
 
       // Экземпляр сервиса работы с Облаком.
       const cloudService = new Cloud();

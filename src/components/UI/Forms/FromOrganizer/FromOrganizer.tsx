@@ -188,7 +188,7 @@ export default function FromOrganizer({
         name="posterFile"
         control={control}
         defaultValue={null}
-        rules={{ required: 'Файл изображения обязателен' }}
+        rules={!!organizerForEdit ? {} : { required: 'Файл изображения обязателен' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Главное изображение (обложка):*'}
@@ -206,7 +206,7 @@ export default function FromOrganizer({
         name="logoFile"
         control={control}
         defaultValue={null}
-        rules={{ required: 'Файл изображения обязателен' }}
+        rules={!!organizerForEdit ? {} : { required: 'Файл изображения обязателен' }}
         render={({ field }) => (
           <BlockUploadImage
             title={'Логотип Организатора, желательно квадратный:*'}

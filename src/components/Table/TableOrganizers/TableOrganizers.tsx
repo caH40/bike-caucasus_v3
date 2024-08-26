@@ -30,6 +30,21 @@ const columns: ColumnDef<TDtoOrganizer & { index: number }>[] = [
     accessorKey: 'index',
   },
   {
+    header: 'Постер',
+    accessorKey: 'posterUrl',
+    cell: (props: any) => (
+      <Image
+        width={64}
+        height={46}
+        src={props.getValue()}
+        alt={'Логотип'}
+        placeholder="blur"
+        blurDataURL={blurBase64}
+        className={styles.img}
+      />
+    ),
+  },
+  {
     header: 'Логотип',
     accessorKey: 'logoUrl',
     cell: (props: any) => (
