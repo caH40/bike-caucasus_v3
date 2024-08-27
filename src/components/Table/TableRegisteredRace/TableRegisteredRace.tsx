@@ -17,6 +17,7 @@ import BlockStartNumber from '@/components/BlockStartNumber/BlockStartNumber';
 
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
 import { getDateTime } from '@/libs/utils/calendar';
+import IconPdf from '@/components/Icons/IconPDF';
 
 const cx = cn.bind(styles);
 
@@ -102,6 +103,11 @@ export default function TableRegisteredRace({
     table.setPageIndex(0);
   }, [docsOnPage, table]);
 
+  // Скачивание PDF файла таблицы
+  const getPdf = () => {
+    console.log('pdf');
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__wide}>
@@ -131,6 +137,19 @@ export default function TableRegisteredRace({
               </tr>
             ))}
           </tbody>
+          <tfoot className={cx('footer')}>
+            <tr>
+              <td colSpan={table.getHeaderGroups()[0].headers.length}>
+                <div className={styles.footer__files}>
+                  <IconPdf
+                    squareSize={24}
+                    getClick={getPdf}
+                    tooltip={{ id: 'dlPdf', text: 'Скачать файл с таблицей в формате Pdf' }}
+                  />
+                </div>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
