@@ -42,7 +42,7 @@ const columns: ColumnDef<TUserDto>[] = [
         id: data.id,
       };
 
-      return <TdRider rider={rider} />;
+      return <TdRider rider={rider} linkAdditional={`/admin/users/${data.id}`} />;
     },
     accessorFn: (row) => row.person.lastName, // Функция для доступа к значению lastName
     sortingFn: 'text', // Используем встроенную сортировку по тексту
@@ -64,7 +64,7 @@ const columns: ColumnDef<TUserDto>[] = [
     // enableSorting: false, // Исключить столбец из сортировки.
   },
   {
-    header: 'Дата регистрации',
+    header: 'Дата',
     accessorKey: 'createdAt',
     cell: (props) => <span>{getTimerLocal(props.getValue<Date>(), 'DDMMYYHm')}</span>,
   },

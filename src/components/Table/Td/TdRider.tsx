@@ -12,14 +12,18 @@ type Props = {
     image?: string;
     id: string;
   };
+  linkAdditional?: string; // Если необходимо изменить базовый линк, ведущий на профиль пользователя.
 };
 
 const cx = cn.bind(styles);
 
-function TdRider({ rider }: Props) {
+function TdRider({ rider, linkAdditional }: Props) {
   const riderName = `${rider.firstName} ${rider.lastName}`;
   return (
-    <Link className={cx('link__news')} href={`/profile/${rider.id}`}>
+    <Link
+      className={cx('link__news')}
+      href={linkAdditional ? linkAdditional : `/profile/${rider.id}`}
+    >
       <div className={cx('rider')}>
         {/* Логотип райдера */}
         <div className={cx('rider__logo')}>
