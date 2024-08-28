@@ -1,6 +1,7 @@
 import { getAgeDetails, getDateTime } from '@/libs/utils/calendar';
 import type {
   TChampRegistrationRiderDto,
+  TCheckRegisteredInChampDto,
   TRaceRegistrationDto,
   TRegistrationRiderDto,
 } from '@/types/dto.types';
@@ -128,4 +129,36 @@ export function formatTRacesToClient(races: TRace[]) {
     const registeredRiders = race.registeredRiders.map((rider) => String(rider));
     return { ...race, registeredRiders };
   });
+}
+
+/**
+ * Дто данных проверки активной регистрации райдера в запрашиваемом Чемпионате во всех заездах.
+ */
+export function dtoCheckRegisteredInChamp(
+  registeredInChamp: TRegistrationRiderFromDB | null
+): TCheckRegisteredInChampDto | null {
+  if (!registeredInChamp) {
+    return null;
+  }
+
+  // Получение данных Заезда в котором зарегистрирован РАйдер.
+  const race = registeredInChamp.championship.races.find(
+    (race) => race.number === registeredInChamp.raceNumber
+  );
+
+  if (!race) {
+    return null;
+  }
+
+  return {
+    race: {
+      number: race.number,
+      name: race.name,
+      description: race.description,
+      laps: race.laps,
+      distance: race.distance,
+      ascent: race.ascent,
+    },
+    startNumber: registeredInChamp.startNumber,
+  };
 }

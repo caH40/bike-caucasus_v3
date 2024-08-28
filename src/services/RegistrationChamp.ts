@@ -5,6 +5,7 @@ import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import {
+  dtoCheckRegisteredInChamp,
   dtoRegisteredRiders,
   dtoRegisteredRidersChamp,
   dtoRegistrationsRider,
@@ -427,6 +428,68 @@ export class RegistrationChampService {
         data: registrationsRiderAfterDto,
         ok: true,
         message: `Все актуальные регистрации запрашиваемого райдера с id: ${riderId}`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Проверка активной регистрации райдера в запрашиваемом Чемпионате во всех заездах.
+   * Если есть регистрация, то возвращаются данные Заезда.
+   * @param {Object} params - Параметры для запроса.
+   * @param {string} params.riderId - Идентификатор райдера в БД.
+   */
+  public async checkRegisteredInChamp({
+    idRiderDB,
+    champId,
+  }: {
+    idRiderDB: string;
+    champId: string;
+  }): Promise<ResponseServer<any | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const registeredInChamp: TRegistrationRiderFromDB | null =
+        await RaceRegistrationModel.findOne(
+          {
+            rider: idRiderDB,
+            status: 'registered',
+            championship: champId,
+          },
+          {
+            rider: true,
+            raceNumber: true,
+            startNumber: true,
+            status: true,
+            createdAt: true,
+          }
+        )
+          .populate({
+            path: 'championship',
+            select: [
+              'status',
+              'name',
+              'races',
+              'posterUrl',
+              'startDate',
+              'endDate',
+              'urlSlug',
+              'type',
+              'parentChampionship',
+            ],
+            populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
+          })
+          .lean();
+
+      const registeredInChampFromDto = dtoCheckRegisteredInChamp(registeredInChamp);
+
+      return {
+        data: registeredInChampFromDto,
+        ok: true,
+        message: `Данные об активной регистрации в Чемпионате райдера с _id: ${idRiderDB}`,
       };
     } catch (error) {
       this.errorLogger(error);

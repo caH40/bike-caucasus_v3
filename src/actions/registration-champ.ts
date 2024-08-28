@@ -10,6 +10,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { RegistrationChampService } from '@/services/RegistrationChamp';
 import type {
   TChampRegistrationRiderDto,
+  TCheckRegisteredInChampDto,
   TRaceRegistrationDto,
   TRegistrationRiderDto,
 } from '@/types/dto.types';
@@ -77,7 +78,7 @@ export async function getRegisteredRidersRace({
 }
 
 /**
- * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
+ * Экшен получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах.
  */
 export async function getRegisteredRidersChamp({ urlSlug }: { urlSlug: string }): Promise<
   ResponseServer<{
@@ -131,6 +132,9 @@ export async function putRegistrationRiderChamp({
   }
 }
 
+/**
+ * Экшен получение всех текущих (upcoming) регистраций запрашиваемого райдера.
+ */
 export async function getRegistrationsRider({
   riderId,
 }: {
@@ -143,6 +147,38 @@ export async function getRegistrationsRider({
     });
 
     return registrationsRider;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Проверка активной регистрации райдера в запрашиваемом Чемпионате во всех заездах.
+ * Если есть регистрация, то возвращаются данные Заезда.
+ */
+export async function checkRegisteredInChamp({
+  idRiderDB,
+  champId,
+}: {
+  idRiderDB: string | undefined;
+  champId: string;
+}): Promise<ResponseServer<TCheckRegisteredInChampDto | null>> {
+  'use server';
+  try {
+    if (!idRiderDB) {
+      return {
+        data: null,
+        ok: true,
+        message: 'Не авторизован!',
+      };
+    }
+    const registeredInChamp = await regService.checkRegisteredInChamp({
+      idRiderDB,
+      champId,
+    });
+
+    return registeredInChamp;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

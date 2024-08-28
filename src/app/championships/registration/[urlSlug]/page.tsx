@@ -12,7 +12,10 @@ import ContainerTableRegisteredRace from '@/components/Table/Containers/Register
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import { generateMetadataChampRegistration } from '@/meta/meta';
+import BlockRegistered from '@/components/BlockRegistered/BlockRegistered';
+import { checkRegisteredInChamp } from '@/actions/registration-champ';
 import styles from './Registration.module.css';
+import BlockMessage from '@/components/BlockMessage/BlockMessage';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -30,13 +33,18 @@ type Props = {
  */
 export default async function Registration({ params: { urlSlug } }: Props) {
   const session = await getServerSession(authOptions);
-
-  const profile = await getProfileForReg({ idDB: session?.user?.idDB });
+  const idRiderDB = session?.user?.idDB;
+  const profile = await getProfileForReg({ idDB: idRiderDB });
 
   const { data: championship } = await getChampionship({ urlSlug });
   if (!championship) {
     return <h2>Не получены данные с сервера о Чемпионате </h2>;
   }
+
+  const registeredInChamp = await checkRegisteredInChamp({
+    idRiderDB,
+    champId: championship._id,
+  });
 
   const buttons = buttonsMenuChampionshipPage(urlSlug);
   return (
@@ -54,20 +62,27 @@ export default async function Registration({ params: { urlSlug } }: Props) {
           />
 
           {profile ? (
-            <FormRaceRegistration
-              profile={profile}
-              championshipId={championship._id}
-              races={championship.races}
-            />
+            registeredInChamp.data ? (
+              <BlockRegistered registeredInChamp={registeredInChamp.data} />
+            ) : (
+              <FormRaceRegistration
+                profile={profile}
+                championshipId={championship._id}
+                races={championship.races}
+              />
+            )
           ) : (
-            <h3 className={styles.error}>
-              Для регистрации в Чемпионатах необходимо зарегистрироваться на сайте, если вы еще
-              не сделали этого. Если у вас уже есть учетная запись, пожалуйста, войдите в нее.
-            </h3>
+            <BlockMessage>
+              <h3 className={styles.error}>
+                Для регистрации в Чемпионатах необходимо зарегистрироваться на сайте, если вы
+                еще не сделали этого. Если у вас уже есть учетная запись, пожалуйста, войдите в
+                нее.
+              </h3>
+            </BlockMessage>
           )}
         </div>
 
-        {profile && (
+        {profile && !registeredInChamp.data && (
           <div className={styles.spacer}>
             <TitleAndLine hSize={2} title="Зарегистрированные участники" />
             <ContainerTableRegisteredRace />

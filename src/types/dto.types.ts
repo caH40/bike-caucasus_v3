@@ -236,3 +236,18 @@ export type TRegistrationRiderDto = {
   status: TRaceRegistrationStatus;
   createdAt: Date;
 };
+
+/**
+ * Проверка активной регистрации райдера в запрашиваемом Чемпионате во всех заездах.
+ */
+export type TCheckRegisteredInChampDto = {
+  race: {
+    number: number;
+    name: string;
+    description: string;
+    laps: number;
+    distance: number;
+    ascent: number | undefined;
+  };
+  startNumber: number;
+};
