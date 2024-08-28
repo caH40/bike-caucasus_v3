@@ -13,7 +13,7 @@ type TRegistrationRace = {
   // eslint-disable-next-line no-unused-vars
   selectOptions: TOptions[];
   // eslint-disable-next-line no-unused-vars
-  setSelectOptions: (startNumbersOccupied: number[]) => void;
+  setSelectOptions: (startNumbersOccupied: (number | undefined)[]) => void;
   startNumberFree: number | undefined;
 };
 

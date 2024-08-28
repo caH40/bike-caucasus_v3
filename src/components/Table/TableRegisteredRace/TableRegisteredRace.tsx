@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  getSortedRowModel,
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
@@ -33,12 +34,15 @@ type Props = {
 const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
   {
     header: '#',
-    accessorKey: 'index',
+    cell: (props) => {
+      return props.row.index + 1;
+    },
   },
   {
     header: 'Номер',
     accessorKey: 'startNumber',
     cell: (props: any) => <BlockStartNumber startNumber={props.getValue()} />,
+    sortUndefined: 'last', // Все неопределенные значения должны быть внизу.
   },
   {
     header: 'Участник',
@@ -88,20 +92,27 @@ export default function TableRegisteredRace({
   const data = useMemo(() => {
     return [...registeredRidersInRace.raceRegistrationRider]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .map((riderReg, index) => ({ ...riderReg, index: index + 1 }));
+      .map((riderReg, index) => ({
+        ...riderReg,
+        startNumber: riderReg.startNumber ? riderReg.startNumber : undefined, // Специально устанавливается undefined, чтобы при сортировке не сортировались эти строки (не работает с null).
+        index: index + 1,
+      }));
   }, [registeredRidersInRace.raceRegistrationRider]);
 
   const table = useReactTable({
+    getSortedRowModel: getSortedRowModel(),
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(), //load client-side pagination code
     initialState: {
+      sorting: [{ id: 'startNumber', desc: false }],
       pagination: {
         pageIndex: 0, //custom initial page index
         pageSize: docsOnPage, //custom default page size
       },
     },
+    enableSortingRemoval: false, // Отключено отсутствие сортировки, всегда есть вверх или вниз на одном из столбцов.
   });
 
   useEffect(() => {
@@ -115,7 +126,11 @@ export default function TableRegisteredRace({
       ? champ?.championshipName
       : 'Название Чемпионата';
     const subTitles = [championshipName, `Заезд: ${registeredRidersInRace.raceName}`];
-    getPdfRegistered({ columns, data, subTitles });
+
+    // Получение отсортированных данных из таблицы
+    const sortedData = table.getRowModel().rows.map((row) => row.original);
+
+    getPdfRegistered({ columns, data: sortedData, subTitles });
   };
 
   // Скачивание PDF файла таблицы бланка протокола с участниками для фиксации результатов.
@@ -138,19 +153,35 @@ export default function TableRegisteredRace({
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={cx('trh')} key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th className={styles.th} key={header.id}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  <th
+                    className={styles.th}
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    <div className={styles.box__sorting}>
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+
+                      {header.column.id !== '#' && // Проверка, чтобы эмоджи не показывались для первого столбца
+                        (header.column.getIsSorted()
+                          ? header.column.getIsSorted() === 'asc'
+                            ? ' 🔺'
+                            : ' 🔻'
+                          : ' 🟦')}
+                    </div>
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.map((row, index) => (
               <tr className={styles.tr} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className={cx('td')} key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {/* Фиксация нумерации в первом столбце */}
+                    {cell.column.id === '#'
+                      ? index + 1
+                      : flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
