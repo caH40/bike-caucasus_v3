@@ -21,21 +21,28 @@ type Props = {
 };
 
 export default async function ChampionshipRegistered({ params: { urlSlug } }: Props) {
-  const registrationData = await getRegisteredRidersChamp({ urlSlug });
+  const { data } = await getRegisteredRidersChamp({ urlSlug });
 
   const buttons = buttonsMenuChampionshipPage(urlSlug);
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        {registrationData.data && (
+        {data && (
           <>
             <TitleAndLine
               hSize={1}
-              title={`Зарегистрированные участники: ${registrationData.data.championshipName}`}
+              title={`Зарегистрированные участники: ${data.championshipName}`}
             />
-            {registrationData.data.champRegistrationRiders.map((race) => (
+            {data.champRegistrationRiders.map((race) => (
               <div className={styles.wrapper__table} key={race.raceName}>
-                <ContainerTableRegisteredChamp registeredRidersInRace={race} />
+                <ContainerTableRegisteredChamp
+                  registeredRidersInRace={race}
+                  champ={{
+                    championshipName: data.championshipName,
+                    championshipType: data.championshipType,
+                  }}
+                  showFooter={true}
+                />
               </div>
             ))}
           </>

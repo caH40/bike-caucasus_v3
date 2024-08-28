@@ -18,15 +18,27 @@ type TColumns = ColumnDef<TRaceRegistrationDto & { index: number }> & {
   header: any; // Маскирование ошибки типизации.
   accessorKey: any; // Маскирование ошибки типизации.
 };
+type Params = {
+  columns: any;
+  data: (TRaceRegistrationDto & { index: number })[];
+  subTitles: string[];
+};
 
 // Скачивание PDF файла таблицы
-export const getPdf = (columns: any, data: (TRaceRegistrationDto & { index: number })[]) => {
+export const getPdf = ({ columns, data, subTitles }: Params) => {
   const doc = new jsPDF() as jsPDFCustom;
 
   // Установка шрифта для заголовка
   doc.setFont('Roboto-Bold', 'normal');
   doc.setFontSize(18);
   doc.text('Список зарегистрированных участников', 14, 16);
+
+  // Отрисовка строк из массива, высота строки 8мм.
+  let startY = 24;
+  subTitles.forEach((elm) => {
+    doc.text(elm, 14, startY);
+    startY += 8;
+  });
 
   // Формируем заголовки таблицы
   const headers = columns.map((col: TColumns) =>
@@ -86,18 +98,20 @@ export const getPdf = (columns: any, data: (TRaceRegistrationDto & { index: numb
     })
   );
 
-  const lastIndex = body.length;
-  // Создание пустой строки с
-  const row = (i: number) => columns.map((_: any, index: number) => (index === 0 ? i : ''));
-  for (let i = lastIndex + 1; i < 20; i++) {
-    body.push(row(i));
-  }
+  // const lastIndex = body.length;
+  // // Создание пустой строки.
+  // const row = (i: number) => columns.map((_: any, index: number) => (index === 0 ? i : ''));
+  // // Добавление пустых строк в таблицу.
+  // const quantityRowEmpty = 20;
+  // for (let i = lastIndex + 1; i < quantityRowEmpty; i++) {
+  //   body.push(row(i));
+  // }
 
   // Добавляем таблицу в PDF
   doc.autoTable({
     head: [headers],
     body: body,
-    startY: 20, // Стартовая позиция по Y для таблицы.
+    startY: startY, // Стартовая позиция по Y для таблицы.
     styles: {
       font: 'Roboto-Regular',
       fontSize: 10,

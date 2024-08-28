@@ -25,6 +25,8 @@ const cx = cn.bind(styles);
 type Props = {
   registeredRidersInRace: TChampRegistrationRiderDto;
   docsOnPage?: number;
+  champ?: { championshipName: string; championshipType: string };
+  showFooter?: boolean;
 };
 
 const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
@@ -79,6 +81,8 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
 export default function TableRegisteredRace({
   registeredRidersInRace,
   docsOnPage = 10,
+  champ,
+  showFooter,
 }: Props) {
   const data = useMemo(() => {
     return [...registeredRidersInRace.raceRegistrationRider]
@@ -106,7 +110,11 @@ export default function TableRegisteredRace({
 
   // Скачивание PDF файла таблицы
   const handlerClick = () => {
-    getPdf(columns, data);
+    const championshipName = champ?.championshipName
+      ? champ?.championshipName
+      : 'Название Чемпионата';
+    const subTitles = [championshipName, `Заезд: ${registeredRidersInRace.raceName}`];
+    getPdf({ columns, data, subTitles });
   };
 
   return (
@@ -138,19 +146,21 @@ export default function TableRegisteredRace({
               </tr>
             ))}
           </tbody>
-          <tfoot className={cx('footer')}>
-            <tr>
-              <td colSpan={table.getHeaderGroups()[0].headers.length}>
-                <div className={styles.footer__files}>
-                  <IconPdf
-                    squareSize={24}
-                    getClick={handlerClick}
-                    tooltip={{ id: 'dlPdf', text: 'Скачать файл с таблицей в формате Pdf' }}
-                  />
-                </div>
-              </td>
-            </tr>
-          </tfoot>
+          {showFooter && (
+            <tfoot className={cx('footer')}>
+              <tr>
+                <td colSpan={table.getHeaderGroups()[0].headers.length}>
+                  <div className={styles.footer__files}>
+                    <IconPdf
+                      squareSize={24}
+                      getClick={handlerClick}
+                      tooltip={{ id: 'dlPdf', text: 'Скачать файл с таблицей в формате Pdf' }}
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       </div>
     </div>
