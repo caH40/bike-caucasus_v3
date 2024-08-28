@@ -4,7 +4,7 @@ import { Toaster } from 'sonner';
 
 import Header from '../components/Header/Header';
 import Providers from '../components/Providers';
-import { roboto, montserrat_Alternates } from '../libs/fonts';
+import { roboto, montserrat_Alternates } from '../libs/fonts/fonts';
 import Footer from '@/components/Footer/Footer';
 import ModalLoading from '@/components/ModalLoading/ModalLoading';
 import MobileMenu from '@/components/UI/MobileMenu/MobileMenu';
