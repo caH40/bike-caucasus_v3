@@ -50,14 +50,13 @@ export const getPdfRegistered = ({ columns, data, subTitles }: Params) => {
   );
 
   // Формируем данные для таблицы
-  const body = data.map((row) =>
-    columns.map((col: TColumns) => {
+  const body = data.map((row, indexRow) => {
+    return columns.map((col: TColumns) => {
       let cellValue;
-
       // Используем switch для обработки различных колонок
       switch (col.accessorKey) {
         case 'index':
-          cellValue = row.index;
+          cellValue = indexRow + 1;
           break;
 
         case 'startNumber':
@@ -99,8 +98,8 @@ export const getPdfRegistered = ({ columns, data, subTitles }: Params) => {
       }
 
       return cellValue;
-    })
-  );
+    });
+  });
 
   const lastIndex = body.length;
   // Создание пустой строки.

@@ -34,9 +34,7 @@ type Props = {
 const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
   {
     header: '#',
-    cell: (props) => {
-      return props.row.index + 1;
-    },
+    cell: (props) => props.row.index + 1,
   },
   {
     header: 'Номер',
@@ -130,7 +128,10 @@ export default function TableRegisteredRace({
     // Получение отсортированных данных из таблицы
     const sortedData = table.getRowModel().rows.map((row) => row.original);
 
-    getPdfRegistered({ columns, data: sortedData, subTitles });
+    const columnsWithIndex = columns.map((column) =>
+      column.header === '#' ? { accessorKey: 'index', header: '#' } : column
+    );
+    getPdfRegistered({ columns: columnsWithIndex, data: sortedData, subTitles });
   };
 
   // Скачивание PDF файла таблицы бланка протокола с участниками для фиксации результатов.
