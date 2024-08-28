@@ -24,8 +24,10 @@ type Params = {
   subTitles: string[];
 };
 
-// Скачивание PDF файла таблицы
-export const getPdf = ({ columns, data, subTitles }: Params) => {
+/**
+ *  Скачивание PDF файла таблицы.
+ */
+export const getPdfRegistered = ({ columns, data, subTitles }: Params) => {
   const doc = new jsPDF() as jsPDFCustom;
 
   // Установка шрифта для заголовка
@@ -33,6 +35,8 @@ export const getPdf = ({ columns, data, subTitles }: Params) => {
   doc.setFontSize(18);
   doc.text('Список зарегистрированных участников', 14, 16);
 
+  doc.setFont('Roboto-Regular', 'normal');
+  doc.setFontSize(16);
   // Отрисовка строк из массива, высота строки 8мм.
   let startY = 24;
   subTitles.forEach((elm) => {
@@ -98,14 +102,14 @@ export const getPdf = ({ columns, data, subTitles }: Params) => {
     })
   );
 
-  // const lastIndex = body.length;
-  // // Создание пустой строки.
-  // const row = (i: number) => columns.map((_: any, index: number) => (index === 0 ? i : ''));
-  // // Добавление пустых строк в таблицу.
-  // const quantityRowEmpty = 20;
-  // for (let i = lastIndex + 1; i < quantityRowEmpty; i++) {
-  //   body.push(row(i));
-  // }
+  const lastIndex = body.length;
+  // Создание пустой строки.
+  const row = (i: number) => columns.map((_: any, index: number) => (index === 0 ? i : ''));
+  // Добавление пустых строк в таблицу.
+  const quantityRowEmpty = 22;
+  for (let i = lastIndex + 1; i < quantityRowEmpty; i++) {
+    body.push(row(i));
+  }
 
   // Добавляем таблицу в PDF
   doc.autoTable({

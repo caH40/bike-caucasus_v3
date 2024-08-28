@@ -80,6 +80,9 @@
 }
 .footer__files {
   position: absolute;
+  display: flex;
+  gap: 15px;
+  align-items: center;
   top: calc(50% - 12px);
   right: 12px;
 }
