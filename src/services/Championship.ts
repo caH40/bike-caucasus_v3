@@ -177,8 +177,33 @@ export class ChampionshipService {
       // ДТО формирование данных для Клиента.
       const championships = dtoChampionships(championshipsDB);
 
+      // Сортировка 1 группа upcoming, ongoing сортируются по дате старта.
+      // Далее сортировка 2 группы completed, canceled сортируются по дате финиша.
+      const sortedChamp = championships.reduce(
+        (acc, cur) => {
+          if (['upcoming', 'ongoing'].includes(cur.status)) {
+            acc.currentChamps.push(cur);
+          } else {
+            acc.finishedChamps.push(cur);
+          }
+
+          return acc;
+        },
+        {
+          currentChamps: [] as TDtoChampionship[],
+          finishedChamps: [] as TDtoChampionship[],
+        }
+      );
+
+      sortedChamp.currentChamps.sort(
+        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      );
+      sortedChamp.finishedChamps.sort(
+        (a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime()
+      );
+
       return {
-        data: championships,
+        data: [...sortedChamp.currentChamps, ...sortedChamp.finishedChamps],
         ok: true,
         message: `Чемпионаты ${needTypes ? 'типов: ' + needTypes.join(', ') : 'все'}`,
       };

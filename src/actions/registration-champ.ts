@@ -46,6 +46,8 @@ export async function registerForChampionship({
       teamVariable,
     });
 
+    revalidatePath('championships');
+
     return response;
   } catch (error) {
     errorHandlerClient(parseError(error));

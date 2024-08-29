@@ -58,7 +58,7 @@ function getLinkConfig(
       };
     default:
       return {
-        href: `/championships/${urlSlugChamp}`, // Необходимо прокручивание до таблиц с результатами.
+        href: `/championships/results/${urlSlugChamp}`,
         theme: 'dark-green',
         name: 'Результаты',
         disabled: false,
