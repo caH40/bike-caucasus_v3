@@ -1,6 +1,5 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconResults from '@/components/Icons/IconResults';
-
 import { getChampionships } from '@/actions/championship';
 import { TOptions } from '@/types/index.interface';
 import FormSelectionChampionship from '@/components/UI/Forms/FormSelectionChampionship/FormSelectionChampionship';
@@ -20,8 +19,8 @@ export default async function ChampionshipRaceForProtocolPage() {
     );
   }
 
-  const options: TOptions[] = championships.data.map((champ) => ({
-    id: champ._id,
+  const options: TOptions[] = championships.data.map((champ, index) => ({
+    id: index,
     translation: champ.name,
     name: champ.urlSlug,
   }));

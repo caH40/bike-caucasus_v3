@@ -92,7 +92,7 @@ export type PropsSelect = {
   options: { id: number; translation: string; name: string }[];
 };
 export type TOptions = {
-  id: number | string;
+  id: number;
   translation: string;
   name: string;
   icon?: React.ComponentType<TIconProps>;
