@@ -1,5 +1,5 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
-import { TFormCalendar } from './index.interface';
+import { TFormCalendar, TRider } from './index.interface';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
@@ -364,4 +364,39 @@ export type TRaceRegistration = {
   };
   createdAt: Date;
   updatedAt: Date;
+};
+
+/**
+ * Протокол (абсолют) заезда в Чемпионате.
+ */
+export type TProtocolRace = {
+  _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
+  championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
+  raceNumber: number; // Номер заезда в Соревновании/Этапе.
+  rider: mongoose.Types.ObjectId;
+  riderManualEntry: TRiderManualEntry;
+  raceTime: number; // Время заезда (миллисекундах).
+  position: number; // Позиция райдера в заезде, присваивается автоматически при запуске расчета.
+  positionManual?: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
+  points: any; // Заработанные очки в заезде. В разработке.
+  disqualification?: TDisqualification; // Дисквалификация райдера в заезде.
+  categoryAge: string; // Выставляется автоматически при запуске расчета.
+  categorySkillLevel: string; // Выставляется вручную. Ручное деление по мастерству (Профики, элита, А ...)
+  averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
+  lapTimes?: number[]; // Время, затраченное на каждый круг (массив времен в миллисекундах).
+  remarks?: string; // Примечания или комментарии.
+  createdAt: Date;
+  updatedAt: Date;
+};
+export type TDisqualification = {
+  reason: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
+  comment?: string;
+};
+export type TRiderManualEntry = {
+  firstName: string; // Имя райдера.
+  lastName: string; // Фамилия райдера.
+  patronymic?: string; // Фамилия райдера.
+  team?: string; // Команда райдера, если известно.
+  age: number; // Возраст райдера.
+  gender: 'male' | 'female';
 };

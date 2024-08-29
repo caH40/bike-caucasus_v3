@@ -526,28 +526,30 @@ export type TRegisteredRiderFromDB = {
   championship: mongoose.Types.ObjectId;
   raceNumber: number;
   raceName?: string;
-  rider: {
-    _id: mongoose.Types.ObjectId;
-    id: number;
-    person: {
-      firstName: string;
-      lastName: string;
-      gender: 'male' | 'female';
-      birthday: Date;
-    };
-    provider: {
-      image?: string;
-    };
-    image?: string;
-    imageFromProvider: boolean;
-    team?: mongoose.Types.ObjectId;
-    city?: string;
-  };
+  rider: TRider;
   teamVariable?: string;
   startNumber: number;
   status: TRaceRegistrationStatus;
   createdAt: Date;
   updatedAt: Date;
+};
+export type TRider = {
+  _id: mongoose.Types.ObjectId;
+  id: number;
+  person: {
+    firstName: string;
+    lastName: string;
+    patronymic?: string;
+    gender: 'male' | 'female';
+    birthday: Date;
+  };
+  provider: {
+    image?: string;
+  };
+  image?: string;
+  imageFromProvider: boolean;
+  team?: mongoose.Types.ObjectId;
+  city?: string;
 };
 
 /**
