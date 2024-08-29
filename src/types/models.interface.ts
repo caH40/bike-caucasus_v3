@@ -1,5 +1,5 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
-import { TFormCalendar, TRider } from './index.interface';
+import { TFormCalendar } from './index.interface';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
