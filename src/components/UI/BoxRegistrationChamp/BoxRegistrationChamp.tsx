@@ -51,10 +51,12 @@ function getLinkConfig(
       };
     case 'ongoing':
       return {
-        href: `/championships/${urlSlugChamp}`,
+        href: isTourOrSeries
+          ? `/championships/${urlSlugChamp}`
+          : `/championships/results/${urlSlugChamp}`,
         theme: 'green',
-        name: isTourOrSeries ? 'Подробнее' : 'Нет данных',
-        disabled: !isTourOrSeries,
+        name: isTourOrSeries ? 'Подробнее' : 'Результаты',
+        // disabled: !isTourOrSeries,
       };
     default:
       return {
