@@ -81,18 +81,25 @@ export async function getRegisteredRidersRace({
 
 /**
  * Экшен получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах.
+ * Или в конкретном raceNumber.
  */
-export async function getRegisteredRidersChamp({ urlSlug }: { urlSlug: string }): Promise<
+export async function getRegisteredRidersChamp({
+  urlSlug,
+  raceNumber,
+}: {
+  urlSlug: string;
+  raceNumber?: number;
+}): Promise<
   ResponseServer<{
     champRegistrationRiders: TChampRegistrationRiderDto[];
     championshipName: string;
     championshipType: TChampionshipTypes;
   } | null>
 > {
-  'use server';
   try {
     const response = await regService.getRidersChamp({
       urlSlug,
+      raceNumber,
     });
 
     return response;

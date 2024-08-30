@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { TOptions } from '@/types/index.interface';
 import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
-import { TDtoChampionship } from '@/types/dto.types';
+import { TChampRegistrationRiderDto, TDtoChampionship } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import styles from './WrapperProtocolRace.module.css';
+import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
+import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 
 type Props = {
   options: TOptions[];
@@ -18,8 +20,19 @@ type Props = {
  */
 export default function WrapperProtocolRace({ options, championship }: Props) {
   const [raceNumber, setRaceNumber] = useState<string>('1');
+  const [registeredRiders, setRegisteredRiders] = useState<TChampRegistrationRiderDto[]>([]);
   const race = championship.races.find((race) => race.number === +raceNumber);
-  console.log(options);
+  console.log(registeredRiders);
+
+  useEffect(() => {
+    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceNumber: +raceNumber }).then(
+      (res) => {
+        if (res.data) {
+          setRegisteredRiders(res.data.champRegistrationRiders);
+        }
+      }
+    );
+  }, [raceNumber, championship.urlSlug]);
 
   return (
     <div className={styles.wrapper}>
@@ -30,6 +43,8 @@ export default function WrapperProtocolRace({ options, championship }: Props) {
       />
 
       <BlockRaceInfo raceNumber={raceNumber} race={race} />
+
+      <FormResultAdd />
     </div>
   );
 }
