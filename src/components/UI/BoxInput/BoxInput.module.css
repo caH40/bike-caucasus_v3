@@ -22,7 +22,8 @@
   border-radius: 0.5rem;
   padding: 0.6rem 3rem 0.6rem 0.5rem;
   width: 100%;
-  min-width: 250px;
+  height: 34px;
+  /* min-width: 250px; */
 }
 .wrapper__relative {
   position: relative;
@@ -42,6 +43,9 @@
   position: absolute;
   right: 0.5rem;
   top: calc(50% - 9px);
+}
+.hideCheckmark {
+  padding: 0.6rem 0.5rem;
 }
 /* Общие стили для календаря */
 .input[type='date']::-webkit-calendar-picker-indicator {

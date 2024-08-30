@@ -195,6 +195,7 @@ export type TRaceRegistrationRiderDto = {
   id: number; // id Райдера на сайте.
   firstName: string; // Имя райдера.
   lastName: string; // Фамилия райдера.
+  patronymic?: string; // Отчество райдера.
   gender: 'male' | 'female'; // Пол райдера.
   fullYears: number; // Полные годы райдера.
   fractionalYears: number; // Неполные годы райдера.

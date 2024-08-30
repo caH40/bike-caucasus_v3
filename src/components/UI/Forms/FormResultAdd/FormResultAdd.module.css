@@ -1,0 +1,23 @@
+.block__rider {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.box__startNumber,
+.box__startNumber_new {
+  flex: 0 0 60px;
+}
+
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .block__rider {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .box__startNumber {
+    flex: 0 0 55px;
+  }
+  .box__startNumber_new {
+    flex: 0 0 65px;
+  }
+}

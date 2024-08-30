@@ -33,6 +33,7 @@ export type PropsBoxInput = {
   disabled?: boolean;
   validationText?: string;
   showValidationText?: boolean;
+  hideCheckmark?: boolean;
   defaultValue?: string;
   register?: UseFormRegisterReturn; // FieldValues
   min?: string;
@@ -78,9 +79,9 @@ export type PropsBoxSelectSimple = {
   loading?: boolean;
   options: { id: number; translation: string; name: string }[];
 };
-export type PropsSelect = {
-  state: string;
-  setState: Dispatch<SetStateAction<string>>;
+export type PropsSelect<T> = {
+  state: T;
+  setState: Dispatch<SetStateAction<T>>;
   id?: string;
   name: string;
   label?: string;
