@@ -1,36 +1,29 @@
 'use client';
 
+import { Dispatch, SetStateAction } from 'react';
+
 import { TOptions } from '@/types/index.interface';
+import Select from '../../Select/Select';
 
-import { useRaceProtocol } from '@/store/protocol';
-import styles from '@/UI/Select/Select.module.css';
-
-type Props = { options: TOptions[] };
+type Props = {
+  options: TOptions[];
+  raceNumber: string;
+  setRaceNumber: Dispatch<SetStateAction<string>>;
+};
 
 /**
  * Форма выбора Заезда для добавления финишного протокола в него.
  */
-export default function FormSelectionRace({ options }: Props) {
-  const raceNumber = useRaceProtocol((state) => state.raceNumber);
-  const setRaceNumber = useRaceProtocol((state) => state.setRaceNumber);
-
+export default function FormSelectionRace({ options, raceNumber, setRaceNumber }: Props) {
   return (
     <form>
-      <label className={styles.label} htmlFor={'selectRace'}>
-        Выбор заезда для добавления результатов:
-      </label>
-      <select
-        className={styles.select}
-        id="selectRace"
-        value={raceNumber}
-        onChange={(e) => setRaceNumber(isNaN(+e.target.value) ? 1 : +e.target.value)}
-      >
-        {options.map((elm) => (
-          <option key={elm.id} value={elm.name} className={styles.option}>
-            {elm.translation}
-          </option>
-        ))}
-      </select>
+      <Select
+        label={' Выбор заезда для добавления результатов:'}
+        name={'selectRaceNumber'}
+        options={options}
+        state={raceNumber}
+        setState={setRaceNumber}
+      />
     </form>
   );
 }
