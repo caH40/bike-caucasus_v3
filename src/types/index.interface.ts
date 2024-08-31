@@ -615,7 +615,7 @@ export type TFormResultRace = {
   };
   // Данные райдера из БД на сайте.
   riderFromDB?: {
-    fullName: string;
+    userIdDB: string;
     startNumber: number;
   };
   // Данные райдера внесенные вручную.
@@ -629,6 +629,7 @@ export type TFormResultRace = {
     team?: string;
     startNumber: number;
   };
+  target: 'registered' | 'fromDB' | 'manual';
 
   time: TTimeDetails;
 };

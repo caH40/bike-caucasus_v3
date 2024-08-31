@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { TOptions } from '@/types/index.interface';
+import { ResponseServer, TOptions } from '@/types/index.interface';
 import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
 import { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
@@ -13,12 +13,22 @@ import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 type Props = {
   options: TOptions[];
   championship: TDtoChampionship;
+  postResultRaceRider: ({
+    // eslint-disable-next-line no-unused-vars
+    dataFromFormSerialized,
+  }: {
+    dataFromFormSerialized: FormData;
+  }) => Promise<ResponseServer<void>>;
 };
 
 /**
  * Обертка для клиентских компонентов страницы работы с финишным протоколом Заезда.
  */
-export default function WrapperProtocolRace({ options, championship }: Props) {
+export default function WrapperProtocolRace({
+  options,
+  championship,
+  postResultRaceRider,
+}: Props) {
   const [raceNumber, setRaceNumber] = useState<string>('1');
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const race = championship.races.find((race) => race.number === +raceNumber);
@@ -45,7 +55,10 @@ export default function WrapperProtocolRace({ options, championship }: Props) {
 
       <BlockRaceInfo raceNumber={raceNumber} race={race} />
 
-      <FormResultAdd registeredRiders={registeredRiders} />
+      <FormResultAdd
+        postResultRaceRider={postResultRaceRider}
+        registeredRiders={registeredRiders}
+      />
     </div>
   );
 }

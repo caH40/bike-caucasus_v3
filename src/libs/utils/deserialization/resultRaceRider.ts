@@ -3,7 +3,7 @@ import { TResultRaceRiderDeserialized } from '@/types/index.interface';
 /**
  * Десериализация данных результата райдера в Заезде Чемпионата.
  */
-export function serializationResultRaceRider(
+export function deserializationResultRaceRider(
   dataSerialized: FormData
 ): TResultRaceRiderDeserialized {
   const resultRaceRider = {} as TResultRaceRiderDeserialized & {

@@ -3,6 +3,7 @@ import IconResults from '@/components/Icons/IconResults';
 import { getChampionship } from '@/actions/championship';
 import { TOptions } from '@/types/index.interface';
 import WrapperProtocolRace from '@/components/WrapperProtocolRace/WrapperProtocolRace';
+import { postResultRaceRider } from '@/actions/protocol-race';
 
 type Props = {
   params: {
@@ -38,7 +39,11 @@ export default async function ProtocolRaceEditPage({ params: { urlSlug } }: Prop
         title="Добавление/редактирование финишного протокола Заезда в Чемпионате"
         Icon={IconResults}
       />
-      <WrapperProtocolRace options={options} championship={championship.data} />
+      <WrapperProtocolRace
+        postResultRaceRider={postResultRaceRider}
+        options={options}
+        championship={championship.data}
+      />
     </>
   );
 }
