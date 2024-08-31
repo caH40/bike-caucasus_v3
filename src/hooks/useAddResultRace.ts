@@ -20,7 +20,7 @@ export function useAddResultRace({ startNumber, registeredRiders, fullName, setV
       const selectedRider = registeredRiders.find((elm) => elm.startNumber === +startNumber);
 
       if (selectedRider) {
-        setValue('fullName', getFullName(selectedRider.rider));
+        setValue('riderRegistered.fullName', getFullName(selectedRider.rider));
       }
     }
   }, [startNumber, registeredRiders, setValue]);
@@ -30,7 +30,7 @@ export function useAddResultRace({ startNumber, registeredRiders, fullName, setV
       const selectedRider = registeredRiders.find((elm) => getFullName(elm.rider) === fullName);
 
       if (selectedRider?.startNumber) {
-        setValue('startNumber', selectedRider.startNumber);
+        setValue('riderRegistered.startNumber', selectedRider.startNumber);
       }
     }
   }, [fullName, registeredRiders, setValue]);

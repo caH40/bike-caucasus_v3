@@ -45,16 +45,16 @@ export default function BlockInputsRegisteredRider({
       <div className={styles.wrapper__rider}>
         <div className={styles.box__startNumber}>
           <Controller
-            name="startNumber"
+            name="riderRegistered.startNumber"
             control={control}
             rules={{
-              required: 'Обязательное поле',
+              required: 'обязательное поле',
             }}
             render={({ field }) => (
               <Select
                 state={field.value}
                 setState={field.onChange}
-                name={'startNumber'}
+                name={'riderRegisteredStartNumber'}
                 label={'Номер'}
                 options={optionsStartNumber}
               />
@@ -63,16 +63,16 @@ export default function BlockInputsRegisteredRider({
         </div>
 
         <Controller
-          name="fullName"
+          name="riderRegistered.fullName"
           control={control}
           rules={{
-            required: 'Обязательное поле',
+            required: 'обязательное поле',
           }}
           render={({ field }) => (
             <Select
               state={field.value}
               setState={field.onChange}
-              name={'fullName'}
+              name={'riderRegisteredFullName'}
               label="Участник заезда"
               options={optionsRiderName}
             />
@@ -86,7 +86,7 @@ export default function BlockInputsRegisteredRider({
             autoComplete="off"
             type="number"
             defaultValue={'0'}
-            register={register('newStartNumber', {
+            register={register('riderRegistered.newStartNumber', {
               pattern: {
                 value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])$/,
                 message: '0-9999',
@@ -98,12 +98,16 @@ export default function BlockInputsRegisteredRider({
       </div>
 
       <div className={styles.validate}>
-        {errors.startNumber?.message && (
-          <span>стартовый номер: {errors.startNumber?.message}, </span>
+        {errors.riderRegistered?.startNumber?.message && (
+          <span>стартовый номер: {errors.riderRegistered?.startNumber?.message}, </span>
         )}
-        {errors.fullName?.message && <span>участник: {errors.fullName?.message}, </span>}
-        {errors.newStartNumber?.message && (
-          <span>новый стартовый номер: {errors.newStartNumber?.message}, </span>
+        {errors.riderRegistered?.fullName?.message && (
+          <span>участник: {errors.riderRegistered?.fullName?.message}, </span>
+        )}
+        {errors.riderRegistered?.newStartNumber?.message && (
+          <span>
+            новый стартовый номер: {errors.riderRegistered?.newStartNumber?.message},{' '}
+          </span>
         )}
       </div>
     </div>

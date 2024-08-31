@@ -9,6 +9,8 @@ import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 
 import BlockInputsRegisteredRider from './BlockInputsRegisteredRider/BlockInputsRegisteredRider';
 import Button from '../../Button/Button';
+import { timeDetailsToMilliseconds } from '@/libs/utils/date';
+import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -25,21 +27,28 @@ export default function FormResultAdd({ registeredRiders }: Props) {
   } = useForm<TFormResultRace>({
     mode: 'all',
     defaultValues: {
-      startNumber: 0,
-      fullName: '',
-      newStartNumber: 0,
+      riderRegistered: {
+        startNumber: 0,
+        fullName: '',
+        newStartNumber: 0,
+      },
     },
   });
 
-  const startNumber = watch('startNumber');
-  const fullName = watch('fullName');
+  const startNumber = watch('riderRegistered.startNumber');
+  const fullName = watch('riderRegistered.fullName');
 
   // Синхронизация данных startNumber и fullName при их изменениях.
   useAddResultRace({ startNumber, registeredRiders, fullName, setValue });
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
-    console.log(dataFromForm);
+    const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
+
+    const dataSerialized = serializationResultRaceRider({
+      dataFromForm,
+      timeDetailsInMilliseconds,
+    });
   };
 
   return (

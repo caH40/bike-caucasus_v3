@@ -607,8 +607,40 @@ export type TRegistrationRiderFromDB = {
  * Данные формы для установки результата райдера в Заезде Чемпионата.
  */
 export type TFormResultRace = {
-  startNumber: number;
-  fullName: string;
-  newStartNumber: number;
-  time: { hours: number; minutes: number; seconds: number; milliseconds: number };
+  // Данные райдера из списка зарегистрированных в Заезде.
+  riderRegistered?: {
+    startNumber: number;
+    fullName: string;
+    newStartNumber: number;
+  };
+  // Данные райдера из БД на сайте.
+  riderFromDB?: {
+    fullName: string;
+    startNumber: number;
+  };
+  // Данные райдера внесенные вручную.
+  riderManual?: {
+    firstName: string;
+    patronymic?: string;
+    lastName: string;
+    birthday: number; // Год рождения.
+    gender: 'male' | 'female';
+    city?: string;
+    team?: string;
+    startNumber: number;
+  };
+
+  time: TTimeDetails;
+};
+
+// Данные из инпута приходят всегда как строка.
+export type TTimeDetails = {
+  hours: string;
+  minutes: string;
+  seconds: string;
+  milliseconds: string;
+};
+
+export type TResultRaceRiderDeserialized = Omit<TFormResultRace, 'time'> & {
+  timeInMilliseconds: number;
 };
