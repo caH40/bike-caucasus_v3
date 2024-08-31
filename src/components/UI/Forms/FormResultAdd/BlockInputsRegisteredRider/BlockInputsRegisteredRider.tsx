@@ -47,6 +47,9 @@ export default function BlockInputsRegisteredRider({
           <Controller
             name="startNumber"
             control={control}
+            rules={{
+              required: 'Обязательное поле',
+            }}
             render={({ field }) => (
               <Select
                 state={field.value}
@@ -62,6 +65,9 @@ export default function BlockInputsRegisteredRider({
         <Controller
           name="fullName"
           control={control}
+          rules={{
+            required: 'Обязательное поле',
+          }}
           render={({ field }) => (
             <Select
               state={field.value}
@@ -81,15 +87,24 @@ export default function BlockInputsRegisteredRider({
             type="number"
             defaultValue={'0'}
             register={register('newStartNumber', {
-              maxLength: {
-                value: 5,
-                message: 'Максимум 5 цифр',
+              pattern: {
+                value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])$/,
+                message: '0-9999',
               },
             })}
-            validationText={errors.newStartNumber?.message}
             hideCheckmark={true}
           />
         </div>
+      </div>
+
+      <div className={styles.validate}>
+        {errors.startNumber?.message && (
+          <span>стартовый номер: {errors.startNumber?.message}, </span>
+        )}
+        {errors.fullName?.message && <span>участник: {errors.fullName?.message}, </span>}
+        {errors.newStartNumber?.message && (
+          <span>новый стартовый номер: {errors.newStartNumber?.message}, </span>
+        )}
       </div>
     </div>
   );

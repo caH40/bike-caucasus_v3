@@ -23,7 +23,6 @@ export default function BlockInputsTime({ register, errors }: Props) {
           id="hours"
           autoComplete="off"
           type="number"
-          defaultValue={'0'}
           register={register('time.hours', {
             pattern: {
               value: /^([0-9]|[1-9][0-9])$/,
@@ -38,8 +37,8 @@ export default function BlockInputsTime({ register, errors }: Props) {
           id="minutes"
           autoComplete="off"
           type="number"
-          defaultValue={'0'}
           register={register('time.minutes', {
+            required: 'Обязательное поле',
             pattern: {
               value: /^([0-9]|[1-5][0-9])$/,
               message: '0-59',
@@ -53,7 +52,7 @@ export default function BlockInputsTime({ register, errors }: Props) {
           id="seconds"
           autoComplete="off"
           type="number"
-          defaultValue={'0'}
+          //
           register={register('time.seconds', {
             pattern: {
               value: /^([0-9]|[1-5][0-9])$/,
@@ -68,10 +67,9 @@ export default function BlockInputsTime({ register, errors }: Props) {
           id="milliseconds"
           autoComplete="off"
           type="number"
-          defaultValue={'000'}
           register={register('time.milliseconds', {
             pattern: {
-              value: /^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$/,
+              value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9])$/,
               message: '0-999',
             },
           })}

@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { useAddResultRace } from '@/hooks/useAddResultRace';
 import { TRaceRegistrationDto } from '@/types/dto.types';
@@ -8,6 +8,7 @@ import styles from './FormResultAdd.module.css';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 
 import BlockInputsRegisteredRider from './BlockInputsRegisteredRider/BlockInputsRegisteredRider';
+import Button from '../../Button/Button';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -19,6 +20,7 @@ export default function FormResultAdd({ registeredRiders }: Props) {
     register,
     watch,
     setValue,
+    handleSubmit,
     formState: { errors },
   } = useForm<TFormResultRace>({
     mode: 'all',
@@ -35,8 +37,13 @@ export default function FormResultAdd({ registeredRiders }: Props) {
   // Синхронизация данных startNumber и fullName при их изменениях.
   useAddResultRace({ startNumber, registeredRiders, fullName, setValue });
 
+  // Обработка формы после нажатия кнопки "Отправить".
+  const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
+    console.log(dataFromForm);
+  };
+
   return (
-    <form className={styles.wrapper}>
+    <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
       <BlockInputsRegisteredRider
         registeredRiders={registeredRiders}
         register={register}
@@ -45,6 +52,11 @@ export default function FormResultAdd({ registeredRiders }: Props) {
       />
 
       <BlockInputsTime register={register} errors={errors} />
+
+      {/* Кнопка отправки формы. */}
+      <div className={styles.box__button}>
+        <Button name={'Добавить'} theme="green" />
+      </div>
     </form>
   );
 }
