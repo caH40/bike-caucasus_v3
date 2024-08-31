@@ -19,6 +19,7 @@ export default function FormResultAdd({ registeredRiders }: Props) {
   const [startNumber, setStartNumber] = useState<number>(0);
   const [fullName, setFullName] = useState<string | ''>('');
   const [newStartNumber, setNewStartNumber] = useState<number>(0);
+  // const [placeAbsolute, setPlaceAbsolute] = useState<number>(0);
 
   // Эффект для синхронизации startNumber и firstName
   useEffect(() => {
@@ -87,58 +88,7 @@ export default function FormResultAdd({ registeredRiders }: Props) {
             hideCheckmark={true}
           />
         </div>
-        {/* <input
-          className={styles.input}
-          value={newStartNumber}
-          onChange={(e) =>
-            setNewStartNumber(typeof e.target.value === 'number' ? +e.target.value : 0)
-          }
-          type="number"
-          name="newStartNumber"
-          id="newStartNumber"
-        /> */}
       </div>
     </form>
   );
 }
-
-// /**
-//  * Форма добавления результата райдера в финишный Протокол.
-//  */
-// export default function FormResultAdd({ registeredRiders }: Props) {
-//   const [riderName, setRiderName] = useState<string>('');
-//   const [startNumber, setStartNumber] = useState<string>('0');
-
-//   // Создание массива опций для селекта стартового номера;
-//   const optionsStartNumbers = createOptionsStartNumbers(
-//     registeredRiders.map((elm) => elm.startNumber || 0)
-//   );
-
-//   // Создание массива опций для селекта райдера;
-//   const optionsRiderName = registeredRiders.map((elm, index) => ({
-//     id: index,
-//     translation: `${elm.rider.firstName} ${elm.rider.firstName}${
-//       elm.rider.patronymic ? ' ' + elm.rider.patronymic : ''
-//     }`,
-//     name: elm._id,
-//   }));
-
-//   return (
-//     <form className={styles.wrapper}>
-//       <Select
-//         state={startNumber}
-//         setState={setStartNumber}
-//         name={'startNumber'}
-//         label={'Стартовый номер'}
-//         options={optionsStartNumbers}
-//       />
-//       <Select
-//         state={riderName}
-//         setState={setRiderName}
-//         name={'riderName'}
-//         label={'Выбор райдера'}
-//         options={optionsRiderName}
-//       />
-//     </form>
-//   );
-// }

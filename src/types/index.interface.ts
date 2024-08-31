@@ -41,6 +41,7 @@ export type PropsBoxInput = {
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
   tooltip?: { text: string; id: string };
+  maxLength?: number;
 };
 
 /**
