@@ -1,6 +1,6 @@
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
-import BoxInput from '../BoxInput/BoxInput';
+import BoxInput from '../../../BoxInput/BoxInput';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { TFormResultRace } from '@/types/index.interface';
 import styles from './BlockInputsTime.module.css';
