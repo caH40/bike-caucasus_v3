@@ -33,7 +33,7 @@ export default function BoxInput({
         <input
           {...props}
           {...register}
-          className={cx('input', loading)}
+          className={cx('input', loading, { hideCheckmark: hideCheckmark })}
           disabled={disabled || loading}
         />
         {!hideCheckmark && (

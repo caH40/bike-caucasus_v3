@@ -9,7 +9,6 @@ import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import styles from './WrapperProtocolRace.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
-import FormTime from '../UI/Forms/BlockInputsTime/BlockInputsTime';
 
 type Props = {
   options: TOptions[];
@@ -47,8 +46,6 @@ export default function WrapperProtocolRace({ options, championship }: Props) {
       <BlockRaceInfo raceNumber={raceNumber} race={race} />
 
       <FormResultAdd registeredRiders={registeredRiders} />
-
-      <FormTime />
     </div>
   );
 }

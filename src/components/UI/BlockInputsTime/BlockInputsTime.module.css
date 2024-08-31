@@ -1,8 +1,18 @@
 .wrapper {
   width: 100%;
-  /* padding: 1rem; */
-  /* border-radius: 0.5rem;
-  border: 1px solid var(--line); */
+}
+.title {
+  font-size: 1.1rem;
+  margin-bottom: 3px;
+}
+.wrapper__inputs {
+  width: 100%;
   display: flex;
-  gap: 5px;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+.validate {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--error);
 }

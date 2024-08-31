@@ -602,3 +602,13 @@ export type TRegistrationRiderFromDB = {
   status: TRaceRegistrationStatus;
   createdAt: Date;
 };
+
+/**
+ * Данные формы для установки результата райдера в Заезде Чемпионата.
+ */
+export type TFormResultRace = {
+  startNumber: number;
+  fullName: string;
+  newStartNumber: number;
+  time: { hours: number; minutes: number; seconds: number; milliseconds: number };
+};

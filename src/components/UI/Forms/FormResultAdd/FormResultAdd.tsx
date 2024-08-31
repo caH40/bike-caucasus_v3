@@ -1,45 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 
-import { TRaceRegistrationDto, TRaceRegistrationRiderDto } from '@/types/dto.types';
+import BoxInput from '../../BoxInput/BoxInput';
 import Select from '../../Select/Select';
+import { useAddResultRace } from '@/hooks/useAddResultRace';
+import { TRaceRegistrationDto } from '@/types/dto.types';
+import { TFormResultRace } from '@/types/index.interface';
+import { getFullName } from '@/libs/utils/text';
 import styles from './FormResultAdd.module.css';
-import BoxInputSimple from '../../BoxInput/BoxInputSimple';
+import BlockInputsTime from '../../BlockInputsTime/BlockInputsTime';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
 };
 
-const getFullName = (rider: TRaceRegistrationRiderDto): string =>
-  `${rider.firstName} ${rider.lastName}${rider.patronymic ? ' ' + rider.patronymic : ''}`;
-
-/**
- * Форма добавления результата райдера в финишный Протокол.
- */
 export default function FormResultAdd({ registeredRiders }: Props) {
-  const [startNumber, setStartNumber] = useState<number>(0);
-  const [fullName, setFullName] = useState<string | ''>('');
-  const [newStartNumber, setNewStartNumber] = useState<number>(0);
-  // const [placeAbsolute, setPlaceAbsolute] = useState<number>(0);
+  const {
+    control,
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<TFormResultRace>({
+    mode: 'all',
+    defaultValues: {
+      startNumber: 0,
+      fullName: '',
+      newStartNumber: 0,
+    },
+  });
 
-  // Эффект для синхронизации startNumber и firstName
-  useEffect(() => {
-    if (startNumber !== 0) {
-      const selectedRider = registeredRiders.find((elm) => elm.startNumber === +startNumber);
+  const startNumber = watch('startNumber');
+  const fullName = watch('fullName');
 
-      if (selectedRider) {
-        setFullName(getFullName(selectedRider.rider));
-      }
-    }
-  }, [startNumber, registeredRiders]);
-
-  useEffect(() => {
-    if (fullName !== '') {
-      const selectedRider = registeredRiders.find((elm) => getFullName(elm.rider) === fullName);
-      if (selectedRider?.startNumber) {
-        setStartNumber(selectedRider.startNumber);
-      }
-    }
-  }, [fullName, registeredRiders]);
+  // Синхронизация данных startNumber и fullName при их изменениях.
+  useAddResultRace({ startNumber, registeredRiders, fullName, setValue });
 
   // Создание массива опций для селекта райдера;
   const optionsStartNumber = registeredRiders.map((elm) => ({
@@ -56,39 +51,62 @@ export default function FormResultAdd({ registeredRiders }: Props) {
   }));
 
   return (
-    <form>
-      <div className={styles.block__rider}>
-        <div className={styles.box__startNumber}>
-          <Select
-            state={startNumber}
-            setState={setStartNumber}
-            name={'startNumber'}
-            label={'Номер'}
-            options={optionsStartNumber}
-          />
-        </div>
+    <form className={styles.wrapper}>
+      <div>
+        <TitleAndLine hSize={3} title="Зарегистрированный участник" />
 
-        <Select
-          state={fullName}
-          setState={setFullName}
-          name={'fullName'}
-          label={'Участник заезда'}
-          options={optionsRiderName}
-        />
+        <div className={styles.block__rider}>
+          <div className={styles.box__startNumber}>
+            <Controller
+              name="startNumber"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  state={field.value}
+                  setState={field.onChange}
+                  name={'startNumber'}
+                  label={'Номер'}
+                  options={optionsStartNumber}
+                />
+              )}
+            />
+          </div>
 
-        <div className={styles.box__startNumber_new}>
-          <BoxInputSimple
-            label="Изм. №"
-            value={newStartNumber}
-            handlerInput={setNewStartNumber}
-            name={'newStartNumber'}
-            type={'number'}
-            id={'newStartNumber'}
-            autoComplete="off"
-            hideCheckmark={true}
+          <Controller
+            name="fullName"
+            control={control}
+            render={({ field }) => (
+              <Select
+                state={field.value}
+                setState={field.onChange}
+                name={'fullName'}
+                label="Участник заезда"
+                options={optionsRiderName}
+              />
+            )}
           />
+
+          <div className={styles.box__startNumber_new}>
+            <BoxInput
+              label={'Изм. №'}
+              id="name"
+              autoComplete="off"
+              type="number"
+              defaultValue={'0'}
+              register={register('newStartNumber', {
+                maxLength: {
+                  value: 5,
+                  message: 'Максимум 5 цифр',
+                },
+              })}
+              validationText={errors.newStartNumber?.message}
+              hideCheckmark={true}
+            />
+          </div>
         </div>
       </div>
+
+      <BlockInputsTime register={register} errors={errors} />
     </form>
   );
 }
