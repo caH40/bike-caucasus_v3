@@ -13,6 +13,7 @@ import styles from './FormResultAdd.module.css';
 import { useLoadingStore } from '@/store/loading';
 import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
 import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
+import { toast } from 'sonner';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -33,6 +34,7 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
   const {
     control,
     register,
+    reset,
     watch,
     setValue,
     handleSubmit,
@@ -78,8 +80,16 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
     });
 
     setLoading(true);
-    await postResultRaceRider({ dataFromFormSerialized: dataSerialized });
+    const response = await postResultRaceRider({ dataFromFormSerialized: dataSerialized });
+
     setLoading(false);
+
+    if (response.ok) {
+      // reset();
+      toast.success(response.message);
+    } else {
+      toast.error(response.message);
+    }
   };
 
   return (

@@ -47,7 +47,11 @@ export class ProtocolRaceService {
       // Подключение к БД.
       await this.dbConnection();
 
-      return { data: null, ok: true, message: '' };
+      return {
+        data: null,
+        ok: true,
+        message: `Результат райдера "${dataDeserialized.lastName} ${dataDeserialized.firstName}" добавлен в финишный протокол.`,
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
