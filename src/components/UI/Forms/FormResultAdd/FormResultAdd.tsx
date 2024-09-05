@@ -14,6 +14,9 @@ import { useLoadingStore } from '@/store/loading';
 import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
 import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 import { toast } from 'sonner';
+import FilterRidersForAddResult from '../../Filteres/FilterRidersForAddResult/FilterRidersForAddResult';
+import { buttonsForRiderRaceResult } from '@/constants/buttons';
+import { useState } from 'react';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -31,6 +34,13 @@ type Props = {
 export default function FormResultAdd({ postResultRaceRider, registeredRiders }: Props) {
   // const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
+  const [activeIdBtn, setActiveIdBtn] = useState<number>(1);
+
+  // Название активной кнопки для отображения соответствующих полей ввода в форме.
+  const nameBtnFilter = buttonsForRiderRaceResult.find(
+    (button) => button.id === activeIdBtn
+  )?.name;
+
   const {
     control,
     register,
@@ -94,11 +104,20 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
-      <BlockSelectRegisteredRider
-        registeredRiders={registeredRiders}
-        control={control}
-        newStartNumber={newStartNumber}
+      {/* Выбор способа ввода данных */}
+      <FilterRidersForAddResult
+        buttons={buttonsForRiderRaceResult}
+        activeIdBtn={activeIdBtn}
+        setActiveIdBtn={setActiveIdBtn}
       />
+
+      {nameBtnFilter === 'registered' && (
+        <BlockSelectRegisteredRider
+          registeredRiders={registeredRiders}
+          control={control}
+          newStartNumber={newStartNumber}
+        />
+      )}
 
       <BlockInputs register={register} errors={errors} />
 
