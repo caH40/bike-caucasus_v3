@@ -17,6 +17,7 @@ export default function BoxSelectNew({
   loading,
   options,
   tooltip,
+  hideCheckmark,
   ...props
 }: PropsBoxSelect) {
   return (
@@ -29,7 +30,12 @@ export default function BoxSelectNew({
         <span className={styles.validate}>{validationText}</span>
       </label>
       <div className={styles.wrapper__relative}>
-        <select className={cx('select', loading)} disabled={loading} {...props} {...register}>
+        <select
+          className={cx('select', loading, { hideCheckmark: hideCheckmark })}
+          disabled={loading}
+          {...props}
+          {...register}
+        >
           {options.map((elm) => (
             <option key={elm.id} value={elm.name} className={styles.option}>
               {elm.translation}
@@ -37,9 +43,11 @@ export default function BoxSelectNew({
           ))}
         </select>
 
-        <div className={styles.checkmark}>
-          <Checkmark isCompleted={!validationText} />
-        </div>
+        {!hideCheckmark && (
+          <div className={styles.checkmark}>
+            <Checkmark isCompleted={!validationText} />
+          </div>
+        )}
       </div>
     </div>
   );

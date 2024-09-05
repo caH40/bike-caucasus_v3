@@ -1,0 +1,14 @@
+.wrapper {
+  width: 100%;
+}
+.wrapper__select {
+  display: flex;
+  gap: 1rem;
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .wrapper__select {
+    display: flex;
+    gap: 0.5rem;
+  }
+}

@@ -608,29 +608,28 @@ export type TRegistrationRiderFromDB = {
  */
 export type TFormResultRace = {
   // Данные райдера из списка зарегистрированных в Заезде.
-  riderRegistered?: {
-    startNumber: number;
-    fullName: string;
-    newStartNumber: number;
-  };
-  // Данные райдера из БД на сайте.
-  riderFromDB?: {
-    userIdDB: string;
+  riderRegisteredInRace: {
+    lastName: string;
     startNumber: number;
   };
-  // Данные райдера внесенные вручную.
-  riderManual?: {
+  riderRegisteredSite: {
+    lastName: string;
+    id: number;
+  };
+  rider: {
+    _id?: string; // id из БД.
+    id?: number; // id пользователя на сайте.
     firstName: string;
     patronymic?: string;
     lastName: string;
-    birthday: number; // Год рождения.
+    yearBirthday: number | string; // Год рождения.
+    fullYears: number;
+    fractionalYears: number;
     gender: 'male' | 'female';
     city?: string;
     team?: string;
-    startNumber: number;
   };
-  target: 'registered' | 'fromDB' | 'manual';
-
+  newStartNumber: number | string;
   time: TTimeDetails;
 };
 

@@ -1,39 +1,79 @@
-import { getFullName } from '@/libs/utils/text';
-import { TRaceRegistrationDto } from '@/types/dto.types';
-import { TFormResultRace } from '@/types/index.interface';
 import { useEffect } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
+import type { TRaceRegistrationDto } from '@/types/dto.types';
+import type { TFormResultRace } from '@/types/index.interface';
+
 type Props = {
-  startNumber: number;
+  startNumberRegisteredInRace: number;
   registeredRiders: TRaceRegistrationDto[];
-  fullName: string;
+  lastNameRegisteredInRace: string;
+  setValue: UseFormSetValue<TFormResultRace>;
+};
+
+type TSetValue = {
+  selectedRider: TRaceRegistrationDto;
   setValue: UseFormSetValue<TFormResultRace>;
 };
 
 /**
  * Синхронизация данных startNumber и fullName при их изменениях.
  */
-export function useAddResultRace({ startNumber, registeredRiders, fullName, setValue }: Props) {
+export function useAddResultRace({
+  startNumberRegisteredInRace,
+  registeredRiders,
+  lastNameRegisteredInRace,
+  setValue,
+}: Props) {
   useEffect(() => {
-    if (startNumber !== 0) {
-      const selectedRider = registeredRiders.find((elm) => elm.startNumber === +startNumber);
+    if (startNumberRegisteredInRace !== 0) {
+      const selectedRider = registeredRiders.find(
+        (elm) => elm.startNumber === +startNumberRegisteredInRace
+      );
 
       if (selectedRider) {
-        setValue('riderRegistered.fullName', getFullName(selectedRider.rider));
+        setValue('riderRegisteredInRace.lastName', selectedRider.rider.lastName);
+
+        // Заполнение полей в соответствии с выбранным стартовым номером зарегистрировавшегося райдера.
+        setValueFields({ setValue, selectedRider });
       }
     }
-  }, [startNumber, registeredRiders, setValue]);
+  }, [startNumberRegisteredInRace, registeredRiders, setValue]);
 
   useEffect(() => {
-    if (fullName !== '') {
-      const selectedRider = registeredRiders.find((elm) => getFullName(elm.rider) === fullName);
+    if (lastNameRegisteredInRace !== '') {
+      const selectedRider = registeredRiders.find(
+        (elm) => elm.rider.lastName === lastNameRegisteredInRace
+      );
 
       if (selectedRider?.startNumber) {
-        setValue('riderRegistered.startNumber', selectedRider.startNumber);
+        setValue('riderRegisteredInRace.startNumber', selectedRider.startNumber);
+
+        // Заполнение полей в соответствии с выбранным стартовым номером зарегистрировавшегося райдера.
+        setValueFields({ setValue, selectedRider });
       }
     }
-  }, [fullName, registeredRiders, setValue]);
+  }, [lastNameRegisteredInRace, registeredRiders, setValue]);
 
   return {};
+}
+
+/**
+ * Заполнение полей в соответствии с выбранным стартовым номером или фамилией зарегистрировавшегося райдера.
+ */
+function setValueFields({ setValue, selectedRider }: TSetValue) {
+  setValue('rider.lastName', selectedRider.rider.lastName);
+  setValue('rider.firstName', selectedRider.rider.firstName);
+  setValue('rider.patronymic', selectedRider.rider.patronymic || '');
+  setValue('rider.gender', selectedRider.rider.gender);
+  setValue('rider.yearBirthday', selectedRider.rider.yearBirthday);
+  setValue('rider.city', selectedRider.rider.city);
+  setValue('rider.team', selectedRider.rider.team);
+  setValue('rider.id', selectedRider.rider.id);
+
+  // Обнуление полей финишного времени.
+  setValue('time.hours', '');
+  setValue('time.minutes', '');
+  setValue('time.seconds', '');
+  setValue('time.milliseconds', '');
 }

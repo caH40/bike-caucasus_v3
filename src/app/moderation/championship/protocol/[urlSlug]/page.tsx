@@ -36,7 +36,7 @@ export default async function ProtocolRaceEditPage({ params: { urlSlug } }: Prop
     <>
       <TitleAndLine
         hSize={1}
-        title="Добавление/редактирование финишного протокола Заезда в Чемпионате"
+        title="Добавление результатов райдеров для протокола Заезда"
         Icon={IconResults}
       />
       <WrapperProtocolRace

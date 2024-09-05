@@ -14,6 +14,7 @@ export default function BoxSelect({
   validationText,
   register,
   loading,
+  hideCheckmark,
   ...props
 }: PropsBoxInput) {
   const options = ['мужской', 'женский'];
@@ -24,7 +25,12 @@ export default function BoxSelect({
         <span className={styles.validate}>{validationText}</span>
       </label>
       <div className={styles.wrapper__relative}>
-        <select className={cx('select', loading)} disabled={loading} {...props} {...register}>
+        <select
+          className={cx('select', loading, { hideCheckmark: hideCheckmark })}
+          disabled={loading}
+          {...props}
+          {...register}
+        >
           {options.map((elm) => (
             <option key={elm} value={elm} className={styles.option}>
               {elm}
@@ -32,9 +38,11 @@ export default function BoxSelect({
           ))}
         </select>
 
-        <div className={styles.checkmark}>
-          <Checkmark isCompleted={!validationText} />
-        </div>
+        {!hideCheckmark && (
+          <div className={styles.checkmark}>
+            <Checkmark isCompleted={!validationText} />
+          </div>
+        )}
       </div>
     </div>
   );

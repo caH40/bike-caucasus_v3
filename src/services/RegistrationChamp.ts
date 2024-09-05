@@ -283,6 +283,7 @@ export class RegistrationChampService {
             'teamVariable',
             'person.firstName',
             'person.lastName',
+            'person.patronymic',
             'person.birthday',
             'person.gender',
             'image',

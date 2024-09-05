@@ -4,13 +4,14 @@ import { useAddResultRace } from '@/hooks/useAddResultRace';
 import { TRaceRegistrationDto } from '@/types/dto.types';
 import { ResponseServer, TFormResultRace } from '@/types/index.interface';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
-import BlockInputsRegisteredRider from './BlockInputsRegisteredRider/BlockInputsRegisteredRider';
+import BlockInputs from './BlockInputs/BlockInputs';
 import Button from '../../Button/Button';
 import { timeDetailsToMilliseconds } from '@/libs/utils/date';
-import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
+// import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 import styles from './FormResultAdd.module.css';
-import { getFullName } from '@/libs/utils/text';
+
 import { useLoadingStore } from '@/store/loading';
+import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -22,9 +23,10 @@ type Props = {
   }) => Promise<ResponseServer<void>>;
 };
 
+/**
+ * Форма добавления результата райдера в Протокол заезда.
+ */
 export default function FormResultAdd({ postResultRaceRider, registeredRiders }: Props) {
-  console.log(registeredRiders);
-
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
   const {
@@ -37,29 +39,39 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
   } = useForm<TFormResultRace>({
     mode: 'all',
     defaultValues: {
-      riderRegistered: {
-        startNumber: 0,
-        fullName: '',
-        newStartNumber: 0,
+      riderRegisteredInRace: { startNumber: 0 },
+      newStartNumber: 0,
+      rider: {
+        lastName: '',
       },
     },
   });
+  console.log(errors);
 
-  const startNumber = watch('riderRegistered.startNumber');
-  const fullName = watch('riderRegistered.fullName');
+  // Стартовый номер у зарегистрированного в Заезде райдера.
+  const startNumberRegisteredInRace = watch('riderRegisteredInRace.startNumber');
+  // Фамилия у зарегистрированного в Заезде райдера.
+  const lastNameRegisteredInRace = watch('riderRegisteredInRace.lastName');
+  // Измененный стартовый номер.
+  const newStartNumber = watch('newStartNumber');
 
   // Синхронизация данных startNumber и fullName при их изменениях.
-  useAddResultRace({ startNumber, registeredRiders, fullName, setValue });
+  useAddResultRace({
+    startNumberRegisteredInRace,
+    registeredRiders,
+    lastNameRegisteredInRace,
+    setValue,
+  });
 
   // Обработка формы после нажатия кнопки "Отправить".
-  const onSubmit: SubmitHandler<TFormResultRace> = async ({
-    riderRegistered,
-    riderFromDB,
-    riderManual,
-    time,
-    target,
-  }) => {
-    const timeDetailsInMilliseconds = timeDetailsToMilliseconds(time);
+  const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
+    const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
+    const startNumber =
+      dataFromForm.newStartNumber !== 0
+        ? dataFromForm.newStartNumber
+        : dataFromForm.riderRegisteredInRace.startNumber;
+
+    console.log({ ...dataFromForm.rider, timeDetailsInMilliseconds, startNumber });
 
     // const dataSerialized = serializationResultRaceRider({
     //   ...(riderRegistered && { riderRegistered }),
@@ -74,12 +86,13 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
-      <BlockInputsRegisteredRider
+      <BlockSelectRegisteredRider
         registeredRiders={registeredRiders}
-        register={register}
         control={control}
-        errors={errors}
+        newStartNumber={newStartNumber}
       />
+
+      <BlockInputs register={register} errors={errors} />
 
       <BlockInputsTime register={register} errors={errors} />
 
