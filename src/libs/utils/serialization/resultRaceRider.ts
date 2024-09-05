@@ -1,31 +1,16 @@
-import { TFormResultRace } from '@/types/index.interface';
-
-type Params = {
-  dataFromForm: Omit<TFormResultRace, 'time'>;
-  timeDetailsInMilliseconds: number;
-};
+import { TDataFromFormResultRace } from '@/types/index.interface';
 
 /**
  * Сериализация данных результата райдера в Заезде Чемпионата.
  */
-export function serializationResultRaceRider({
-  dataFromForm,
-  timeDetailsInMilliseconds,
-}: Params): FormData {
+export function serializationResultRaceRider(dataFromForm: TDataFromFormResultRace): FormData {
   const formData = new FormData();
 
-  if (dataFromForm.riderFromDB) {
-    formData.set('riderFromDB', JSON.stringify(dataFromForm.riderFromDB));
+  for (const [key, value] of Object.entries(dataFromForm)) {
+    if (value) {
+      formData.set(key, String(value));
+    }
   }
 
-  if (dataFromForm.riderManual) {
-    formData.set('riderManual', JSON.stringify(dataFromForm.riderManual));
-  }
-
-  if (dataFromForm.riderRegistered) {
-    formData.set('riderRegistered', JSON.stringify(dataFromForm.riderRegistered));
-  }
-
-  formData.set('timeDetailsInMilliseconds', String(timeDetailsInMilliseconds));
   return formData;
 }

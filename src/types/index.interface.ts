@@ -633,6 +633,22 @@ export type TFormResultRace = {
   time: TTimeDetails;
 };
 
+/**
+ * Данные формы отправляемые на сериализацию.
+ */
+export type TDataFromFormResultRace = {
+  city?: string;
+  firstName: string;
+  gender: 'male' | 'female';
+  id?: number;
+  lastName: string;
+  patronymic?: string;
+  startNumber: string | number;
+  team?: string;
+  timeDetailsInMilliseconds: number;
+  yearBirthday: string | number;
+};
+
 // Данные из инпута приходят всегда как строка.
 export type TTimeDetails = {
   hours: string;
@@ -641,6 +657,10 @@ export type TTimeDetails = {
   milliseconds: string;
 };
 
-export type TResultRaceRiderDeserialized = Omit<TFormResultRace, 'time'> & {
-  timeInMilliseconds: number;
+export type TResultRaceRiderDeserialized = Omit<
+  TDataFromFormResultRace,
+  'startNumber' | 'yearBirthday'
+> & {
+  startNumber: number;
+  yearBirthday: number;
 };

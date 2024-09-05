@@ -12,16 +12,16 @@ export function deserializationResultRaceRider(
 
   for (const [key, value] of dataSerialized) {
     if (
-      (key === 'riderFromDB' || key === 'riderManual' || key === 'riderRegistered') &&
+      (key === 'timeDetailsInMilliseconds' ||
+        key === 'id' ||
+        key === 'startNumber' ||
+        key === 'yearBirthday') &&
       typeof value === 'string'
     ) {
-      resultRaceRider[key] = JSON.parse(value);
+      resultRaceRider[key] = +value;
       continue;
     }
-
-    if (key === 'timeDetailsInMilliseconds' && typeof value === 'string') {
-      resultRaceRider[key] = +value;
-    }
+    resultRaceRider[key] = value;
   }
 
   return resultRaceRider;

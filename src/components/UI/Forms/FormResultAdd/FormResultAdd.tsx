@@ -12,6 +12,7 @@ import styles from './FormResultAdd.module.css';
 
 import { useLoadingStore } from '@/store/loading';
 import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
+import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -27,7 +28,7 @@ type Props = {
  * Форма добавления результата райдера в Протокол заезда.
  */
 export default function FormResultAdd({ postResultRaceRider, registeredRiders }: Props) {
-  const isLoading = useLoadingStore((state) => state.isLoading);
+  // const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
   const {
     control,
@@ -46,7 +47,6 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
       },
     },
   });
-  console.log(errors);
 
   // Стартовый номер у зарегистрированного в Заезде райдера.
   const startNumberRegisteredInRace = watch('riderRegisteredInRace.startNumber');
@@ -71,17 +71,15 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
         ? dataFromForm.newStartNumber
         : dataFromForm.riderRegisteredInRace.startNumber;
 
-    console.log({ ...dataFromForm.rider, timeDetailsInMilliseconds, startNumber });
+    const dataSerialized = serializationResultRaceRider({
+      ...dataFromForm.rider,
+      timeDetailsInMilliseconds,
+      startNumber,
+    });
 
-    // const dataSerialized = serializationResultRaceRider({
-    //   ...(riderRegistered && { riderRegistered }),
-
-    //   timeDetailsInMilliseconds,
-    // });
-
-    // setLoading(true);
-    // await postResultRaceRider({ dataFromFormSerialized: dataSerialized });
-    // setLoading(false);
+    setLoading(true);
+    await postResultRaceRider({ dataFromFormSerialized: dataSerialized });
+    setLoading(false);
   };
 
   return (

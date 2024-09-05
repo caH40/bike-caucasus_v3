@@ -42,7 +42,7 @@ export class ProtocolRaceService {
   }): Promise<ResponseServer<null>> {
     try {
       const dataDeserialized = deserializationResultRaceRider(dataFromFormSerialized);
-      console.log(dataDeserialized);
+      console.log({ dataDeserialized, creatorId });
 
       // Подключение к БД.
       await this.dbConnection();
