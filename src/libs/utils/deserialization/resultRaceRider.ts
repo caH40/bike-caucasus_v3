@@ -15,6 +15,7 @@ export function deserializationResultRaceRider(
       (key === 'timeDetailsInMilliseconds' ||
         key === 'id' ||
         key === 'startNumber' ||
+        key === 'raceNumber' ||
         key === 'yearBirthday') &&
       typeof value === 'string'
     ) {

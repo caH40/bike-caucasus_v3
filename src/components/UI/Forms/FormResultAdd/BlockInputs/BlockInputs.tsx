@@ -23,12 +23,17 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
       <div className={styles.wrapper__inputs}>
         <div className={styles.wrapper__rider}>
           <BoxInput
-            label={'Имя:*'}
+            label={'Фамилия:*'}
             id="riderLastName"
             autoComplete="off"
             type="text"
             defaultValue={''}
-            register={register('rider.lastName', {})}
+            register={register('rider.lastName', {
+              required: 'Обязательное поле для заполнения',
+              minLength: { value: 2, message: 'Фамилия должна быть больше 1х символа' },
+              maxLength: { value: 20, message: 'Фамилия не может быть больше 20 символов' },
+            })}
+            validationText={errors.rider?.lastName?.message}
             hideCheckmark={true}
           />
 
@@ -38,7 +43,12 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
             autoComplete="off"
             type="text"
             defaultValue={''}
-            register={register('rider.firstName', {})}
+            register={register('rider.firstName', {
+              required: 'Обязательное поле для заполнения',
+              minLength: { value: 2, message: 'Имя должно быть больше 1х символа' },
+              maxLength: { value: 20, message: 'Имя не может быть больше 20 символов' },
+            })}
+            validationText={errors.rider?.firstName?.message}
             hideCheckmark={true}
           />
 

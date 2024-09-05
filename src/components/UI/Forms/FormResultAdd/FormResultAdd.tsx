@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { useAddResultRace } from '@/hooks/useAddResultRace';
 import { TRaceRegistrationDto } from '@/types/dto.types';
@@ -7,16 +9,14 @@ import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 import BlockInputs from './BlockInputs/BlockInputs';
 import Button from '../../Button/Button';
 import { timeDetailsToMilliseconds } from '@/libs/utils/date';
-// import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
-import styles from './FormResultAdd.module.css';
-
 import { useLoadingStore } from '@/store/loading';
 import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
 import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
-import { toast } from 'sonner';
-import FilterRidersForAddResult from '../../Filteres/FilterRidersForAddResult/FilterRidersForAddResult';
+import FilterRidersForAddResult from '../../Filters/FilterRidersForAddResult/Filters';
 import { buttonsForRiderRaceResult } from '@/constants/buttons';
-import { useState } from 'react';
+import BlockSearchRider from './BlockSearchRider/BlockSearchRider';
+import styles from './FormResultAdd.module.css';
+import { useResetFormAddResultRace } from '@/hooks/useResetFormAddResultRace';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -26,15 +26,22 @@ type Props = {
   }: {
     dataFromFormSerialized: FormData;
   }) => Promise<ResponseServer<void>>;
+  championshipId: string;
+  raceNumber: string;
 };
 
 /**
  * Форма добавления результата райдера в Протокол заезда.
  */
-export default function FormResultAdd({ postResultRaceRider, registeredRiders }: Props) {
+export default function FormResultAdd({
+  postResultRaceRider,
+  registeredRiders,
+  raceNumber,
+  championshipId,
+}: Props) {
   // const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
-  const [activeIdBtn, setActiveIdBtn] = useState<number>(1);
+  const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
 
   // Название активной кнопки для отображения соответствующих полей ввода в форме.
   const nameBtnFilter = buttonsForRiderRaceResult.find(
@@ -59,6 +66,9 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
       },
     },
   });
+
+  // Сброс формы при переключении кнопок выбора способа ввода данных.
+  useResetFormAddResultRace({ setValue, activeIdBtn });
 
   // Стартовый номер у зарегистрированного в Заезде райдера.
   const startNumberRegisteredInRace = watch('riderRegisteredInRace.startNumber');
@@ -87,6 +97,8 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
       ...dataFromForm.rider,
       timeDetailsInMilliseconds,
       startNumber,
+      raceNumber,
+      championshipId,
     });
 
     setLoading(true);
@@ -95,7 +107,7 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
     setLoading(false);
 
     if (response.ok) {
-      // reset();
+      reset();
       toast.success(response.message);
     } else {
       toast.error(response.message);
@@ -111,6 +123,7 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
         setActiveIdBtn={setActiveIdBtn}
       />
 
+      {/* блок выбора Райдера из списка зарегистрированных */}
       {nameBtnFilter === 'registered' && (
         <BlockSelectRegisteredRider
           registeredRiders={registeredRiders}
@@ -119,8 +132,13 @@ export default function FormResultAdd({ postResultRaceRider, registeredRiders }:
         />
       )}
 
+      {/* блок поиска Райдера в БД сайта */}
+      {nameBtnFilter === 'search' && <BlockSearchRider />}
+
+      {/* блок полей ввода данных райдера */}
       <BlockInputs register={register} errors={errors} />
 
+      {/* блок полей ввода финишного времени */}
       <BlockInputsTime register={register} errors={errors} />
 
       {/* Кнопка отправки формы. */}

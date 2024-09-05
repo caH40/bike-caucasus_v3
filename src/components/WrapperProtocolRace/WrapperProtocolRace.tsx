@@ -58,6 +58,8 @@ export default function WrapperProtocolRace({
       <FormResultAdd
         postResultRaceRider={postResultRaceRider}
         registeredRiders={registeredRiders}
+        championshipId={championship._id}
+        raceNumber={raceNumber}
       />
     </div>
   );

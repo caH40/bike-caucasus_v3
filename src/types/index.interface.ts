@@ -647,6 +647,8 @@ export type TDataFromFormResultRace = {
   team?: string;
   timeDetailsInMilliseconds: number;
   yearBirthday: string | number;
+  raceNumber: string;
+  championshipId: string;
 };
 
 // Данные из инпута приходят всегда как строка.
@@ -659,8 +661,9 @@ export type TTimeDetails = {
 
 export type TResultRaceRiderDeserialized = Omit<
   TDataFromFormResultRace,
-  'startNumber' | 'yearBirthday'
+  'startNumber' | 'yearBirthday' | 'raceNumber'
 > & {
   startNumber: number;
   yearBirthday: number;
+  raceNumber: number;
 };
