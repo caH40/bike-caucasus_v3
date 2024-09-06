@@ -95,9 +95,28 @@ export class ResultRaceService {
         );
       }
 
+      // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
+      const registrationDB: { profile: { lastName: string; firstName: string } } | null =
+        await ResultRaceModel.findOne(
+          {
+            championship: dataDeserialized.championshipId,
+            raceNumber: dataDeserialized.raceNumber,
+            startNumber: dataDeserialized.startNumber,
+          },
+          { 'profile.lastName': true, 'profile.firstName': true }
+        ).lean();
+
+      if (registrationDB) {
+        throw new Error(
+          `Данный стартовый номер: ${dataDeserialized.startNumber} уже есть в протоколе у райдера: ${registrationDB.profile.lastName} ${registrationDB.profile.firstName}`
+        );
+      }
+
+      // Сохранение в БД результата райдера в Заезде Чемпионата.
       await ResultRaceModel.create({
         championship: dataDeserialized.championshipId,
         raceNumber: dataDeserialized.raceNumber,
+        startNumber: dataDeserialized.startNumber,
         ...(dataDeserialized.id && { riderId: dataDeserialized.id }),
         profile: {
           firstName: dataDeserialized.firstName,

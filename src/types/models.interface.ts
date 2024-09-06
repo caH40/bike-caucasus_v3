@@ -375,6 +375,7 @@ export type TResultRace = {
   raceNumber: number; // Номер заезда в Соревновании/Этапе.
   riderId?: number; // id Пользователя на сайте. Если его нет, значит в протоколе Райдер, незарегистрированный на сайте.
   profile: TProfileRiderInProtocol;
+  startNumber: number;
   raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
   position: number; // Позиция райдера в заезде, присваивается автоматически при запуске расчета.
   positionManual?: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.

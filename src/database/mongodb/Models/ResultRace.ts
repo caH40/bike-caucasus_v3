@@ -18,6 +18,7 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
       gender: { type: String, enum: ['male', 'female'], required: true },
       _id: false,
     },
+    startNumber: Number,
     raceTimeInMilliseconds: { type: Number, required: true }, // Без времени 0.
     position: { type: Number },
     positionManual: { type: Number },
