@@ -369,13 +369,13 @@ export type TRaceRegistration = {
 /**
  * Протокол (абсолют) заезда в Чемпионате.
  */
-export type TProtocolRace = {
+export type TResultRace = {
   _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
   championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
   raceNumber: number; // Номер заезда в Соревновании/Этапе.
-  rider: mongoose.Types.ObjectId;
-  riderManualEntry: TRiderManualEntry;
-  raceTime: number; // Время заезда (миллисекундах).
+  riderId?: number; // id Пользователя на сайте. Если его нет, значит в протоколе Райдер, незарегистрированный на сайте.
+  profile: TProfileRiderInProtocol;
+  raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
   position: number; // Позиция райдера в заезде, присваивается автоматически при запуске расчета.
   positionManual?: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
   points: any; // Заработанные очки в заезде. В разработке.
@@ -385,6 +385,7 @@ export type TProtocolRace = {
   averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
   lapTimes?: number[]; // Время, затраченное на каждый круг (массив времен в миллисекундах).
   remarks?: string; // Примечания или комментарии.
+  creatorId: mongoose.Types.ObjectId; // Ссылка на Пользователя, добавившего результат.
   createdAt: Date;
   updatedAt: Date;
 };
@@ -392,11 +393,11 @@ export type TDisqualification = {
   reason: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
   comment?: string;
 };
-export type TRiderManualEntry = {
+export type TProfileRiderInProtocol = {
   firstName: string; // Имя райдера.
   lastName: string; // Фамилия райдера.
   patronymic?: string; // Фамилия райдера.
   team?: string; // Команда райдера, если известно.
-  age: number; // Возраст райдера.
+  yearBirthday: number; // Год рождения.
   gender: 'male' | 'female';
 };

@@ -45,6 +45,7 @@ export function useResetFormAddResultRace({ setValue, activeIdBtn }: Params) {
         minutes: '',
         seconds: '',
       },
+      newStartNumber: 0,
     };
 
     // Сброс всех полей с помощью одного цикла.

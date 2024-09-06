@@ -1,24 +1,24 @@
-import { TProtocolRace } from '@/types/models.interface';
+import { TResultRace } from '@/types/models.interface';
 import { Schema, Model, models, model } from 'mongoose';
 
 /**
- * Схема и модель для протокола заезда в Чемпионате.
+ * Схема и модель для результата Райдера в заезде Чемпионата.
  */
-const ProtocolRaceSchema: Schema = new Schema<TProtocolRace>(
+const ResultRaceSchema: Schema = new Schema<TResultRace>(
   {
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
     raceNumber: { type: Number, required: true },
-    rider: { type: Schema.Types.ObjectId, ref: 'Rider' },
-    riderManualEntry: {
+    riderId: Number,
+    profile: {
       firstName: { type: String, required: true },
       lastName: { type: String, required: true },
       patronymic: { type: String },
       team: { type: String },
-      age: { type: Number, required: true },
+      yearBirthday: { type: Number, required: true },
       gender: { type: String, enum: ['male', 'female'], required: true },
       _id: false,
     },
-    raceTime: { type: Number },
+    raceTimeInMilliseconds: { type: Number, required: true }, // Без времени 0.
     position: { type: Number },
     positionManual: { type: Number },
     points: { type: Schema.Types.Mixed }, // Используем Mixed для произвольного типа данных
@@ -32,6 +32,7 @@ const ProtocolRaceSchema: Schema = new Schema<TProtocolRace>(
     averageSpeed: { type: Number },
     lapTimes: { type: [Number] },
     remarks: { type: String },
+    creatorId: { type: Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
@@ -41,5 +42,5 @@ const ProtocolRaceSchema: Schema = new Schema<TProtocolRace>(
 );
 
 // Модель для участника заезда
-export const ProtocolRaceModel: Model<TProtocolRace> =
-  models.ProtocolRace || model('ProtocolRace', ProtocolRaceSchema);
+export const ResultRaceModel: Model<TResultRace> =
+  models.ResultRace || model('ResultRace', ResultRaceSchema);

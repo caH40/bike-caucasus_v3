@@ -5,10 +5,10 @@ import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ResponseServer } from '@/types/index.interface';
-import { ProtocolRaceService } from '@/services/ProtocolRace';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
+import { ResultRaceService } from '@/services/ResultRace';
 
 /**
  * Сохранение результата райдера в Заезде Чемпионата.
@@ -30,15 +30,11 @@ export async function postResultRaceRider({
       throw new Error('У вас нет прав для добавления результата райдера в Заезде!');
     }
 
-    const protocolRaceService = new ProtocolRaceService();
-    const res = await protocolRaceService.post({
+    const resultRaceService = new ResultRaceService();
+    const res = await resultRaceService.post({
       dataFromFormSerialized,
       creatorId: session.user.idDB,
     });
-
-    if (!res.ok) {
-      throw new Error('Ошибка при добавлении результата райдера в Заезде');
-    }
 
     return res;
   } catch (error) {
