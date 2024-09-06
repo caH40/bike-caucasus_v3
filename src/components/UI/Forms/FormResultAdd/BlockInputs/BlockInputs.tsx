@@ -21,7 +21,7 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
       <TitleAndLine hSize={3} title="Данные участника" />
 
       <div className={styles.wrapper__inputs}>
-        <div className={styles.wrapper__rider}>
+        <div className={styles.wrapper__hor}>
           <BoxInput
             label={'Фамилия:*'}
             id="riderLastName"
@@ -29,9 +29,9 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
             type="text"
             defaultValue={''}
             register={register('rider.lastName', {
-              required: 'Обязательное поле для заполнения',
-              minLength: { value: 2, message: 'Фамилия должна быть больше 1х символа' },
-              maxLength: { value: 20, message: 'Фамилия не может быть больше 20 символов' },
+              required: 'заполните',
+              minLength: { value: 2, message: '> 1' },
+              maxLength: { value: 25, message: '< 25' },
             })}
             validationText={errors.rider?.lastName?.message}
             hideCheckmark={true}
@@ -44,9 +44,9 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
             type="text"
             defaultValue={''}
             register={register('rider.firstName', {
-              required: 'Обязательное поле для заполнения',
-              minLength: { value: 2, message: 'Имя должно быть больше 1х символа' },
-              maxLength: { value: 20, message: 'Имя не может быть больше 20 символов' },
+              required: 'заполните',
+              minLength: { value: 2, message: '> 1' },
+              maxLength: { value: 20, message: '< 20' },
             })}
             validationText={errors.rider?.firstName?.message}
             hideCheckmark={true}
@@ -63,78 +63,82 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
           />
         </div>
 
-        <div className={styles.box__startNumber_new}>
+        <BoxInput
+          label={'Новый стартовый номер:'}
+          id="newStartNumber"
+          autoComplete="off"
+          type="number"
+          defaultValue={'0'}
+          register={register('newStartNumber', {
+            pattern: {
+              value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])$/,
+              message: '0-9999',
+            },
+          })}
+          hideCheckmark={true}
+        />
+
+        <div className={styles.wrapper__hor}>
+          <BoxSelectNew
+            label="Пол:*"
+            id="gender"
+            defaultValue={'мужской'}
+            // loading={loading}
+            options={genderOptions}
+            register={register('rider.gender')}
+            validationText={errors.rider?.gender?.message}
+            hideCheckmark={true}
+          />
+
           <BoxInput
-            label={'Новый стартовый номер:'}
-            id="newStartNumber"
+            label="Год рождения:*"
+            id="birthday"
             autoComplete="off"
             type="number"
-            defaultValue={'0'}
-            register={register('newStartNumber', {
+            // loading={loading}
+            register={register('rider.yearBirthday', {
+              required: 'заполните',
               pattern: {
-                value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])$/,
-                message: '0-9999',
+                value: /^([1-2][0-1,9][0-9][0-9])$/,
+                message: 'YYYY',
               },
             })}
+            validationText={errors.rider?.yearBirthday?.message}
             hideCheckmark={true}
           />
         </div>
+        <div className={styles.wrapper__hor}>
+          <BoxInput
+            label="Город:*"
+            id="city"
+            autoComplete="offered"
+            type="text"
+            defaultValue={''}
+            // loading={loading}
+            register={register('rider.city', {
+              required: 'заполните',
+              minLength: { value: 2, message: '> 1' },
+              maxLength: { value: 30, message: '< 30' },
+            })}
+            validationText={errors.rider?.city?.message}
+            hideCheckmark={true}
+          />
 
-        <BoxSelectNew
-          label="Пол:*"
-          id="gender"
-          defaultValue={'мужской'}
-          // loading={loading}
-          options={genderOptions}
-          register={register('rider.gender')}
-          validationText={errors.rider?.gender?.message}
-          hideCheckmark={true}
-        />
-        <BoxInput
-          label="Год рождения:*"
-          id="birthday"
-          autoComplete="off"
-          type="number"
-          // loading={loading}
-          register={register('rider.yearBirthday', {
-            required: 'обязательное поле',
-            pattern: {
-              value: /^([1-2][0-1,9][0-9][0-9])$/,
-              message: 'формат YYYY',
-            },
-          })}
-          validationText={errors.rider?.yearBirthday?.message}
-          hideCheckmark={true}
-        />
-        <BoxInput
-          label="Город:*"
-          id="city"
-          autoComplete="offered"
-          type="text"
-          defaultValue={''}
-          // loading={loading}
-          register={register('rider.city', {
-            required: 'Это обязательное поле для заполнения',
-            minLength: { value: 2, message: 'минимум 2 символа' },
-            maxLength: { value: 30, message: 'максимум 30 символов' },
-          })}
-          validationText={errors.rider?.city?.message}
-          hideCheckmark={true}
-        />
-        <BoxInput
-          label="Команда:"
-          id="team"
-          autoComplete="offered"
-          type="text"
-          defaultValue={''}
-          // loading={loading}
-          register={register('rider.team', {
-            minLength: { value: 2, message: 'минимум 2 символа' },
-            maxLength: { value: 30, message: 'максимум 30 символов' },
-          })}
-          validationText={errors.rider?.team?.message}
-          hideCheckmark={true}
-        />
+          <BoxInput
+            label="Команда:"
+            id="team"
+            autoComplete="offered"
+            type="text"
+            defaultValue={''}
+            // loading={loading}
+            register={register('rider.team', {
+              minLength: { value: 2, message: '> 1' },
+              maxLength: { value: 30, message: '< 30' },
+            })}
+            validationText={errors.rider?.team?.message}
+            hideCheckmark={true}
+          />
+        </div>
       </div>
     </div>
   );

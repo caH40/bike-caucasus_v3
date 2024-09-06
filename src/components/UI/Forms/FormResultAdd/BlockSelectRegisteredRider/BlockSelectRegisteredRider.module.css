@@ -1,6 +1,3 @@
-.wrapper {
-  width: 100%;
-}
 .wrapper__select {
   display: flex;
   gap: 1rem;

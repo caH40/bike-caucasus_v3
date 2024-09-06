@@ -1,6 +1,6 @@
 import { Control, Controller } from 'react-hook-form';
 
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import Wrapper from '@/components/Wrapper/Wrapper';
 import Select from '@/components/UI/Select/Select';
 import { TFormResultRace } from '@/types/index.interface';
 import { TRaceRegistrationDto } from '@/types/dto.types';
@@ -35,8 +35,7 @@ export default function BlockSelectRegisteredRider({
   }));
 
   return (
-    <div className={styles.wrapper}>
-      <TitleAndLine hSize={3} title="Выбор зарегистрированного в Заезде райдера" />
+    <Wrapper hSize={3} title="Выбор зарегистрированного в Заезде райдера">
       <div className={styles.wrapper__select}>
         <Controller
           name="riderRegisteredInRace.startNumber"
@@ -49,6 +48,7 @@ export default function BlockSelectRegisteredRider({
               state={field.value}
               setState={field.onChange}
               name={'riderStartNumber'}
+              id={'riderStartNumberRegisteredRider'}
               label={'Стартовый номер:'}
               options={optionsStartNumber}
               disabled={String(newStartNumber) !== '0' && String(newStartNumber) !== ''}
@@ -67,12 +67,13 @@ export default function BlockSelectRegisteredRider({
               state={field.value}
               setState={field.onChange}
               name={'riderLastName'}
+              id={'riderLastNameRegisteredRider'}
               label="Фамилия:*"
               options={optionsRiderName}
             />
           )}
         />
       </div>
-    </div>
+    </Wrapper>
   );
 }

@@ -33,6 +33,7 @@ export default function BoxSelectNew({
         <select
           className={cx('select', loading, { hideCheckmark: hideCheckmark })}
           disabled={loading}
+          id={id}
           {...props}
           {...register}
         >

@@ -6,20 +6,11 @@
   flex-direction: column;
   gap: 0.5rem;
 }
-.wrapper__rider {
+.wrapper__hor {
   display: flex;
   gap: 1rem;
   align-items: center;
   margin-bottom: 5px;
-}
-
-.box__startNumber_new {
-  flex: 0 0 60px;
-}
-.validate {
-  font-weight: 400;
-  font-size: 0.9rem;
-  color: var(--error);
 }
 /* ====================================================================== */
 @media (max-width: 576px) {

@@ -252,3 +252,16 @@ export type TCheckRegisteredInChampDto = {
   };
   startNumber: number;
 };
+
+/**
+ * Данные DTO профиля минимальным количеством данных.
+ */
+export type TProfileSimpleDto = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  yearBirthday: number;
+  gender: 'male' | 'female';
+  city?: string;
+};

@@ -1,6 +1,8 @@
 // Dto для запросов из коллекции User.
 
-import type { TRoleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
+import { getDateTime } from '@/libs/utils/calendar';
+import type { TProfileSimpleDto, TRoleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
+import { TProfileSimpleFromDB } from '@/types/index.interface';
 import type { IUserModel, TRoleModel } from '@/types/models.interface';
 
 /**
@@ -39,6 +41,23 @@ export function dtoGetUserPublic(user: TUserDto, ageCategory: string | null): TU
   };
 
   return userDto;
+}
+/**
+ * Дто массива Пользователей User с минимальным количеством данных.
+ */
+export function dtoGetUsersSimplePublic(users: TProfileSimpleFromDB[]): TProfileSimpleDto[] {
+  return users.map((user) => {
+    const yearBirthday = getDateTime(user.person.birthday).year;
+    return {
+      firstName: user.person.firstName,
+      patronymic: user.person.patronymic,
+      lastName: user.person.lastName,
+      gender: user.person.gender,
+      yearBirthday,
+      id: user.id,
+      city: user.city,
+    };
+  });
 }
 
 /**

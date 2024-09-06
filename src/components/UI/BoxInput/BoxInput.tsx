@@ -31,6 +31,7 @@ export default function BoxInput({
       </label>
       <div className={styles.wrapper__relative}>
         <input
+          id={id}
           {...props}
           {...register}
           className={cx('input', loading, { hideCheckmark: hideCheckmark })}

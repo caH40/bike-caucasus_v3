@@ -1,0 +1,76 @@
+/* высота кнопки-select не должна изменять, так как присутствует абсолютное позиционирование */
+.label {
+  font-size: 0.9rem;
+  color: inherit;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.wrapper {
+  min-width: 200px;
+  width: 100%;
+}
+.wrapper__input {
+  position: relative;
+}
+.input {
+  width: 100%;
+  position: relative;
+  min-width: 200px;
+  height: 34px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--white-12);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+}
+.list {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+  background-color: var(--green-dark);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  z-index: 10;
+}
+.item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  height: 32px;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0 1rem;
+  color: inherit;
+  cursor: pointer;
+}
+.item:hover {
+  background-color: var(--white-50);
+}
+.input:focus {
+  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+  outline: none;
+}
+.input:disabled {
+  background-color: var(--loading);
+  color: var(--line);
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .input {
+    padding: 0.6rem 3rem 0.6rem 0.5rem;
+  }
+  .hideCheckmark {
+    padding: 0.6rem 0.5rem;
+  }
+}

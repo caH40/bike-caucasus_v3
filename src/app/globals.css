@@ -16,6 +16,13 @@
   --tooltip-color: var(--main-color-dark);
   --tooltip-bg: var(--color-orange);
 
+  /* кнопки фильтров */
+  --filter-border: var(--btn-bg);
+  --filter-bg-active: var(--btn-bg);
+  --filter-bg-hover: var(--white-12);
+  --filter-color: #808080;
+  --filter-color-active: #fafafa;
+
   /* зеленая кнопка */
   --btn-bg: #318d2c;
   --btn-bg-hover: #3fb439;

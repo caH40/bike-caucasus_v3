@@ -6,5 +6,5 @@ import { TOptions } from '@/types/index.interface';
 export const buttonsForRiderRaceResult: TOptions[] = [
   { id: 0, translation: 'Зарегистрированные', name: 'registered' },
   { id: 1, translation: 'Поиск', name: 'search' },
-  { id: 2, translation: 'Ручной ввод', name: 'manual' },
+  // { id: 2, translation: 'Ручной ввод', name: 'manual' },
 ];

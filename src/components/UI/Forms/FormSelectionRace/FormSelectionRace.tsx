@@ -19,6 +19,7 @@ export default function FormSelectionRace({ options, raceNumber, setRaceNumber }
     <form>
       <Select
         label={' Выбор заезда для добавления результатов:'}
+        id={'selectRaceNumber'}
         name={'selectRaceNumber'}
         options={options}
         state={raceNumber}

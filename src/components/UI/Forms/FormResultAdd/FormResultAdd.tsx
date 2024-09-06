@@ -133,7 +133,7 @@ export default function FormResultAdd({
       )}
 
       {/* блок поиска Райдера в БД сайта */}
-      {nameBtnFilter === 'search' && <BlockSearchRider />}
+      {nameBtnFilter === 'search' && <BlockSearchRider setValue={setValue} />}
 
       {/* блок полей ввода данных райдера */}
       <BlockInputs register={register} errors={errors} />

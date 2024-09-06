@@ -667,3 +667,18 @@ export type TResultRaceRiderDeserialized = Omit<
   yearBirthday: number;
   raceNumber: number;
 };
+
+/**
+ * Данные профиля минимальным количеством данных из БД.
+ */
+export type TProfileSimpleFromDB = {
+  id: number;
+  person: {
+    firstName: string;
+    lastName: string;
+    patronymic?: string;
+    birthday: Date;
+    gender: 'male' | 'female';
+  };
+  city?: string;
+};
