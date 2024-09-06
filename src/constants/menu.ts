@@ -16,6 +16,7 @@ import IconRole from '@/components/Icons/IconRole';
 import IconChampionship from '@/components/Icons/IconChampionship';
 import IconOrganizers from '@/components/Icons/IconOrganizers';
 import type { TMenuOnPage } from '@/types/index.interface';
+import IconResults from '@/components/Icons/IconResults';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -256,7 +257,7 @@ export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
     name: 'Создание',
     classes: [],
     href: '/moderation/championship/create',
-    permission: 'moderation.calendar.create',
+    permission: 'moderation.championship.create',
     icon: IconAdd,
   },
   {
@@ -264,7 +265,7 @@ export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
     name: 'Редактирование',
     classes: [],
     href: '/moderation/championship/edit',
-    permission: 'moderation.calendar.edit',
+    permission: 'moderation.championship.edit',
     icon: IconEdit,
   },
   {
@@ -272,7 +273,15 @@ export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
     name: 'Список',
     classes: [],
     href: '/moderation/championship/list',
-    permission: 'moderation.calendar.list',
+    permission: 'moderation.championship.list',
     icon: IconView,
+  },
+  {
+    id: 3,
+    name: 'Финишный протокол',
+    classes: [],
+    href: '/moderation/championship/protocol',
+    permission: 'moderation.championship.protocol',
+    icon: IconResults,
   },
 ];

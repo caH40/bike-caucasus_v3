@@ -226,9 +226,16 @@ export class RegistrationChampService {
   }
 
   /**
-   * Получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах.
+   * Получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах
+   * или в конкретном заезде raceNumber.
    */
-  public async getRidersChamp({ urlSlug }: { urlSlug: string }): Promise<
+  public async getRidersChamp({
+    urlSlug,
+    raceNumber,
+  }: {
+    urlSlug: string;
+    raceNumber?: number;
+  }): Promise<
     ResponseServer<{
       champRegistrationRiders: TChampRegistrationRiderDto[];
       championshipName: string;
@@ -246,8 +253,15 @@ export class RegistrationChampService {
         name: string;
         type: TChampionshipTypes;
       } | null = await ChampionshipModel.findOne(
-        { urlSlug },
-        { _id: true, races: true, name: true, type: true }
+        {
+          urlSlug,
+        },
+        {
+          _id: true,
+          races: true,
+          name: true,
+          type: true,
+        }
       ).lean();
 
       if (!champ) {
@@ -269,6 +283,7 @@ export class RegistrationChampService {
             'teamVariable',
             'person.firstName',
             'person.lastName',
+            'person.patronymic',
             'person.birthday',
             'person.gender',
             'image',
@@ -280,7 +295,9 @@ export class RegistrationChampService {
 
       const registeredRiders = dtoRegisteredRidersChamp({
         riders: registeredRidersDb,
-        races: champ.races,
+        races: raceNumber
+          ? champ.races.filter((race) => race.number === raceNumber)
+          : champ.races,
         championshipName: champ.name,
         championshipType: champ.type,
       });

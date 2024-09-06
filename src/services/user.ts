@@ -8,9 +8,14 @@ import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './mongodb/error';
 import { getAgeCategory } from '@/libs/utils/age-category';
 import { errorLogger } from '@/errors/error';
-import { TUserDto, TUserDtoPublic } from '@/types/dto.types';
-import { dtoGetUser, dtoGetUserPublic } from '@/dto/user';
-import type { ResponseServer, TFormAccount, TFormProfile } from '@/types/index.interface';
+import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
+import { dtoGetUser, dtoGetUserPublic, dtoGetUsersSimplePublic } from '@/dto/user';
+import type {
+  ResponseServer,
+  TFormAccount,
+  TFormProfile,
+  TProfileSimpleFromDB,
+} from '@/types/index.interface';
 import type { IUserModel, TRoleModel } from '@/types/models.interface';
 
 type ParamsGetProfile = {
@@ -277,6 +282,47 @@ export class UserService {
       return { data: null, ok: true, message: 'Обновленные данные профиля сохранены!' };
     } catch (error) {
       this.errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение списка пользователей по поисковой фразе для фамилии.
+   */
+  public async findUsers(
+    lastNameSearch: string
+  ): Promise<ResponseServer<TProfileSimpleDto[] | null>> {
+    try {
+      // Выбрасывается ошибка, если отсутствует идентификатор пользователя в профиле.
+      if (lastNameSearch?.length < 3) {
+        throw new Error('Поиск осуществляется по запросу больше чем 2 символа!');
+      }
+
+      // Подключение к базе данных.
+      await this.dbConnection();
+
+      // Обновление данных профиля в базе данных.
+      const usersDB: TProfileSimpleFromDB[] = await User.find(
+        {
+          'person.lastName': { $regex: lastNameSearch, $options: 'i' },
+        },
+        {
+          _id: false,
+          id: true,
+          'person.firstName': true,
+          'person.lastName': true,
+          'person.patronymic': true,
+          'person.birthday': true,
+          'person.gender': true,
+          city: true,
+        }
+      );
+
+      const usersDto = dtoGetUsersSimplePublic(usersDB);
+
+      return { data: usersDto, ok: true, message: 'Обновленные данные профиля сохранены!' };
+    } catch (error) {
+      this.errorLogger(error);
       return handlerErrorDB(error);
     }
   }

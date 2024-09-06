@@ -63,7 +63,8 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
       {championship.data && (
         <div className={styles.wrapper__main}>
           <div className={styles.block__header}>
-            {/* popup меня управления новостью */}
+
+            {/* popup меня управления чемпионатом */}
             <PermissionCheck permission={'admin'}>
               <div className={styles.ellipsis} id="popup-control-menu-championship">
                 <MenuEllipsisControl

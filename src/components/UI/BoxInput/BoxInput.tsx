@@ -17,6 +17,7 @@ export default function BoxInput({
   disabled,
   loading,
   tooltip,
+  hideCheckmark,
   ...props
 }: PropsBoxInput) {
   return (
@@ -30,14 +31,17 @@ export default function BoxInput({
       </label>
       <div className={styles.wrapper__relative}>
         <input
+          id={id}
           {...props}
           {...register}
-          className={cx('input', loading)}
+          className={cx('input', loading, { hideCheckmark: hideCheckmark })}
           disabled={disabled || loading}
         />
-        <div className={styles.checkmark}>
-          <Checkmark isCompleted={!validationText} />
-        </div>
+        {!hideCheckmark && (
+          <div className={styles.checkmark}>
+            <Checkmark isCompleted={!validationText} />
+          </div>
+        )}
       </div>
     </div>
   );

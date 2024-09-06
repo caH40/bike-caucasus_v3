@@ -7,7 +7,7 @@ import styles from './Select.module.css';
 
 const cx = cn.bind(styles);
 
-export default function Select({
+export default function Select<T extends string | number | readonly string[] | undefined>({
   state,
   setState,
   id,
@@ -15,8 +15,9 @@ export default function Select({
   label,
   options,
   disabled,
+  defaultValue,
   ...props
-}: PropsSelect) {
+}: PropsSelect<T>) {
   return (
     <div className={styles.wrapper}>
       {label && (
@@ -31,11 +32,10 @@ export default function Select({
           {...props}
           name={name}
           id={id ? id : name}
-          value={state || ''}
-          onChange={(e) => setState(e.target.value)}
+          value={state}
+          onChange={(e) => setState(e.target.value as unknown as T)}
         >
-          {/* Если приходит value='' то показывается данный Лэйбл */}
-          <option value="" className={styles.option}>
+          <option value={defaultValue || ''} className={styles.option}>
             Все
           </option>
           {options.map((elm) => (
@@ -45,6 +45,9 @@ export default function Select({
           ))}
         </select>
       </div>
+      {props.showValidationText && props.validationText && (
+        <div className={styles.validationText}>{props.validationText}</div>
+      )}
     </div>
   );
 }

@@ -123,3 +123,24 @@ export function formatNumberShort(num: number | undefined): string {
     return num.toString(); // Для чисел меньше 1,000
   }
 }
+
+/**
+ * Получения полного имени.
+ */
+export const getFullName = (
+  rider: { firstName: string; lastName: string; patronymic?: string },
+  type?: 'shortFirstName' | 'short' | 'full'
+) => {
+  switch (type) {
+    case 'shortFirstName':
+      return `${rider.firstName} ${rider.lastName}`;
+
+    case 'short':
+      return `${rider.lastName} ${rider.firstName}`;
+
+    default:
+      return `${rider.lastName} ${rider.firstName}${
+        rider.patronymic ? ' ' + rider.patronymic : ''
+      }`;
+  }
+};

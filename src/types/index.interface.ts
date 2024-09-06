@@ -33,6 +33,7 @@ export type PropsBoxInput = {
   disabled?: boolean;
   validationText?: string;
   showValidationText?: boolean;
+  hideCheckmark?: boolean;
   defaultValue?: string;
   register?: UseFormRegisterReturn; // FieldValues
   min?: string;
@@ -40,6 +41,7 @@ export type PropsBoxInput = {
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
   tooltip?: { text: string; id: string };
+  maxLength?: number;
 };
 
 /**
@@ -78,9 +80,9 @@ export type PropsBoxSelectSimple = {
   loading?: boolean;
   options: { id: number; translation: string; name: string }[];
 };
-export type PropsSelect = {
-  state: string;
-  setState: Dispatch<SetStateAction<string>>;
+export type PropsSelect<T> = {
+  state: T;
+  setState: Dispatch<SetStateAction<T>>;
   id?: string;
   name: string;
   label?: string;
@@ -526,28 +528,30 @@ export type TRegisteredRiderFromDB = {
   championship: mongoose.Types.ObjectId;
   raceNumber: number;
   raceName?: string;
-  rider: {
-    _id: mongoose.Types.ObjectId;
-    id: number;
-    person: {
-      firstName: string;
-      lastName: string;
-      gender: 'male' | 'female';
-      birthday: Date;
-    };
-    provider: {
-      image?: string;
-    };
-    image?: string;
-    imageFromProvider: boolean;
-    team?: mongoose.Types.ObjectId;
-    city?: string;
-  };
+  rider: TRider;
   teamVariable?: string;
   startNumber: number;
   status: TRaceRegistrationStatus;
   createdAt: Date;
   updatedAt: Date;
+};
+export type TRider = {
+  _id: mongoose.Types.ObjectId;
+  id: number;
+  person: {
+    firstName: string;
+    lastName: string;
+    patronymic?: string;
+    gender: 'male' | 'female';
+    birthday: Date;
+  };
+  provider: {
+    image?: string;
+  };
+  image?: string;
+  imageFromProvider: boolean;
+  team?: mongoose.Types.ObjectId;
+  city?: string;
 };
 
 /**
@@ -597,4 +601,84 @@ export type TRegistrationRiderFromDB = {
   startNumber: number;
   status: TRaceRegistrationStatus;
   createdAt: Date;
+};
+
+/**
+ * Данные формы для установки результата райдера в Заезде Чемпионата.
+ */
+export type TFormResultRace = {
+  // Данные райдера из списка зарегистрированных в Заезде.
+  riderRegisteredInRace: {
+    lastName: string;
+    startNumber: number;
+  };
+  riderRegisteredSite: {
+    lastName: string;
+    id: number;
+  };
+  rider: {
+    _id?: string; // id из БД.
+    id?: number; // id пользователя на сайте.
+    firstName: string;
+    patronymic?: string;
+    lastName: string;
+    yearBirthday: number | string; // Год рождения.
+    fullYears: number;
+    fractionalYears: number;
+    gender: 'male' | 'female';
+    city?: string;
+    team?: string;
+  };
+  newStartNumber: number | string;
+  time: TTimeDetails;
+};
+
+/**
+ * Данные формы отправляемые на сериализацию.
+ */
+export type TDataFromFormResultRace = {
+  city?: string;
+  firstName: string;
+  gender: 'male' | 'female';
+  id?: number;
+  lastName: string;
+  patronymic?: string;
+  startNumber: string | number;
+  team?: string;
+  timeDetailsInMilliseconds: number;
+  yearBirthday: string | number;
+  raceNumber: string;
+  championshipId: string;
+};
+
+// Данные из инпута приходят всегда как строка.
+export type TTimeDetails = {
+  hours: string;
+  minutes: string;
+  seconds: string;
+  milliseconds: string;
+};
+
+export type TResultRaceRiderDeserialized = Omit<
+  TDataFromFormResultRace,
+  'startNumber' | 'yearBirthday' | 'raceNumber'
+> & {
+  startNumber: number;
+  yearBirthday: number;
+  raceNumber: number;
+};
+
+/**
+ * Данные профиля минимальным количеством данных из БД.
+ */
+export type TProfileSimpleFromDB = {
+  id: number;
+  person: {
+    firstName: string;
+    lastName: string;
+    patronymic?: string;
+    birthday: Date;
+    gender: 'male' | 'female';
+  };
+  city?: string;
 };

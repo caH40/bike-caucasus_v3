@@ -365,3 +365,40 @@ export type TRaceRegistration = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Протокол (абсолют) заезда в Чемпионате.
+ */
+export type TResultRace = {
+  _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
+  championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
+  raceNumber: number; // Номер заезда в Соревновании/Этапе.
+  riderId?: number; // id Пользователя на сайте. Если его нет, значит в протоколе Райдер, незарегистрированный на сайте.
+  profile: TProfileRiderInProtocol;
+  startNumber: number;
+  raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
+  position: number; // Позиция райдера в заезде, присваивается автоматически при запуске расчета.
+  positionManual?: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
+  points: any; // Заработанные очки в заезде. В разработке.
+  disqualification?: TDisqualification; // Дисквалификация райдера в заезде.
+  categoryAge: string; // Выставляется автоматически при запуске расчета.
+  categorySkillLevel: string; // Выставляется вручную. Ручное деление по мастерству (Профики, элита, А ...)
+  averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
+  lapTimes?: number[]; // Время, затраченное на каждый круг (массив времен в миллисекундах).
+  remarks?: string; // Примечания или комментарии.
+  creatorId: mongoose.Types.ObjectId; // Ссылка на Пользователя, добавившего результат.
+  createdAt: Date;
+  updatedAt: Date;
+};
+export type TDisqualification = {
+  reason: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
+  comment?: string;
+};
+export type TProfileRiderInProtocol = {
+  firstName: string; // Имя райдера.
+  lastName: string; // Фамилия райдера.
+  patronymic?: string; // Фамилия райдера.
+  team?: string; // Команда райдера, если известно.
+  yearBirthday: number; // Год рождения.
+  gender: 'male' | 'female';
+};

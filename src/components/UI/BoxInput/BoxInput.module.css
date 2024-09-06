@@ -13,6 +13,7 @@
   font-weight: 400;
   font-size: 0.9rem;
   color: var(--error);
+  letter-spacing: 0;
 }
 .input {
   font-family: inherit;
@@ -20,9 +21,10 @@
   background-color: var(--white-12);
   border: 1px solid var(--line);
   border-radius: 0.5rem;
-  padding: 0.6rem 3rem 0.6rem 0.5rem;
+  padding: 0.6rem 3rem 0.6rem 1rem;
   width: 100%;
-  min-width: 250px;
+  height: 34px;
+  /* min-width: 250px; */
 }
 .wrapper__relative {
   position: relative;
@@ -43,6 +45,9 @@
   right: 0.5rem;
   top: calc(50% - 9px);
 }
+.hideCheckmark {
+  padding: 0.6rem 1rem;
+}
 /* Общие стили для календаря */
 .input[type='date']::-webkit-calendar-picker-indicator {
   /* инвертируем цвет значка */
@@ -52,4 +57,13 @@
   display: flex;
   align-items: center;
   gap: 3px;
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .input {
+    padding: 0.6rem 3rem 0.6rem 0.5rem;
+  }
+  .hideCheckmark {
+    padding: 0.6rem 0.5rem;
+  }
 }

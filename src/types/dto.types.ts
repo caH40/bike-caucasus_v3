@@ -195,6 +195,7 @@ export type TRaceRegistrationRiderDto = {
   id: number; // id Райдера на сайте.
   firstName: string; // Имя райдера.
   lastName: string; // Фамилия райдера.
+  patronymic?: string; // Отчество райдера.
   gender: 'male' | 'female'; // Пол райдера.
   fullYears: number; // Полные годы райдера.
   fractionalYears: number; // Неполные годы райдера.
@@ -250,4 +251,17 @@ export type TCheckRegisteredInChampDto = {
     ascent: number | undefined;
   };
   startNumber: number;
+};
+
+/**
+ * Данные DTO профиля минимальным количеством данных.
+ */
+export type TProfileSimpleDto = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  yearBirthday: number;
+  gender: 'male' | 'female';
+  city?: string;
 };

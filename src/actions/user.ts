@@ -3,8 +3,9 @@
 import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { UserService } from '@/services/user';
-import { TUserDtoPublic } from '@/types/dto.types';
+import { TProfileSimpleDto, TUserDtoPublic } from '@/types/dto.types';
 import { ResponseServer, TProfileForRegistration } from '@/types/index.interface';
+import { handlerErrorDB } from '@/services/mongodb/error';
 
 /**
  * Экшен получения данных райдера, в частности для Регистрации на Чемпионат.
@@ -42,5 +43,40 @@ export async function getProfileForReg({
   } catch (error) {
     errorHandlerClient(parseError(error));
     return null;
+  }
+}
+
+/**
+ * Экшен получения данных райдера, в частности для Регистрации на Чемпионат.
+ */
+
+export async function findUsers({
+  lastNameSearch,
+}: {
+  lastNameSearch: string;
+}): Promise<ResponseServer<TProfileSimpleDto[] | null>> {
+  try {
+    // Минимальное количество символов для поиска.
+    const minLength = 3;
+
+    if (lastNameSearch.length < minLength) {
+      return {
+        data: [],
+        ok: true,
+        message: `Поиск осуществляется при длине запроса более ${minLength} символов`,
+      };
+    }
+
+    const userService = new UserService();
+    const res = await userService.findUsers(lastNameSearch);
+
+    if (!res.data) {
+      throw new Error(res.message);
+    }
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
   }
 }

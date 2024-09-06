@@ -1,0 +1,10 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.box__button {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -19,6 +19,7 @@ export default function BoxInputSimple<T>({
   showValidationText,
   disabled,
   loading,
+  hideCheckmark,
   name,
   type,
 
@@ -37,12 +38,14 @@ export default function BoxInputSimple<T>({
             handlerInput((type === 'number' ? +e.target.value : e.target.value) as T)
           }
           value={value}
-          className={cx('input', loading)}
+          className={cx('input', loading, { hideCheckmark: hideCheckmark })}
           disabled={disabled || loading}
         />
-        <div className={styles.checkmark}>
-          <Checkmark isCompleted={!validationText} />
-        </div>
+        {!hideCheckmark && (
+          <div className={styles.checkmark}>
+            <Checkmark isCompleted={!validationText} />
+          </div>
+        )}
       </div>
     </div>
   );

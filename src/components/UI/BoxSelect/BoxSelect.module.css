@@ -2,8 +2,8 @@
   width: 100%;
 }
 .label {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 400;
   margin-bottom: 5px;
   display: flex;
   justify-content: space-between;
@@ -24,9 +24,9 @@
   background-color: var(--white-12);
   border: 1px solid var(--line);
   border-radius: 0.5rem;
-  padding: 0.6rem 3rem 0.6rem 0.5rem;
+  padding: 0.6rem 3rem 0.6rem 1rem;
   width: 100%;
-  min-width: 250px;
+  /* min-width: 250px; */
 }
 .option {
   font-size: inherit;
@@ -58,4 +58,16 @@
   display: flex;
   align-items: center;
   gap: 3px;
+}
+.hideCheckmark {
+  padding: 0.6rem 1rem;
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .select {
+    padding: 0.6rem 3rem 0.6rem 0.5rem;
+  }
+  .hideCheckmark {
+    padding: 0.6rem 0.5rem;
+  }
 }

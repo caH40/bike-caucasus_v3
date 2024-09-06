@@ -30,6 +30,7 @@ export function dtoRegisteredRider(
       id: riderRegistered.rider.id,
       firstName: riderRegistered.rider.person.firstName,
       lastName: riderRegistered.rider.person.lastName,
+      patronymic: riderRegistered.rider.person.patronymic,
       gender: riderRegistered.rider.person.gender,
       ...age,
       yearBirthday,
