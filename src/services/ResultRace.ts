@@ -1,11 +1,14 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
-import { ResponseServer } from '@/types/index.interface';
+import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
 import { deserializationResultRaceRider } from '@/libs/utils/deserialization/resultRaceRider';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { ObjectId } from 'mongoose';
+import { User as UserModel } from '@/database/mongodb/Models/User';
+import { dtoResultsRace } from '@/dto/results-race';
+import { TResultRaceDto } from '@/types/dto.types';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -78,10 +81,10 @@ export class ResultRaceService {
       // Проверка по id пользователя на сайте.
       let resultRaceDB = {} as { _id: ObjectId } | null;
 
-      if (dataDeserialized.id) {
+      if (dataDeserialized._id) {
         resultRaceDB = await ResultRaceModel.findOne(
           {
-            riderId: dataDeserialized.id,
+            rider: dataDeserialized._id,
             championship: dataDeserialized.championshipId,
             raceNumber: dataDeserialized.raceNumber,
           },
@@ -106,6 +109,11 @@ export class ResultRaceService {
           { 'profile.lastName': true, 'profile.firstName': true }
         ).lean();
 
+      let riderDB = {} as { _id: ObjectId } | null;
+      if (dataDeserialized.id) {
+        riderDB = await UserModel.findOne({ id: dataDeserialized.id }, { _id: true }).lean();
+      }
+
       if (registrationDB) {
         throw new Error(
           `Данный стартовый номер: ${dataDeserialized.startNumber} уже есть в протоколе у райдера: ${registrationDB.profile.lastName} ${registrationDB.profile.firstName}`
@@ -117,18 +125,19 @@ export class ResultRaceService {
         championship: dataDeserialized.championshipId,
         raceNumber: dataDeserialized.raceNumber,
         startNumber: dataDeserialized.startNumber,
-        ...(dataDeserialized.id && { riderId: dataDeserialized.id }),
+        ...(riderDB && { rider: riderDB._id }),
         profile: {
           firstName: dataDeserialized.firstName,
           lastName: dataDeserialized.lastName,
           ...(dataDeserialized.patronymic && { patronymic: dataDeserialized.patronymic }),
           ...(dataDeserialized.team && { team: dataDeserialized.team }),
+          city: dataDeserialized.city,
           yearBirthday: dataDeserialized.yearBirthday,
           gender: dataDeserialized.gender,
         },
         ...(dataDeserialized.id && { id: dataDeserialized.id }),
         raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
-        creatorId,
+        creator: creatorId,
       });
 
       return {
@@ -136,6 +145,55 @@ export class ResultRaceService {
         ok: true,
         message: `Результат райдера "${dataDeserialized.lastName} ${dataDeserialized.firstName}" добавлен в финишный протокол.`,
       };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение протокола заезда чемпионата.
+   */
+  public async getProtocolRace({
+    championshipId,
+    raceNumber,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+  }): Promise<ResponseServer<TResultRaceDto[] | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Проверка наличия Заезда Чемпионата в БД.
+      const champDB = await ChampionshipModel.findOne(
+        {
+          _id: championshipId,
+          'races.number': raceNumber,
+        },
+        { _id: true, name: true }
+      ).lean();
+
+      if (!champDB) {
+        throw new Error(
+          `Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber} для добавления финишного результата!`
+        );
+      }
+
+      // Получение результатов заезда raceNumber в чемпионате championshipId.
+      const resultsRaceDB: TResultRaceFromDB[] = await ResultRaceModel.find({
+        championship: championshipId,
+        raceNumber,
+      })
+        .populate({
+          path: 'rider',
+          select: ['id', 'image', 'imageFromProvider', 'provider.image', '-_id'],
+        })
+        .lean();
+
+      const resultsAfterDto = dtoResultsRace(resultsRaceDB);
+
+      return { data: resultsAfterDto, ok: true, message: 'Протокол заезда Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

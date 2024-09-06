@@ -58,3 +58,42 @@ export class Timer {
     return periodInSeconds % Timer.SECONDS_IN_DAY;
   }
 }
+
+/**
+ * Форматирует время в миллисекундах в строку формата чч:мм:сс.миллисекунды.
+ * Если миллисекунды равны 000, то они не отображаются.
+ * Если часы равны 0, то отображается только мм:сс.миллисекунды.
+ * Если часы и минуты равны 0, отображается только сс.миллисекунды.
+ *
+ * @param {number} milliseconds - Время в миллисекундах, которое нужно преобразовать.
+ * @returns {string} - Строка времени в формате чч:мм:сс.миллисекунды.
+ */
+export function formatTimeToStr(milliseconds: number): string {
+  // Извлечение миллисекунд из общего времени.
+  const ms = milliseconds % 1000;
+
+  // Общие секунды и оставшиеся секунды после деления на 60.
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const seconds = totalSeconds % 60;
+
+  // Общие минуты и оставшиеся минуты после деления на 60.
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const minutes = totalMinutes % 60;
+
+  // Часы (всё, что больше минут).
+  const hours = Math.floor(totalMinutes / 60);
+
+  // Функция для добавления ведущих нулей (например, превращает 4 в 04).
+  const pad = (num: number) => String(num).padStart(2, '0');
+
+  // Формирование строки времени
+  let timeString = hours > 0 ? `${pad(hours)}:` : ''; // Добавляем часы, если они больше 0
+  timeString += `${pad(minutes)}:${pad(seconds)}`; // Добавляем минуты и секунды
+
+  // Добавляем миллисекунды, если они больше 0
+  if (ms > 0) {
+    timeString += `.${String(ms).padStart(3, '0')}`;
+  }
+
+  return timeString;
+}

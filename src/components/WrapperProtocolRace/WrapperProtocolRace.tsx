@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 
 import { ResponseServer, TOptions } from '@/types/index.interface';
 import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
-import { TDtoChampionship, TRaceRegistrationDto } from '@/types/dto.types';
+import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import styles from './WrapperProtocolRace.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
+import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
+import { getProtocolRace } from '@/actions/protocol-race';
 
 type Props = {
   options: TOptions[];
@@ -31,6 +33,7 @@ export default function WrapperProtocolRace({
 }: Props) {
   const [raceNumber, setRaceNumber] = useState<string>('1');
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
+  const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const race = championship.races.find((race) => race.number === +raceNumber);
   // console.log(registeredRiders);
 
@@ -44,6 +47,17 @@ export default function WrapperProtocolRace({
       }
     );
   }, [raceNumber, championship.urlSlug]);
+
+  useEffect(() => {
+    getProtocolRace({ championshipId: championship._id, raceNumber: +raceNumber }).then(
+      (res) => {
+        if (res.data) {
+          // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
+          setProtocol(res.data);
+        }
+      }
+    );
+  }, [raceNumber, championship._id]);
 
   return (
     <div className={styles.wrapper}>
@@ -61,6 +75,8 @@ export default function WrapperProtocolRace({
         championshipId={championship._id}
         raceNumber={raceNumber}
       />
+
+      <ContainerProtocolRace protocol={protocol} showFooter={true} />
     </div>
   );
 }

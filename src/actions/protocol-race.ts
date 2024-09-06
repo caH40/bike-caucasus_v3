@@ -1,39 +1,28 @@
 'use server';
 // Экшены для работы с финишным протоколом Заезда.
 
-import { getServerSession } from 'next-auth';
-
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ResponseServer } from '@/types/index.interface';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { ResultRaceService } from '@/services/ResultRace';
+import { TResultRaceDto } from '@/types/dto.types';
 
 /**
- * Сохранение результата райдера в Заезде Чемпионата.
+ * Получение протокола Заезда Чемпионата.
  */
-export async function postResultRaceRider({
-  dataFromFormSerialized,
+export async function getProtocolRace({
+  championshipId,
+  raceNumber,
 }: {
-  dataFromFormSerialized: FormData;
-}): Promise<ResponseServer<null>> {
+  championshipId: string;
+  raceNumber: number;
+}): Promise<ResponseServer<TResultRaceDto[] | null>> {
   try {
-    const session = await getServerSession(authOptions);
-
-    // Проверка наличия прав на редактирование Чемпионатов.
-    if (
-      !session?.user.role.permissions.some(
-        (elm) => elm === 'moderation.championship.protocol' || elm === 'all'
-      )
-    ) {
-      throw new Error('У вас нет прав для добавления результата райдера в Заезде!');
-    }
-
     const resultRaceService = new ResultRaceService();
-    const res = await resultRaceService.post({
-      dataFromFormSerialized,
-      creatorId: session.user.idDB,
+    const res = await resultRaceService.getProtocolRace({
+      championshipId,
+      raceNumber,
     });
 
     return res;

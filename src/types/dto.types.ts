@@ -2,6 +2,7 @@ import {
   TOrganizerForClient,
   TParentChampionshipForClient,
   TRaceClient,
+  TResultRaceFromDB,
   TStageDateDescription,
 } from './index.interface';
 import {
@@ -264,4 +265,18 @@ export type TProfileSimpleDto = {
   yearBirthday: number;
   gender: 'male' | 'female';
   city?: string;
+};
+
+/**
+ * Данные DTO результата райдера в заезде чемпионата.
+ */
+export type TResultRaceDto = Omit<
+  TResultRaceFromDB,
+  '_id' | 'creator' | 'createdAt' | 'updatedAt' | 'championship'
+> & {
+  _id: string;
+  creator: string;
+  championship: string;
+  createdAt: number;
+  updatedAt: number;
 };

@@ -70,6 +70,7 @@ function setValueFields({ setValue, selectedRider }: TSetValue) {
   setValue('rider.city', selectedRider.rider.city);
   setValue('rider.team', selectedRider.rider.team);
   setValue('rider.id', selectedRider.rider.id);
+  setValue('rider._id', selectedRider.rider._id);
 
   // Обнуление полей финишного времени.
   setValue('time.hours', '');

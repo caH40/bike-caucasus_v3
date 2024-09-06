@@ -8,6 +8,7 @@ import {
   TOrganizer,
   TRace,
   TRaceRegistrationStatus,
+  TResultRace,
   TTrackGPXObj,
 } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
@@ -641,6 +642,7 @@ export type TDataFromFormResultRace = {
   firstName: string;
   gender: 'male' | 'female';
   id?: number;
+  _id?: string;
   lastName: string;
   patronymic?: string;
   startNumber: string | number;
@@ -681,4 +683,16 @@ export type TProfileSimpleFromDB = {
     gender: 'male' | 'female';
   };
   city?: string;
+};
+
+/**
+ * Данные результата райдера в заезде чемпионата.
+ */
+export type TResultRaceFromDB = TResultRace & {
+  rider: {
+    id: number;
+    image?: string;
+    provider?: { image?: string };
+    imageFromProvider: boolean;
+  };
 };

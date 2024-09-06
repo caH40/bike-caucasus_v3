@@ -373,7 +373,7 @@ export type TResultRace = {
   _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
   championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
   raceNumber: number; // Номер заезда в Соревновании/Этапе.
-  riderId?: number; // id Пользователя на сайте. Если его нет, значит в протоколе Райдер, незарегистрированный на сайте.
+  rider?: mongoose.Types.ObjectId; // Ссылка на пользователя, есть он есть в БД.
   profile: TProfileRiderInProtocol;
   startNumber: number;
   raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
@@ -386,7 +386,7 @@ export type TResultRace = {
   averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
   lapTimes?: number[]; // Время, затраченное на каждый круг (массив времен в миллисекундах).
   remarks?: string; // Примечания или комментарии.
-  creatorId: mongoose.Types.ObjectId; // Ссылка на Пользователя, добавившего результат.
+  creator: mongoose.Types.ObjectId; // Ссылка на Пользователя, добавившего результат.
   createdAt: Date;
   updatedAt: Date;
 };
@@ -399,6 +399,7 @@ export type TProfileRiderInProtocol = {
   lastName: string; // Фамилия райдера.
   patronymic?: string; // Фамилия райдера.
   team?: string; // Команда райдера, если известно.
+  city: string; // Город райдера, если известно.
   yearBirthday: number; // Год рождения.
   gender: 'male' | 'female';
 };

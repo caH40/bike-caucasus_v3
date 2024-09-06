@@ -115,7 +115,7 @@ export default function FormResultAdd({
     setLoading(false);
 
     if (response.ok) {
-      // reset();
+      reset();
       toast.success(response.message);
     } else {
       toast.error(response.message);

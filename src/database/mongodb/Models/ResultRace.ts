@@ -8,12 +8,13 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
   {
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
     raceNumber: { type: Number, required: true },
-    riderId: Number,
+    rider: { type: Schema.Types.ObjectId, ref: 'User' },
     profile: {
       firstName: { type: String, required: true },
       lastName: { type: String, required: true },
       patronymic: { type: String },
       team: { type: String },
+      city: { type: String },
       yearBirthday: { type: Number, required: true },
       gender: { type: String, enum: ['male', 'female'], required: true },
       _id: false,
@@ -33,7 +34,7 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
     averageSpeed: { type: Number },
     lapTimes: { type: [Number] },
     remarks: { type: String },
-    creatorId: { type: Schema.Types.ObjectId, ref: 'User' },
+    creator: { type: Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },

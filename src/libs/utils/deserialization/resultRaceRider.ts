@@ -13,7 +13,6 @@ export function deserializationResultRaceRider(
   for (const [key, value] of dataSerialized) {
     if (
       (key === 'timeDetailsInMilliseconds' ||
-        key === 'id' ||
         key === 'startNumber' ||
         key === 'raceNumber' ||
         key === 'yearBirthday') &&
