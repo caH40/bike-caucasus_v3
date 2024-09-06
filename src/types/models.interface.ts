@@ -339,6 +339,8 @@ export type TRace = {
   ascent?: number; // Набор высоты на дистанции в метрах.
   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
+  categoriesAgeFemale: { min: number; max: number }[]; // Женские возрастные категории.
+  categoriesAgeMale: { min: number; max: number }[]; // Мужские возрастные категории.
 };
 
 /**

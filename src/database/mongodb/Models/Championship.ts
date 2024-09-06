@@ -15,6 +15,13 @@ const trackGPXSchema = new Schema(
   },
   { _id: false }
 );
+const categoryAgeSchema = new Schema(
+  {
+    min: Number,
+    max: Number,
+  },
+  { _id: false }
+);
 
 const raceSchema = new Schema<TRace>(
   {
@@ -32,7 +39,10 @@ const raceSchema = new Schema<TRace>(
         default: [],
       },
     ],
+    categoriesAgeFemale: [{ type: categoryAgeSchema, default: [] }],
+    categoriesAgeMale: [{ type: categoryAgeSchema, default: [] }],
   },
+
   { _id: false }
 );
 
