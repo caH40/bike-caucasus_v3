@@ -10,12 +10,17 @@ import { genderOptions } from '@/constants/other';
 type Props = {
   register: UseFormRegister<TFormResultRace>;
   errors: FieldErrors<TFormResultRace>;
+  startNumberRegisteredInRace: number;
 };
 
 /**
  * Форма для ввода времени с полями для каждой части времени (чч,мм,сс,млс).
  */
-export default function BlockInputsRegisteredRider({ register, errors }: Props) {
+export default function BlockInputsRegisteredRider({
+  register,
+  errors,
+  startNumberRegisteredInRace,
+}: Props) {
   return (
     <div className={styles.wrapper}>
       <TitleAndLine hSize={3} title="Данные участника" />
@@ -70,11 +75,21 @@ export default function BlockInputsRegisteredRider({ register, errors }: Props) 
           type="number"
           defaultValue={'0'}
           register={register('newStartNumber', {
+            required:
+              startNumberRegisteredInRace === 0 || !startNumberRegisteredInRace
+                ? 'Заполните'
+                : '',
             pattern: {
               value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])$/,
               message: '0-9999',
             },
+            validate: (value) =>
+              (startNumberRegisteredInRace === 0 || !startNumberRegisteredInRace) &&
+              Number(value) === 0
+                ? 'Не может быть равно 0'
+                : true,
           })}
+          validationText={errors.newStartNumber?.message}
           hideCheckmark={true}
         />
 

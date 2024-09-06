@@ -40,9 +40,6 @@ export default function BlockSelectRegisteredRider({
         <Controller
           name="riderRegisteredInRace.startNumber"
           control={control}
-          rules={{
-            required: 'обязательное поле',
-          }}
           render={({ field }) => (
             <Select
               state={field.value}
@@ -59,9 +56,6 @@ export default function BlockSelectRegisteredRider({
         <Controller
           name="riderRegisteredInRace.lastName"
           control={control}
-          rules={{
-            required: 'обязательное поле',
-          }}
           render={({ field }) => (
             <Select
               state={field.value}

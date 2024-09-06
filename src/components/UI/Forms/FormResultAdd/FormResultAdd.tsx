@@ -72,6 +72,8 @@ export default function FormResultAdd({
 
   // Стартовый номер у зарегистрированного в Заезде райдера.
   const startNumberRegisteredInRace = watch('riderRegisteredInRace.startNumber');
+  // console.log({ startNumberRegisteredInRace });
+
   // Фамилия у зарегистрированного в Заезде райдера.
   const lastNameRegisteredInRace = watch('riderRegisteredInRace.lastName');
   // Измененный стартовый номер.
@@ -88,15 +90,21 @@ export default function FormResultAdd({
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
     const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
-    const startNumber =
-      dataFromForm.newStartNumber !== 0
-        ? dataFromForm.newStartNumber
-        : dataFromForm.riderRegisteredInRace.startNumber;
+
+    // Получение стартового номера.
+    const startNumber = () => {
+      // Если введен новый номер, значит он используется как стартовый номер.
+      if (!!dataFromForm.newStartNumber && +dataFromForm.newStartNumber !== 0) {
+        return +dataFromForm.newStartNumber;
+      }
+
+      return +dataFromForm.riderRegisteredInRace.startNumber;
+    };
 
     const dataSerialized = serializationResultRaceRider({
       ...dataFromForm.rider,
       timeDetailsInMilliseconds,
-      startNumber,
+      startNumber: startNumber(),
       raceNumber,
       championshipId,
     });
@@ -107,7 +115,7 @@ export default function FormResultAdd({
     setLoading(false);
 
     if (response.ok) {
-      reset();
+      // reset();
       toast.success(response.message);
     } else {
       toast.error(response.message);
@@ -136,7 +144,11 @@ export default function FormResultAdd({
       {nameBtnFilter === 'search' && <BlockSearchRider setValue={setValue} />}
 
       {/* блок полей ввода данных райдера */}
-      <BlockInputs register={register} errors={errors} />
+      <BlockInputs
+        register={register}
+        errors={errors}
+        startNumberRegisteredInRace={startNumberRegisteredInRace}
+      />
 
       {/* блок полей ввода финишного времени */}
       <BlockInputsTime register={register} errors={errors} />
