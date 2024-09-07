@@ -11,6 +11,7 @@ import { dtoResultsRace } from '@/dto/results-race';
 import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
 import { TResultRaceDto } from '@/types/dto.types';
 import { getCategoryAge } from '@/libs/utils/age-category';
+import { TRace, TResultRaceDocument } from '@/types/models.interface';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -215,57 +216,115 @@ export class ResultRaceService {
   }
 
   /**
+   * Обновление возрастных категорий.
    * Обновление финишного протокола заезда чемпионата.
-   * Распределяются места в каждой возрастной категории и в абсолюте.
+   * Распределение мест в каждой возрастной категории и в абсолюте.
+   * !!! проработать исключение дисквалифицированных в обновлении данных.
+   * !!! проработать выставление мест для категорий по уровню подготовки. Добавить их в Коллекцию Map.
    */
-  // private async updateProtocolRace({
-  //   championshipId,
-  //   raceNumber,
-  //   results,
-  // }: {
-  //   championshipId: string;
-  //   raceNumber: number;
-  //   results: TResultRaceDto[];
-  // }): Promise<TResultRaceDto[] | null> {
-  //   try {
-  //     // Подключение к БД.
-  //     await this.dbConnection();
+  public async updateProtocolRace({
+    championshipId,
+    raceNumber,
+    results,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+    results: TResultRaceDto[];
+  }): Promise<TResultRaceDto[] | null> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
 
-  //     // Проверка и получение данных Заезда Чемпионата.
-  //     const racesInChampDB: { races: TRace[] } | null = await ChampionshipModel.findOne(
-  //       {
-  //         _id: championshipId,
-  //         'races.number': raceNumber,
-  //       },
-  //       { races: { $elemMatch: { number: raceNumber } } }
-  //     ).lean();
+      // Проверка и получение данных Заезда Чемпионата.
+      const racesInChampDB: { races: TRace[] } | null = await ChampionshipModel.findOne(
+        {
+          _id: championshipId,
+          'races.number': raceNumber,
+        },
+        { races: { $elemMatch: { number: raceNumber } } }
+      ).lean();
 
-  //     // Данные обрабатываемого заезда.
-  //     const race = racesInChampDB?.races[0];
-  //     if (race?.number !== raceNumber) {
-  //       throw new Error(
-  //         ` Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber}`
-  //       );
-  //     }
+      // Данные обрабатываемого заезда.
+      const race = racesInChampDB?.races[0];
+      if (!racesInChampDB || race?.number !== raceNumber) {
+        throw new Error(
+          ` Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber}`
+        );
+      }
 
-  //     const resultsRaceDB: TResultRaceDocument[] = await ResultRaceModel.find({
-  //       championship: championshipId,
-  //       raceNumber,
-  //     });
+      const resultsRaceDB: TResultRaceDocument[] = await ResultRaceModel.find({
+        championship: championshipId,
+        raceNumber,
+      });
 
-  //     for (const result of resultsRaceDB) {
-  //       if (result.profile.gender === 'female') {
-  //         // Обновление результатов для женских категорий.
-  //         race.categoriesAgeFemale;
-  //       } else if (result.profile.gender === 'male') {
-  //         // Обновление результатов для мужских категорий.
-  //       }
-  //     }
+      // Мужские и женские категории в заезде, в котором обновляются данные.
+      const categoriesAgeMale = race.categoriesAgeMale;
+      const categoriesAgeFemale = race.categoriesAgeFemale;
 
-  //     return results;
-  //   } catch (error) {
-  //     this.errorLogger(error);
-  //     return null;
-  //   }
-  // }
+      // Коллекция всех возрастных категорий и абсолютных категорий в заезде.
+      const categoriesInRace = new Map<string, number>([
+        ['absolute', 1],
+        ['absoluteMale', 1],
+        ['absoluteFemale', 1],
+      ]);
+
+      // 1. Обновление возрастных категории участникам в результатах Заезда.
+      for (const result of resultsRaceDB) {
+        // Присвоение возрастной категории
+        const isFemale = result.profile.gender === 'female';
+
+        const categoryAge = getCategoryAge({
+          yearBirthday: result.profile.yearBirthday,
+          categoriesAge: isFemale ? categoriesAgeFemale : categoriesAgeMale,
+          gender: isFemale ? 'F' : 'M',
+        });
+
+        // Добавление в коллекцию Map возрастных категорий со счетчиком позиций(места на финише), начиная с 1 позиции.
+        categoriesInRace.set(categoryAge, 1);
+
+        result.categoryAge = categoryAge;
+      }
+
+      // 2. Сортировка и проставление мест в возрастных категориях для мужчин и женщин.
+      for (const result of results) {
+        // 2.1. Проставление мест для абсолюта.
+        const positionAbsolute = categoriesInRace.get('absolute')!; // Ключ 'absolute' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
+        // Присваиваем текущее место в категории.
+        result.positions.absolute = positionAbsolute;
+        // Увеличиваем счётчик мест в этой категории для следующего участника.
+        categoriesInRace.set('absolute', positionAbsolute + 1);
+
+        // 2.2. Проставление мест для абсолюта по полу
+        if (result.profile.gender === 'female') {
+          const positionAbsoluteFemale = categoriesInRace.get('absoluteFemale')!; // Ключ 'absoluteFemale' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
+          // Присваиваем текущее место в категории.
+          result.positions.absoluteGender = positionAbsoluteFemale;
+          // Увеличиваем счётчик мест в этой категории для следующего участника.
+          categoriesInRace.set('absoluteFemale', positionAbsoluteFemale + 1);
+        } else {
+          const positionAbsoluteMale = categoriesInRace.get('absoluteMale')!; // Ключ 'absoluteMale' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
+          // Присваиваем текущее место в категории.
+          result.positions.absoluteGender = positionAbsoluteMale;
+          // Увеличиваем счётчик мест в этой категории для следующего участника.
+          categoriesInRace.set('absoluteMale', positionAbsoluteMale + 1);
+        }
+
+        // 2.3. Проставление мест для возрастных категорий.
+        const positionAge = categoriesInRace.get(result.categoryAge);
+        if (!positionAge) {
+          // Если категория не найдена, пропускаем (логическая ошибка).
+          continue;
+        }
+        // Присваиваем текущее место в категории.
+        result.positions.category = positionAge;
+        // Увеличиваем счётчик мест в этой категории для следующего участника.
+        categoriesInRace.set(result.categoryAge, positionAge + 1);
+      }
+
+      return results;
+    } catch (error) {
+      this.errorLogger(error);
+      return null;
+    }
+  }
 }

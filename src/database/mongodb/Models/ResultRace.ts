@@ -21,8 +21,12 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
     },
     startNumber: Number,
     raceTimeInMilliseconds: { type: Number, required: true }, // Без времени 0.
-    position: { type: Number },
-    positionManual: { type: Number },
+    positions: {
+      category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
+      absolute: Number, // Абсолютная категория.
+      absoluteGender: Number, // Абсолютная категория с делением по полу муж/жен.
+      manual: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
+    },
     points: { type: Schema.Types.Mixed }, // Используем Mixed для произвольного типа данных
     disqualification: {
       reason: { type: String }, // 'DNF' | 'DSQ' | 'DNS'
