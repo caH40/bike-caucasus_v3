@@ -1,14 +1,16 @@
+import { ObjectId } from 'mongoose';
+
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
-import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
 import { deserializationResultRaceRider } from '@/libs/utils/deserialization/resultRaceRider';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
-import { ObjectId } from 'mongoose';
 import { User as UserModel } from '@/database/mongodb/Models/User';
 import { dtoResultsRace } from '@/dto/results-race';
+import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
 import { TResultRaceDto } from '@/types/dto.types';
+import { getCategoryAge } from '@/libs/utils/age-category';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -68,7 +70,7 @@ export class ResultRaceService {
           _id: dataDeserialized.championshipId,
           'races.number': dataDeserialized.raceNumber,
         },
-        { _id: true, name: true }
+        { races: { $elemMatch: { number: dataDeserialized.raceNumber } }, name: true }
       ).lean();
 
       if (!champDB) {
@@ -120,6 +122,17 @@ export class ResultRaceService {
         );
       }
 
+      // Присвоение возрастной категории
+      const categoriesAgeMale = champDB.races[0].categoriesAgeMale;
+      const categoriesAgeFemale = champDB.races[0].categoriesAgeFemale;
+      const isFemale = dataDeserialized.gender === 'female';
+
+      const categoryAge = getCategoryAge({
+        yearBirthday: dataDeserialized.yearBirthday,
+        categoriesAge: isFemale ? categoriesAgeFemale : categoriesAgeMale,
+        gender: isFemale ? 'F' : 'M',
+      });
+
       // Сохранение в БД результата райдера в Заезде Чемпионата.
       await ResultRaceModel.create({
         championship: dataDeserialized.championshipId,
@@ -135,6 +148,7 @@ export class ResultRaceService {
           yearBirthday: dataDeserialized.yearBirthday,
           gender: dataDeserialized.gender,
         },
+        categoryAge,
         ...(dataDeserialized.id && { id: dataDeserialized.id }),
         raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
         creator: creatorId,
@@ -199,4 +213,59 @@ export class ResultRaceService {
       return this.handlerErrorDB(error);
     }
   }
+
+  /**
+   * Обновление финишного протокола заезда чемпионата.
+   * Распределяются места в каждой возрастной категории и в абсолюте.
+   */
+  // private async updateProtocolRace({
+  //   championshipId,
+  //   raceNumber,
+  //   results,
+  // }: {
+  //   championshipId: string;
+  //   raceNumber: number;
+  //   results: TResultRaceDto[];
+  // }): Promise<TResultRaceDto[] | null> {
+  //   try {
+  //     // Подключение к БД.
+  //     await this.dbConnection();
+
+  //     // Проверка и получение данных Заезда Чемпионата.
+  //     const racesInChampDB: { races: TRace[] } | null = await ChampionshipModel.findOne(
+  //       {
+  //         _id: championshipId,
+  //         'races.number': raceNumber,
+  //       },
+  //       { races: { $elemMatch: { number: raceNumber } } }
+  //     ).lean();
+
+  //     // Данные обрабатываемого заезда.
+  //     const race = racesInChampDB?.races[0];
+  //     if (race?.number !== raceNumber) {
+  //       throw new Error(
+  //         ` Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber}`
+  //       );
+  //     }
+
+  //     const resultsRaceDB: TResultRaceDocument[] = await ResultRaceModel.find({
+  //       championship: championshipId,
+  //       raceNumber,
+  //     });
+
+  //     for (const result of resultsRaceDB) {
+  //       if (result.profile.gender === 'female') {
+  //         // Обновление результатов для женских категорий.
+  //         race.categoriesAgeFemale;
+  //       } else if (result.profile.gender === 'male') {
+  //         // Обновление результатов для мужских категорий.
+  //       }
+  //     }
+
+  //     return results;
+  //   } catch (error) {
+  //     this.errorLogger(error);
+  //     return null;
+  //   }
+  // }
 }

@@ -1,5 +1,6 @@
 import { AgeCategory } from '@/database/mongodb/Models/AgeCategory';
 import { errorLogger } from '@/errors/error';
+import { TCategoryAge } from '@/types/models.interface';
 
 type Params = {
   birthday: Date | string;
@@ -8,9 +9,9 @@ type Params = {
 };
 
 /**
- * Преобразование даты рождения в Возрастную категорию.
+ * Преобразование даты рождения в Возрастную категорию для отображения в профиле.
  */
-export async function getAgeCategory({
+export async function getCategoryAgeProfile({
   birthday,
   ageCategoryVersion,
   gender = 'male',
@@ -53,4 +54,45 @@ export async function getAgeCategory({
     errorLogger(error);
     return null;
   }
+}
+
+/**
+ * Получение возрастной категории для Райдера (yearBirthday) на основании категорий categoriesAge, установленных в заезде.
+ *
+ * @param {number} yearBirthday - Год рождения райдера.
+ * @param {TCategoryAge[]} categoriesAge - Массив возрастных категорий.
+ * @param {'M' | 'F'} gender - Пол райдера (M - мужчина, F - женщина).
+ *
+ * @returns {string} - Возрастная категория райдера или сообщение "Нет категории", если категория не найдена.
+ */
+export function getCategoryAge({
+  yearBirthday,
+  categoriesAge,
+  gender,
+}: {
+  yearBirthday: number;
+  categoriesAge: TCategoryAge[];
+  gender: 'M' | 'F';
+}): string {
+  // Проверка валидности года рождения.
+  if (!yearBirthday || +yearBirthday === 0) {
+    return 'Нет категории';
+  }
+
+  const fullYear = new Date().getFullYear() - yearBirthday;
+
+  // Проходим по каждой категории и проверяем, попадает ли возраст в диапазон.
+  for (const category of categoriesAge) {
+    if (fullYear >= category.min && fullYear <= category.max) {
+      const maxAge = 200; // Предположительно, максимальное значение 200 используется для открытых категорий.
+      if (category.max === maxAge) {
+        return `${gender}${category.min}+`; // Категория без верхнего предела.
+      } else {
+        return `${gender}${category.min}-${category.max}`; // Категория с указанием диапазона.
+      }
+    }
+  }
+
+  // Если ни одна категория не подошла.
+  return 'Нет категории';
 }

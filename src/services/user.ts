@@ -6,7 +6,7 @@ import { getGender } from '@/libs/utils/handler-data';
 import { Cloud } from './cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './mongodb/error';
-import { getAgeCategory } from '@/libs/utils/age-category';
+import { getCategoryAgeProfile } from '@/libs/utils/age-category';
 import { errorLogger } from '@/errors/error';
 import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
 import { dtoGetUser, dtoGetUserPublic, dtoGetUsersSimplePublic } from '@/dto/user';
@@ -75,7 +75,7 @@ export class UserService {
       }
 
       // Функция получения возрастной категории из даты рождения.
-      const ageCategory = await getAgeCategory({
+      const ageCategory = await getCategoryAgeProfile({
         birthday: userDB.person?.birthday,
         ageCategoryVersion,
         gender: userDB.person.gender,

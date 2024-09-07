@@ -50,5 +50,7 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
     trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
     trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
     registeredRiders: race.registeredRiders || [],
+    categoriesAgeFemale: race.categoriesAgeFemale,
+    categoriesAgeMale: race.categoriesAgeMale,
   }));
 }

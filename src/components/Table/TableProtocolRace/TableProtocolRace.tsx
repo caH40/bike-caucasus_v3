@@ -74,7 +74,7 @@ const columns: ColumnDef<TResultRaceDto & { index: number }>[] = [
   },
   {
     header: 'Категория',
-    accessorKey: 'profile.yearBirthday',
+    accessorKey: 'categoryAge',
   },
 ];
 

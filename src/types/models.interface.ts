@@ -339,9 +339,10 @@ export type TRace = {
   ascent?: number; // Набор высоты на дистанции в метрах.
   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
-  categoriesAgeFemale: { min: number; max: number }[]; // Женские возрастные категории.
-  categoriesAgeMale: { min: number; max: number }[]; // Мужские возрастные категории.
+  categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
+  categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
 };
+export type TCategoryAge = { min: number; max: number };
 
 /**
  * Тип схемы регистрация Райдера (User) на Заезд Чемпионата.
@@ -371,6 +372,7 @@ export type TRaceRegistration = {
 /**
  * Протокол (абсолют) заезда в Чемпионате.
  */
+export type TResultRaceDocument = TResultRace & Document;
 export type TResultRace = {
   _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
   championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
