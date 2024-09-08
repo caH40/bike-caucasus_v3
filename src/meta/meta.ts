@@ -12,9 +12,11 @@ import {
   getDescriptionChampionship,
   getDescriptionForRegistered,
   getDescriptionForRegistration,
+  getDescriptionResultsRace,
   getTitleChampionship,
   getTitleForRegistered,
   getTitleForRegistration,
+  getTitleResultsRace,
 } from '@/app/championships/utils';
 
 type Props = {
@@ -195,9 +197,13 @@ export function generateMetadataCalendar(): Metadata {
 /**
  * Метаданные для страницы Профиль "/profile/[id]".
  */
-export async function generateMetadataProfile({ params }: {params: {
-  id: string;
-}}): Promise<Metadata> {
+export async function generateMetadataProfile({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}): Promise<Metadata> {
   const userService = new UserService();
 
   const { data: profile } = await userService.getProfile({ id: +params.id });
@@ -355,6 +361,34 @@ export async function generateMetadataChampRegistered({
 
   const title = getTitleForRegistered({ champ: data });
   const description = getDescriptionForRegistered({ champ: data });
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: [data.posterUrl],
+      type: 'website',
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Результаты заездов "/championships/results/registered/[urlSlug]".
+ */
+export async function generateMetadataResultsRace({
+  params: { urlSlug },
+}: Props): Promise<Metadata> {
+  const { data } = await getChampionship({ urlSlug });
+
+  if (!data) {
+    return metadata404Page;
+  }
+
+  const title = getTitleResultsRace({ champ: data });
+  const description = getDescriptionResultsRace({ champ: data });
 
   return {
     title,

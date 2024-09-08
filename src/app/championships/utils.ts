@@ -1,6 +1,7 @@
 import { championshipTypesMap } from '@/constants/championship';
 import { bikeTypesMap } from '@/constants/trail';
 import { getDateTime } from '@/libs/utils/calendar';
+import { getTimerLocal } from '@/libs/utils/date-local';
 import { TDtoChampionship } from '@/types/dto.types';
 import type { TParentChampionshipForClient } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
@@ -280,6 +281,63 @@ export function getDescriptionChampionship({ champ }: { champ: TDtoChampionship 
       }". Велогонка на велосипеде тип: ${
         bikeTypesMap.get(champ.bikeType)?.translation
       }. Испытайте адреналин и наслаждение от велогонки!`;
+    }
+  }
+}
+
+// ==============================================================================================
+// ==============================================================================================
+
+/**
+ * Формирование Title для страницы Результаты заездов.
+ */
+export function getTitleResultsRace({ champ }: { champ: TDtoChampionship }) {
+  const messageNotForStage = `Результаты соревнования по велоспорту «${
+    champ.name
+  }» в дисциплине ${
+    bikeTypesMap.get(champ.bikeType)?.translation
+  } велосипед. Дата проведения: ${getTimerLocal(champ.endDate, 'DDMMYY')}`;
+  switch (champ.type) {
+    case 'single': {
+      return messageNotForStage;
+    }
+
+    default: {
+      // Если не поступили данные о Родительском чемпионате.
+      if (!champ.parentChampionship) {
+        return messageNotForStage;
+      }
+
+      return `Результаты велогонки ${champ.stage} Этап: "${champ.name}". ${
+        championshipTypesMap.get(champ.parentChampionship.type)?.translation
+      } "${champ.parentChampionship.name}"`;
+    }
+  }
+}
+
+/**
+ * Формирование Description для страницы Результаты заездов.
+ */
+export function getDescriptionResultsRace({ champ }: { champ: TDtoChampionship }) {
+  const messageNotForStage = `Финишные протоколы Чемпионата по велоспорту «${
+    champ.name
+  }» от ${getTimerLocal(champ.endDate, 'DDMMYY')} в дисциплине ${
+    bikeTypesMap.get(champ.bikeType)?.translation
+  } велосипед. Заезды:${champ.races.reduce((acc, cur) => acc + ' ' + cur.name + ';', '')}`;
+  switch (champ.type) {
+    case 'single': {
+      return messageNotForStage;
+    }
+
+    default: {
+      // Если не поступили данные о Родительском чемпионате.
+      if (!champ.parentChampionship) {
+        return messageNotForStage;
+      }
+
+      return `Финишные протоколы велогонки ${champ.stage} Этап: "${champ.name}". ${
+        championshipTypesMap.get(champ.parentChampionship.type)?.translation
+      } "${champ.parentChampionship.name}"`;
     }
   }
 }

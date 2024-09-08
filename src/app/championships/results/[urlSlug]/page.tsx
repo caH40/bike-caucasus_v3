@@ -1,11 +1,19 @@
+import { Metadata } from 'next';
+
 import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import WrapperResultsRace from '@/components/WrapperResultsRace/WrapperResultsRace';
+import { generateMetadataResultsRace } from '@/meta/meta';
+import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import { getChampionship } from '@/actions/championship';
-import styles from './ChampionshipResults.module.css';
 import { TOptions } from '@/types/index.interface';
+import styles from './ChampionshipResults.module.css';
+
+// Создание динамических meta данных
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataResultsRace(props);
+}
 
 type Props = {
   params: {
@@ -35,7 +43,7 @@ export default async function ChampionshipResults({ params: { urlSlug } }: Props
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <TitleAndLine hSize={1} title="Результаты заездов Чемпионата" />
+        <TitleAndLine hSize={1} title={`Результаты «${championship.data.name}»`} />
         <WrapperResultsRace championship={championship.data} options={options} />
       </div>
 
