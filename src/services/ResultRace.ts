@@ -12,7 +12,7 @@ import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
 import { TResultRaceDto } from '@/types/dto.types';
 import { getCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
-import { calculateAverageSpeed } from '@/libs/utils/championship';
+import { calculateAverageSpeed, sortCategoriesString } from '@/libs/utils/championship';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -195,7 +195,7 @@ export class ResultRaceService {
   }: {
     championshipId: string;
     raceNumber: number;
-  }): Promise<ResponseServer<TResultRaceDto[] | null>> {
+  }): Promise<ResponseServer<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -229,9 +229,28 @@ export class ResultRaceService {
         })
         .lean();
 
+      // Подготовка данных для клиента.
       const resultsAfterDto = dtoResultsRace(resultsRaceDB);
 
-      return { data: resultsAfterDto, ok: true, message: 'Протокол заезда Чемпионата' };
+      // Сортируем по времени заезда.
+      const resultsSorted = resultsAfterDto.sort(
+        (a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds
+      );
+
+      // Создание списка всех категорий в заезде (категории без результатов не учитываются).
+      const categoriesSet = new Set<string>();
+      for (const result of resultsAfterDto) {
+        categoriesSet.add(result.categoryAge);
+      }
+
+      // Сортируем категории по возрастанию года рождения.
+      const categoriesSorted = sortCategoriesString([...categoriesSet]);
+
+      return {
+        data: { protocol: resultsSorted, categories: categoriesSorted },
+        ok: true,
+        message: 'Протокол заезда Чемпионата',
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

@@ -7,6 +7,8 @@ type Props = {
   protocol: TResultRaceDto[];
   showFooter?: boolean;
   handlerUpdateProtocolRace: () => Promise<string | number | undefined>;
+  hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
+  captionTitle: string; // Название таблицы.
 };
 
 /**
@@ -16,6 +18,8 @@ export default function ContainerProtocolRace({
   protocol,
   showFooter,
   handlerUpdateProtocolRace,
+  hiddenColumnHeaders,
+  captionTitle,
 }: Props) {
   return (
     <>
@@ -25,6 +29,8 @@ export default function ContainerProtocolRace({
         docsOnPage={15}
         showFooter={showFooter}
         handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+        hiddenColumnHeaders={hiddenColumnHeaders}
+        captionTitle={captionTitle}
       />
     </>
   );

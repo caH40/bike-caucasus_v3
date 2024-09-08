@@ -53,7 +53,7 @@ export async function getProtocolRace({
 }: {
   championshipId: string;
   raceNumber: number;
-}): Promise<ResponseServer<TResultRaceDto[] | null>> {
+}): Promise<ResponseServer<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.getProtocolRace({

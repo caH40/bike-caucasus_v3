@@ -63,7 +63,7 @@ export async function getCategoryAgeProfile({
  * @param {TCategoryAge[]} categoriesAge - Массив возрастных категорий.
  * @param {'M' | 'F'} gender - Пол райдера (M - мужчина, F - женщина).
  *
- * @returns {string} - Возрастная категория райдера или сообщение "Нет категории", если категория не найдена.
+ * @returns {string} - Возрастная категория райдера.
  */
 export function getCategoryAge({
   yearBirthday,

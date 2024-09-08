@@ -12,6 +12,7 @@ import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
 import { getProtocolRace, updateProtocolRace } from '@/actions/result-race';
 import { toast } from 'sonner';
+import { replaceCategorySymbols } from '@/libs/utils/championship';
 
 type Props = {
   options: TOptions[];
@@ -35,8 +36,10 @@ export default function WrapperProtocolRace({
   const [raceNumber, setRaceNumber] = useState<string>('1');
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
-  const race = championship.races.find((race) => race.number === +raceNumber);
+  const [categories, setCategories] = useState<string[]>([]);
   const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
+
+  const race = championship.races.find((race) => race.number === +raceNumber);
 
   // Получение зарегистрированных участников в Заезде из БД.
   useEffect(() => {
@@ -56,7 +59,8 @@ export default function WrapperProtocolRace({
       (res) => {
         if (res.data) {
           // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
-          setProtocol(res.data);
+          setProtocol(res.data.protocol);
+          setCategories(res.data.categories);
         }
       }
     );
@@ -104,9 +108,20 @@ export default function WrapperProtocolRace({
 
       <ContainerProtocolRace
         protocol={protocol}
-        showFooter={true}
         handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+        hiddenColumnHeaders={['Место в абсолюте по полу', 'Место в категории', '#']}
+        captionTitle="Абсолютный протокол"
       />
+
+      {categories.map((category) => (
+        <ContainerProtocolRace
+          key={category}
+          protocol={protocol.filter((result) => result.categoryAge === category)}
+          handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+          hiddenColumnHeaders={['Место в абсолюте', 'Место в абсолюте по полу', '#']}
+          captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+        />
+      ))}
     </div>
   );
 }

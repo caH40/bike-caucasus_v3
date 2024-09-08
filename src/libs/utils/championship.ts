@@ -180,3 +180,53 @@ export function calculateAverageSpeed(distanceKm?: number, timeMs?: number): num
   // Округляем результат до одной десятичной.
   return +averageSpeed.toFixed(2);
 }
+
+/**
+ * Заменяет латинские обозначения категорий на кириллические.
+ * @param {string} category - Название категории, которую нужно преобразовать.
+ * @returns {string} - Преобразованное название категории с кириллическими обозначениями.
+ */
+export function replaceCategorySymbols(category: string): string {
+  let result = category;
+
+  // Заменяем "F" на "Ж"
+  if (category.includes('F')) {
+    result = result.replace('F', 'Ж');
+  }
+
+  // Заменяем "M" на "М"
+  if (category.includes('M')) {
+    result = result.replace('M', 'М');
+  }
+
+  return result;
+}
+
+/**
+ * Сортирует массив строковых категорий, содержащих буквы и числа (например, F18+, M20-29).
+ * @param {string[]} categories - Массив категорий для сортировки.
+ * @returns {string[]} Отсортированный массив категорий.
+ */
+export function sortCategoriesString(categories: string[]): string[] {
+  return categories.sort((a, b) => {
+    // Разбиваем строку на буквы и числа
+    const aMatches = a.match(/[A-Za-z]+|[0-9]+/g);
+    const bMatches = b.match(/[A-Za-z]+|[0-9]+/g);
+
+    // Проверка на null, если строка не соответствует регулярному выражению
+    if (!aMatches || !bMatches) {
+      return 0;
+    }
+
+    const [aLetter, aNum] = aMatches;
+    const [bLetter, bNum] = bMatches;
+
+    // Сравниваем буквы (например, F должна идти перед M)
+    if (aLetter !== bLetter) {
+      return aLetter.localeCompare(bLetter);
+    }
+
+    // Сравниваем числовые значения
+    return parseInt(aNum) - parseInt(bNum);
+  });
+}
