@@ -76,7 +76,15 @@ export function getCategoryAge({
 }): string {
   // Проверка валидности года рождения.
   if (!yearBirthday || +yearBirthday === 0) {
-    return 'Нет категории';
+    throw new Error('Не получен год рождения райдера, проверьте данные!');
+  }
+
+  const error = `Нет ${
+    gender === 'F' ? 'женской' : 'мужской'
+  } возрастной категории для запрашиваемого года рождения: ${yearBirthday}. Добавьте соответствующую возрастную категорию в настройки Заезда.`;
+
+  if (!categoriesAge) {
+    throw new Error(error);
   }
 
   const fullYear = new Date().getFullYear() - yearBirthday;
@@ -94,5 +102,5 @@ export function getCategoryAge({
   }
 
   // Если ни одна категория не подошла.
-  return 'Нет категории';
+  throw new Error(error);
 }

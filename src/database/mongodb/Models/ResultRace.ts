@@ -4,6 +4,17 @@ import { Schema, Model, models, model } from 'mongoose';
 /**
  * Схема и модель для результата Райдера в заезде Чемпионата.
  */
+
+const PositionsSchema = new Schema(
+  {
+    category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
+    absolute: Number, // Абсолютная категория.
+    absoluteGender: Number, // Абсолютная категория с делением по полу муж/жен.
+    manual: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
+  },
+  { _id: false }
+);
+
 const ResultRaceSchema: Schema = new Schema<TResultRace>(
   {
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
@@ -22,10 +33,12 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
     startNumber: Number,
     raceTimeInMilliseconds: { type: Number, required: true }, // Без времени 0.
     positions: {
-      category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
-      absolute: Number, // Абсолютная категория.
-      absoluteGender: Number, // Абсолютная категория с делением по полу муж/жен.
-      manual: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
+      type: PositionsSchema,
+      default: {
+        category: 0,
+        absolute: 0,
+        absoluteGender: 0,
+      },
     },
     points: { type: Schema.Types.Mixed }, // Используем Mixed для произвольного типа данных
     disqualification: {

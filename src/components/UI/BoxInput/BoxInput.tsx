@@ -32,6 +32,7 @@ export default function BoxInput({
       <div className={styles.wrapper__relative}>
         <input
           id={id}
+          {...(props.type === 'number' && { step: 0.1 })}
           {...props}
           {...register}
           className={cx('input', loading, { hideCheckmark: hideCheckmark })}

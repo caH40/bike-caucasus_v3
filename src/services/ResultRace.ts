@@ -12,6 +12,7 @@ import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
 import { TResultRaceDto } from '@/types/dto.types';
 import { getCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
+import { calculateAverageSpeed } from '@/libs/utils/championship';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -64,6 +65,25 @@ export class ResultRaceService {
 
       // Подключение к БД.
       await this.dbConnection();
+
+      // const res = await ChampionshipModel.findOneAndUpdate(
+      //   {
+      //     _id: dataDeserialized.championshipId,
+      //     'races.number': dataDeserialized.raceNumber,
+      //   },
+      //   {
+      //     $set: {
+      //       'races.$[race].categoriesAgeFemale': [{ min: 18, max: 200 }],
+      //       'races.$[race].categoriesAgeMale': [
+      //         { min: 18, max: 39 },
+      //         { min: 40, max: 49 },
+      //         { min: 50, max: 59 },
+      //         { min: 60, max: 200 },
+      //       ],
+      //     },
+      //   },
+      //   { arrayFilters: [{ 'race.number': dataDeserialized.raceNumber }] }
+      // );
 
       // Проверка существования Чемпионата с нужным заездом.
       const champDB = await ChampionshipModel.findOne(
@@ -196,10 +216,13 @@ export class ResultRaceService {
       }
 
       // Получение результатов заезда raceNumber в чемпионате championshipId.
-      const resultsRaceDB: TResultRaceFromDB[] = await ResultRaceModel.find({
-        championship: championshipId,
-        raceNumber,
-      })
+      const resultsRaceDB: TResultRaceFromDB[] = await ResultRaceModel.find(
+        {
+          championship: championshipId,
+          raceNumber,
+        },
+        { 'positions._id': false }
+      )
         .populate({
           path: 'rider',
           select: ['id', 'image', 'imageFromProvider', 'provider.image', '-_id'],
@@ -225,12 +248,10 @@ export class ResultRaceService {
   public async updateProtocolRace({
     championshipId,
     raceNumber,
-    results,
   }: {
     championshipId: string;
     raceNumber: number;
-    results: TResultRaceDto[];
-  }): Promise<TResultRaceDto[] | null> {
+  }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -246,6 +267,7 @@ export class ResultRaceService {
 
       // Данные обрабатываемого заезда.
       const race = racesInChampDB?.races[0];
+
       if (!racesInChampDB || race?.number !== raceNumber) {
         throw new Error(
           ` Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber}`
@@ -255,7 +277,7 @@ export class ResultRaceService {
       const resultsRaceDB: TResultRaceDocument[] = await ResultRaceModel.find({
         championship: championshipId,
         raceNumber,
-      });
+      }).lean();
 
       // Мужские и женские категории в заезде, в котором обновляются данные.
       const categoriesAgeMale = race.categoriesAgeMale;
@@ -285,18 +307,23 @@ export class ResultRaceService {
         result.categoryAge = categoryAge;
       }
 
-      // 2. Сортировка и проставление мест в возрастных категориях для мужчин и женщин.
-      for (const result of results) {
+      // Сортировка всего протокола по финишному времени от меньшего к большему.
+      resultsRaceDB.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+
+      // 2. Проставление мест в возрастных категориях для мужчин и женщин.
+      for (const result of resultsRaceDB) {
         // 2.1. Проставление мест для абсолюта.
         const positionAbsolute = categoriesInRace.get('absolute')!; // Ключ 'absolute' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
         // Присваиваем текущее место в категории.
         result.positions.absolute = positionAbsolute;
+
         // Увеличиваем счётчик мест в этой категории для следующего участника.
         categoriesInRace.set('absolute', positionAbsolute + 1);
 
         // 2.2. Проставление мест для абсолюта по полу
         if (result.profile.gender === 'female') {
           const positionAbsoluteFemale = categoriesInRace.get('absoluteFemale')!; // Ключ 'absoluteFemale' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
+
           // Присваиваем текущее место в категории.
           result.positions.absoluteGender = positionAbsoluteFemale;
           // Увеличиваем счётчик мест в этой категории для следующего участника.
@@ -319,12 +346,41 @@ export class ResultRaceService {
         result.positions.category = positionAge;
         // Увеличиваем счётчик мест в этой категории для следующего участника.
         categoriesInRace.set(result.categoryAge, positionAge + 1);
+
+        // 2.4 Расчет средней скорости.
+        result.averageSpeed = calculateAverageSpeed(
+          race.distance,
+          result.raceTimeInMilliseconds
+        );
       }
 
-      return results;
+      // Обновление позиций и прочих данных для каждого результата.
+      for (const result of resultsRaceDB) {
+        await ResultRaceModel.updateOne(
+          { _id: result._id },
+          {
+            $set: {
+              'positions.absolute': result.positions.absolute,
+              'positions.absoluteGender': result.positions.absoluteGender,
+              'positions.category': result.positions.category,
+              averageSpeed: result.averageSpeed,
+              categoryAge: result.categoryAge,
+              // categorySkillLevel: result.categorySkillLevel,
+              // averageSpeed: result.averageSpeed,
+            },
+          }
+        );
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message:
+          'Обновлены возрастные категории и места во всех категориях финишного протокола!',
+      };
     } catch (error) {
       this.errorLogger(error);
-      return null;
+      return this.handlerErrorDB(error);
     }
   }
 }

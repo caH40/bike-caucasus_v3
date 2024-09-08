@@ -10,7 +10,7 @@ import styles from './WrapperProtocolRace.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
-import { getProtocolRace } from '@/actions/protocol-race';
+import { getProtocolRace } from '@/actions/result-race';
 
 type Props = {
   options: TOptions[];

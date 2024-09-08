@@ -18,6 +18,12 @@
   background-color: #00000050;
   font-size: 1.1em;
   font-weight: 700;
+  width: 100%;
+}
+.caption__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .footer {
   position: relative;

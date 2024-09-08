@@ -9,12 +9,15 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
+import { toast } from 'sonner';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
 import { TResultRaceDto } from '@/types/dto.types';
 import TdRider from '../Td/TdRider';
-import styles from '../TableCommon.module.css';
 import { formatTimeToStr } from '@/libs/utils/timer';
+import { updateProtocolRace } from '@/actions/result-race';
+import IconRefresh from '@/components/Icons/IconRefresh';
+import styles from '../TableCommon.module.css';
 
 const cx = cn.bind(styles);
 
@@ -30,8 +33,16 @@ const columns: ColumnDef<TResultRaceDto & { index: number }>[] = [
     accessorKey: 'index',
   },
   {
-    header: 'Место',
-    accessorKey: '',
+    header: 'absolute',
+    accessorKey: 'positions.absolute',
+  },
+  {
+    header: 'category',
+    accessorKey: 'positions.category',
+  },
+  {
+    header: 'absoluteGender',
+    accessorKey: 'positions.absoluteGender',
   },
   {
     header: 'Номер',
@@ -64,6 +75,11 @@ const columns: ColumnDef<TResultRaceDto & { index: number }>[] = [
     cell: (props: any) => formatTimeToStr(props.getValue() || 0),
   },
   {
+    header: 'Ср. скорость',
+    accessorKey: 'averageSpeed',
+    cell: (props: any) => props.getValue() && props.getValue().toFixed(1) + ' км/ч',
+  },
+  {
     header: 'Команда',
     accessorKey: 'profile.team',
     cell: (props: any) => props.row.original.profile?.team ?? 'нет', // Безопасный доступ
@@ -75,6 +91,17 @@ const columns: ColumnDef<TResultRaceDto & { index: number }>[] = [
   {
     header: 'Категория',
     accessorKey: 'categoryAge',
+    cell: (props: any) => {
+      const value = props.getValue();
+
+      if (value.includes('F')) {
+        return value.replace('F', 'Ж');
+      } else if (value.includes('M')) {
+        return value.replace('M', 'М');
+      } else {
+        return value;
+      }
+    },
   },
 ];
 
@@ -104,11 +131,44 @@ export default function TableProtocolRace({ protocol, showFooter, docsOnPage = 5
     table.setPageIndex(0);
   }, [docsOnPage, table]);
 
+  const handlerUpdateProtocolRace = async () => {
+    const championshipId = protocol[0]?.championship;
+    const raceNumber = protocol[0]?.raceNumber;
+
+    if (!championshipId || !raceNumber) {
+      return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
+    }
+
+    const response = await updateProtocolRace({
+      championshipId,
+      raceNumber,
+    });
+
+    if (response.ok) {
+      toast.success(response.message);
+    } else {
+      toast.error(response.message);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__wide}>
         <table className={styles.table}>
-          <caption className={styles.caption}>Протокол заезда</caption>
+          <caption className={cx('caption')}>
+            <div className={styles.caption__inner}>
+              <span>Протокол заезда</span>
+              <IconRefresh
+                squareSize={20}
+                colors={{ default: 'green', hover: 'orange' }}
+                tooltip={{
+                  text: 'Обновление категорий участников, мест во всех категориях и протоколах.',
+                  id: 'refreshProtocol',
+                }}
+                getClick={handlerUpdateProtocolRace}
+              />
+            </div>
+          </caption>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={cx('trh')} key={headerGroup.id}>

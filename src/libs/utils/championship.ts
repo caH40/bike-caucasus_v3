@@ -157,3 +157,26 @@ export function getCurrentStatus({
     return 'completed';
   }
 }
+
+/**
+ * Рассчитывает среднюю скорость на основе расстояния и времени.
+ * Возвращает результат в формате XX.XX.
+ * Если параметры не переданы или некорректны, возвращает 0.
+ *
+ * @param {number} [distanceKm] - Расстояние в километрах.
+ * @param {number} [timeMs] - Время в миллисекундах.
+ * @returns {number} Средняя скорость в километрах в час или 0, если данные некорректны.
+ */
+export function calculateAverageSpeed(distanceKm?: number, timeMs?: number): number {
+  // Проверяем наличие входных параметров.
+  if (typeof distanceKm !== 'number' || typeof timeMs !== 'number' || timeMs === 0) {
+    return 0; // Возвращаем 0 при ошибке или отсутствии параметров.
+  }
+
+  // Расчет средней скорости: расстояние (км) делим на время (часы).
+  const timeHours = timeMs / 1000 / 60 / 60; // Преобразуем миллисекунды в часы.
+  const averageSpeed = distanceKm / timeHours; // Средняя скорость в км/ч.
+
+  // Округляем результат до одной десятичной.
+  return +averageSpeed.toFixed(2);
+}
