@@ -9,13 +9,12 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
-import { toast } from 'sonner';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
 import { TResultRaceDto } from '@/types/dto.types';
 import TdRider from '../Td/TdRider';
 import { formatTimeToStr } from '@/libs/utils/timer';
-import { updateProtocolRace } from '@/actions/result-race';
+
 import IconRefresh from '@/components/Icons/IconRefresh';
 import styles from '../TableCommon.module.css';
 
@@ -25,6 +24,7 @@ type Props = {
   protocol: TResultRaceDto[];
   docsOnPage?: number;
   showFooter?: boolean;
+  handlerUpdateProtocolRace: () => Promise<string | number | undefined>;
 };
 
 const columns: ColumnDef<TResultRaceDto & { index: number }>[] = [
@@ -108,7 +108,12 @@ const columns: ColumnDef<TResultRaceDto & { index: number }>[] = [
 /**
  * Таблица логов ошибок, зафиксированных на сайте.
  */
-export default function TableProtocolRace({ protocol, showFooter, docsOnPage = 5 }: Props) {
+export default function TableProtocolRace({
+  protocol,
+  showFooter,
+  docsOnPage = 15,
+  handlerUpdateProtocolRace,
+}: Props) {
   const data = useMemo(() => {
     return [...protocol].map((newsOne, index) => ({ ...newsOne, index: index + 1 }));
   }, [protocol]);
@@ -131,25 +136,25 @@ export default function TableProtocolRace({ protocol, showFooter, docsOnPage = 5
     table.setPageIndex(0);
   }, [docsOnPage, table]);
 
-  const handlerUpdateProtocolRace = async () => {
-    const championshipId = protocol[0]?.championship;
-    const raceNumber = protocol[0]?.raceNumber;
+  // const handlerUpdateProtocolRace = async () => {
+  //   const championshipId = protocol[0]?.championship;
+  //   const raceNumber = protocol[0]?.raceNumber;
 
-    if (!championshipId || !raceNumber) {
-      return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
-    }
+  //   if (!championshipId || !raceNumber) {
+  //     return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
+  //   }
 
-    const response = await updateProtocolRace({
-      championshipId,
-      raceNumber,
-    });
+  //   const response = await updateProtocolRace({
+  //     championshipId,
+  //     raceNumber,
+  //   });
 
-    if (response.ok) {
-      toast.success(response.message);
-    } else {
-      toast.error(response.message);
-    }
-  };
+  //   if (response.ok) {
+  //     toast.success(response.message);
+  //   } else {
+  //     toast.error(response.message);
+  //   }
+  // };
 
   return (
     <div className={styles.wrapper}>

@@ -28,6 +28,7 @@ type Props = {
   }) => Promise<ResponseServer<void>>;
   championshipId: string;
   raceNumber: string;
+  setTriggerResultTable: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -38,6 +39,7 @@ export default function FormResultAdd({
   registeredRiders,
   raceNumber,
   championshipId,
+  setTriggerResultTable,
 }: Props) {
   // const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -117,6 +119,7 @@ export default function FormResultAdd({
     if (response.ok) {
       reset();
       toast.success(response.message);
+      setTriggerResultTable((prev) => !prev);
     } else {
       toast.error(response.message);
     }

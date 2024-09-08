@@ -10,7 +10,8 @@ import styles from './WrapperProtocolRace.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
-import { getProtocolRace } from '@/actions/result-race';
+import { getProtocolRace, updateProtocolRace } from '@/actions/result-race';
+import { toast } from 'sonner';
 
 type Props = {
   options: TOptions[];
@@ -35,8 +36,9 @@ export default function WrapperProtocolRace({
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const race = championship.races.find((race) => race.number === +raceNumber);
-  // console.log(registeredRiders);
+  const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
 
+  // Получение зарегистрированных участников в Заезде из БД.
   useEffect(() => {
     getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceNumber: +raceNumber }).then(
       (res) => {
@@ -48,6 +50,7 @@ export default function WrapperProtocolRace({
     );
   }, [raceNumber, championship.urlSlug]);
 
+  // Получение финишного протокола из БД.
   useEffect(() => {
     getProtocolRace({ championshipId: championship._id, raceNumber: +raceNumber }).then(
       (res) => {
@@ -57,7 +60,29 @@ export default function WrapperProtocolRace({
         }
       }
     );
-  }, [raceNumber, championship._id]);
+  }, [raceNumber, championship._id, triggerResultTable]);
+
+  // Обработчик клика по иконки обновления, обновляет данные финишного протокола.
+  const handlerUpdateProtocolRace = async () => {
+    const championshipId = protocol[0]?.championship;
+    const raceNumber = protocol[0]?.raceNumber;
+
+    if (!championshipId || !raceNumber) {
+      return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
+    }
+
+    const response = await updateProtocolRace({
+      championshipId,
+      raceNumber,
+    });
+
+    if (response.ok) {
+      toast.success(response.message);
+      setTriggerResultTable((prev) => !prev);
+    } else {
+      toast.error(response.message);
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -74,9 +99,14 @@ export default function WrapperProtocolRace({
         registeredRiders={registeredRiders}
         championshipId={championship._id}
         raceNumber={raceNumber}
+        setTriggerResultTable={setTriggerResultTable}
       />
 
-      <ContainerProtocolRace protocol={protocol} showFooter={true} />
+      <ContainerProtocolRace
+        protocol={protocol}
+        showFooter={true}
+        handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+      />
     </div>
   );
 }
