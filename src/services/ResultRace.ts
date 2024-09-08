@@ -175,6 +175,11 @@ export class ResultRaceService {
         creator: creatorId,
       });
 
+      await this.updateProtocolRace({
+        championshipId: dataDeserialized.championshipId,
+        raceNumber: dataDeserialized.raceNumber,
+      });
+
       return {
         data: null,
         ok: true,

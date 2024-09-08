@@ -1,8 +1,11 @@
 import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import WrapperResultsRace from '@/components/WrapperResultsRace/WrapperResultsRace';
+import { getChampionship } from '@/actions/championship';
 import styles from './ChampionshipResults.module.css';
-import Wrapper from '@/components/Wrapper/Wrapper';
+import { TOptions } from '@/types/index.interface';
 
 type Props = {
   params: {
@@ -10,14 +13,30 @@ type Props = {
   };
 };
 
-export default function ChampionshipResults({ params: { urlSlug } }: Props) {
+export default async function ChampionshipResults({ params: { urlSlug } }: Props) {
   const buttons = buttonsMenuChampionshipPage(urlSlug);
+
+  const championship = await getChampionship({ urlSlug });
+
+  if (!championship.data) {
+    return (
+      <>
+        <h2>Не найден запрашиваемый Чемпионат!</h2>
+        <p>{championship.message}</p>
+      </>
+    );
+  }
+
+  const options: TOptions[] = championship.data.races.map((race) => ({
+    id: race.number,
+    translation: `Заезд №${race.number}: ${race.name}`,
+    name: String(race.number),
+  }));
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <Wrapper hSize={1} title="Результаты заездов Чемпионата">
-          Тут будут результаты. В разработке...
-        </Wrapper>
+        <TitleAndLine hSize={1} title="Результаты заездов Чемпионата" />
+        <WrapperResultsRace championship={championship.data} options={options} />
       </div>
 
       {/* левая боковая панель */}

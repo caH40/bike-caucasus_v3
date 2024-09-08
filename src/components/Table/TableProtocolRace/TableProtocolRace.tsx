@@ -11,13 +11,13 @@ import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
-import { TResultRaceDto } from '@/types/dto.types';
 import TdRider from '../Td/TdRider';
-import { formatTimeToStr } from '@/libs/utils/timer';
-
+import PermissionCheck from '@/hoc/permission-check';
 import IconRefresh from '@/components/Icons/IconRefresh';
-import styles from '../TableCommon.module.css';
+import { formatTimeToStr } from '@/libs/utils/timer';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
+import { TResultRaceDto } from '@/types/dto.types';
+import styles from '../TableCommon.module.css';
 
 const cx = cn.bind(styles);
 
@@ -100,6 +100,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
       header: 'Категория',
       accessorKey: 'categoryAge',
       cell: (props: any) => replaceCategorySymbols(props.getValue()),
+      uniqueName: 'Категория',
     },
   ];
 
@@ -152,15 +153,19 @@ export default function TableProtocolRace({
           <caption className={cx('caption')}>
             <div className={styles.caption__inner}>
               <span>{captionTitle}</span>
-              <IconRefresh
-                squareSize={20}
-                colors={{ default: 'green', hover: 'orange' }}
-                tooltip={{
-                  text: 'Обновление категорий участников, мест во всех категориях и протоколах.',
-                  id: 'refreshProtocol',
-                }}
-                getClick={handlerUpdateProtocolRace}
-              />
+
+              {/* popup меня управления новостью */}
+              <PermissionCheck permission={'admin'}>
+                <IconRefresh
+                  squareSize={20}
+                  colors={{ default: 'green', hover: 'orange' }}
+                  tooltip={{
+                    text: 'Обновление категорий участников, мест во всех категориях и протоколах.',
+                    id: 'refreshProtocol',
+                  }}
+                  getClick={handlerUpdateProtocolRace}
+                />
+              </PermissionCheck>
             </div>
           </caption>
           <thead>

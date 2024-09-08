@@ -8,3 +8,11 @@ export const buttonsForRiderRaceResult: TOptions[] = [
   { id: 1, translation: 'Поиск', name: 'search' },
   // { id: 2, translation: 'Ручной ввод', name: 'manual' },
 ];
+
+/**
+ * Кнопки для выбора отображения Общих протоколов или протоколов с делением по возрастным категориям.
+ */
+export const buttonsForProtocolRace: TOptions[] = [
+  { id: 0, translation: 'Общие', name: 'overall' },
+  { id: 1, translation: 'Возрастные категории', name: 'age' },
+];

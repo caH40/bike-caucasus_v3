@@ -94,6 +94,7 @@ export default function WrapperProtocolRace({
         options={options}
         raceNumber={raceNumber}
         setRaceNumber={setRaceNumber}
+        label={'Выбор заезда для добавления результатов:'}
       />
 
       <BlockRaceInfo raceNumber={raceNumber} race={race} />

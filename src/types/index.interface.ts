@@ -88,6 +88,7 @@ export type PropsSelect<T> = {
   name: string;
   label?: string;
   disabled?: boolean;
+  disabledEmpty?: boolean; // Блокировка пустой option.
   validationText?: string;
   showValidationText?: boolean;
   defaultValue?: string;

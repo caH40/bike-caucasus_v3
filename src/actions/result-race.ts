@@ -45,7 +45,7 @@ export async function postResultRaceRider({
 }
 
 /**
- * Получение протокола Заезда Чемпионата.
+ * Получение протокола Заезда Чемпионата и списка категорий в заезде.
  */
 export async function getProtocolRace({
   championshipId,
