@@ -14,6 +14,14 @@ import Pagination from '@/components/UI/Pagination/Pagination';
 import TdRider from '../Td/TdRider';
 import PermissionCheck from '@/hoc/permission-check';
 import IconRefresh from '@/components/Icons/IconRefresh';
+import IconPodium from '@/components/Icons/IconPodium ';
+import IconStar from '@/components/Icons/IconStar';
+import IconChronometer from '@/components/Icons/IconChronometer';
+import IconTeam from '@/components/Icons/IconTeam';
+import IconSpeed from '@/components/Icons/IconSpeed';
+import IconRider from '@/components/Icons/IconRider';
+import IconCategory from '@/components/Icons/IconCategory';
+import IconHomePlace from '@/components/Icons/IconHomePlace';
 import { formatTimeToStr } from '@/libs/utils/timer';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { TResultRaceDto } from '@/types/dto.types';
@@ -38,26 +46,52 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
       uniqueName: '#',
     },
     {
-      header: 'Место',
+      header: () => (
+        <IconPodium tooltip={{ text: 'Занятое место в общем зачете', id: 'placeAbsolute' }} />
+      ),
       accessorKey: 'positions.absolute',
       uniqueName: 'Место в абсолюте',
     },
     {
-      header: 'Место',
+      header: () => (
+        <IconPodium
+          tooltip={{ text: 'Занятое место в возрастной категории', id: 'placeCategoryAge' }}
+        />
+      ),
       accessorKey: 'positions.category',
       uniqueName: 'Место в категории',
     },
     {
-      header: 'Место',
+      header: () => (
+        <IconPodium
+          tooltip={{
+            text: 'Занятое место в общем зачете с делением по полу',
+            id: 'placeAbsoluteGender',
+          }}
+        />
+      ),
       accessorKey: 'positions.absoluteGender',
       uniqueName: 'Место в абсолюте по полу',
     },
     {
-      header: 'Номер',
+      header: () => (
+        <IconStar
+          colors={{ default: '#d7d700' }}
+          tooltip={{ text: 'Стартовый номер', id: 'startNumberIcon' }}
+        />
+      ),
       accessorKey: 'startNumber',
     },
     {
-      header: 'Участник',
+      header: () => (
+        <IconRider
+          squareSize={22}
+          tooltip={{
+            text: 'Участник',
+            id: 'rider',
+          }}
+        />
+      ),
       accessorKey: 'profile',
       cell: (props: any) => {
         const data = props.row.original;
@@ -78,28 +112,66 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
       },
     },
     {
-      header: 'Время',
+      header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Финишное время',
+            id: 'finishTime',
+          }}
+        />
+      ),
       accessorKey: 'raceTimeInMilliseconds',
       cell: (props: any) => formatTimeToStr(props.getValue() || 0),
     },
     {
-      header: 'Ср. скорость',
+      header: () => (
+        <IconSpeed
+          tooltip={{
+            text: 'Средняя скорость на дистанции',
+            id: 'speed',
+          }}
+        />
+      ),
       accessorKey: 'averageSpeed',
-      cell: (props: any) => props.getValue() && props.getValue().toFixed(1) + ' км/ч',
+      cell: (props: any) => props.getValue() && props.getValue().toFixed(1),
     },
     {
-      header: 'Команда',
+      header: () => (
+        <IconTeam
+          tooltip={{
+            text: 'Команда',
+            id: 'team',
+          }}
+        />
+      ),
       accessorKey: 'profile.team',
       cell: (props: any) => props.row.original.profile?.team ?? 'нет', // Безопасный доступ
     },
     {
-      header: 'Город',
+      header: () => (
+        <IconHomePlace
+          tooltip={{
+            text: 'Город',
+            id: 'city',
+          }}
+        />
+      ),
       accessorKey: 'profile.city',
     },
     {
-      header: 'Категория',
+      header: () => (
+        <IconCategory
+          squareSize={24}
+          tooltip={{
+            text: 'Категория',
+            id: 'category',
+          }}
+        />
+      ),
       accessorKey: 'categoryAge',
-      cell: (props: any) => replaceCategorySymbols(props.getValue()),
+      cell: (props: any) => (
+        <span className={styles.nowrap}>{replaceCategorySymbols(props.getValue())}</span>
+      ),
       uniqueName: 'Категория',
     },
   ];
@@ -171,22 +243,47 @@ export default function TableProtocolRace({
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={cx('trh')} key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th className={styles.th} key={header.id}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <th
+                      className={cx('th', {
+                        number: [
+                          'positions_absolute',
+                          'positions_category',
+                          'startNumber',
+                        ].includes(header.id),
+                        profile: header.id === 'profile',
+                        raceTimeInMilliseconds: header.id === 'raceTimeInMilliseconds',
+                        averageSpeed: header.id === 'averageSpeed',
+                      })}
+                      key={header.id}
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
               <tr className={styles.tr} key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td className={styles.td} key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
+                {row.getVisibleCells().map((cell) => {
+                  return (
+                    <td
+                      className={cx('td', {
+                        number: [
+                          'positions_absolute',
+                          'positions_category',
+                          'startNumber',
+                        ].includes(cell.column.id),
+                      })}
+                      key={cell.id}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

@@ -92,3 +92,13 @@
   top: calc(50% - 12px);
   right: 12px;
 }
+.nowrap {
+  white-space: nowrap;
+}
+.number {
+  width: 42px;
+  text-align: center;
+}
+.profile {
+  width: 400px;
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import cn from 'classnames/bind';
+import { Tooltip } from 'react-tooltip';
 
 import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
@@ -12,6 +13,7 @@ export default function IconTeam({
   squareSize = 24,
   getClick,
   colors = { default: 'currentColor', active: 'currentColor', hover: 'currentColor' },
+  tooltip,
 }: TIconProps) {
   const style: React.CSSProperties & CSSVariables = {
     width: squareSize,
@@ -28,6 +30,7 @@ export default function IconTeam({
         active: isActive,
       })}
       style={{ ...style, width: squareSize, height: squareSize }}
+      id={tooltip?.id}
     >
       <svg
         width="24"
@@ -68,6 +71,10 @@ export default function IconTeam({
           </clipPath>
         </defs>
       </svg>
+
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
+      </Tooltip>
     </div>
   );
 }
