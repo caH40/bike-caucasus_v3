@@ -14,7 +14,7 @@ import Pagination from '@/components/UI/Pagination/Pagination';
 import TdRider from '../Td/TdRider';
 import PermissionCheck from '@/hoc/permission-check';
 import IconRefresh from '@/components/Icons/IconRefresh';
-import IconPodium from '@/components/Icons/IconPodium ';
+import IconPodium from '@/components/Icons/IconPodium';
 import IconStar from '@/components/Icons/IconStar';
 import IconChronometer from '@/components/Icons/IconChronometer';
 import IconTeam from '@/components/Icons/IconTeam';
@@ -23,9 +23,10 @@ import IconRider from '@/components/Icons/IconRider';
 import IconCategory from '@/components/Icons/IconCategory';
 import IconHomePlace from '@/components/Icons/IconHomePlace';
 import { formatTimeToStr } from '@/libs/utils/timer';
-import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { TResultRaceDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
+import Medal from '@/components/Icons/Medal';
+import { replaceCategorySymbols } from '@/libs/utils/championship';
 
 const cx = cn.bind(styles);
 
@@ -50,6 +51,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         <IconPodium tooltip={{ text: 'Занятое место в общем зачете', id: 'placeAbsolute' }} />
       ),
       accessorKey: 'positions.absolute',
+      cell: (props: any) => Medal(props.getValue()),
       uniqueName: 'Место в абсолюте',
     },
     {
@@ -59,6 +61,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'positions.category',
+      cell: (props: any) => Medal(props.getValue()),
       uniqueName: 'Место в категории',
     },
     {
@@ -71,6 +74,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'positions.absoluteGender',
+      cell: (props: any) => Medal(props.getValue()),
       uniqueName: 'Место в абсолюте по полу',
     },
     {
