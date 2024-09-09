@@ -66,25 +66,6 @@ export class ResultRaceService {
       // Подключение к БД.
       await this.dbConnection();
 
-      // const res = await ChampionshipModel.findOneAndUpdate(
-      //   {
-      //     _id: dataDeserialized.championshipId,
-      //     'races.number': dataDeserialized.raceNumber,
-      //   },
-      //   {
-      //     $set: {
-      //       'races.$[race].categoriesAgeFemale': [{ min: 18, max: 200 }],
-      //       'races.$[race].categoriesAgeMale': [
-      //         { min: 18, max: 39 },
-      //         { min: 40, max: 49 },
-      //         { min: 50, max: 59 },
-      //         { min: 60, max: 200 },
-      //       ],
-      //     },
-      //   },
-      //   { arrayFilters: [{ 'race.number': dataDeserialized.raceNumber }] }
-      // );
-
       // Проверка существования Чемпионата с нужным заездом.
       const champDB = await ChampionshipModel.findOne(
         {

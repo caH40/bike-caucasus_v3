@@ -199,7 +199,7 @@ export class ChampionshipService {
         (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
       );
       sortedChamp.finishedChamps.sort(
-        (a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime()
+        (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
       );
 
       return {

@@ -19,6 +19,9 @@
 # production
 /build
 
+# temp 
+/src/temp
+
 #папка с разными документами 
 /src/documents
 
