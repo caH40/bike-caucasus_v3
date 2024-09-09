@@ -69,6 +69,7 @@
 .tr {
   background-color: #ffffff30;
 }
+
 .tr__link {
   cursor: pointer;
 }
@@ -82,6 +83,10 @@
 }
 .tr__link:hover {
   background-color: var(--white-50);
+  transition: all 0.2s;
+}
+.tr-hover:hover {
+  background-color: var(--table-hover);
   transition: all 0.2s;
 }
 .footer__files {
@@ -100,5 +105,5 @@
   text-align: center;
 }
 .profile {
-  width: 400px;
+  width: 50%;
 }

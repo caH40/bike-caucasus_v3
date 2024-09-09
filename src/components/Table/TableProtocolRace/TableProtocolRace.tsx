@@ -182,7 +182,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
 export default function TableProtocolRace({
   protocol,
   showFooter,
-  docsOnPage = 15,
+  docsOnPage = 50,
   handlerUpdateProtocolRace,
   hiddenColumnHeaders = [],
   captionTitle,
@@ -267,7 +267,7 @@ export default function TableProtocolRace({
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr className={styles.tr} key={row.id}>
+              <tr className={cx('tr', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <td

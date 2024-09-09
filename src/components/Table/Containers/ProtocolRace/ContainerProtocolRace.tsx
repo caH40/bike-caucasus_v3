@@ -26,7 +26,6 @@ export default function ContainerProtocolRace({
       {/* Таблица */}
       <TableProtocolRace
         protocol={protocol}
-        docsOnPage={15}
         showFooter={showFooter}
         handlerUpdateProtocolRace={handlerUpdateProtocolRace}
         hiddenColumnHeaders={hiddenColumnHeaders}
