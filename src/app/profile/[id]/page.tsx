@@ -1,19 +1,20 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
 
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
 import { UserService } from '@/services/user';
 import { getLogoProfile } from '@/libs/utils/profile';
 import { blurBase64 } from '@/libs/image';
-
-import styles from './ProfilePage.module.css';
 import { generateMetadataProfile } from '@/meta/meta';
 import { getRegistrationsRider } from '@/actions/registration-champ';
 import TableRegistrationsRider from '@/components/Table/TableRegistrationsRider/TableRegistrationsRider';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getResultsRaceForRider } from '@/actions/result-race';
+import TableResultsRider from '@/components/Table/TableResultsRider/TableResultsRider';
+import styles from './ProfilePage.module.css';
 
 type Props = {
   params: {
@@ -46,7 +47,10 @@ export default async function ProfilePage({ params: { id } }: Props) {
     profile.image
   );
 
-  const registrationsRider = await getRegistrationsRider({ riderId: id });
+  const [registrationsRider, results] = await Promise.all([
+    getRegistrationsRider({ riderId: id }),
+    getResultsRaceForRider({ riderId: id }),
+  ]);
 
   return (
     <div className={styles.wrapper}>
@@ -101,7 +105,11 @@ export default async function ProfilePage({ params: { id } }: Props) {
         <article className={styles.races}>
           <h2 className={styles.title__races}>Участие в соревнованиях</h2>
           <hr className={styles.line} />
-          <p className={styles.paragraph}>Нет данных</p>
+          {results.data ? (
+            <TableResultsRider results={results.data} />
+          ) : (
+            <p className={styles.paragraph}>Нет данных</p>
+          )}
         </article>
 
         <article className={styles.races}>

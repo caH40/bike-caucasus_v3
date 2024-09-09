@@ -2,13 +2,15 @@ import IconMedalBronze from './IconMedalBronze';
 import IconMedalGold from './IconMedalGold';
 import IconMedalSilver from './IconMedalSilver';
 
+type Props = {
+  position: number;
+};
+
 /**
  * Компонент отображает медали для значений 1, 2 и 3, и возвращает само значение для остальных случаев.
- * @param {number} value - Значение места в финишном протоколе.
- * @returns {JSX.Element | number} - Возвращает JSX элемент с медалью для значений 1, 2 или 3, либо возвращает само значение для других случаев.
  */
-export default function Medal(value: number): JSX.Element | number {
-  switch (value) {
+export default function Medal({ position }: Props): JSX.Element | number {
+  switch (position) {
     case 1: {
       // Возвращаем золотую медаль для значения 1
       return <IconMedalGold />;
@@ -23,6 +25,6 @@ export default function Medal(value: number): JSX.Element | number {
     }
     default:
       // Для всех остальных значений возвращаем само значение
-      return value;
+      return position;
   }
 }

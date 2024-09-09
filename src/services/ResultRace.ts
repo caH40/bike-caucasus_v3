@@ -7,9 +7,13 @@ import { deserializationResultRaceRider } from '@/libs/utils/deserialization/res
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { User as UserModel } from '@/database/mongodb/Models/User';
-import { dtoResultsRace } from '@/dto/results-race';
-import { ResponseServer, TResultRaceFromDB } from '@/types/index.interface';
-import { TResultRaceDto } from '@/types/dto.types';
+import { dtoResultsRace, dtoResultsRaceRider } from '@/dto/results-race';
+import {
+  ResponseServer,
+  TResultRaceFromDB,
+  TResultRaceRideFromDB,
+} from '@/types/index.interface';
+import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
 import { getCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
 import { calculateAverageSpeed, sortCategoriesString } from '@/libs/utils/championship';
@@ -34,6 +38,40 @@ export class ResultRaceService {
       await this.dbConnection();
 
       return { data: null, ok: true, message: 'Данные заезда Чемпионата' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение результатов райдера по riderId.
+   */
+  public async getForRider({
+    riderId,
+  }: {
+    riderId: string;
+  }): Promise<ResponseServer<TResultRaceRiderDto[] | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const userDB = await UserModel.findOne({ id: riderId }, { _id: true });
+
+      if (!userDB) {
+        throw new Error(`Не найден пользователь с id: ${riderId} в БД!`);
+      }
+
+      const resultsDB: TResultRaceRideFromDB[] = await ResultRaceModel.find(
+        { rider: userDB._id },
+        { _id: false, createdAt: false, updatedAt: false, creator: false }
+      )
+        .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
+        .lean();
+
+      const resultsRaceRiderAfterDto = dtoResultsRaceRider(resultsDB);
+
+      return { data: resultsRaceRiderAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

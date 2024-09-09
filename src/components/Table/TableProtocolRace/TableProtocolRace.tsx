@@ -16,7 +16,7 @@ import PermissionCheck from '@/hoc/permission-check';
 import IconRefresh from '@/components/Icons/IconRefresh';
 import IconPodium from '@/components/Icons/IconPodium';
 import IconStar from '@/components/Icons/IconStar';
-import IconChronometer from '@/components/Icons/IconChronometer';
+
 import IconTeam from '@/components/Icons/IconTeam';
 import IconSpeed from '@/components/Icons/IconSpeed';
 import IconRider from '@/components/Icons/IconRider';
@@ -27,6 +27,7 @@ import { TResultRaceDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
 import Medal from '@/components/Icons/Medal';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
+import IconChronometer from '@/components/Icons/IconChronometer';
 
 const cx = cn.bind(styles);
 
@@ -51,7 +52,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         <IconPodium tooltip={{ text: 'Занятое место в общем зачете', id: 'placeAbsolute' }} />
       ),
       accessorKey: 'positions.absolute',
-      cell: (props: any) => Medal(props.getValue()),
+      cell: (props: any) => <Medal position={props.getValue()} />,
       uniqueName: 'Место в абсолюте',
     },
     {
@@ -61,7 +62,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'positions.category',
-      cell: (props: any) => Medal(props.getValue()),
+      cell: (props: any) => <Medal position={props.getValue()} />,
       uniqueName: 'Место в категории',
     },
     {
@@ -74,7 +75,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'positions.absoluteGender',
-      cell: (props: any) => Medal(props.getValue()),
+      cell: (props: any) => <Medal position={props.getValue()} />,
       uniqueName: 'Место в абсолюте по полу',
     },
     {
@@ -137,7 +138,12 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'averageSpeed',
-      cell: (props: any) => props.getValue() && props.getValue().toFixed(1),
+      cell: (props: any) => (
+        <div className={styles.box__value}>
+          {props.getValue() && props.getValue().toFixed(1)}
+          <span className={styles.dimension}>км/ч</span>
+        </div>
+      ),
     },
     {
       header: () => (

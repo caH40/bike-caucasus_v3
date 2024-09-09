@@ -697,3 +697,13 @@ export type TResultRaceFromDB = TResultRace & {
     imageFromProvider: boolean;
   };
 };
+
+/**
+ * Данные результата райдера в заезде чемпионата для Профиля пользователя.
+ */
+export type TResultRaceRideFromDB = Omit<
+  TResultRace,
+  'championship' | 'createdAt' | 'updatedAt' | 'creator' | '_id' | 'rider' | 'profile'
+> & {
+  championship: Pick<TChampionship, 'name' | 'urlSlug' | 'races' | 'endDate'>;
+};

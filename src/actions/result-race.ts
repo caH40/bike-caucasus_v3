@@ -9,7 +9,7 @@ import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { ResultRaceService } from '@/services/ResultRace';
-import { TResultRaceDto } from '@/types/dto.types';
+import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
 
 /**
  * Сохранение результата райдера в Заезде Чемпионата.
@@ -83,6 +83,27 @@ export async function updateProtocolRace({
     const res = await resultRaceService.updateProtocolRace({
       championshipId,
       raceNumber,
+    });
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Получение протокола Заезда Чемпионата.
+ */
+export async function getResultsRaceForRider({
+  riderId,
+}: {
+  riderId: string;
+}): Promise<ResponseServer<TResultRaceRiderDto[] | null>> {
+  try {
+    const resultRaceService = new ResultRaceService();
+    const res = await resultRaceService.getForRider({
+      riderId,
     });
 
     return res;

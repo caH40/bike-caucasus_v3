@@ -107,3 +107,13 @@
 .profile {
   width: 50%;
 }
+.box__value {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  white-space: nowrap;
+}
+.dimension {
+  font-weight: 400;
+  font-size: 0.8rem;
+}

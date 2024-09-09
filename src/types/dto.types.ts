@@ -10,9 +10,11 @@ import {
   TAuthorFromUser,
   TChampionship,
   TChampionshipTypes,
+  TDisqualification,
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
+  TRace,
   TRaceRegistrationStatus,
   TRoleModel,
   TTrail,
@@ -279,4 +281,31 @@ export type TResultRaceDto = Omit<
   championship: string;
   createdAt: number;
   updatedAt: number;
+};
+
+/**
+ * Данные DTO результата райдера в заезде чемпионата.
+ */
+export type TResultRaceRiderDto = {
+  startNumber: number;
+  raceTimeInMilliseconds: number;
+  positions: {
+    category: number;
+    absolute: number;
+    absoluteGender: number;
+    manual?: number;
+  };
+  points: any;
+  disqualification?: TDisqualification;
+  categoryAge: string;
+  categorySkillLevel?: string;
+  averageSpeed?: number;
+  lapTimes?: number[];
+  remarks?: string;
+  championship: {
+    name: string;
+    urlSlug: string;
+    endDate: number;
+    race: Pick<TRace, 'ascent' | 'description' | 'distance' | 'laps' | 'name' | 'number'>;
+  };
 };

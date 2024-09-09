@@ -8,7 +8,7 @@ import styles from './icons.module.css';
 
 const cx = cn.bind(styles);
 
-export default function IconMedalGold({
+export default function IconAscent({
   isActive,
   squareSize = 24,
   getClick,
@@ -33,28 +33,19 @@ export default function IconMedalGold({
       id={tooltip?.id}
     >
       <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
+        width="30"
+        height="30"
+        viewBox="0 0 30 30"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M8.39998 0H1.91998L9.11998 14.4H15.6L8.39998 0Z" fill="#2A7726" />
-        <path d="M15.6 0H22.08L14.88 14.4H8.40002L15.6 0Z" fill="#318D2C" />
         <path
-          d="M12 9.6001C15.9763 9.6001 19.2 12.8243 19.2 16.8001C19.2 20.7764 15.9763 24.0001 12 24.0001C8.02391 24.0001 4.79999 20.7764 4.79999 16.8001C4.79999 12.8238 8.02343 9.6001 12 9.6001Z"
-          fill="#F1C40E"
-        />
-        <path
-          d="M12 11.04C8.81879 11.04 6.23999 13.6188 6.23999 16.8C6.23999 19.9812 8.81879 22.56 12 22.56C15.1812 22.56 17.76 19.9812 17.76 16.8C17.76 13.6188 15.1812 11.04 12 11.04ZM12 22.08C9.08423 22.08 6.71999 19.716 6.71999 16.8C6.71999 13.8845 9.08423 11.52 12 11.52C14.916 11.52 17.28 13.8845 17.28 16.8C17.28 19.716 14.916 22.08 12 22.08Z"
-          fill="#CAA50C"
-        />
-        <path
-          d="M13.0957 13.5V20.5H11.6895V15.0929L10 15.6206V14.5315L12.9443 13.5H13.0957Z"
-          fill="#927500"
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M14.1388 1.87402L7.12059 15.6528L4.78059 13.357C4.78059 13.357 -0.538234 24.7058 0.111178 24.7058H28.1735V24.7023L22.2829 12.1728L20.5482 13.2528L14.1388 1.87402ZM9.90177 13.2723L14.2271 4.88814L18.2594 12.0899L16.5194 13.2723L14.1547 10.9993L9.90177 13.2723Z"
+          fill="currentColor"
         />
       </svg>
-
       <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
         {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
       </Tooltip>
