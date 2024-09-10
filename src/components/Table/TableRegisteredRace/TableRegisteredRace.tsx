@@ -11,16 +11,15 @@ import {
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
-import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
-import styles from '../TableCommon.module.css';
 import TdRider from '../Td/TdRider';
-import BlockStartNumber from '@/components/BlockStartNumber/BlockStartNumber';
-
+import BlockStartNumber from '../Td/BlockStartNumber';
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
-import { getDateTime } from '@/libs/utils/calendar';
 import IconPdf from '@/components/Icons/IconPDF';
+import { getDateTime } from '@/libs/utils/calendar';
 import { getPdfRegistered } from '@/libs/pdf/registeredRace';
 import { getPdfBlankForProtocol } from '@/libs/pdf/blankForProtocol';
+import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
+import styles from '../TableCommon.module.css';
 
 const cx = cn.bind(styles);
 

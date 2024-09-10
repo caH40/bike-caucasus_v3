@@ -22,12 +22,13 @@ import IconSpeed from '@/components/Icons/IconSpeed';
 import IconRider from '@/components/Icons/IconRider';
 import IconCategory from '@/components/Icons/IconCategory';
 import IconHomePlace from '@/components/Icons/IconHomePlace';
-import { formatTimeToStr } from '@/libs/utils/timer';
 import { TResultRaceDto } from '@/types/dto.types';
-import styles from '../TableCommon.module.css';
-import Medal from '@/components/Icons/Medal';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import IconChronometer from '@/components/Icons/IconChronometer';
+import Medal from '../Td/Medal';
+import styles from '../TableCommon.module.css';
+import Time from '../Td/Time';
+import BlockStartNumber from '../Td/BlockStartNumber';
 
 const cx = cn.bind(styles);
 
@@ -86,6 +87,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'startNumber',
+      cell: (props: any) => <BlockStartNumber startNumber={props.getValue()} />,
     },
     {
       header: () => (
@@ -126,7 +128,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'raceTimeInMilliseconds',
-      cell: (props: any) => formatTimeToStr(props.getValue() || 0),
+      cell: (props: any) => <Time timeInMilliseconds={props.getValue()} />,
     },
     {
       header: () => (

@@ -12,7 +12,7 @@ import cn from 'classnames/bind';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import BlockStartNumber from '@/components/BlockStartNumber/BlockStartNumber';
+import BlockStartNumber from '../Td/BlockStartNumber';
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
 import { getDateTime } from '@/libs/utils/calendar';
 import { blurBase64 } from '@/libs/image';
@@ -28,10 +28,6 @@ type Props = {
 };
 
 const columns: ColumnDef<TRegistrationRiderDto & { index: number }>[] = [
-  // {
-  //   header: '#',
-  //   accessorKey: 'index',
-  // },
   {
     header: 'Дата старта',
     accessorKey: 'championship.startDate',

@@ -1,6 +1,6 @@
-import IconMedalBronze from './IconMedalBronze';
-import IconMedalGold from './IconMedalGold';
-import IconMedalSilver from './IconMedalSilver';
+import IconMedalBronze from '../../Icons/IconMedalBronze';
+import IconMedalGold from '../../Icons/IconMedalGold';
+import IconMedalSilver from '../../Icons/IconMedalSilver';
 
 type Props = {
   position: number;

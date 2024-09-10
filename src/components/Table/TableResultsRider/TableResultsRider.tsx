@@ -13,16 +13,16 @@ import Link from 'next/link';
 
 import { getDateTime } from '@/libs/utils/calendar';
 import { TResultRaceRiderDto } from '@/types/dto.types';
-import styles from '../TableCommon.module.css';
 import IconPodium from '@/components/Icons/IconPodium';
-import Medal from '@/components/Icons/Medal';
 import IconChronometer from '@/components/Icons/IconChronometer';
-import { formatTimeToStr } from '@/libs/utils/timer';
 import IconSpeed from '@/components/Icons/IconSpeed';
 import IconDate from '@/components/Icons/IconDate';
 import IconTitle from '@/components/Icons/IconTitle';
 import IconDistance from '@/components/Icons/IconDistance';
 import IconAscent from '@/components/Icons/IconAscent';
+import Medal from '../Td/Medal';
+import Time from '../Td/Time';
+import styles from '../TableCommon.module.css';
 
 const cx = cn.bind(styles);
 
@@ -92,7 +92,7 @@ const columns: ColumnDef<TResultRaceRiderDto & { index: number }>[] = [
       />
     ),
     accessorKey: 'raceTimeInMilliseconds',
-    cell: (props: any) => formatTimeToStr(props.getValue() || 0),
+    cell: (props: any) => <Time timeInMilliseconds={props.getValue()} />,
   },
   {
     header: () => (
