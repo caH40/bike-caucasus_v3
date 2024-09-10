@@ -13,10 +13,7 @@ export default function Time({ timeInMilliseconds = 0 }: Props) {
   return (
     <div className={styles.box__value}>
       <span>{time}</span>
-      <span className={styles.dimension}>
-        {'.'}
-        {milliseconds}
-      </span>
+      <span className={styles.dimension}>{+milliseconds > 0 && '.' + milliseconds}</span>
     </div>
   );
 }

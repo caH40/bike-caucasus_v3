@@ -37,7 +37,7 @@
 }
 .box__value {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   white-space: nowrap;
 }
 .dimension {
