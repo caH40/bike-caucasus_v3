@@ -112,6 +112,10 @@
   align-items: baseline;
   white-space: nowrap;
 }
+.box__value-position {
+  align-items: center;
+  gap: 3px;
+}
 .dimension {
   font-weight: 400;
   font-size: 0.8rem;

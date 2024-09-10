@@ -14,6 +14,7 @@ import {
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
+  TQuantityRidersFinished,
   TRace,
   TRaceRegistrationStatus,
   TRoleModel,
@@ -295,6 +296,7 @@ export type TResultRaceRiderDto = {
     absoluteGender: number;
     manual?: number;
   };
+  quantityRidersFinished: TQuantityRidersFinished;
   points: any;
   disqualification?: TDisqualification;
   categoryAge: string;

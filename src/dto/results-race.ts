@@ -63,6 +63,7 @@ function dtoResultRaceRider(result: TResultRaceRideFromDB): TResultRaceRiderDto 
   resultDto.averageSpeed = result.averageSpeed;
   resultDto.lapTimes = result.lapTimes;
   resultDto.remarks = result.remarks;
+  resultDto.quantityRidersFinished = result.quantityRidersFinished;
   resultDto.championship = championship;
 
   return resultDto;

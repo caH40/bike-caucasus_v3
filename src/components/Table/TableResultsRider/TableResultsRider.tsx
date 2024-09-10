@@ -53,7 +53,16 @@ const columns: ColumnDef<TResultRaceRiderDto & { index: number }>[] = [
       />
     ),
     accessorKey: 'positions.category',
-    cell: (props: any) => <Medal position={props.getValue()} />,
+    cell: (props: any) => {
+      return (
+        <div className={cx('box__value', 'box__value-position')}>
+          <Medal position={props.getValue()} />
+          <span className={styles.dimension}>
+            ({props.row.original.quantityRidersFinished.category})
+          </span>
+        </div>
+      );
+    },
   },
   {
     header: () => (
@@ -65,7 +74,14 @@ const columns: ColumnDef<TResultRaceRiderDto & { index: number }>[] = [
       />
     ),
     accessorKey: 'positions.absolute',
-    cell: (props: any) => <Medal position={props.getValue()} />,
+    cell: (props: any) => (
+      <div className={cx('box__value', 'box__value-position')}>
+        <Medal position={props.getValue()} />
+        <span className={styles.dimension}>
+          ({props.row.original.quantityRidersFinished.absolute})
+        </span>
+      </div>
+    ),
   },
 
   {
