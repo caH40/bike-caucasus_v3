@@ -395,8 +395,15 @@ export type TResultRace = {
   lapTimes?: number[]; // Время, затраченное на каждый круг (массив времен в миллисекундах).
   remarks?: string; // Примечания или комментарии.
   creator: mongoose.Types.ObjectId; // Ссылка на Пользователя, добавившего результат.
+  quantityRidersFinished: TQuantityRidersFinished; // Количество райдеров по категориям. Возрастные категории для каждого чемпионата уникальные и могут изменяться, поэтому данная сущность хранится в результате райдера, а не в сущности чемпионата.
   createdAt: Date;
   updatedAt: Date;
+};
+export type TQuantityRidersFinished = {
+  category: Number; // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
+  absolute: Number; // Абсолютная категория.
+  absoluteGenderMale: Number; // Абсолютная категория с делением по полу муж/жен.
+  absoluteGenderFemale: Number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
 };
 export type TDisqualification = {
   reason: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)

@@ -28,6 +28,7 @@ export default function WrapperResultsRace({ options, championship }: Props) {
   const [categories, setCategories] = useState<string[]>([]);
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
   const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
+  console.log(protocol[0]);
 
   const race = championship.races.find((race) => race.number === +raceNumber);
 

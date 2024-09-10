@@ -350,12 +350,27 @@ export class ResultRaceService {
         result.categoryAge = categoryAge;
       }
 
+      //2 Количество финишировавших в разных категориях
+      const quantityRidersFinishedMap = this.getQuantityRidersFinished({
+        results: resultsRaceDB,
+        categoriesInRace,
+      });
+
       // Сортировка всего протокола по финишному времени от меньшего к большему.
       resultsRaceDB.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
 
-      // 2. Проставление мест в возрастных категориях для мужчин и женщин.
+      // 3. Проставление мест в возрастных категориях для мужчин и женщин.
       for (const result of resultsRaceDB) {
-        // 2.1. Проставление мест для абсолюта.
+        const isFemale = result.profile.gender === 'female';
+        // 3.1 Установка счетчиков количества финишировавших райдеров в категориях.
+        result.quantityRidersFinished = {
+          category: quantityRidersFinishedMap.get(result.categoryAge) || 0,
+          absolute: quantityRidersFinishedMap.get('absolute')!,
+          absoluteGenderFemale: isFemale ? quantityRidersFinishedMap.get('absoluteFemale')! : 0,
+          absoluteGenderMale: !isFemale ? quantityRidersFinishedMap.get('absoluteMale')! : 0,
+        };
+
+        // 3.2. Проставление мест для абсолюта.
         const positionAbsolute = categoriesInRace.get('absolute')!; // Ключ 'absolute' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
         // Присваиваем текущее место в категории.
         result.positions.absolute = positionAbsolute;
@@ -363,7 +378,7 @@ export class ResultRaceService {
         // Увеличиваем счётчик мест в этой категории для следующего участника.
         categoriesInRace.set('absolute', positionAbsolute + 1);
 
-        // 2.2. Проставление мест для абсолюта по полу
+        // 3.3. Проставление мест для абсолюта по полу
         if (result.profile.gender === 'female') {
           const positionAbsoluteFemale = categoriesInRace.get('absoluteFemale')!; // Ключ 'absoluteFemale' существует так как задает при инициализации Map, поэтому positionAbsolute не может быть undefined.
 
@@ -379,7 +394,7 @@ export class ResultRaceService {
           categoriesInRace.set('absoluteMale', positionAbsoluteMale + 1);
         }
 
-        // 2.3. Проставление мест для возрастных категорий.
+        // 3.4. Проставление мест для возрастных категорий.
         const positionAge = categoriesInRace.get(result.categoryAge);
         if (!positionAge) {
           // Если категория не найдена, пропускаем (логическая ошибка).
@@ -406,10 +421,10 @@ export class ResultRaceService {
               'positions.absolute': result.positions.absolute,
               'positions.absoluteGender': result.positions.absoluteGender,
               'positions.category': result.positions.category,
+              quantityRidersFinished: result.quantityRidersFinished,
               averageSpeed: result.averageSpeed,
               categoryAge: result.categoryAge,
               // categorySkillLevel: result.categorySkillLevel,
-              // averageSpeed: result.averageSpeed,
             },
           }
         );
@@ -425,5 +440,52 @@ export class ResultRaceService {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Количество финишировавших в разных категориях.
+   *
+   * Этот метод обновляет количество финишировавших в категориях на основе результатов заездов и
+   * категории, присутствующих в `categoriesInRace`.
+   */
+  private getQuantityRidersFinished({
+    results,
+    categoriesInRace,
+  }: {
+    results: TResultRaceDocument[];
+    categoriesInRace: Map<string, number>;
+  }) {
+    const ridersInCategories = new Map<string, number>();
+
+    // Инициализация счетчиков для всех категорий с нуля.
+    for (const key of categoriesInRace.keys()) {
+      ridersInCategories.set(key, 0);
+    }
+
+    return results.reduce((acc, cur) => {
+      // Проверка и обновление счетчика для возрастной категории.
+      if (ridersInCategories.has(cur.categoryAge)) {
+        const valueCategory = ridersInCategories.get(cur.categoryAge) || 0;
+        ridersInCategories.set(cur.categoryAge, valueCategory + 1);
+      }
+
+      // Увеличение счетчика для женской категории.
+      if (cur.profile.gender === 'female') {
+        const valueFemale = ridersInCategories.get('absoluteFemale') || 0;
+        ridersInCategories.set('absoluteFemale', valueFemale + 1);
+      }
+
+      // Увеличение счетчика для мужской категории.
+      if (cur.profile.gender === 'male') {
+        const valueMale = ridersInCategories.get('absoluteMale') || 0;
+        ridersInCategories.set('absoluteMale', valueMale + 1);
+      }
+
+      // Увеличение счетчика для абсолютной категории.
+      const valueAbsolute = ridersInCategories.get('absolute') || 0;
+      ridersInCategories.set('absolute', valueAbsolute + 1);
+
+      return ridersInCategories;
+    }, ridersInCategories);
   }
 }

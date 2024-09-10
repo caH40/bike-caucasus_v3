@@ -15,6 +15,16 @@ const PositionsSchema = new Schema(
   { _id: false }
 );
 
+const QuantityRidersFinishedSchema = new Schema(
+  {
+    category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
+    absolute: Number, // Абсолютная категория.
+    absoluteGenderMale: Number, // Абсолютная категория с делением по полу муж/жен.
+    absoluteGenderFemale: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
+  },
+  { _id: false }
+);
+
 const ResultRaceSchema: Schema = new Schema<TResultRace>(
   {
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
@@ -38,6 +48,15 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
         category: 0,
         absolute: 0,
         absoluteGender: 0,
+      },
+    },
+    quantityRidersFinished: {
+      type: QuantityRidersFinishedSchema,
+      default: {
+        category: 0,
+        absolute: 0,
+        absoluteGenderMale: 0,
+        absoluteGenderFemale: 0,
       },
     },
     points: { type: Schema.Types.Mixed }, // Используем Mixed для произвольного типа данных
