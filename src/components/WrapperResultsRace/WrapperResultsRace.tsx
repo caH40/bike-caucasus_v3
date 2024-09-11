@@ -88,14 +88,26 @@ export default function WrapperResultsRace({ options, championship }: Props) {
           <ContainerProtocolRace
             protocol={protocol}
             handlerUpdateProtocolRace={handlerUpdateProtocolRace}
-            hiddenColumnHeaders={['Место в абсолюте по полу', 'Место в категории', '#']}
+            hiddenColumnHeaders={[
+              'Место в абсолюте по полу',
+              'Место в категории',
+              'Отставания в категории',
+              'Отставания в общей женской категории',
+              '#',
+            ]}
             captionTitle="Общий протокол"
           />
 
           <ContainerProtocolRace
             protocol={protocol.filter((result) => result.profile.gender === 'female')}
             handlerUpdateProtocolRace={handlerUpdateProtocolRace}
-            hiddenColumnHeaders={['Место в абсолюте', 'Место в категории', '#']}
+            hiddenColumnHeaders={[
+              'Место в абсолюте',
+              'Место в категории',
+              'Отставания в общем протоколе',
+              'Отставания в категории',
+              '#',
+            ]}
             captionTitle="Общий женский протокол"
           />
         </>
@@ -108,6 +120,8 @@ export default function WrapperResultsRace({ options, championship }: Props) {
             hiddenColumnHeaders={[
               'Место в абсолюте',
               'Место в абсолюте по полу',
+              'Отставания в общем протоколе',
+              'Отставания в общей женской категории',
               '#',
               // 'Категория',
             ]}

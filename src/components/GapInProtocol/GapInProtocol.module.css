@@ -1,0 +1,8 @@
+.gap {
+  font-size: 11px;
+  font-style: italic;
+  white-space: nowrap;
+}
+.gap__ms {
+  font-weight: 700;
+}

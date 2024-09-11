@@ -154,7 +154,10 @@ export function getQuantityRidersFinished({
 }
 
 /**
- * Функция обновления отставаний от лидера в категории и от предыдущего райдера.
+ * Рассчитывает и устанавливает временные гэпы между райдерами для различных категорий.
+ *
+ * @param results Массив результатов заезда.
+ * @param categoriesInRace Коллекция категорий с количеством участников.
  */
 export function setGaps({
   results,
@@ -163,23 +166,14 @@ export function setGaps({
   results: TResultRaceDocument[];
   categoriesInRace: Map<string, number>;
 }) {
-  const leadersInCategories = {} as {
-    [key: string]: number | null;
-  };
+  const indexesInCategories: {
+    [key: string]: { leader: number | null; prev: number };
+  } = {};
 
-  // Инициализация счетчиков лидеров для всех категорий.
+  // Инициализация счетчиков лидеров и предыдущих участников для всех категорий.
   for (const key of categoriesInRace.keys()) {
-    leadersInCategories[key] = null;
+    indexesInCategories[key] = { leader: null, prev: 0 };
   }
-
-  // Функция для расчета гэпов.
-  const calculateGaps = (index: number, leaderIndex: number, prevIndex: number) => {
-    const toLeader =
-      results[index].raceTimeInMilliseconds - results[leaderIndex].raceTimeInMilliseconds;
-    const toPrev =
-      results[index].raceTimeInMilliseconds - results[prevIndex].raceTimeInMilliseconds;
-    return { toLeader, toPrev };
-  };
 
   for (let index = 0; index < results.length; index++) {
     const result = results[index];
@@ -196,44 +190,76 @@ export function setGaps({
 
     // 1. Расчет гэпов для абсолютного зачета.
     if (index === 0) {
-      // Лидер в абсолюте
-      leadersInCategories['absolute'] = index;
+      // Лидер в абсолюте.
+      indexesInCategories['absolute'].leader = index;
     } else {
-      result.gapsInCategories.absolute = calculateGaps(index, 0, index - 1);
+      result.gapsInCategories.absolute = calculateGaps(results, index, 0, index - 1);
     }
 
     // 2. Расчет гэпов для возрастной категории.
-    if (leadersInCategories[categoryAge] === null) {
-      leadersInCategories[categoryAge] = index; // Лидер в категории
+    const indexLeaderCategory = indexesInCategories[categoryAge].leader; // Индекс лидера в категории.
+    if (indexLeaderCategory === null) {
+      indexesInCategories[categoryAge].leader = index; // Лидер в категории.
+      indexesInCategories[categoryAge].prev = index; // Предыдущий в категории.
     } else {
       result.gapsInCategories.category = calculateGaps(
+        results,
         index,
-        leadersInCategories[categoryAge]!,
-        index - 1
+        indexLeaderCategory,
+        indexesInCategories[categoryAge].prev
       );
+      indexesInCategories[categoryAge].prev = index; // Установка счетчика предыдущего райдера.
     }
 
     // 3. Расчет гэпов для пола.
     if (gender === 'female') {
-      if (leadersInCategories['absoluteFemale'] === null) {
-        leadersInCategories['absoluteFemale'] = index; // Лидер среди женщин
+      if (indexesInCategories['absoluteFemale'].leader === null) {
+        indexesInCategories['absoluteFemale'].leader = index; // Лидер среди женщин.
+        indexesInCategories['absoluteFemale'].prev = index; // Предыдущий среди женщин.
       } else {
         result.gapsInCategories.absoluteGenderFemale = calculateGaps(
+          results,
           index,
-          leadersInCategories['absoluteFemale']!,
-          index - 1
+          indexesInCategories['absoluteFemale']!.leader,
+          indexesInCategories['absoluteFemale'].prev
         );
+        indexesInCategories['absoluteFemale'].prev = index; // Установка счетчика предыдущего райдера.
       }
     } else {
-      if (leadersInCategories['absoluteMale'] === null) {
-        leadersInCategories['absoluteMale'] = index; // Лидер среди мужчин
+      if (indexesInCategories['absoluteMale'].leader === null) {
+        indexesInCategories['absoluteMale'].leader = index; // Лидер среди мужчин.
+        indexesInCategories['absoluteMale'].prev = index; // Предыдущий среди мужчин.
       } else {
         result.gapsInCategories.absoluteGenderMale = calculateGaps(
+          results,
           index,
-          leadersInCategories['absoluteMale']!,
-          index - 1
+          indexesInCategories['absoluteMale']!.leader,
+          indexesInCategories['absoluteMale'].prev
         );
+        indexesInCategories['absoluteMale'].prev = index; // Установка счетчика предыдущего райдера.
       }
     }
   }
+}
+
+/**
+ * Рассчитывает временные гэпы.
+ *
+ * @param index Индекс текущего райдера.
+ * @param leaderIndex Индекс лидера в категории.
+ * @param prevIndex Индекс предыдущего райдера в категории.
+ * @returns Объект с гэпами к лидеру и предыдущему райдеру.
+ */
+function calculateGaps(
+  results: TResultRaceDocument[],
+  index: number,
+  leaderIndex: number,
+  prevIndex: number
+) {
+  const toLeader =
+    results[index].raceTimeInMilliseconds - results[leaderIndex].raceTimeInMilliseconds;
+  const toPrev =
+    results[index].raceTimeInMilliseconds - results[prevIndex].raceTimeInMilliseconds;
+
+  return { toLeader, toPrev };
 }

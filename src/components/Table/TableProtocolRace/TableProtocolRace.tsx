@@ -29,6 +29,7 @@ import Medal from '../Td/Medal';
 import styles from '../TableCommon.module.css';
 import Time from '../Td/Time';
 import BlockStartNumber from '../Td/BlockStartNumber';
+import TdGap from '@/components/GapInProtocol/GapInProtocol';
 
 const cx = cn.bind(styles);
 
@@ -130,6 +131,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
       accessorKey: 'raceTimeInMilliseconds',
       cell: (props: any) => <Time timeInMilliseconds={props.getValue()} />,
     },
+    // ===================== Отставания в общей категории =====================
     {
       header: () => (
         <IconChronometer
@@ -140,7 +142,10 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'gapsInCategories.absolute.toLeader',
-      cell: (props: any) => props.row.original.gapsInCategories?.absolute?.toLeader,
+      cell: (props: any) => (
+        <TdGap gap={props.row.original.gapsInCategories?.absolute?.toLeader} />
+      ),
+      uniqueName: 'Отставания в общем протоколе',
     },
     {
       header: () => (
@@ -152,7 +157,72 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'gapsInCategories.absolute.toPrev',
-      cell: (props: any) => props.row.original.gapsInCategories?.absolute?.toPrev,
+      cell: (props: any) => (
+        <TdGap gap={props.row.original.gapsInCategories?.absolute?.toPrev} />
+      ),
+      uniqueName: 'Отставания в общем протоколе',
+    },
+    // ===================== Отставания в категории =====================
+    {
+      header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Отставание от лидера в категории',
+            id: 'gapToLeader',
+          }}
+        />
+      ),
+      accessorKey: 'gapsInCategories.category.toLeader',
+      cell: (props: any) => (
+        <TdGap gap={props.row.original.gapsInCategories?.category?.toLeader} />
+      ),
+      uniqueName: 'Отставания в категории',
+    },
+    {
+      header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Отставание от райдера впереди',
+            id: 'gapToPrev',
+          }}
+        />
+      ),
+      accessorKey: 'gapsInCategories.category.toPrev',
+      cell: (props: any) => (
+        <TdGap gap={props.row.original.gapsInCategories?.category?.toPrev} />
+      ),
+      uniqueName: 'Отставания в категории',
+    },
+    // ===================== Отставания в общей женской категории =====================
+    {
+      header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Отставание от лидера общей женской категории',
+            id: 'gapToLeader',
+          }}
+        />
+      ),
+      accessorKey: 'gapsInCategories.absoluteGenderFemale.toLeader',
+      cell: (props: any) => (
+        <TdGap gap={props.row.original.gapsInCategories?.absoluteGenderFemale?.toLeader} />
+      ),
+      uniqueName: 'Отставания в общей женской категории',
+    },
+    {
+      header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Отставание от райдера впереди',
+            id: 'gapToPrev',
+          }}
+        />
+      ),
+      accessorKey: 'gapsInCategories.absoluteGenderFemale.toPrev',
+      cell: (props: any) => (
+        <TdGap gap={props.row.original.gapsInCategories?.absoluteGenderFemale?.toPrev} />
+      ),
+      uniqueName: 'Отставания в общей женской категории',
     },
     {
       header: () => (
@@ -226,6 +296,7 @@ export default function TableProtocolRace({
   const data = useMemo(() => {
     return [...protocol].map((elm, index) => ({ ...elm, index: index + 1 }));
   }, [protocol]);
+  // console.log(protocol.find((res) => res.startNumber === 1));
 
   // Скрытие столбцов которые есть в массиве hide
   const columns = allColumns.filter((column) => {

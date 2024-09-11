@@ -110,8 +110,14 @@ export default function WrapperProtocolRace({
       <ContainerProtocolRace
         protocol={protocol}
         handlerUpdateProtocolRace={handlerUpdateProtocolRace}
-        hiddenColumnHeaders={['Место в абсолюте по полу', 'Место в категории', '#']}
-        captionTitle="Абсолютный протокол"
+        hiddenColumnHeaders={[
+          'Место в абсолюте по полу',
+          'Место в категории',
+          'Отставания в категории',
+          'Отставания в общей женской категории',
+          '#',
+        ]}
+        captionTitle="Общий протокол"
       />
 
       {categories.map((category) => (
@@ -119,7 +125,13 @@ export default function WrapperProtocolRace({
           key={category}
           protocol={protocol.filter((result) => result.categoryAge === category)}
           handlerUpdateProtocolRace={handlerUpdateProtocolRace}
-          hiddenColumnHeaders={['Место в абсолюте', 'Место в абсолюте по полу', '#']}
+          hiddenColumnHeaders={[
+            'Место в абсолюте',
+            'Место в абсолюте по полу',
+            'Отставания в общем протоколе',
+            'Отставания в общей женской категории',
+            '#',
+          ]}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
         />
       ))}
