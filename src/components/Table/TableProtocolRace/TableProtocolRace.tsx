@@ -30,6 +30,8 @@ import styles from '../TableCommon.module.css';
 import Time from '../Td/Time';
 import BlockStartNumber from '../Td/BlockStartNumber';
 import TdGap from '@/components/GapInProtocol/GapInProtocol';
+import IconGapLeader from '@/components/Icons/IconGapLeader';
+import IconGapPrev from '@/components/Icons/IconGapPrev';
 
 const cx = cn.bind(styles);
 
@@ -134,7 +136,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     // ===================== Отставания в общей категории =====================
     {
       header: () => (
-        <IconChronometer
+        <IconGapLeader
           tooltip={{
             text: 'Отставание от лидера',
             id: 'gapToLeader',
@@ -149,7 +151,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     },
     {
       header: () => (
-        <IconChronometer
+        <IconGapPrev
           tooltip={{
             text: 'Отставание от райдера впереди',
             id: 'gapToPrev',
@@ -165,7 +167,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     // ===================== Отставания в категории =====================
     {
       header: () => (
-        <IconChronometer
+        <IconGapLeader
           tooltip={{
             text: 'Отставание от лидера в категории',
             id: 'gapToLeader',
@@ -180,7 +182,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     },
     {
       header: () => (
-        <IconChronometer
+        <IconGapPrev
           tooltip={{
             text: 'Отставание от райдера впереди',
             id: 'gapToPrev',
@@ -196,7 +198,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     // ===================== Отставания в общей женской категории =====================
     {
       header: () => (
-        <IconChronometer
+        <IconGapLeader
           tooltip={{
             text: 'Отставание от лидера общей женской категории',
             id: 'gapToLeader',
@@ -211,7 +213,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     },
     {
       header: () => (
-        <IconChronometer
+        <IconGapPrev
           tooltip={{
             text: 'Отставание от райдера впереди',
             id: 'gapToPrev',
