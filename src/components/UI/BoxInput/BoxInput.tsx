@@ -20,6 +20,9 @@ export default function BoxInput({
   hideCheckmark,
   ...props
 }: PropsBoxInput) {
+  // Отключение отправки формы при нажатии Enter в полу input.
+  const handlerEnter = (e: React.KeyboardEvent<HTMLInputElement>) => e.preventDefault();
+
   return (
     <div className={styles.wrapper}>
       <label className={styles.label} htmlFor={id}>
@@ -37,6 +40,7 @@ export default function BoxInput({
           {...register}
           className={cx('input', loading, { hideCheckmark: hideCheckmark })}
           disabled={disabled || loading}
+          onKeyDown={handlerEnter}
         />
         {!hideCheckmark && (
           <div className={styles.checkmark}>
