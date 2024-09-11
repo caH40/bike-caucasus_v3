@@ -402,14 +402,20 @@ export class ResultRaceService {
       await this.dbConnection();
 
       // Получение данных заезда.
-      const resultDB = await ResultRaceModel.findOneAndDelete({ _id });
-      console.log(resultDB);
-
-      return {
-        data: null,
-        ok: true,
-        message: 'Результат удалён!',
-      };
+      const resultDB = await ResultRaceModel.findOneAndDelete({ _id }, { profile: true });
+      if (resultDB) {
+        return {
+          data: null,
+          ok: true,
+          message: `Результат райдера ${resultDB.profile.lastName}${resultDB.profile.firstName} - удалён!`,
+        };
+      } else {
+        return {
+          data: null,
+          ok: false,
+          message: `Не найден запрашиваемый результат с _id:${_id}`,
+        };
+      }
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
