@@ -391,4 +391,28 @@ export class ResultRaceService {
       )
     );
   }
+
+  /**
+   * Удаление результата.
+  
+   */
+  public async delete({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Получение данных заезда.
+      const resultDB = await ResultRaceModel.findOneAndDelete({ _id });
+      console.log(resultDB);
+
+      return {
+        data: null,
+        ok: true,
+        message: 'Результат удалён!',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
 }

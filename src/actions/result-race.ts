@@ -112,3 +112,20 @@ export async function getResultsRaceForRider({
     return handlerErrorDB(error);
   }
 }
+
+/**
+ * Удаление результата Заезда райдера из протокола.
+ */
+export async function deleteResult({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+  try {
+    const resultRaceService = new ResultRaceService();
+    const res = await resultRaceService.delete({
+      _id,
+    });
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
