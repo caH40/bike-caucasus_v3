@@ -18,10 +18,15 @@ export default function BoxInput({
   loading,
   tooltip,
   hideCheckmark,
+  hasError,
   ...props
 }: PropsBoxInput) {
   // Отключение отправки формы при нажатии Enter в полу input.
-  const handlerEnter = (e: React.KeyboardEvent<HTMLInputElement>) => e.preventDefault();
+  const handlerEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -38,7 +43,10 @@ export default function BoxInput({
           {...(props.type === 'number' && { step: 0.1 })}
           {...props}
           {...register}
-          className={cx('input', loading, { hideCheckmark: hideCheckmark })}
+          className={cx('input', loading, {
+            hideCheckmark: hideCheckmark,
+            hasError: hasError,
+          })}
           disabled={disabled || loading}
           onKeyDown={handlerEnter}
         />

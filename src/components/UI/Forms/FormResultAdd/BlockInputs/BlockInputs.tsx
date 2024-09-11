@@ -39,6 +39,7 @@ export default function BlockInputsRegisteredRider({
               maxLength: { value: 25, message: '< 25' },
             })}
             validationText={errors.rider?.lastName?.message}
+            hasError={!!errors.rider?.lastName?.message}
             hideCheckmark={true}
           />
 
@@ -54,6 +55,7 @@ export default function BlockInputsRegisteredRider({
               maxLength: { value: 20, message: '< 20' },
             })}
             validationText={errors.rider?.firstName?.message}
+            hasError={!!errors.rider?.firstName?.message}
             hideCheckmark={true}
           />
 
@@ -90,6 +92,7 @@ export default function BlockInputsRegisteredRider({
                 : true,
           })}
           validationText={errors.newStartNumber?.message}
+          hasError={!!errors.newStartNumber?.message}
           hideCheckmark={true}
         />
 
@@ -119,6 +122,7 @@ export default function BlockInputsRegisteredRider({
               },
             })}
             validationText={errors.rider?.yearBirthday?.message}
+            hasError={!!errors.rider?.yearBirthday?.message}
             hideCheckmark={true}
           />
         </div>
@@ -136,6 +140,7 @@ export default function BlockInputsRegisteredRider({
               maxLength: { value: 30, message: '< 30' },
             })}
             validationText={errors.rider?.city?.message}
+            hasError={!!errors.rider?.city?.message}
             hideCheckmark={true}
           />
 
@@ -151,6 +156,7 @@ export default function BlockInputsRegisteredRider({
               maxLength: { value: 30, message: '< 30' },
             })}
             validationText={errors.rider?.team?.message}
+            hasError={!!errors.rider?.team?.message}
             hideCheckmark={true}
           />
         </div>

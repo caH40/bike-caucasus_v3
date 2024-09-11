@@ -58,6 +58,9 @@
   align-items: center;
   gap: 3px;
 }
+.hasError {
+  border: 1px solid var(--error);
+}
 /* ====================================================================== */
 @media (max-width: 576px) {
   .input {

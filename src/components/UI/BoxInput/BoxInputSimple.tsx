@@ -22,11 +22,15 @@ export default function BoxInputSimple<T>({
   hideCheckmark,
   name,
   type,
-
+  hasError,
   ...props
 }: PropsBoxInputSimple<T>) {
   // Отключение отправки формы при нажатии Enter в полу input.
-  const handlerEnter = (e: React.KeyboardEvent<HTMLInputElement>) => e.preventDefault();
+  const handlerEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -41,7 +45,7 @@ export default function BoxInputSimple<T>({
             handlerInput((type === 'number' ? +e.target.value : e.target.value) as T)
           }
           value={value}
-          className={cx('input', loading, { hideCheckmark: hideCheckmark })}
+          className={cx('input', loading, { hideCheckmark: hideCheckmark, hasError: hasError })}
           disabled={disabled || loading}
           onKeyDown={handlerEnter}
         />

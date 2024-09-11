@@ -30,6 +30,7 @@ export default function BlockInputsTime({ register, errors }: Props) {
             },
           })}
           hideCheckmark={true}
+          hasError={!!errors.time?.hours?.message}
         />
 
         <BoxInput
@@ -45,6 +46,7 @@ export default function BlockInputsTime({ register, errors }: Props) {
             },
           })}
           hideCheckmark={true}
+          hasError={!!errors.time?.minutes?.message}
         />
 
         <BoxInput
@@ -59,6 +61,7 @@ export default function BlockInputsTime({ register, errors }: Props) {
             },
           })}
           hideCheckmark={true}
+          hasError={!!errors.time?.seconds?.message}
         />
 
         <BoxInput
@@ -73,6 +76,7 @@ export default function BlockInputsTime({ register, errors }: Props) {
             },
           })}
           hideCheckmark={true}
+          hasError={!!errors.time?.milliseconds?.message}
         />
       </div>
 
