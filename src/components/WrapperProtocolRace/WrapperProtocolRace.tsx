@@ -13,6 +13,7 @@ import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerPro
 import { getProtocolRace, updateProtocolRace } from '@/actions/result-race';
 import { toast } from 'sonner';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
+import { useResultsRace } from '@/store/results';
 
 type Props = {
   options: TOptions[];
@@ -37,7 +38,8 @@ export default function WrapperProtocolRace({
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
+  const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
+  const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
   const race = championship.races.find((race) => race.number === +raceNumber);
 
@@ -82,7 +84,7 @@ export default function WrapperProtocolRace({
 
     if (response.ok) {
       toast.success(response.message);
-      setTriggerResultTable((prev) => !prev);
+      setTriggerResultTable();
     } else {
       toast.error(response.message);
     }

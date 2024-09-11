@@ -33,7 +33,6 @@ import TdGap from '@/components/GapInProtocol/GapInProtocol';
 import IconGapLeader from '@/components/Icons/IconGapLeader';
 import IconGapPrev from '@/components/Icons/IconGapPrev';
 import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerationResult';
-import IconEdit from '@/components/Icons/IconEdit';
 import IconEditOld from '@/components/Icons/IconEditOld';
 
 const cx = cn.bind(styles);

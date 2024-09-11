@@ -3,6 +3,7 @@ import IconDelete from '@/components/Icons/IconDelete';
 import styles from './BlockModeration.module.css';
 import { deleteResult } from '@/actions/result-race';
 import { toast } from 'sonner';
+import { useResultsRace } from '@/store/results';
 
 type Props = {
   resultIdDB: string; // id результата в БД.
@@ -12,6 +13,8 @@ type Props = {
  * Блок Модерации результата райдера из Таблицы результатов.
  */
 export default function BlockModerationResult({ resultIdDB }: Props): JSX.Element {
+  const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
+
   const editItem = (id: string) => {
     console.log(id);
   };
@@ -25,7 +28,7 @@ export default function BlockModerationResult({ resultIdDB }: Props): JSX.Elemen
 
     if (res.ok) {
       toast.success(res.message);
-      // установить тригер обновления данных!
+      setTriggerResultTable();
     } else {
       toast.error(res.message);
     }
