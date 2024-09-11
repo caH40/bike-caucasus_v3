@@ -1,4 +1,8 @@
-import { TResultRace } from '@/types/models.interface';
+import {
+  TGapsInCategories,
+  TQuantityRidersFinished,
+  TResultRace,
+} from '@/types/models.interface';
 import { Schema, Model, models, model } from 'mongoose';
 
 /**
@@ -15,12 +19,30 @@ const PositionsSchema = new Schema(
   { _id: false }
 );
 
-const QuantityRidersFinishedSchema = new Schema(
+const QuantityRidersFinishedSchema = new Schema<TQuantityRidersFinished>(
   {
     category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
     absolute: Number, // Абсолютная категория.
     absoluteGenderMale: Number, // Абсолютная категория с делением по полу муж/жен.
     absoluteGenderFemale: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
+  },
+  { _id: false }
+);
+
+const GapsInCategoriesSchema = new Schema<TGapsInCategories>(
+  {
+    category: { type: { toLeader: Number, toPrev: Number }, default: null, _id: false },
+    absolute: { type: { toLeader: Number, toPrev: Number }, default: null, _id: false },
+    absoluteGenderMale: {
+      type: { toLeader: Number, toPrev: Number },
+      default: null,
+      _id: false,
+    },
+    absoluteGenderFemale: {
+      type: { toLeader: Number, toPrev: Number },
+      default: null,
+      _id: false,
+    },
   },
   { _id: false }
 );
@@ -59,6 +81,7 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
         absoluteGenderFemale: 0,
       },
     },
+    gapsInCategories: GapsInCategoriesSchema,
     points: { type: Schema.Types.Mixed }, // Используем Mixed для произвольного типа данных
     disqualification: {
       reason: { type: String }, // 'DNF' | 'DSQ' | 'DNS'

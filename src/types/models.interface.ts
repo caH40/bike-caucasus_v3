@@ -396,14 +396,15 @@ export type TResultRace = {
   remarks?: string; // Примечания или комментарии.
   creator: mongoose.Types.ObjectId; // Ссылка на Пользователя, добавившего результат.
   quantityRidersFinished: TQuantityRidersFinished; // Количество райдеров по категориям. Возрастные категории для каждого чемпионата уникальные и могут изменяться, поэтому данная сущность хранится в результате райдера, а не в сущности чемпионата.
+  gapsInCategories: TGapsInCategories; // Гэпы до лидера и до предыдущего райдера для каждой категории.
   createdAt: Date;
   updatedAt: Date;
 };
 export type TQuantityRidersFinished = {
-  category: Number; // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
-  absolute: Number; // Абсолютная категория.
-  absoluteGenderMale: Number; // Абсолютная категория с делением по полу муж/жен.
-  absoluteGenderFemale: Number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
+  category: number; // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
+  absolute: number; // Абсолютная категория.
+  absoluteGenderMale: number; // Абсолютная категория с делением по полу муж/жен.
+  absoluteGenderFemale: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
 };
 export type TDisqualification = {
   reason: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
@@ -418,3 +419,10 @@ export type TProfileRiderInProtocol = {
   yearBirthday: number; // Год рождения.
   gender: 'male' | 'female';
 };
+export type TGapsInCategories = {
+  category: TGap | null;
+  absolute: TGap | null;
+  absoluteGenderMale: TGap | null;
+  absoluteGenderFemale: TGap | null;
+};
+export type TGap = { toLeader: number | null; toPrev: number | null }; // null если райдер является лидером и никого нет впереди.

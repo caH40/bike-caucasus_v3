@@ -17,7 +17,7 @@ import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
 import { getCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
-import { processResults } from '@/libs/results';
+import { processResults } from '@/libs/utils/results';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -383,6 +383,7 @@ export class ResultRaceService {
               quantityRidersFinished: result.quantityRidersFinished,
               averageSpeed: result.averageSpeed,
               categoryAge: result.categoryAge,
+              gapsInCategories: result.gapsInCategories,
               // categorySkillLevel: result.categorySkillLevel,
             },
           }

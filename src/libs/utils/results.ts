@@ -1,6 +1,6 @@
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
-import { getCategoryAge } from './utils/age-category';
-import { calculateAverageSpeed } from './utils/championship';
+import { getCategoryAge } from './age-category';
+import { calculateAverageSpeed } from './championship';
 
 /**
  * Обрабатывает результаты заезда, обновляет счетчики и категории.
@@ -46,6 +46,12 @@ export function processResults({
 
   // Сортировка по финишному времени.
   results.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+
+  // Количество финишировавших в категориях.
+  setGaps({
+    results,
+    categoriesInRace,
+  });
 
   // Установка мест и средней скорости.
   results.forEach((result) => {
@@ -145,4 +151,89 @@ export function getQuantityRidersFinished({
 
     return ridersInCategories;
   }, ridersInCategories);
+}
+
+/**
+ * Функция обновления отставаний от лидера в категории и от предыдущего райдера.
+ */
+export function setGaps({
+  results,
+  categoriesInRace,
+}: {
+  results: TResultRaceDocument[];
+  categoriesInRace: Map<string, number>;
+}) {
+  const leadersInCategories = {} as {
+    [key: string]: number | null;
+  };
+
+  // Инициализация счетчиков лидеров для всех категорий.
+  for (const key of categoriesInRace.keys()) {
+    leadersInCategories[key] = null;
+  }
+
+  // Функция для расчета гэпов.
+  const calculateGaps = (index: number, leaderIndex: number, prevIndex: number) => {
+    const toLeader =
+      results[index].raceTimeInMilliseconds - results[leaderIndex].raceTimeInMilliseconds;
+    const toPrev =
+      results[index].raceTimeInMilliseconds - results[prevIndex].raceTimeInMilliseconds;
+    return { toLeader, toPrev };
+  };
+
+  for (let index = 0; index < results.length; index++) {
+    const result = results[index];
+    const categoryAge = result.categoryAge;
+    const gender = result.profile.gender;
+
+    // Инициализация полей gapsInCategories.
+    result.gapsInCategories = {
+      absolute: null,
+      category: null,
+      absoluteGenderMale: null,
+      absoluteGenderFemale: null,
+    };
+
+    // 1. Расчет гэпов для абсолютного зачета.
+    if (index === 0) {
+      // Лидер в абсолюте
+      leadersInCategories['absolute'] = index;
+    } else {
+      result.gapsInCategories.absolute = calculateGaps(index, 0, index - 1);
+    }
+
+    // 2. Расчет гэпов для возрастной категории.
+    if (leadersInCategories[categoryAge] === null) {
+      leadersInCategories[categoryAge] = index; // Лидер в категории
+    } else {
+      result.gapsInCategories.category = calculateGaps(
+        index,
+        leadersInCategories[categoryAge]!,
+        index - 1
+      );
+    }
+
+    // 3. Расчет гэпов для пола.
+    if (gender === 'female') {
+      if (leadersInCategories['absoluteFemale'] === null) {
+        leadersInCategories['absoluteFemale'] = index; // Лидер среди женщин
+      } else {
+        result.gapsInCategories.absoluteGenderFemale = calculateGaps(
+          index,
+          leadersInCategories['absoluteFemale']!,
+          index - 1
+        );
+      }
+    } else {
+      if (leadersInCategories['absoluteMale'] === null) {
+        leadersInCategories['absoluteMale'] = index; // Лидер среди мужчин
+      } else {
+        result.gapsInCategories.absoluteGenderMale = calculateGaps(
+          index,
+          leadersInCategories['absoluteMale']!,
+          index - 1
+        );
+      }
+    }
+  }
 }

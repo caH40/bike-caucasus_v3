@@ -132,6 +132,30 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     },
     {
       header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Отставание от лидера',
+            id: 'gapToLeader',
+          }}
+        />
+      ),
+      accessorKey: 'gapsInCategories.absolute.toLeader',
+      cell: (props: any) => props.row.original.gapsInCategories?.absolute?.toLeader,
+    },
+    {
+      header: () => (
+        <IconChronometer
+          tooltip={{
+            text: 'Отставание от райдера впереди',
+            id: 'gapToPrev',
+          }}
+        />
+      ),
+      accessorKey: 'gapsInCategories.absolute.toPrev',
+      cell: (props: any) => props.row.original.gapsInCategories?.absolute?.toPrev,
+    },
+    {
+      header: () => (
         <IconSpeed
           tooltip={{
             text: 'Средняя скорость на дистанции',
