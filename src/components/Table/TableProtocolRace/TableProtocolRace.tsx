@@ -201,7 +201,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         <IconGapLeader
           tooltip={{
             text: 'Отставание от лидера общей женской категории',
-            id: 'gapToLeader',
+            id: 'gapToLeaderFemale',
           }}
         />
       ),

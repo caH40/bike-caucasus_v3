@@ -86,7 +86,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxInput
           label="Фамилия:*"
-          id="lastName"
+          id="lastName-FormProfile"
           autoComplete="family-name"
           type="text"
           defaultValue={formData.person.lastName}
@@ -96,7 +96,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxInput
           label="Имя:*"
-          id="firstName"
+          id="firstName-FormProfile"
           autoComplete="name"
           type="text"
           defaultValue={formData.person.firstName}
@@ -106,7 +106,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxInput
           label="Отчество:"
-          id="patronymic"
+          id="patronymic-FormProfile"
           autoComplete="offered"
           type="text"
           defaultValue={formData.person.patronymic}
@@ -116,7 +116,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxSelect
           label="Пол:"
-          id="gender"
+          id="gender-FormProfile"
           autoComplete="offered"
           type="text"
           defaultValue={formData.person.patronymic || 'мужской'}
@@ -126,7 +126,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxInput
           label="Дата рождения:*"
-          id="birthday"
+          id="birthday-FormProfile"
           autoComplete="off"
           type="date"
           min="1920-01-01"
@@ -138,7 +138,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxInput
           label="Город:"
-          id="city"
+          id="city-FormProfile"
           autoComplete="offered"
           type="text"
           defaultValue={formData.city}
@@ -148,7 +148,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
         />
         <BoxTextarea
           label="О себе:"
-          id="bio"
+          id="bio-FormProfile"
           autoComplete="offered"
           type="text"
           defaultValue={formData.person.bio}

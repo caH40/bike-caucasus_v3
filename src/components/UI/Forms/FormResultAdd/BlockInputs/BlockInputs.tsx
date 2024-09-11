@@ -29,7 +29,7 @@ export default function BlockInputsRegisteredRider({
         <div className={styles.wrapper__hor}>
           <BoxInput
             label={'Фамилия:*'}
-            id="riderLastName"
+            id="riderLastName-BlockInputsRegisteredRider"
             autoComplete="off"
             type="text"
             defaultValue={''}
@@ -44,7 +44,7 @@ export default function BlockInputsRegisteredRider({
 
           <BoxInput
             label={'Имя:*'}
-            id="riderFirstName"
+            id="riderFirstName-BlockInputsRegisteredRider"
             autoComplete="off"
             type="text"
             defaultValue={''}
@@ -59,7 +59,7 @@ export default function BlockInputsRegisteredRider({
 
           <BoxInput
             label={'Отчество:'}
-            id="riderPatronymic"
+            id="riderPatronymic-BlockInputsRegisteredRider"
             autoComplete="off"
             type="text"
             defaultValue={''}
@@ -70,7 +70,7 @@ export default function BlockInputsRegisteredRider({
 
         <BoxInput
           label={'Новый стартовый номер:'}
-          id="newStartNumber"
+          id="newStartNumber-BlockInputsRegisteredRider"
           autoComplete="off"
           type="number"
           defaultValue={'0'}
@@ -96,7 +96,7 @@ export default function BlockInputsRegisteredRider({
         <div className={styles.wrapper__hor}>
           <BoxSelectNew
             label="Пол:*"
-            id="gender"
+            id="gender-BlockInputsRegisteredRider"
             defaultValue={'мужской'}
             // loading={loading}
             options={genderOptions}
@@ -107,7 +107,7 @@ export default function BlockInputsRegisteredRider({
 
           <BoxInput
             label="Год рождения:*"
-            id="birthday"
+            id="birthday-BlockInputsRegisteredRider"
             autoComplete="off"
             type="number"
             // loading={loading}
@@ -125,7 +125,7 @@ export default function BlockInputsRegisteredRider({
         <div className={styles.wrapper__hor}>
           <BoxInput
             label="Город:*"
-            id="city"
+            id="city-BlockInputsRegisteredRider"
             autoComplete="offered"
             type="text"
             defaultValue={''}
@@ -141,7 +141,7 @@ export default function BlockInputsRegisteredRider({
 
           <BoxInput
             label="Команда:"
-            id="team"
+            id="team-BlockInputsRegisteredRider"
             autoComplete="offered"
             type="text"
             defaultValue={''}
