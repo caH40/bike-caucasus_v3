@@ -40,6 +40,7 @@ export default async function ChampionshipResults({ params: { urlSlug } }: Props
     translation: `Заезд №${race.number}: ${race.name}`,
     name: String(race.number),
   }));
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>

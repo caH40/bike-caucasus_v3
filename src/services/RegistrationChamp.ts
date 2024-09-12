@@ -246,7 +246,7 @@ export class RegistrationChampService {
       // Подключение к БД.
       await this.dbConnection();
 
-      // Проверка существования Чемпионата.
+      // Проверка существования Чемпионата и заезда raceNumber в нём.
       const champ: {
         _id: ObjectId;
         races: TRace[];
@@ -255,6 +255,7 @@ export class RegistrationChampService {
       } | null = await ChampionshipModel.findOne(
         {
           urlSlug,
+          'races.number': raceNumber,
         },
         {
           _id: true,
@@ -265,7 +266,9 @@ export class RegistrationChampService {
       ).lean();
 
       if (!champ) {
-        throw new Error('Не найден Чемпионат с Заездом!');
+        throw new Error(
+          `Не найден чемпионат с urlSlug:"${urlSlug}" и заездом №${raceNumber} для добавления финишного результата!`
+        );
       }
 
       const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(

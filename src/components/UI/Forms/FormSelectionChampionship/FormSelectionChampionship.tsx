@@ -21,7 +21,7 @@ export default function FormSelectionChampionship({ options }: Props) {
       return;
     }
 
-    router.push(`/moderation/championship/protocol/${urlSlug}`);
+    router.push(`/moderation/championship/protocol/${urlSlug}/1`);
   }, [urlSlug, router]);
 
   return (
