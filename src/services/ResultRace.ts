@@ -480,8 +480,8 @@ export class ResultRaceService {
         profile: {
           firstName: dataDeserialized.firstName,
           lastName: dataDeserialized.lastName,
-          patronymic: dataDeserialized.patronymic || '',
-          team: dataDeserialized.team || '',
+          patronymic: dataDeserialized.patronymic || null,
+          team: dataDeserialized.team || null,
           city: dataDeserialized.city,
           yearBirthday: dataDeserialized.yearBirthday,
           gender: dataDeserialized.gender,
