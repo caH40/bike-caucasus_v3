@@ -52,5 +52,6 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
     registeredRiders: race.registeredRiders || [],
     categoriesAgeFemale: race.categoriesAgeFemale,
     categoriesAgeMale: race.categoriesAgeMale,
+    quantityRidersFinished: race.quantityRidersFinished,
   }));
 }

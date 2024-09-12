@@ -95,12 +95,28 @@ export default function ChampionshipCard({ championship, simple }: Props) {
               </>
             )}
 
-            {/* до появления протокола указывать количество зарегистрировавшихся, после протоколов - количество участвовавших участников */}
-            <dt className={styles.list__name}>Участники:</dt>
-            <dd className={styles.list__desc}>
-              {championship.races.reduce((acc, cur) => (acc += cur.registeredRiders.length), 0)}{' '}
-              чел.{' '}
-            </dd>
+            {/* До появления протокола указывать количество зарегистрировавшихся, после протоколов - количество участвовавших участников */}
+            {['completed', 'cancelled'].includes(championship.status) ? (
+              <>
+                <dt className={styles.list__name}>Участники:</dt>
+                <dd className={styles.list__desc}>
+                  {championship.races.reduce(
+                    (acc, cur) => (acc += cur.quantityRidersFinished),
+                    0
+                  )}
+                </dd>
+              </>
+            ) : (
+              <>
+                <dt className={styles.list__name}>Зарегистрировано:</dt>
+                <dd className={styles.list__desc}>
+                  {championship.races.reduce(
+                    (acc, cur) => (acc += cur.registeredRiders.length),
+                    0
+                  )}
+                </dd>
+              </>
+            )}
           </dl>
         </div>
       </div>

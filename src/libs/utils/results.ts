@@ -17,6 +17,7 @@ export function processResults({
   race: TRace;
 }): {
   resultsUpdated: TResultRaceDocument[];
+  quantityRidersFinished: number;
 } {
   // Инициализация коллекции мест по категориям.
   const categoriesInRace = new Map<string, number>([
@@ -59,7 +60,10 @@ export function processResults({
     result.averageSpeed = calculateAverageSpeed(race.distance, result.raceTimeInMilliseconds);
   });
 
-  return { resultsUpdated: [...results] };
+  return {
+    resultsUpdated: [...results],
+    quantityRidersFinished: quantityRidersFinishedMap.get('absolute') || 0,
+  };
 }
 
 /**

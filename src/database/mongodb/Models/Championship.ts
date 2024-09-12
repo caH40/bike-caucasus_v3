@@ -41,6 +41,7 @@ const raceSchema = new Schema<TRace>(
     ],
     categoriesAgeFemale: [{ type: categoryAgeSchema, default: [] }],
     categoriesAgeMale: [{ type: categoryAgeSchema, default: [] }],
+    quantityRidersFinished: { type: Number, default: 0 },
   },
 
   { _id: false }

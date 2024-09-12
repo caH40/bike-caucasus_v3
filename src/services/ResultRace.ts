@@ -325,7 +325,7 @@ export class ResultRaceService {
       const resultsRaceDB = await this.getResultsRace(championshipId, raceNumber);
 
       // Обработка данных.
-      const { resultsUpdated } = processResults({
+      const { resultsUpdated, quantityRidersFinished } = processResults({
         results: resultsRaceDB,
         race,
       });
@@ -333,11 +333,48 @@ export class ResultRaceService {
       // Обновление позиций и прочих данных.
       await this.updateResults(resultsUpdated);
 
+      // Обновление количества участников в коллекции Чемпионат в соответствующем заезде.
+      await this.updateQuantityFinishedRiders({
+        championshipId,
+        raceNumber,
+        quantityRidersFinished,
+      });
+
       return {
         data: null,
         ok: true,
         message:
           'Обновлены возрастные категории и места во всех категориях финишного протокола!',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   *
+   */
+  private async updateQuantityFinishedRiders({
+    championshipId,
+    raceNumber,
+    quantityRidersFinished,
+  }: {
+    championshipId: string;
+    raceNumber: number;
+    quantityRidersFinished: number;
+  }): Promise<ResponseServer<null>> {
+    try {
+      await ChampionshipModel.findOneAndUpdate(
+        { _id: championshipId, 'races.number': raceNumber },
+        // По фильтру 'races.number': raceNumber обновляет соответствующий элемент массива races
+        { $set: { 'races.$.quantityRidersFinished': quantityRidersFinished } }
+      );
+
+      return {
+        data: null,
+        ok: true,
+        message: 'Обновлены данные по количеству финишировавших райдеров в заезде!',
       };
     } catch (error) {
       this.errorLogger(error);

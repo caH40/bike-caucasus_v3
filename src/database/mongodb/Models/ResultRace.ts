@@ -19,7 +19,7 @@ const PositionsSchema = new Schema(
   { _id: false }
 );
 
-const QuantityRidersFinishedSchema = new Schema<TQuantityRidersFinished>(
+export const QuantityRidersFinishedSchema = new Schema<TQuantityRidersFinished>(
   {
     category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
     absolute: Number, // Абсолютная категория.

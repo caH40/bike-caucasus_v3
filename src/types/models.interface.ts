@@ -341,6 +341,7 @@ export type TRace = {
   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
   categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
   categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
+  quantityRidersFinished: number; // Общее количество финишировавших.
 };
 export type TCategoryAge = { min: number; max: number };
 

@@ -68,4 +68,5 @@ export const raceInit: TRaceForForm = {
   registeredRiders: [],
   categoriesAgeFemale: [],
   categoriesAgeMale: [],
+  quantityRidersFinished: 0,
 };
