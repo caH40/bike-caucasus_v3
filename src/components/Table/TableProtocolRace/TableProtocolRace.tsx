@@ -32,8 +32,8 @@ import BlockStartNumber from '../Td/BlockStartNumber';
 import TdGap from '@/components/GapInProtocol/GapInProtocol';
 import IconGapLeader from '@/components/Icons/IconGapLeader';
 import IconGapPrev from '@/components/Icons/IconGapPrev';
-// import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerationResult';
-// import IconEditOld from '@/components/Icons/IconEditOld';
+import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerationResult';
+import IconEditOld from '@/components/Icons/IconEditOld';
 
 const cx = cn.bind(styles);
 
@@ -284,20 +284,20 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
       ),
       uniqueName: 'Категория',
     },
-
-    // {
-    //   header: () => (
-    //     <IconEditOld
-    //       squareSize={24}
-    //       tooltip={{
-    //         text: 'Модерация',
-    //         id: 'moderation-TableProtocolRace',
-    //       }}
-    //     />
-    //   ),
-    //   accessorKey: 'urlSlug',
-    //   cell: (props) => <BlockModerationResult resultIdDB={props.row.original._id} />,
-    // },
+    {
+      header: () => (
+        <IconEditOld
+          squareSize={24}
+          tooltip={{
+            text: 'Модерация',
+            id: 'moderation-TableProtocolRace',
+          }}
+        />
+      ),
+      accessorKey: 'urlSlug',
+      cell: (props) => <BlockModerationResult resultIdDB={props.row.original._id} />,
+      uniqueName: 'Модерация',
+    },
   ];
 
 /**

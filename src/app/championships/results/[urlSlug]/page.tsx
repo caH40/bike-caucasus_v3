@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import WrapperResultsRace from '@/components/WrapperResultsRace/WrapperResultsRace';
+import WrapperProtocolRace from '@/components/WrapperProtocolRace/WrapperProtocolRace';
 import { generateMetadataResultsRace } from '@/meta/meta';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import { getChampionship } from '@/actions/championship';
@@ -44,7 +44,7 @@ export default async function ChampionshipResults({ params: { urlSlug } }: Props
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
         <TitleAndLine hSize={1} title={`Результаты «${championship.data.name}»`} />
-        <WrapperResultsRace championship={championship.data} options={options} />
+        <WrapperProtocolRace championship={championship.data} options={options} />
       </div>
 
       {/* левая боковая панель */}

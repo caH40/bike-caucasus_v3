@@ -1,59 +1,35 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-import { ResponseServer, TOptions } from '@/types/index.interface';
-import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
-import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
-import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
-import styles from './WrapperProtocolRace.module.css';
-import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
-import { getRegisteredRidersChamp } from '@/actions/registration-champ';
-import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
-import { getProtocolRace, updateProtocolRace } from '@/actions/result-race';
 import { toast } from 'sonner';
+
+import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
+import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
+import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
+import FilterRidersForAddResult from '../UI/Filters/FilterRidersForAddResult/Filters';
+import { getProtocolRace, updateProtocolRace } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
-import { useResultsRace } from '@/store/results';
+import { buttonsForProtocolRace } from '@/constants/buttons';
+import type { TOptions } from '@/types/index.interface';
+import type { TDtoChampionship, TResultRaceDto } from '@/types/dto.types';
+import styles from './WrapperProtocolRace.module.css';
 
 type Props = {
   options: TOptions[];
   championship: TDtoChampionship;
-  postResultRaceRider: ({
-    // eslint-disable-next-line no-unused-vars
-    dataFromFormSerialized,
-  }: {
-    dataFromFormSerialized: FormData;
-  }) => Promise<ResponseServer<void>>;
 };
 
 /**
- * Обертка для клиентских компонентов страницы работы с финишным протоколом Заезда.
+ * Обертка для клиентских компонентов страницы результаты Заезда Чемпионата.
  */
-export default function WrapperProtocolRace({
-  options,
-  championship,
-  postResultRaceRider,
-}: Props) {
+export default function WrapperProtocolRace({ options, championship }: Props) {
   const [raceNumber, setRaceNumber] = useState<string>('1');
-  const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
-  const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
+  const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
+  const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
 
   const race = championship.races.find((race) => race.number === +raceNumber);
-
-  // Получение зарегистрированных участников в Заезде из БД.
-  useEffect(() => {
-    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceNumber: +raceNumber }).then(
-      (res) => {
-        if (res.data) {
-          // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
-          setRegisteredRiders(res.data.champRegistrationRiders[0].raceRegistrationRider);
-        }
-      }
-    );
-  }, [raceNumber, championship.urlSlug]);
 
   // Получение финишного протокола из БД.
   useEffect(() => {
@@ -84,7 +60,7 @@ export default function WrapperProtocolRace({
 
     if (response.ok) {
       toast.success(response.message);
-      setTriggerResultTable();
+      setTriggerResultTable((prev) => !prev);
     } else {
       toast.error(response.message);
     }
@@ -96,47 +72,65 @@ export default function WrapperProtocolRace({
         options={options}
         raceNumber={raceNumber}
         setRaceNumber={setRaceNumber}
-        label={'Выбор заезда для добавления результатов:'}
+        label={'Выбор заезда'}
       />
 
       <BlockRaceInfo raceNumber={raceNumber} race={race} />
 
-      <FormResultAdd
-        postResultRaceRider={postResultRaceRider}
-        registeredRiders={registeredRiders}
-        championshipId={championship._id}
-        raceNumber={raceNumber}
-        setTriggerResultTable={setTriggerResultTable}
+      <FilterRidersForAddResult
+        activeIdBtn={activeIdBtn}
+        setActiveIdBtn={setActiveIdBtn}
+        buttons={buttonsForProtocolRace}
       />
 
-      <ContainerProtocolRace
-        protocol={protocol}
-        handlerUpdateProtocolRace={handlerUpdateProtocolRace}
-        hiddenColumnHeaders={[
-          'Место в абсолюте по полу',
-          'Место в категории',
-          'Отставания в категории',
-          'Отставания в общей женской категории',
-          '#',
-        ]}
-        captionTitle="Общий протокол"
-      />
+      {activeIdBtn === 0 ? (
+        <>
+          <ContainerProtocolRace
+            protocol={protocol}
+            handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+            hiddenColumnHeaders={[
+              'Место в абсолюте по полу',
+              'Место в категории',
+              'Отставания в категории',
+              'Отставания в общей женской категории',
+              '#',
+              'Модерация',
+            ]}
+            captionTitle="Общий протокол"
+          />
 
-      {categories.map((category) => (
-        <ContainerProtocolRace
-          key={category}
-          protocol={protocol.filter((result) => result.categoryAge === category)}
-          handlerUpdateProtocolRace={handlerUpdateProtocolRace}
-          hiddenColumnHeaders={[
-            'Место в абсолюте',
-            'Место в абсолюте по полу',
-            'Отставания в общем протоколе',
-            'Отставания в общей женской категории',
-            '#',
-          ]}
-          captionTitle={`Категория ${replaceCategorySymbols(category)}`}
-        />
-      ))}
+          <ContainerProtocolRace
+            protocol={protocol.filter((result) => result.profile.gender === 'female')}
+            handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+            hiddenColumnHeaders={[
+              'Место в абсолюте',
+              'Место в категории',
+              'Отставания в общем протоколе',
+              'Отставания в категории',
+              '#',
+              'Модерация',
+            ]}
+            captionTitle="Общий женский протокол"
+          />
+        </>
+      ) : (
+        categories.map((category) => (
+          <ContainerProtocolRace
+            key={category}
+            protocol={protocol.filter((result) => result.categoryAge === category)}
+            handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+            hiddenColumnHeaders={[
+              'Место в абсолюте',
+              'Место в абсолюте по полу',
+              'Отставания в общем протоколе',
+              'Отставания в общей женской категории',
+              '#',
+              'Модерация',
+            ]}
+            captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+          />
+        ))
+      )}
     </div>
   );
 }

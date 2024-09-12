@@ -2,7 +2,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconResults from '@/components/Icons/IconResults';
 import { getChampionship } from '@/actions/championship';
 import { TOptions } from '@/types/index.interface';
-import WrapperProtocolRace from '@/components/WrapperProtocolRace/WrapperProtocolRace';
+import WrapperProtocolRaceEdit from '@/components/WrapperProtocolRaceEdit/WrapperProtocolRaceEdit';
 import { postResultRaceRider } from '@/actions/result-race';
 
 type Props = {
@@ -39,7 +39,7 @@ export default async function ProtocolRaceEditPage({ params: { urlSlug } }: Prop
         title="Добавление результатов райдеров для протокола Заезда"
         Icon={IconResults}
       />
-      <WrapperProtocolRace
+      <WrapperProtocolRaceEdit
         postResultRaceRider={postResultRaceRider}
         options={options}
         championship={championship.data}
