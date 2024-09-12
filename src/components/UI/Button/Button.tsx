@@ -16,6 +16,7 @@ type Props = {
   disabled?: boolean;
   theme?: string;
   loading?: boolean;
+  type?: 'submit' | 'reset' | 'button';
 };
 
 /**
@@ -32,6 +33,7 @@ export default function Button({
   disabled,
   theme,
   loading,
+  ...props
 }: Props) {
   return (
     <button
@@ -42,6 +44,7 @@ export default function Button({
       })}
       onClick={getClick}
       disabled={disabled || loading}
+      {...props}
     >
       {iconSrc && (
         <Image

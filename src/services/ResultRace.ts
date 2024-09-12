@@ -446,8 +446,12 @@ export class ResultRaceService {
       // Подключение к БД.
       await this.dbConnection();
 
+      // Данные после десериализации.
       const dataDeserialized = deserializationResultRaceRider(result);
 
+      console.log(dataDeserialized);
+
+      // Получение обновляемого результата.
       const resultDB = await ResultRaceModel.findOne({ _id: dataDeserialized.resultId });
 
       if (!resultDB) {

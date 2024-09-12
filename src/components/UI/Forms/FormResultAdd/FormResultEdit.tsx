@@ -6,10 +6,11 @@ import BlockInputs from './BlockInputs/BlockInputs';
 import Button from '../../Button/Button';
 import { millisecondsToTimeDetails, timeDetailsToMilliseconds } from '@/libs/utils/date';
 import { useLoadingStore } from '@/store/loading';
+import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 import type { TResultRaceRiderDto } from '@/types/dto.types';
 import type { ResponseServer, TFormResultRace } from '@/types/index.interface';
 import styles from './FormResultAdd.module.css';
-import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   result: TResultRaceRiderDto;
@@ -25,14 +26,13 @@ type Props = {
  * Форма редактирования результата райдера.
  */
 export default function FormResultEdit({ putResultRaceRider, result }: Props) {
-  // const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
+  const router = useRouter();
 
   const {
     register,
     watch,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<TFormResultRace>({
     mode: 'all',
@@ -72,7 +72,6 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
     setLoading(false);
 
     if (response.ok) {
-      reset();
       toast.success(response.message);
     } else {
       toast.error(response.message);
@@ -93,6 +92,12 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
+        <Button
+          getClick={() => router.back()}
+          name={'Вернуться'}
+          theme={'green'}
+          type="button"
+        />
         <Button name={'Обновить'} theme="green" />
       </div>
     </form>
