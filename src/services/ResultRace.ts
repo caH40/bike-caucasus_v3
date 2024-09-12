@@ -449,8 +449,6 @@ export class ResultRaceService {
       // Данные после десериализации.
       const dataDeserialized = deserializationResultRaceRider(result);
 
-      console.log(dataDeserialized);
-
       // Получение обновляемого результата.
       const resultDB = await ResultRaceModel.findOne({ _id: dataDeserialized.resultId });
 
@@ -493,6 +491,12 @@ export class ResultRaceService {
       };
 
       const updateResult = await resultDB.updateOne({ $set: query });
+
+      // Обновление позиций, отставаний, средней скорости, возрастных категорий в протоколе.
+      await this.updateProtocolRace({
+        championshipId: String(resultDB.championship),
+        raceNumber: resultDB.raceNumber,
+      });
 
       const success = updateResult.modifiedCount > 0;
       return {
