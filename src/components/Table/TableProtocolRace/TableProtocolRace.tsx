@@ -41,7 +41,7 @@ type Props = {
   showFooter?: boolean;
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
   captionTitle: string; // Название таблицы.
-  raceInfo: { championshipId: string; raceNumber: number };
+  raceInfo: { championshipUrlSlug: string; raceNumber: number };
 };
 
 const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?: string })[] =
@@ -349,18 +349,8 @@ export default function TableProtocolRace({
               <span>{captionTitle}</span>
 
               {/* popup меня управления протоколом */}
-
               <div className={styles.menu__control}>
                 <MenuPopupControlProtocol raceInfo={raceInfo} />
-                {/* <IconRefresh
-                  squareSize={20}
-                  colors={{ default: 'green', hover: 'orange' }}
-                  tooltip={{
-                    text: 'Обновление категорий участников, мест во всех категориях и протоколах.',
-                    id: 'refreshProtocol',
-                  }}
-                  getClick={handlerUpdateProtocolRace}
-                /> */}
               </div>
             </div>
           </caption>

@@ -13,6 +13,7 @@ import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerPro
 import { getProtocolRace } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { useResultsRace } from '@/store/results';
+import { toast } from 'sonner';
 
 type Props = {
   options: TOptions[];
@@ -23,6 +24,7 @@ type Props = {
   }: {
     dataFromFormSerialized: FormData;
   }) => Promise<ResponseServer<void>>;
+  initialRaceNumber: string;
 };
 
 /**
@@ -32,8 +34,9 @@ export default function WrapperProtocolRaceEdit({
   options,
   championship,
   postResultRaceRider,
+  initialRaceNumber,
 }: Props) {
-  const [raceNumber, setRaceNumber] = useState<string>('1');
+  const [raceNumber, setRaceNumber] = useState<string>(initialRaceNumber);
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -44,14 +47,17 @@ export default function WrapperProtocolRaceEdit({
 
   // Получение зарегистрированных участников в Заезде из БД.
   useEffect(() => {
-    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceNumber: +raceNumber }).then(
-      (res) => {
+    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceNumber: +raceNumber })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.message);
+        }
         if (res.data) {
           // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
           setRegisteredRiders(res.data.champRegistrationRiders[0].raceRegistrationRider);
         }
-      }
-    );
+      })
+      .catch((error) => toast.error(error.message));
   }, [raceNumber, championship.urlSlug]);
 
   // Получение финишного протокола из БД.
@@ -88,7 +94,7 @@ export default function WrapperProtocolRaceEdit({
 
       <ContainerProtocolRace
         protocol={protocol}
-        raceInfo={{ championshipId: championship._id, raceNumber: +raceNumber }}
+        raceInfo={{ championshipUrlSlug: championship.urlSlug, raceNumber: +raceNumber }}
         hiddenColumnHeaders={[
           'Место в абсолюте по полу',
           'Место в категории',
@@ -103,7 +109,7 @@ export default function WrapperProtocolRaceEdit({
         <ContainerProtocolRace
           key={category}
           protocol={protocol.filter((result) => result.categoryAge === category)}
-          raceInfo={{ championshipId: championship._id, raceNumber: +raceNumber }}
+          raceInfo={{ championshipUrlSlug: championship.urlSlug, raceNumber: +raceNumber }}
           hiddenColumnHeaders={[
             'Место в абсолюте',
             'Место в абсолюте по полу',
