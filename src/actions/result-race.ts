@@ -10,6 +10,7 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { ResultRaceService } from '@/services/ResultRace';
 import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Сохранение результата райдера в Заезде Чемпионата.
@@ -164,6 +165,7 @@ export async function putResultRaceRider({
     const res = await resultRaceService.update({ result });
 
     if (res.ok) {
+      revalidatePath('/moderation/championship/protocol/edit');
       return { data: null, ok: true, message: res.message };
     } else {
       throw new Error(res.message);
