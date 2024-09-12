@@ -73,6 +73,12 @@ export default function WrapperProtocolRaceEdit({
     );
   }, [raceNumber, championship._id, triggerResultTable]);
 
+  const raceInfo = {
+    championshipId: championship._id,
+    championshipUrlSlug: championship.urlSlug,
+    raceNumber: +raceNumber,
+  };
+
   return (
     <div className={styles.wrapper}>
       <FormSelectionRace
@@ -94,7 +100,7 @@ export default function WrapperProtocolRaceEdit({
 
       <ContainerProtocolRace
         protocol={protocol}
-        raceInfo={{ championshipUrlSlug: championship.urlSlug, raceNumber: +raceNumber }}
+        raceInfo={raceInfo}
         hiddenColumnHeaders={[
           'Место в абсолюте по полу',
           'Место в категории',
@@ -109,7 +115,7 @@ export default function WrapperProtocolRaceEdit({
         <ContainerProtocolRace
           key={category}
           protocol={protocol.filter((result) => result.categoryAge === category)}
-          raceInfo={{ championshipUrlSlug: championship.urlSlug, raceNumber: +raceNumber }}
+          raceInfo={raceInfo}
           hiddenColumnHeaders={[
             'Место в абсолюте',
             'Место в абсолюте по полу',

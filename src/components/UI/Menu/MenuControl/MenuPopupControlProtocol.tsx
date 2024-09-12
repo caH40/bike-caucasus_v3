@@ -15,7 +15,7 @@ import IconRefresh from '@/components/Icons/IconRefresh';
 const cx = cn.bind(styles);
 
 type Props = {
-  raceInfo: { championshipUrlSlug: string; raceNumber: number };
+  raceInfo: { championshipId: string; championshipUrlSlug: string; raceNumber: number };
 };
 
 // Роли для использования меню.
@@ -57,8 +57,7 @@ export default function MenuPopupControlProtocol({ raceInfo }: Props) {
     {
       id: 1,
       name: 'Обновление',
-      onClick: () =>
-        handlerUpdateProtocolRace(raceInfo.championshipUrlSlug, raceInfo.raceNumber),
+      onClick: () => handlerUpdateProtocolRace(raceInfo.championshipId, raceInfo.raceNumber),
       permission,
       icon: IconRefresh,
       classes: [],

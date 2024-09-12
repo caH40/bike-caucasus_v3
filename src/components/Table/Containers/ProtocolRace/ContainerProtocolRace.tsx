@@ -8,7 +8,7 @@ type Props = {
   showFooter?: boolean;
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
   captionTitle: string; // Название таблицы.
-  raceInfo: { championshipUrlSlug: string; raceNumber: number };
+  raceInfo: { championshipId: string; championshipUrlSlug: string; raceNumber: number };
 };
 
 /**
