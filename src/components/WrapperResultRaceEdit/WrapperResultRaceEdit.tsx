@@ -9,9 +9,9 @@ type Props = {
   result: TResultRaceRiderDto;
   putResultRaceRider: ({
     // eslint-disable-next-line no-unused-vars
-    dataFromFormSerialized,
+    result,
   }: {
-    dataFromFormSerialized: FormData;
+    result: FormData;
   }) => Promise<ResponseServer<void>>;
 };
 

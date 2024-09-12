@@ -157,9 +157,11 @@ export async function deleteResult({ _id }: { _id: string }): Promise<ResponseSe
 export async function putResultRaceRider({
   result,
 }: {
-  result: any;
+  result: FormData;
 }): Promise<ResponseServer<null>> {
   try {
+    console.log(result);
+
     return { data: null, ok: true, message: 'Данные результата изменены!' };
   } catch (error) {
     errorHandlerClient(parseError(error));

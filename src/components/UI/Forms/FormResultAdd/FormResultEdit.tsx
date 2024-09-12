@@ -9,14 +9,15 @@ import { useLoadingStore } from '@/store/loading';
 import type { TResultRaceRiderDto } from '@/types/dto.types';
 import type { ResponseServer, TFormResultRace } from '@/types/index.interface';
 import styles from './FormResultAdd.module.css';
+import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 
 type Props = {
   result: TResultRaceRiderDto;
   putResultRaceRider: ({
     // eslint-disable-next-line no-unused-vars
-    dataFromFormSerialized,
+    result,
   }: {
-    dataFromFormSerialized: FormData;
+    result: FormData;
   }) => Promise<ResponseServer<void>>;
 };
 
@@ -56,11 +57,17 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
     const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
-    console.log({ timeDetailsInMilliseconds, dataFromForm });
-    const dataSerialized = {} as any;
+
+    // Сериализация данных для отправки на сервер.
+    const dataSerialized = serializationResultRaceRider({
+      timeDetailsInMilliseconds,
+      ...dataFromForm.rider,
+      startNumber: dataFromForm.newStartNumber,
+      resultId: dataFromForm._id,
+    });
 
     setLoading(true);
-    const response = await putResultRaceRider({ dataFromFormSerialized: dataSerialized });
+    const response = await putResultRaceRider({ result: dataSerialized });
 
     setLoading(false);
 
