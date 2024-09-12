@@ -14,6 +14,7 @@ import {
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
+  TProfileRiderInProtocol,
   TQuantityRidersFinished,
   TRace,
   TRaceRegistrationStatus,
@@ -288,6 +289,8 @@ export type TResultRaceDto = Omit<
  * Данные DTO результата райдера в заезде чемпионата.
  */
 export type TResultRaceRiderDto = {
+  _id: string;
+  profile: TProfileRiderInProtocol;
   startNumber: number;
   raceTimeInMilliseconds: number;
   positions: {

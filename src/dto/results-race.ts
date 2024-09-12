@@ -53,6 +53,8 @@ export function dtoResultRaceRider(result: TResultRaceRideFromDB): TResultRaceRi
     race: raceFiltered,
   };
 
+  resultDto._id = String(result._id);
+  resultDto.profile = result.profile;
   resultDto.startNumber = result.startNumber;
   resultDto.raceTimeInMilliseconds = result.raceTimeInMilliseconds;
   resultDto.positions = result.positions;

@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import { ResponseServer, TFormResultRaceEdit } from '@/types/index.interface';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 import BlockInputs from './BlockInputs/BlockInputs';
 import Button from '../../Button/Button';
-import { timeDetailsToMilliseconds } from '@/libs/utils/date';
+import { millisecondsToTimeDetails, timeDetailsToMilliseconds } from '@/libs/utils/date';
 import { useLoadingStore } from '@/store/loading';
-
+import type { TResultRaceRiderDto } from '@/types/dto.types';
+import type { ResponseServer, TFormResultRace } from '@/types/index.interface';
 import styles from './FormResultAdd.module.css';
 
 type Props = {
-  result: any;
+  result: TResultRaceRiderDto;
   putResultRaceRider: ({
     // eslint-disable-next-line no-unused-vars
     dataFromFormSerialized,
@@ -29,43 +28,48 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
   const setLoading = useLoadingStore((state) => state.setLoading);
 
   const {
-    control,
     register,
-    reset,
     watch,
-    setValue,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<TFormResultRaceEdit>({
+  } = useForm<TFormResultRace>({
     mode: 'all',
     defaultValues: {
-      newStartNumber: 0,
+      _id: result._id,
+      newStartNumber: result.startNumber,
       rider: {
-        lastName: '',
+        firstName: result.profile.firstName,
+        lastName: result.profile.lastName,
+        patronymic: result.profile.patronymic,
+        team: result.profile.team,
+        city: result.profile.city,
+        yearBirthday: result.profile.yearBirthday,
+        gender: result.profile.gender,
       },
+      time: millisecondsToTimeDetails(result.raceTimeInMilliseconds),
     },
   });
 
-  // Сброс формы при переключении кнопок выбора способа ввода данных.
-  useEffect(() => {}, []);
+  const startNumberRegisteredInRace = watch('newStartNumber');
 
   // Обработка формы после нажатия кнопки "Отправить".
-  const onSubmit: SubmitHandler<TFormResultRaceEdit> = async (dataFromForm) => {
+  const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
     const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
     console.log({ timeDetailsInMilliseconds, dataFromForm });
+    const dataSerialized = {} as any;
 
-    // setLoading(true);
-    // const response = await postResultRaceRider({ dataFromFormSerialized: dataSerialized });
+    setLoading(true);
+    const response = await putResultRaceRider({ dataFromFormSerialized: dataSerialized });
 
-    // setLoading(false);
+    setLoading(false);
 
-    // if (response.ok) {
-    //   reset();
-    //   toast.success(response.message);
-    //   setTriggerResultTable((prev) => !prev);
-    // } else {
-    //   toast.error(response.message);
-    // }
+    if (response.ok) {
+      reset();
+      toast.success(response.message);
+    } else {
+      toast.error(response.message);
+    }
   };
 
   return (
@@ -74,7 +78,7 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
       <BlockInputs
         register={register}
         errors={errors}
-        startNumberRegisteredInRace={startNumberRegisteredInRace}
+        startNumberRegisteredInRace={+startNumberRegisteredInRace}
       />
 
       {/* блок полей ввода финишного времени */}

@@ -295,12 +295,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'urlSlug',
-      cell: (props) => (
-        <BlockModerationResult
-          resultIdDB={props.row.original._id}
-          urlSlugChamp={props.row.original.championship}
-        />
-      ),
+      cell: (props) => <BlockModerationResult resultIdDB={props.row.original._id} />,
       uniqueName: 'Модерация',
     },
   ];

@@ -44,7 +44,7 @@ export class ResultRaceService {
 
       const resultDB: TResultRaceRideFromDB | null = await ResultRaceModel.findOne(
         { _id: resultId },
-        { _id: false, createdAt: false, updatedAt: false, creator: false }
+        { createdAt: false, updatedAt: false, creator: false }
       )
         .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
         .lean();
@@ -82,7 +82,7 @@ export class ResultRaceService {
 
       const resultsDB: TResultRaceRideFromDB[] = await ResultRaceModel.find(
         { rider: userDB._id },
-        { _id: false, createdAt: false, updatedAt: false, creator: false }
+        { createdAt: false, updatedAt: false, creator: false }
       )
         .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
         .lean();

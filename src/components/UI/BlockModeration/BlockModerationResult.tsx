@@ -9,16 +9,12 @@ import styles from './BlockModeration.module.css';
 
 type Props = {
   resultIdDB: string; // id результата в БД.
-  urlSlugChamp: string; // urlSlug чемпионата.
 };
 
 /**
  * Блок Модерации результата райдера из Таблицы результатов.
  */
-export default function BlockModerationResult({
-  resultIdDB,
-  urlSlugChamp,
-}: Props): JSX.Element {
+export default function BlockModerationResult({ resultIdDB }: Props): JSX.Element {
   const router = useRouter();
   const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
 

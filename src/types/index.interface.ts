@@ -619,6 +619,7 @@ export type TFormResultRace = {
     lastName: string;
     id: number;
   };
+  _id?: string;
   rider: {
     _id?: string; // id из БД.
     id?: number; // id пользователя на сайте.
@@ -635,13 +636,13 @@ export type TFormResultRace = {
   newStartNumber: number | string;
   time: TTimeDetails;
 };
-/**
- * Данные формы для редактирования результата райдера в Заезде Чемпионата.
- */
-export type TFormResultRaceEdit = Omit<
-  TFormResultRace,
-  'riderRegisteredInRace' | 'riderRegisteredSite'
->;
+// /**
+//  * Данные формы для редактирования результата райдера в Заезде Чемпионата.
+//  */
+// export type TFormResultRaceEdit = Omit<
+//   TFormResultRace,
+//   'riderRegisteredInRace' | 'riderRegisteredSite'
+// > & { resultId: string; _id: string };
 
 /**
  * Данные формы отправляемые на сериализацию.
@@ -711,7 +712,7 @@ export type TResultRaceFromDB = TResultRace & {
  */
 export type TResultRaceRideFromDB = Omit<
   TResultRace,
-  'championship' | 'createdAt' | 'updatedAt' | 'creator' | '_id' | 'rider' | 'profile'
+  'championship' | 'createdAt' | 'updatedAt' | 'creator' | 'rider'
 > & {
   championship: Pick<TChampionship, 'name' | 'urlSlug' | 'races' | 'endDate'>;
 };

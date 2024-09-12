@@ -2,10 +2,11 @@
 
 import { ResponseServer } from '@/types/index.interface';
 import FormResultEdit from '../UI/Forms/FormResultAdd/FormResultEdit';
+import { TResultRaceRiderDto } from '@/types/dto.types';
 import styles from './WrapperResultRaceEdit.module.css';
 
 type Props = {
-  result: any;
+  result: TResultRaceRiderDto;
   putResultRaceRider: ({
     // eslint-disable-next-line no-unused-vars
     dataFromFormSerialized,

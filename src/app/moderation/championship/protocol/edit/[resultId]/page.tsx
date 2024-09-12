@@ -14,23 +14,23 @@ type Props = {
  * Страница редактирования финишного результата Заезда в Чемпионате.
  */
 export default async function ResultRaceEditPage({ params: { urlSlug, resultId } }: Props) {
-  const championship = await getResultRaceForRider({ resultId });
+  const result = await getResultRaceForRider({ resultId });
 
-  if (!championship.data) {
+  if (!result.data) {
     return (
       <>
         <h2>Не найден запрашиваемый Результат!</h2>
-        <p>{championship.message}</p>
+        <p>{result.message}</p>
       </>
     );
   }
 
-  console.log(championship.data);
+  console.log(result.data);
 
   return (
     <>
       <TitleAndLine hSize={1} title="Редактирование результата райдера" Icon={IconResults} />
-      {/* <WrapperResultRaceEdit result={result} putResultRaceRider={putResultRaceRider} /> */}
+      <WrapperResultRaceEdit result={result.data} putResultRaceRider={putResultRaceRider} />
     </>
   );
 }

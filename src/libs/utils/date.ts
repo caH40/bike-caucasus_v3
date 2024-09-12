@@ -61,3 +61,30 @@ export function timeDetailsToMilliseconds(timeDetails: TTimeDetails): number {
     milliseconds // Миллисекунды.
   );
 }
+
+/**
+ * Преобразует количество миллисекунд в объект с деталями времени.
+ *
+ * @param {number} totalMilliseconds - Общее количество миллисекунд.
+ * @returns {TTimeDetails} Объект, содержащий детали времени.
+ */
+export function millisecondsToTimeDetails(totalMilliseconds: number): TTimeDetails {
+  const getString = (value: number): string => (value !== 0 ? String(value) : '');
+
+  // Определяем количество часов, минут, секунд и оставшихся миллисекунд.
+  const hours = Math.floor(totalMilliseconds / (3600 * 1000));
+  const remainingAfterHours = totalMilliseconds % (3600 * 1000);
+
+  const minutes = Math.floor(remainingAfterHours / (60 * 1000));
+  const remainingAfterMinutes = remainingAfterHours % (60 * 1000);
+
+  const seconds = Math.floor(remainingAfterMinutes / 1000);
+  const milliseconds = remainingAfterMinutes % 1000;
+
+  return {
+    hours: getString(hours),
+    minutes: getString(minutes),
+    seconds: getString(seconds),
+    milliseconds: getString(milliseconds),
+  };
+}
