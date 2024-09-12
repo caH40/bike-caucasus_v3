@@ -411,7 +411,6 @@ export class ResultRaceService {
 
   /**
    * Удаление результата.
-  
    */
   public async delete({ _id }: { _id: string }): Promise<ResponseServer<null>> {
     try {
@@ -433,6 +432,72 @@ export class ResultRaceService {
           message: `Не найден запрашиваемый результат с _id:${_id}`,
         };
       }
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление данных результата.
+   */
+  public async update({ result }: { result: FormData }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const dataDeserialized = deserializationResultRaceRider(result);
+
+      const resultDB = await ResultRaceModel.findOne({ _id: dataDeserialized.resultId });
+
+      if (!resultDB) {
+        throw new Error(`Не найден обновляемый результат с _id:${dataDeserialized.resultId}`);
+      }
+
+      // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
+      const checkNumberDB: {
+        _id: ObjectId;
+        profile: { lastName: string; firstName: string };
+      } | null = await ResultRaceModel.findOne(
+        {
+          championship: resultDB.championship,
+          raceNumber: resultDB.raceNumber,
+          startNumber: dataDeserialized.startNumber,
+        },
+        { 'profile.lastName': true, 'profile.firstName': true }
+      ).lean();
+
+      // Проверка String(registrationDB._id) !== dataDeserialized._id) что номер принадлежит не райдеру которому изменяется результат.
+      if (checkNumberDB && String(checkNumberDB._id) !== dataDeserialized.resultId) {
+        throw new Error(
+          `Данный стартовый номер: ${dataDeserialized.startNumber} уже есть в протоколе у райдера: ${checkNumberDB.profile.lastName} ${checkNumberDB.profile.firstName}`
+        );
+      }
+
+      const query = {
+        profile: {
+          firstName: dataDeserialized.firstName,
+          lastName: dataDeserialized.lastName,
+          patronymic: dataDeserialized.patronymic || '',
+          team: dataDeserialized.team || '',
+          city: dataDeserialized.city,
+          yearBirthday: dataDeserialized.yearBirthday,
+          gender: dataDeserialized.gender,
+        },
+        startNumber: dataDeserialized.startNumber,
+        raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
+      };
+
+      const updateResult = await resultDB.updateOne({ $set: query });
+
+      const success = updateResult.modifiedCount > 0;
+      return {
+        data: null,
+        ok: success,
+        message: success
+          ? 'Обновлены данные результата райдера в протоколе'
+          : `Неизвестная ошибка при обновлении результата с _id:${dataDeserialized.resultId}`,
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

@@ -5,7 +5,6 @@ import { getResultRaceForRider, putResultRaceRider } from '@/actions/result-race
 
 type Props = {
   params: {
-    urlSlug: string;
     resultId: string;
   };
 };
@@ -13,7 +12,7 @@ type Props = {
 /**
  * Страница редактирования финишного результата Заезда в Чемпионате.
  */
-export default async function ResultRaceEditPage({ params: { urlSlug, resultId } }: Props) {
+export default async function ResultRaceEditPage({ params: { resultId } }: Props) {
   const result = await getResultRaceForRider({ resultId });
 
   if (!result.data) {
@@ -24,8 +23,6 @@ export default async function ResultRaceEditPage({ params: { urlSlug, resultId }
       </>
     );
   }
-
-  console.log(result.data);
 
   return (
     <>

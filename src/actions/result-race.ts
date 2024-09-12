@@ -152,7 +152,7 @@ export async function deleteResult({ _id }: { _id: string }): Promise<ResponseSe
 }
 
 /**
- * Обновление результата Заезда райдера в протоколе.
+ * Обновление данных результата райдера в протоколе.
  */
 export async function putResultRaceRider({
   result,
@@ -160,9 +160,14 @@ export async function putResultRaceRider({
   result: FormData;
 }): Promise<ResponseServer<null>> {
   try {
-    console.log(result);
+    const resultRaceService = new ResultRaceService();
+    const res = await resultRaceService.update({ result });
 
-    return { data: null, ok: true, message: 'Данные результата изменены!' };
+    if (res.ok) {
+      return { data: null, ok: true, message: res.message };
+    } else {
+      throw new Error(res.message);
+    }
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

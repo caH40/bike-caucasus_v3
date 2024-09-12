@@ -678,6 +678,7 @@ export type TResultRaceRiderDeserialized = Omit<
   startNumber: number;
   yearBirthday: number;
   raceNumber: number;
+  resultId?: string;
 };
 
 /**
