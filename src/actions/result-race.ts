@@ -114,6 +114,27 @@ export async function getResultsRaceForRider({
 }
 
 /**
+ * Получение протокола Заезда Чемпионата.
+ */
+export async function getResultRaceForRider({
+  resultId,
+}: {
+  resultId: string;
+}): Promise<ResponseServer<TResultRaceRiderDto | null>> {
+  try {
+    const resultRaceService = new ResultRaceService();
+    const res = await resultRaceService.getOne({
+      resultId,
+    });
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
  * Удаление результата Заезда райдера из протокола.
  */
 export async function deleteResult({ _id }: { _id: string }): Promise<ResponseServer<null>> {
@@ -124,6 +145,22 @@ export async function deleteResult({ _id }: { _id: string }): Promise<ResponseSe
     });
 
     return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Обновление результата Заезда райдера в протоколе.
+ */
+export async function putResultRaceRider({
+  result,
+}: {
+  result: any;
+}): Promise<ResponseServer<null>> {
+  try {
+    return { data: null, ok: true, message: 'Данные результата изменены!' };
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

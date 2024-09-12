@@ -635,6 +635,13 @@ export type TFormResultRace = {
   newStartNumber: number | string;
   time: TTimeDetails;
 };
+/**
+ * Данные формы для редактирования результата райдера в Заезде Чемпионата.
+ */
+export type TFormResultRaceEdit = Omit<
+  TFormResultRace,
+  'riderRegisteredInRace' | 'riderRegisteredSite'
+>;
 
 /**
  * Данные формы отправляемые на сериализацию.

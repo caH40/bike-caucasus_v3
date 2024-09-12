@@ -7,7 +7,7 @@ import { deserializationResultRaceRider } from '@/libs/utils/deserialization/res
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { User as UserModel } from '@/database/mongodb/Models/User';
-import { dtoResultsRace, dtoResultsRaceRider } from '@/dto/results-race';
+import { dtoResultsRace, dtoResultsRaceRider, dtoResultRaceRider } from '@/dto/results-race';
 import {
   ResponseServer,
   TResultRaceFromDB,
@@ -33,12 +33,29 @@ export class ResultRaceService {
     this.dbConnection = connectToMongo;
   }
 
-  public async getOne(): Promise<ResponseServer<null>> {
+  public async getOne({
+    resultId,
+  }: {
+    resultId: string;
+  }): Promise<ResponseServer<TResultRaceRiderDto | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
-      return { data: null, ok: true, message: 'Данные заезда Чемпионата' };
+      const resultDB: TResultRaceRideFromDB | null = await ResultRaceModel.findOne(
+        { _id: resultId },
+        { _id: false, createdAt: false, updatedAt: false, creator: false }
+      )
+        .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
+        .lean();
+
+      if (!resultDB) {
+        throw new Error('Не найден обновляемый результат в БД!');
+      }
+
+      const resultsRaceRiderAfterDto = dtoResultRaceRider(resultDB);
+
+      return { data: resultsRaceRiderAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

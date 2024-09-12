@@ -24,7 +24,7 @@ export function dtoResultsRace(results: TResultRaceFromDB[]): TResultRaceDto[] {
 /**
  * Дто данных результата райдера в соревновании для Профиля пользователя.
  */
-function dtoResultRaceRider(result: TResultRaceRideFromDB): TResultRaceRiderDto {
+export function dtoResultRaceRider(result: TResultRaceRideFromDB): TResultRaceRiderDto {
   const resultDto = {} as TResultRaceRiderDto;
   // 'name', 'urlSlug', 'races'
   const raceCurrent = result.championship.races.find(
