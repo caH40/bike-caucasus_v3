@@ -6,9 +6,9 @@ import TableProtocolRace from '../../TableProtocolRace/TableProtocolRace';
 type Props = {
   protocol: TResultRaceDto[];
   showFooter?: boolean;
-  handlerUpdateProtocolRace: () => Promise<string | number | undefined>;
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
   captionTitle: string; // Название таблицы.
+  raceInfo: { championshipId: string; raceNumber: number };
 };
 
 /**
@@ -17,9 +17,9 @@ type Props = {
 export default function ContainerProtocolRace({
   protocol,
   showFooter,
-  handlerUpdateProtocolRace,
   hiddenColumnHeaders,
   captionTitle,
+  raceInfo,
 }: Props) {
   return (
     <>
@@ -27,7 +27,7 @@ export default function ContainerProtocolRace({
       <TableProtocolRace
         protocol={protocol}
         showFooter={showFooter}
-        handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+        raceInfo={raceInfo}
         hiddenColumnHeaders={hiddenColumnHeaders}
         captionTitle={captionTitle}
       />

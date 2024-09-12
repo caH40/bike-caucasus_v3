@@ -19,6 +19,10 @@
 .item {
   display: flex;
   align-items: center;
+  font-family: var(--font-montserrat_Alternates);
+  font-size: 0.9rem;
+  text-transform: none;
+  font-weight: 400;
   width: 100%;
   cursor: pointer;
 }
@@ -30,8 +34,9 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-family: var(--font-montserrat_Alternates);
-  font-weight: 500;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
   letter-spacing: 0.08;
   padding: 10px 2rem 10px 1rem;
   width: 100%;

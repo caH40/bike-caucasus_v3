@@ -12,11 +12,8 @@ import cn from 'classnames/bind';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
 import TdRider from '../Td/TdRider';
-import PermissionCheck from '@/hoc/permission-check';
-import IconRefresh from '@/components/Icons/IconRefresh';
 import IconPodium from '@/components/Icons/IconPodium';
 import IconStar from '@/components/Icons/IconStar';
-
 import IconTeam from '@/components/Icons/IconTeam';
 import IconSpeed from '@/components/Icons/IconSpeed';
 import IconRider from '@/components/Icons/IconRider';
@@ -34,6 +31,7 @@ import IconGapLeader from '@/components/Icons/IconGapLeader';
 import IconGapPrev from '@/components/Icons/IconGapPrev';
 import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerationResult';
 import IconEditOld from '@/components/Icons/IconEditOld';
+import MenuPopupControlProtocol from '@/components/UI/Menu/MenuControl/MenuPopupControlProtocol';
 
 const cx = cn.bind(styles);
 
@@ -41,9 +39,9 @@ type Props = {
   protocol: TResultRaceDto[];
   docsOnPage?: number;
   showFooter?: boolean;
-  handlerUpdateProtocolRace: () => Promise<string | number | undefined>;
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
   captionTitle: string; // Название таблицы.
+  raceInfo: { championshipId: string; raceNumber: number };
 };
 
 const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?: string })[] =
@@ -307,14 +305,13 @@ export default function TableProtocolRace({
   protocol,
   showFooter,
   docsOnPage = 50,
-  handlerUpdateProtocolRace,
   hiddenColumnHeaders = [],
   captionTitle,
+  raceInfo,
 }: Props) {
   const data = useMemo(() => {
     return [...protocol].map((elm, index) => ({ ...elm, index: index + 1 }));
   }, [protocol]);
-  // console.log(protocol.find((res) => res.startNumber === 1));
 
   // Скрытие столбцов которые есть в массиве hide
   const columns = allColumns.filter((column) => {
@@ -351,9 +348,11 @@ export default function TableProtocolRace({
             <div className={styles.caption__inner}>
               <span>{captionTitle}</span>
 
-              {/* popup меня управления новостью */}
-              <PermissionCheck permission={'admin'}>
-                <IconRefresh
+              {/* popup меня управления протоколом */}
+
+              <div className={styles.menu__control}>
+                <MenuPopupControlProtocol raceInfo={raceInfo} />
+                {/* <IconRefresh
                   squareSize={20}
                   colors={{ default: 'green', hover: 'orange' }}
                   tooltip={{
@@ -361,8 +360,8 @@ export default function TableProtocolRace({
                     id: 'refreshProtocol',
                   }}
                   getClick={handlerUpdateProtocolRace}
-                />
-              </PermissionCheck>
+                /> */}
+              </div>
             </div>
           </caption>
           <thead>

@@ -120,3 +120,6 @@
   font-weight: 400;
   font-size: 0.8rem;
 }
+.menu__control {
+  position: relative;
+}

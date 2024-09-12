@@ -10,8 +10,7 @@ import styles from './WrapperProtocolRaceEdit.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
-import { getProtocolRace, updateProtocolRace } from '@/actions/result-race';
-import { toast } from 'sonner';
+import { getProtocolRace } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { useResultsRace } from '@/store/results';
 
@@ -68,28 +67,6 @@ export default function WrapperProtocolRaceEdit({
     );
   }, [raceNumber, championship._id, triggerResultTable]);
 
-  // Обработчик клика по иконки обновления, обновляет данные финишного протокола.
-  const handlerUpdateProtocolRace = async () => {
-    const championshipId = protocol[0]?.championship;
-    const raceNumber = protocol[0]?.raceNumber;
-
-    if (!championshipId || !raceNumber) {
-      return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
-    }
-
-    const response = await updateProtocolRace({
-      championshipId,
-      raceNumber,
-    });
-
-    if (response.ok) {
-      toast.success(response.message);
-      setTriggerResultTable();
-    } else {
-      toast.error(response.message);
-    }
-  };
-
   return (
     <div className={styles.wrapper}>
       <FormSelectionRace
@@ -111,7 +88,7 @@ export default function WrapperProtocolRaceEdit({
 
       <ContainerProtocolRace
         protocol={protocol}
-        handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+        raceInfo={{ championshipId: championship._id, raceNumber: +raceNumber }}
         hiddenColumnHeaders={[
           'Место в абсолюте по полу',
           'Место в категории',
@@ -126,7 +103,7 @@ export default function WrapperProtocolRaceEdit({
         <ContainerProtocolRace
           key={category}
           protocol={protocol.filter((result) => result.categoryAge === category)}
-          handlerUpdateProtocolRace={handlerUpdateProtocolRace}
+          raceInfo={{ championshipId: championship._id, raceNumber: +raceNumber }}
           hiddenColumnHeaders={[
             'Место в абсолюте',
             'Место в абсолюте по полу',
