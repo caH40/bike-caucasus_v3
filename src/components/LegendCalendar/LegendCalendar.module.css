@@ -9,14 +9,17 @@
   height: 1rem;
 }
 .mtb {
-  background-color: var(--bh-mtb);
+  background-color: var(--bg-mtb);
 }
 .road {
-  background-color: var(--bh-road);
+  background-color: var(--bg-road);
 }
 .gravel {
-  background-color: var(--bh-gravel);
+  background-color: var(--bg-gravel);
 }
 .dh {
-  background-color: var(--bh-dh);
+  background-color: var(--bg-dh);
+}
+.tt {
+  background-color: var(--bg-tt);
 }
