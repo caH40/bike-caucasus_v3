@@ -427,6 +427,8 @@ export class ChampionshipService {
             raceForSave.distance = race.distance;
             raceForSave.ascent = race.ascent;
             raceForSave.registeredRiders = race.registeredRiders;
+            raceForSave.categoriesAgeMale = race.categoriesAgeMale;
+            raceForSave.categoriesAgeFemale = race.categoriesAgeFemale;
 
             racesForSave.push(raceForSave);
 
@@ -456,6 +458,8 @@ export class ChampionshipService {
               raceForSave.distance = race.distance;
               raceForSave.ascent = race.ascent;
               raceForSave.registeredRiders = race.registeredRiders;
+              raceForSave.categoriesAgeMale = race.categoriesAgeMale;
+              raceForSave.categoriesAgeFemale = race.categoriesAgeFemale;
 
               racesForSave.push(raceForSave);
             }

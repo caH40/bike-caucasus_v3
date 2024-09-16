@@ -107,10 +107,8 @@ export default function FromChampionship({
       return { ...race, categoriesAgeFemale, categoriesAgeMale };
     });
 
-    dataForm.races = racesWithCategoriesFormatted;
-
     // Старт отображение статуса загрузки.
-    setLoading(true);
+    // setLoading(true);
 
     // Сериализация данных перед отправкой на сервер.
     const championshipId = championshipForEdit?._id;
@@ -130,6 +128,7 @@ export default function FromChampionship({
     const dataSerialized = serializationChampionship({
       dataForm: {
         ...dataForm,
+        races: racesWithCategoriesFormatted,
         name: nameStripedHtmlTags,
         description: descriptionFormatted,
       },

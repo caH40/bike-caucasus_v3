@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, models, Model } from 'mongoose';
 
-import { TChampionshipDocument, TRace } from '@/types/models.interface';
+import { TCategoryAge, TChampionshipDocument, TRace } from '@/types/models.interface';
 
 // Трэк заезда.
 const trackGPXSchema = new Schema(
@@ -15,10 +15,11 @@ const trackGPXSchema = new Schema(
   },
   { _id: false }
 );
-const categoryAgeSchema = new Schema(
+const categoryAgeSchema = new Schema<TCategoryAge>(
   {
     min: Number,
     max: Number,
+    name: String,
   },
   { _id: false }
 );
