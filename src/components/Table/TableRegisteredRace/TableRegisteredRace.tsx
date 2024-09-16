@@ -191,24 +191,26 @@ export default function TableRegisteredRace({
             <tfoot className={cx('footer')}>
               <tr>
                 <td colSpan={table.getHeaderGroups()[0].headers.length}>
-                  <div className={styles.footer__files}>
-                    <IconPdf
-                      squareSize={24}
-                      getClick={handlerClickBlankProtocol}
-                      tooltip={{
-                        id: 'dlPdfProtocol',
-                        text: 'Скачать файл бланка для протокола для фиксации результатов участников, pdf',
-                      }}
-                    />
-                    <IconPdf
-                      squareSize={24}
-                      getClick={handlerClickRegistered}
-                      tooltip={{
-                        id: 'dlPdfRegistered',
-                        text: 'Скачать файл с таблицей зарегистрированных участников, pdf',
-                      }}
-                    />
-                  </div>
+                  {registeredRidersInRace.raceName && (
+                    <div className={styles.footer__files}>
+                      <IconPdf
+                        squareSize={24}
+                        getClick={handlerClickBlankProtocol}
+                        tooltip={{
+                          id: `dlPdfProtocol-${registeredRidersInRace.raceNumber}`,
+                          text: 'Бланк протокола для фиксации результатов участников, pdf',
+                        }}
+                      />
+                      <IconPdf
+                        squareSize={24}
+                        getClick={handlerClickRegistered}
+                        tooltip={{
+                          id: `dlPdfRegistered-${registeredRidersInRace.raceNumber}`,
+                          text: 'Таблица зарегистрированных участников, pdf',
+                        }}
+                      />
+                    </div>
+                  )}
                 </td>
               </tr>
             </tfoot>
