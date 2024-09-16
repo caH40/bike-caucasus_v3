@@ -33,6 +33,7 @@ import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
+import { RegistrationChampService } from './RegistrationChamp';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -530,15 +531,14 @@ export class ChampionshipService {
         throw new Error(`Не найден Чемпионат с urlSlug: ${urlSlug} в БД!`);
       }
 
-      // Можно удалять только Чемпионаты которые еще не начались.
-      if (championshipDB.status !== 'upcoming') {
-        throw new Error(`Можно удалять только Чемпионаты которые еще не начались`);
-      }
-
-      // Удаление документа Чемпионат
+      // Удаление документа Чемпионат/
       await championshipDB.deleteOne();
 
-      // Экземпляр сервиса работы с Облаком
+      // Удаление документов регистрации райдеров, зарегистрированных на удаляемый Чемпионат.
+      const regService = new RegistrationChampService();
+      await regService.deleteMany({ champId: championshipDB._id });
+
+      // Экземпляр сервиса работы с Облаком.
       const cloudService = new Cloud();
 
       // Удаление Постера с облака.

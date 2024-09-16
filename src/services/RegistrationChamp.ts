@@ -515,4 +515,31 @@ export class RegistrationChampService {
       return this.handlerErrorDB(error);
     }
   }
+
+  /**
+   * Удаление документов регистрации (используется при удалении Чемпионата со всеми заездами).
+   */
+  public async deleteMany({
+    champId,
+  }: {
+    champId: string;
+  }): Promise<ResponseServer<any | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      await RaceRegistrationModel.findOneAndDelete({
+        championship: champId,
+      });
+
+      return {
+        data: null,
+        ok: true,
+        message: `Удалены все регистрации Чемпионата с _id:${champId}`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
 }

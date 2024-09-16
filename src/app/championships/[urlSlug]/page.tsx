@@ -60,51 +60,52 @@ export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      {championship.data && (
-        <div className={styles.wrapper__main}>
-          <div className={styles.block__header}>
+      <div className={styles.wrapper__main}>
+        {championship.data && (
+          <>
+            <div className={styles.block__header}>
+              {/* popup меня управления чемпионатом */}
+              <PermissionCheck permission={'admin'}>
+                <div className={styles.ellipsis} id="popup-control-menu-championship">
+                  <MenuEllipsisControl
+                    urlSlug={championship.data.urlSlug}
+                    getMenuItems={getNavLinksChampionshipPopup}
+                    id={'#popup-control-menu-championship'}
+                    messageTooltip="Управление Чемпионатом"
+                  />
+                </div>
+              </PermissionCheck>
+              <BlockChampionshipHeader championship={championship.data} />
+            </div>
 
-            {/* popup меня управления чемпионатом */}
-            <PermissionCheck permission={'admin'}>
-              <div className={styles.ellipsis} id="popup-control-menu-championship">
-                <MenuEllipsisControl
-                  urlSlug={championship.data.urlSlug}
-                  getMenuItems={getNavLinksChampionshipPopup}
-                  id={'#popup-control-menu-championship'}
-                  messageTooltip="Управление Чемпионатом"
-                />
-              </div>
-            </PermissionCheck>
-            <BlockChampionshipHeader championship={championship.data} />
-          </div>
+            <div className={styles.wrapper__contacts}>
+              <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
+            </div>
 
-          <div className={styles.wrapper__contacts}>
-            <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
-          </div>
+            <div className={styles.wrapper__races}>
+              <BlockRaces
+                races={championship.data.races}
+                registrationData={{
+                  type: championship.data.type,
+                  status: championship.data.status,
+                  urlSlugChamp: championship.data.urlSlug,
+                }}
+              />
+            </div>
 
-          <div className={styles.wrapper__races}>
-            <BlockRaces
-              races={championship.data.races}
-              registrationData={{
-                type: championship.data.type,
-                status: championship.data.status,
-                urlSlugChamp: championship.data.urlSlug,
-              }}
-            />
-          </div>
-
-          {['series', 'tour'].includes(championship.data.type) && (
-            <>
-              <TitleAndLine hSize={2} title="Этапы" />
-              <div className={styles.wrapper__cards}>
-                {stages.map((champ) => (
-                  <ChampionshipCard championship={champ} key={champ._id} simple={true} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
+            {['series', 'tour'].includes(championship.data.type) && (
+              <>
+                <TitleAndLine hSize={2} title="Этапы" />
+                <div className={styles.wrapper__cards}>
+                  {stages.map((champ) => (
+                    <ChampionshipCard championship={champ} key={champ._id} simple={true} />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
 
       {/* левая боковая панель */}
       <aside className={styles.wrapper__aside}>
