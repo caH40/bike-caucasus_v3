@@ -108,7 +108,7 @@ export default function FromChampionship({
     });
 
     // Старт отображение статуса загрузки.
-    // setLoading(true);
+    setLoading(true);
 
     // Сериализация данных перед отправкой на сервер.
     const championshipId = championshipForEdit?._id;

@@ -34,9 +34,13 @@ type Props = {
 export default async function Registration({ params: { urlSlug } }: Props) {
   const session = await getServerSession(authOptions);
   const idRiderDB = session?.user?.idDB;
-  const profile = await getProfileForReg({ idDB: idRiderDB });
 
-  const { data: championship } = await getChampionship({ urlSlug });
+  const [profile, championshipResponse] = await Promise.all([
+    getProfileForReg({ idDB: idRiderDB }),
+    getChampionship({ urlSlug }),
+  ]);
+
+  const { data: championship } = championshipResponse;
   if (!championship) {
     return <h2>Не получены данные с сервера о Чемпионате </h2>;
   }
@@ -50,43 +54,51 @@ export default async function Registration({ params: { urlSlug } }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <div className={styles.spacer__form}>
-          <TitleAndLine
-            hSize={1}
-            title={getH1ForRegistration({
-              name: championship.name,
-              parentChampionship: championship.parentChampionship,
-              type: championship.type,
-              stage: championship.stage,
-            })}
-          />
-
-          {profile ? (
-            registeredInChamp.data ? (
-              <BlockRegistered registeredInChamp={registeredInChamp.data} />
-            ) : (
-              <FormRaceRegistration
-                profile={profile}
-                championshipId={championship._id}
-                races={championship.races}
+        {['completed', 'cancelled'].includes(championship.status) ? (
+          <BlockMessage>
+            <h3 className={styles.error}>{'Регистрация закрыта!'}</h3>
+          </BlockMessage>
+        ) : (
+          <>
+            <div className={styles.spacer__form}>
+              <TitleAndLine
+                hSize={1}
+                title={getH1ForRegistration({
+                  name: championship.name,
+                  parentChampionship: championship.parentChampionship,
+                  type: championship.type,
+                  stage: championship.stage,
+                })}
               />
-            )
-          ) : (
-            <BlockMessage>
-              <h3 className={styles.error}>
-                Для регистрации в Чемпионатах необходимо зарегистрироваться на сайте, если вы
-                еще не сделали этого. Если у вас уже есть учетная запись, пожалуйста, войдите в
-                нее.
-              </h3>
-            </BlockMessage>
-          )}
-        </div>
 
-        {profile && !registeredInChamp.data && (
-          <div className={styles.spacer}>
-            <TitleAndLine hSize={2} title="Зарегистрированные участники" />
-            <ContainerTableRegisteredRace />
-          </div>
+              {profile ? (
+                registeredInChamp.data ? (
+                  <BlockRegistered registeredInChamp={registeredInChamp.data} />
+                ) : (
+                  <FormRaceRegistration
+                    profile={profile}
+                    championshipId={championship._id}
+                    races={championship.races}
+                  />
+                )
+              ) : (
+                <BlockMessage>
+                  <h3 className={styles.error}>
+                    Для регистрации в Чемпионатах необходимо зарегистрироваться на сайте, если
+                    вы еще не сделали этого. Если у вас уже есть учетная запись, пожалуйста,
+                    войдите в нее.
+                  </h3>
+                </BlockMessage>
+              )}
+            </div>
+
+            {profile && !registeredInChamp.data && (
+              <div className={styles.spacer}>
+                <TitleAndLine hSize={2} title="Зарегистрированные участники" />
+                <ContainerTableRegisteredRace />
+              </div>
+            )}
+          </>
         )}
       </div>
 
