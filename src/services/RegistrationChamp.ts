@@ -246,7 +246,7 @@ export class RegistrationChampService {
       // Подключение к БД.
       await this.dbConnection();
 
-      // Проверка существования Чемпионата и заезда raceNumber в нём.
+      // Проверка существования Чемпионата.
       const champ: {
         _id: ObjectId;
         races: TRace[];
@@ -255,7 +255,6 @@ export class RegistrationChampService {
       } | null = await ChampionshipModel.findOne(
         {
           urlSlug,
-          'races.number': raceNumber,
         },
         {
           _id: true,
