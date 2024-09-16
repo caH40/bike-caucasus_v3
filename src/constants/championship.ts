@@ -68,15 +68,15 @@ export const raceInit: TRaceForForm = {
   registeredRiders: [],
   categoriesAgeFemale: [
     {
-      min: 18,
-      max: 200,
+      min: '18',
+      max: '120',
       name: '',
     },
   ],
   categoriesAgeMale: [
     {
-      min: 18,
-      max: 200,
+      min: '18',
+      max: '120',
       name: '',
     },
   ],

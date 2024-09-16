@@ -29,6 +29,7 @@ import type {
 import type { TDtoChampionship, TDtoOrganizer } from '@/types/dto.types';
 import t from '@/locales/ru/moderation/championship.json';
 import styles from '../Form.module.css';
+import { formatCategoriesFields } from './categories-format';
 
 type Props = {
   organizer: TDtoOrganizer;
@@ -75,11 +76,6 @@ export default function FromChampionship({
     },
   });
 
-  // const categoriesAgeMale = watch('races.0.categoriesAgeMale');
-  // const categoriesAgeFemale = watch('races.0.categoriesAgeFemale');
-  // console.log({ categoriesAgeMale });
-  // console.log({ categoriesAgeFemale });
-
   // Используем хук useFieldArray для работы с динамическими массивами полей в форме.
   const { fields, append, remove } = useFieldArray({
     control, // Передаем объект контроля, полученный из useForm, для управления динамическими полями.
@@ -102,6 +98,17 @@ export default function FromChampionship({
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
+    const racesWithCategoriesFormatted = dataForm.races.map((race) => {
+      const { categoriesAgeFemale, categoriesAgeMale } = formatCategoriesFields({
+        categoriesAgeFemale: race.categoriesAgeFemale,
+        categoriesAgeMale: race.categoriesAgeMale,
+      });
+
+      return { ...race, categoriesAgeFemale, categoriesAgeMale };
+    });
+
+    dataForm.races = racesWithCategoriesFormatted;
+
     // Старт отображение статуса загрузки.
     setLoading(true);
 

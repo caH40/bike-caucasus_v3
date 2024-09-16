@@ -1,5 +1,6 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import {
+  TCategoryAge,
   TChampionship,
   TChampionshipStatus,
   TChampionshipTypes,
@@ -506,10 +507,31 @@ export type TFormChampionshipCreate = Omit<
   races: TRaceForForm[];
   parentChampionship: { _id: string; name: string };
 };
-export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders'> & {
+export type TCategoryAgeFromForm = {
+  min: string; // Значение минимального возраста из формы (всегда приходит как строка).
+  max: string; // Значение максимального возраста из формы (всегда приходит как строка).
+  name: string; // Название категории (например, "М10-20").
+};
+export type TRaceForForm = Omit<
+  TRace,
+  'trackGPX' | 'registeredRiders' | 'categoriesAgeFemale' | 'categoriesAgeMale'
+> & {
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
   trackGPX?: TTrackGPXObj;
+  categoriesAgeFemale: TCategoryAgeFromForm[]; // Женские возрастные категории.
+  categoriesAgeMale: TCategoryAgeFromForm[]; // Мужские возрастные категории.
+  registeredRiders: string[];
+};
+export type TRaceForFormDeserialized = Omit<
+  TRace,
+  'trackGPX' | 'registeredRiders' | 'categoriesAgeFemale' | 'categoriesAgeMale'
+> & {
+  trackGPXFile: File | null;
+  trackGPXUrl: string | null;
+  trackGPX?: TTrackGPXObj;
+  categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
+  categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
   registeredRiders: string[];
 };
 

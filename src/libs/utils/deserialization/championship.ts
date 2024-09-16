@@ -1,4 +1,4 @@
-import { TFormChampionshipCreate } from '@/types/index.interface';
+import { TFormChampionshipCreate, TRaceForFormDeserialized } from '@/types/index.interface';
 
 /**
  * Функция для десериализации данных при создании Чемпионата.
@@ -6,10 +6,11 @@ import { TFormChampionshipCreate } from '@/types/index.interface';
  * @returns Сериализованные данные в формате FormData.
  */
 export function deserializeChampionship(serializedFormData: FormData) {
-  const championship = {} as TFormChampionshipCreate & {
+  const championship = {} as Omit<TFormChampionshipCreate, 'races'> & {
     organizerId?: string;
     parentChampionshipId?: string;
     urlTracksForDel: string[];
+    rases: TRaceForFormDeserialized[];
   } & {
     [key: string]: any;
   };
@@ -58,6 +59,18 @@ export function deserializeChampionship(serializedFormData: FormData) {
 
             // Если ключ registeredRiders парсить.
             case 'registeredRiders':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
+            // Если ключ categoriesAgeFemale парсить.
+            case 'categoriesAgeFemale':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
+            // Если ключ categoriesAgeMale парсить.
+            case 'categoriesAgeMale':
               if (typeof value === 'string') {
                 return JSON.parse(value);
               }

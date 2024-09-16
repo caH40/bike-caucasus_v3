@@ -45,7 +45,7 @@ export default function BlockCategorySet({
 
   const addCategory = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
-    appendCategory({ min: 0, max: 200 });
+    appendCategory({ min: '0', max: '120', name: '' });
   };
 
   return (

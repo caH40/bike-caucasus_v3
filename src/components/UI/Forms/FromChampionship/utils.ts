@@ -3,6 +3,7 @@
 import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
 import { TRaceClient, TRaceForForm } from '@/types/index.interface';
+import { TCategoryAge } from '@/types/models.interface';
 
 type Params = {
   name: string;
@@ -39,23 +40,28 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
     return [raceInit];
   }
   // Мапируем гонки в формат, подходящий для использования в форме.
-  return races.map((race) => ({
-    number: race.number, // Номер гонки, инициализируется как 1.
-    name: race.name, // Название гонки.
-    laps: race.laps, // Количество кругов в гонке.
-    description: race.description, // Описание гонки.
-    distance: race.distance, // Дистанция гонки.
-    ascent: race.ascent, // Набор высоты в гонке.
-    trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
-    trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
-    trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
-    registeredRiders: race.registeredRiders || [],
-    categoriesAgeFemale: race.categoriesAgeFemale,
-    categoriesAgeMale: race.categoriesAgeMale,
-    quantityRidersFinished: race.quantityRidersFinished,
-    // categories: [
-    //   ...race.categoriesAgeFemale.map((cat) => ({ ...cat, gender: 'female' })),
-    //   ...race.categoriesAgeMale.map((cat) => ({ ...cat, gender: 'male' })),
-    // ],
-  }));
+  return races.map((race) => {
+    const categoriesAge = (categories: TCategoryAge[]) =>
+      categories.map((cat) => ({
+        min: String(cat.min),
+        max: String(cat.max),
+        name: cat.name ? cat.name : '',
+      }));
+
+    return {
+      number: race.number, // Номер гонки, инициализируется как 1.
+      name: race.name, // Название гонки.
+      laps: race.laps, // Количество кругов в гонке.
+      description: race.description, // Описание гонки.
+      distance: race.distance, // Дистанция гонки.
+      ascent: race.ascent, // Набор высоты в гонке.
+      trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
+      trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
+      trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
+      registeredRiders: race.registeredRiders || [],
+      categoriesAgeFemale: categoriesAge(race.categoriesAgeFemale),
+      categoriesAgeMale: categoriesAge(race.categoriesAgeMale),
+      quantityRidersFinished: race.quantityRidersFinished,
+    };
+  });
 }

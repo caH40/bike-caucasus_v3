@@ -72,6 +72,14 @@ export function serializationChampionship({
       formData.set(`races[${index}][distance]`, race.distance.toString());
       formData.set(`races[${index}][laps]`, race.laps.toString());
       formData.set(`races[${index}][registeredRiders]`, JSON.stringify(race.registeredRiders));
+      formData.set(
+        `races[${index}][categoriesAgeFemale]`,
+        JSON.stringify(race.categoriesAgeFemale)
+      );
+      formData.set(
+        `races[${index}][categoriesAgeMale]`,
+        JSON.stringify(race.categoriesAgeMale)
+      );
 
       if (race.ascent !== undefined) {
         formData.set(`races[${index}][ascent]`, race.ascent.toString());

@@ -290,6 +290,8 @@ export class ChampionshipService {
           raceForSave.laps = race.laps;
           raceForSave.distance = race.distance;
           raceForSave.ascent = race.ascent;
+          raceForSave.categoriesAgeMale = race.categoriesAgeMale;
+          raceForSave.categoriesAgeFemale = race.categoriesAgeFemale;
           raceForSave.trackGPX = trackGPX;
 
           racesForSave.push(raceForSave);
