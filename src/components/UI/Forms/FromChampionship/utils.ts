@@ -53,5 +53,9 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
     categoriesAgeFemale: race.categoriesAgeFemale,
     categoriesAgeMale: race.categoriesAgeMale,
     quantityRidersFinished: race.quantityRidersFinished,
+    // categories: [
+    //   ...race.categoriesAgeFemale.map((cat) => ({ ...cat, gender: 'female' })),
+    //   ...race.categoriesAgeMale.map((cat) => ({ ...cat, gender: 'male' })),
+    // ],
   }));
 }

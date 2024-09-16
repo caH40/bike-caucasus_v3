@@ -16,3 +16,11 @@ export const buttonsForProtocolRace: TOptions[] = [
   { id: 0, translation: 'Общие', name: 'overall' },
   { id: 1, translation: 'Возрастные категории', name: 'age' },
 ];
+
+/**
+ * Кнопки для выбора пола.
+ */
+export const buttonsGender: TOptions[] = [
+  { id: 0, translation: 'Мужские', name: 'male' },
+  { id: 1, translation: 'Женские', name: 'female' },
+];

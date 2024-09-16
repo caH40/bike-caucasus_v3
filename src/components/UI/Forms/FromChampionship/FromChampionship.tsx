@@ -75,6 +75,11 @@ export default function FromChampionship({
     },
   });
 
+  // const categoriesAgeMale = watch('races.0.categoriesAgeMale');
+  // const categoriesAgeFemale = watch('races.0.categoriesAgeFemale');
+  // console.log({ categoriesAgeMale });
+  // console.log({ categoriesAgeFemale });
+
   // Используем хук useFieldArray для работы с динамическими массивами полей в форме.
   const { fields, append, remove } = useFieldArray({
     control, // Передаем объект контроля, полученный из useForm, для управления динамическими полями.
@@ -234,7 +239,7 @@ export default function FromChampionship({
         {/* Блок выбора типа Чемпионата. Выбирается при создании, при редактировании не доступен */}
         <BoxSelectNew
           label={t.labels.type}
-          id="type"
+          id="type-BoxSelectNew"
           options={championshipTypes}
           defaultValue={championshipForEdit ? championshipForEdit.type : 'single'}
           loading={isLoading}
@@ -421,7 +426,7 @@ export default function FromChampionship({
         {/* Блок выбора типа Велосипеда на котором проводится Заезд */}
         <BoxSelectNew
           label={t.labels.bikeType}
-          id="bikeType"
+          id="bikeType-BoxSelectNew"
           options={bikeTypes}
           defaultValue={championshipForEdit ? championshipForEdit.bikeType : 'road'}
           loading={isLoading}

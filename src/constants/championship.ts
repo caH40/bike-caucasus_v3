@@ -66,7 +66,19 @@ export const raceInit: TRaceForForm = {
   trackGPXFile: null,
   trackGPXUrl: null,
   registeredRiders: [],
-  categoriesAgeFemale: [],
-  categoriesAgeMale: [],
+  categoriesAgeFemale: [
+    {
+      min: 18,
+      max: 200,
+      name: '',
+    },
+  ],
+  categoriesAgeMale: [
+    {
+      min: 18,
+      max: 200,
+      name: '',
+    },
+  ],
   quantityRidersFinished: 0,
 };

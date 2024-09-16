@@ -1,4 +1,4 @@
-import { MouseEvent, MutableRefObject } from 'react';
+import { MouseEvent, MutableRefObject, useState } from 'react';
 import Image from 'next/image';
 import {
   Control,
@@ -19,6 +19,10 @@ import type { TFormChampionshipCreate, TRaceForForm } from '@/types/index.interf
 import { TextValidationService } from '@/libs/utils/text';
 import styles from './BlockRaceAdd.module.css';
 import t from '@/locales/ru/moderation/championship.json';
+import BlockCategorySet from '../BlockCategorySet/BlockCategorySet';
+import FilterRidersForAddResult from '../Filters/FilterRidersForAddResult/Filters';
+import { buttonsGender } from '@/constants/buttons';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   race: TRaceForForm;
@@ -47,6 +51,14 @@ export default function BlockRaceAdd({
   isLoading,
   urlTracksForDel,
 }: Props) {
+  const [genderButtonNumber, setGenderButtonNumber] = useState<number>(0);
+
+  // Выбор пола для добавления категорий
+  const categoryProperty =
+    buttonsGender.find((btn) => btn.id === genderButtonNumber)?.name === 'male'
+      ? 'categoriesAgeMale'
+      : 'categoriesAgeFemale';
+
   // Добавление Заезда.
   const addRace = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
@@ -228,6 +240,29 @@ export default function BlockRaceAdd({
             />
           )}
         />
+
+        <div className={styles.block__categories}>
+          <TitleAndLine title={'Возрастные категории'} hSize={3} />
+          {/* <div>блок схема отображения диапазона категорий в м/ж</div> */}
+
+          {/* Блок установки возрастных категорий */}
+          <div className={styles.spacer__buttons_cat}>
+            <FilterRidersForAddResult
+              activeIdBtn={genderButtonNumber}
+              setActiveIdBtn={setGenderButtonNumber}
+              buttons={buttonsGender}
+            />
+          </div>
+          <BlockCategorySet
+            key={`BlockCategorySet-${categoryProperty}`}
+            register={register}
+            errors={errors}
+            races={races}
+            index={index}
+            control={control}
+            categoryProperty={categoryProperty}
+          />
+        </div>
       </div>
     </div>
   );

@@ -343,7 +343,11 @@ export type TRace = {
   categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
   quantityRidersFinished: number; // Общее количество финишировавших.
 };
-export type TCategoryAge = { min: number; max: number };
+export type TCategoryAge = {
+  min: number;
+  max: number;
+  name?: string;
+};
 
 /**
  * Тип схемы регистрация Райдера (User) на Заезд Чемпионата.

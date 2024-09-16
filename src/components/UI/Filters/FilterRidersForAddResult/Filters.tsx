@@ -31,6 +31,8 @@ export default function FilterRidersForAddResult({
       return 'right';
     }
   };
+  // console.log({ activeIdBtn });
+
   return (
     <nav>
       {buttons.map((button, index) => {

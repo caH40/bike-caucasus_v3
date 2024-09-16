@@ -30,6 +30,7 @@ export default function ButtonForFilter({
         button__right: position === 'right',
         active: active,
       })}
+      type={'button'}
     >
       {children}
     </button>

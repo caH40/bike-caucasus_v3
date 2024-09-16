@@ -33,3 +33,9 @@
   align-items: center;
   gap: 3px;
 }
+.block__categories {
+  margin-top: 1rem;
+}
+.spacer__buttons_cat {
+  margin-bottom: 1rem;
+}

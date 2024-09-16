@@ -580,7 +580,10 @@ export type TRegistrationRaceDataFromForm = {
   teamVariable: string;
 };
 
-export type TRaceClient = Omit<TRace, 'registeredRiders'> & { registeredRiders: string[] };
+export type TRaceClient = Omit<TRace, 'registeredRiders'> & {
+  registeredRiders: string[];
+  // categories: (TCategoryAge & { gender: 'male' | 'female' })[];
+};
 
 /**
  * Данные по Регистрации Райдера в Чемпионате.

@@ -7,7 +7,11 @@ export class TextValidationService {
   /**
    *  Функция проверки для пробелов. Не больше одного пробела
    */
-  public spaces(value: string) {
+  public spaces(value: string | undefined) {
+    // Игнорирование undefined.
+    if (value === undefined) {
+      return true;
+    }
     // Регулярное выражение для проверки более двух пробелов подряд
     const hasMoreThanTwoSpaces = /\s{2,}/.test(value);
     if (hasMoreThanTwoSpaces) {
