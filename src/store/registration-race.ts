@@ -17,7 +17,7 @@ type TRegistrationRace = {
   startNumberFree: number | undefined;
 };
 
-const numbersTotal = 30;
+const numbersTotal = 100;
 // Инициализация массива свободных стартовых номеров.
 const initStartNumbersFree = Array(numbersTotal)
   .fill('_')
