@@ -119,7 +119,6 @@ export async function fetchChampionshipCreated(
     }
 
     const championshipService = new ChampionshipService();
-
     const res = await championshipService.post({ serializedFormData: formData, creator });
 
     revalidatePath('/moderation/championship');
@@ -168,9 +167,13 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
 /**
  * Серверный экшен, обновления данных Чемпионата.
  */
-export async function putChampionship(
-  serializedFormData: FormData
-): Promise<ResponseServer<null>> {
+export async function putChampionship({
+  dataSerialized,
+  urlSlug,
+}: {
+  dataSerialized: FormData;
+  urlSlug: string;
+}): Promise<ResponseServer<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -191,8 +194,14 @@ export async function putChampionship(
     }
 
     const championshipService = new ChampionshipService();
+    const champ = await championshipService.getOne({ urlSlug });
+    if (champ.data?.status === 'completed') {
+      throw new Error(
+        `Чемпионат "${champ.data.name}" завершен! Запрет на редактирование завершенного чемпионата!`
+      );
+    }
 
-    const response = await championshipService.put({ serializedFormData });
+    const response = await championshipService.put({ serializedFormData: dataSerialized });
 
     revalidatePath('/championship');
     revalidatePath('/moderation/championship');

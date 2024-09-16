@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import FromChampionship from '@/components/UI/Forms/FromChampionship/FromChampionship';
+import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionship';
 import IconChampionship from '@/components/Icons/IconChampionship';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
@@ -41,7 +41,7 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
   return (
     <>
       <TitleAndLine title="Редактирование Чемпионата" hSize={1} Icon={IconChampionship} />
-      <FromChampionship
+      <FormChampionship
         putChampionship={putChampionship}
         championshipForEdit={championship.data}
         parentChampionships={parentChampionships.data || []}

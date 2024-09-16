@@ -34,7 +34,15 @@ import { formatCategoriesFields } from './categories-format';
 type Props = {
   organizer: TDtoOrganizer;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  putChampionship?: (serializedFormData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  putChampionship?: ({
+    // eslint-disable-next-line no-unused-vars
+    dataSerialized,
+    // eslint-disable-next-line no-unused-vars
+    urlSlug,
+  }: {
+    dataSerialized: FormData;
+    urlSlug: string;
+  }) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   championshipForEdit?: TDtoChampionship;
   parentChampionships: { _id: string; name: string; availableStage: number[] }[];
 };
@@ -42,7 +50,7 @@ type Props = {
 /**
  * Форма создания/редактирования Чемпионата.
  */
-export default function FromChampionship({
+export default function FormChampionship({
   organizer,
   fetchChampionshipCreated,
   putChampionship,
@@ -149,8 +157,11 @@ export default function FromChampionship({
 
     if (fetchChampionshipCreated) {
       response = await fetchChampionshipCreated(dataSerialized);
-    } else if (putChampionship) {
-      response = await putChampionship(dataSerialized);
+    } else if (putChampionship && championshipForEdit) {
+      response = await putChampionship({
+        dataSerialized,
+        urlSlug: championshipForEdit.urlSlug,
+      });
     } else {
       return toast.error(messageErr);
     }
