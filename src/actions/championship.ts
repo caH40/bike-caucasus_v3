@@ -147,6 +147,13 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
     }
 
     const championshipService = new ChampionshipService();
+    const champ = await championshipService.getOne({ urlSlug });
+    if (champ.data?.status === 'completed') {
+      throw new Error(
+        `Чемпионат "${champ.data.name}" завершен! Запрет на удаление завершенного чемпионата!`
+      );
+    }
+
     const response = await championshipService.delete({ urlSlug });
 
     revalidatePath('/championship');
