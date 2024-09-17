@@ -22,8 +22,8 @@ import styles from '../Form.module.css';
 import BlockUploadFile from '../../BlockUploadFile/BlockUploadFile';
 
 type Props = {
-  fetchNewsCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  fetchNewsEdited?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  postNews?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  putNewsOne?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   newsForEdit?: TNewsGetOneDto & { posterOldUrl?: string | null };
 };
 
@@ -33,7 +33,7 @@ type Props = {
  * Если newsForEdit не undefined, значит происходит редактирование Новости, иначе создание.
  * @returns
  */
-export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdit }: Props) {
+export default function FormNews({ postNews, putNewsOne, newsForEdit }: Props) {
   // Новостные блоки в новости.
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(newsForEdit?.blocks)
@@ -127,10 +127,10 @@ export default function FormNews({ fetchNewsCreated, fetchNewsEdited, newsForEdi
       ok: false,
       message: 'Не передана ни функция обновления, ни создания новости!',
     };
-    if (fetchNewsCreated) {
-      response = await fetchNewsCreated(formData);
-    } else if (fetchNewsEdited) {
-      response = await fetchNewsEdited(formData);
+    if (postNews) {
+      response = await postNews(formData);
+    } else if (putNewsOne) {
+      response = await putNewsOne(formData);
     } else {
       return toast.error('Не передана ни функция обновления, ни функция создания!');
     }

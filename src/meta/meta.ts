@@ -1,8 +1,8 @@
 // Метаданные для страниц.
+import { type Metadata } from 'next';
 
 import { getTrail } from '@/actions/trail';
-import { getNewsOne } from '@/app/news/[urlSlug]/page';
-import { ResolvingMetadata, type Metadata } from 'next';
+import { getNewsOne } from '@/actions/news';
 import { bikeTypes, regions } from '../constants/trail';
 import { metadata404Page } from './meta404';
 import { UserService } from '@/services/user';
@@ -25,8 +25,6 @@ type Props = {
   };
   searchParams?: { [key: string]: string | string[] | undefined };
 };
-// eslint-disable-next-line no-unused-vars
-type Parent = ResolvingMetadata;
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 

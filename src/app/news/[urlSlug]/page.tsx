@@ -5,22 +5,20 @@ import Link from 'next/link';
 
 import Author from '@/components/Author/Author';
 import BlockShare from '@/components/BlockShare/BlockShare';
-import { News } from '@/services/news';
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { generateMetadataNews } from '@/meta/meta';
-import { errorLogger } from '@/errors/error';
-import { notFound } from 'next/navigation';
-import { blurBase64 } from '@/libs/image';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock';
 import BlockComments from '@/components/BlockComments/BlockComments';
-import { getComments } from '@/actions/comment';
-import type { TNewsGetOneDto } from '@/types/dto.types';
-import styles from './NewsPage.module.css';
 import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { generateMetadataNews } from '@/meta/meta';
+import { notFound } from 'next/navigation';
+import { blurBase64 } from '@/libs/image';
+import { getComments } from '@/actions/comment';
 import { getNavLinksNewsPopup } from '@/constants/navigation';
+import { countView, getNewsOne } from '@/actions/news';
+import styles from './NewsPage.module.css';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -32,42 +30,6 @@ type Props = {
     urlSlug: string;
   };
 };
-
-/**
- * Получение данных новости с БД.
- */
-export async function getNewsOne({
-  urlSlug,
-  idUserDB,
-}: {
-  urlSlug: string;
-  idUserDB?: string;
-}): Promise<TNewsGetOneDto | null | undefined> {
-  const news = new News();
-  const response = await news.getOne({ urlSlug, idUserDB });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return response.data;
-}
-
-/**
- * Подсчет просмотра новости с _id:idNews.
- */
-async function countView(idNews: string): Promise<void> {
-  try {
-    if (!idNews) {
-      return;
-    }
-    // Учет просмотра новости.
-    const news = new News();
-    await news.countView({ idNews });
-  } catch (error) {
-    errorLogger(error);
-  }
-}
 
 /**
  * Страница Новости
