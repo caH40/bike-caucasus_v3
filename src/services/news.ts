@@ -1,5 +1,5 @@
 import { revalidatePath } from 'next/cache';
-import { ObjectId } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
 import { Cloud } from './cloud';
@@ -538,44 +538,38 @@ export class News {
   }
 
   /**
-   * Удаление новости админом или модератором, который создал новость.
+   * Удаление новости.
+   * Проверка разрешений производится при запросе в серверном экшене.
    */
-  public async delete({ urlSlug, idUserDB }: { urlSlug: string; idUserDB: string }) {
+  public async delete({ urlSlug }: { urlSlug: string; idUserDB: string }) {
     try {
       // Подключение к БД.
       this.dbConnection();
 
-      // Проверка, является ли модератор, удаляющий новость, администратором.
-      const user: { role: { name: string } } | null = await User.findOne(
-        { _id: idUserDB },
-        { role: true }
-      )
-        .populate({ path: 'role', select: ['name', '-_id'] })
-        .lean();
+      const newsOneDB:
+        | ({
+            _id: ObjectId;
+            createdAt: Date;
+            poster: string;
+            filePdf?: string;
+            blocks: TNewsBlockInfo[];
+          } & Document)
+        | null = await NewsModel.findOne(
+        { urlSlug },
+        {
+          createdAt: true,
+          poster: true,
+          blocks: true,
+          filePdf: true,
+        }
+      );
 
-      // Админ может удалить любую новость. Модератор только свою.
-      const isAdmin = user?.role.name === 'admin';
-      const query = isAdmin ? { urlSlug } : { urlSlug, author: idUserDB };
-
-      const newsDB: {
-        _id: ObjectId;
-        createdAt: Date;
-        poster: string;
-        filePdf: string;
-        blocks: TNewsBlockInfo[];
-      } | null = await NewsModel.findOne(query, {
-        createdAt: true,
-        poster: true,
-        blocks: true,
-        filePdf: true,
-      });
-
-      if (!newsDB) {
-        throw new Error('Не найдена новость или у вас нет прав на удаление данной новости!');
+      if (!newsOneDB) {
+        throw new Error('Не найдена новость!');
       }
 
       // Запрет на удаление новости, если с даты создания прошло более millisecondsIn3Days
-      if (Date.now() - new Date(newsDB?.createdAt).getTime() > millisecondsIn3Days) {
+      if (Date.now() - new Date(newsOneDB?.createdAt).getTime() > millisecondsIn3Days) {
         throw new Error('Нельзя удалить новость, которая была создана больше 3 дней назад!');
       }
 
@@ -583,17 +577,27 @@ export class News {
       const cloudService = new Cloud();
 
       // Удаление всех файлов новости с Облака.
-      await cloudService.deleteFile({ prefix: newsDB.poster.replace(fileNameFormUrl, '$1') });
-      await cloudService.deleteFile({ prefix: newsDB.filePdf.replace(fileNameFormUrl, '$1') });
-      for (const block of newsDB.blocks) {
+      await cloudService.deleteFile({
+        prefix: newsOneDB.poster.replace(fileNameFormUrl, '$1'),
+      });
+
+      if (newsOneDB.filePdf) {
+        await cloudService.deleteFile({
+          prefix: newsOneDB.filePdf.replace(fileNameFormUrl, '$1'),
+        });
+      }
+
+      for (const block of newsOneDB.blocks) {
         if (block.image) {
           await cloudService.deleteFile({ prefix: block.image.replace(fileNameFormUrl, '$1') });
         }
       }
 
-      const newsDeleted = await NewsModel.findOneAndDelete(query);
-      if (!newsDeleted) {
-        throw new Error('Не найдена новость на удаление!');
+      const newsDeleted: { acknowledged: boolean; deletedCount: number } =
+        await newsOneDB.deleteOne();
+
+      if (!newsDeleted.acknowledged || newsDeleted.deletedCount === 0) {
+        throw new Error('Ошибка при удалении новости с БД!');
       }
 
       // Ревалидация данных после удаления новости.
@@ -604,6 +608,68 @@ export class News {
         ok: true,
         message: `Удалена новость с urlSlug:${urlSlug}!`,
       };
+    } catch (error) {
+      this.errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Проверка на наличие разрешений у пользователя для удаления, редактирование новости.
+   * Удалять, редактировать может админ или пользователь, создавший новость.
+   */
+  public async checkPermission({
+    urlSlug,
+    idUserDB,
+    permission,
+  }: {
+    urlSlug: string;
+    idUserDB: string;
+    permission: string;
+  }) {
+    try {
+      // Подключение к БД.
+      this.dbConnection();
+
+      // Проверка, является ли модератор, удаляющий,редактирующий новость, администратором.
+      const user: { role: { name: string; permissions: string[] } } | null = await User.findOne(
+        { _id: idUserDB },
+        { role: true }
+      )
+        .populate({ path: 'role', select: ['permissions', 'name', '-_id'] })
+        .lean();
+
+      // Проверка наличия пользователя и его разрешений.
+      if (!user) {
+        throw new Error('Пользователь не найден!');
+      }
+
+      const responseSuccess = {
+        data: null,
+        ok: true,
+        message: `Получено разрешение на модерацию новости с urlSlug:${urlSlug}!`,
+      };
+
+      // Администраторы могут модифицировать любую новость.
+      if (user.role.name === 'admin') {
+        return responseSuccess;
+      }
+
+      if (!user.role.permissions.includes(permission)) {
+        throw new Error('У вас нет прав на выполнение данной операции!');
+      }
+
+      // Проверка, что новость создана пользователем, который хочет осуществить модерацию.
+      const newsDB: { _id: ObjectId } | null = await NewsModel.findOne(
+        { urlSlug, author: idUserDB },
+        { _id: true }
+      );
+
+      if (!newsDB) {
+        throw new Error('У вас нет прав на модерацию данной новости!');
+      }
+
+      return responseSuccess;
     } catch (error) {
       this.errorLogger(error); // логирование
       return handlerErrorDB(error);

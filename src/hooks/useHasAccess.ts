@@ -30,7 +30,7 @@ export default function useHasAccess(permission: string | null): boolean {
     return true;
   }
 
-  if (session.user.role.permissions?.includes(permission)) {
+  if (userPermissions.includes(permission)) {
     return true;
   }
 

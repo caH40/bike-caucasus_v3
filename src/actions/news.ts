@@ -107,7 +107,14 @@ export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>>
       throw new Error('Необходима авторизация и наличие idUserDB!');
     }
 
+    const permission = 'moderation.news.delete';
+
     const newsService = new News();
+    const res = await newsService.checkPermission({ urlSlug, idUserDB, permission });
+
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
 
     const response = await newsService.delete({ urlSlug, idUserDB });
 
