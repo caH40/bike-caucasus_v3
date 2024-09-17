@@ -25,6 +25,9 @@
   border-radius: 1rem;
   word-break: break-word;
 }
+.wrapper__block:focus-within {
+  background-color: var(--focus-within);
+}
 .box__button {
   width: 100%;
   display: flex;
