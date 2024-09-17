@@ -226,6 +226,9 @@ export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>>
 
     const response = await newsService.delete({ urlSlug, idUserDB });
 
+    // Ревалидация данных после удаления новости.
+    revalidatePath('/');
+
     return response;
   } catch (error) {
     return handlerErrorDB(error);

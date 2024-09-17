@@ -63,7 +63,7 @@ export default async function TrailPage({ params }: Props) {
   return (
     <>
       {/* popup меня управления новостью */}
-      <PermissionCheck permission={'admin'}>
+      <PermissionCheck permission={'moderation.trails'}>
         <div className={styles.ellipsis} id="popup-control-menu-trail">
           <MenuEllipsisControl
             urlSlug={trail.urlSlug}

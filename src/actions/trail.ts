@@ -65,9 +65,34 @@ export async function getTrail(urlSlug: string): Promise<TTrailDto | null | unde
  */
 export async function deleteTrail(urlSlug: string): Promise<ResponseServer<null>> {
   try {
+    // Получаем текущую сессию пользователя с использованием next-auth.
     const session = await getServerSession(authOptions);
 
+    // Проверяем, есть ли у пользователя ID в базе данных.
     const idUserDB = session?.user.idDB;
+    if (!idUserDB) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Проверяем, что urlSlug существует и имеет тип строки.
+    if (!urlSlug || typeof urlSlug !== 'string') {
+      throw new Error('Некорректный или отсутствующий urlSlug!');
+    }
+
+    // Определяем требуемое разрешение для редактирования новости.
+    const permission = 'moderation.trails.delete';
+
+    const res = await PermissionService.checkPermission({
+      entity: 'trail',
+      urlSlug,
+      idUserDB,
+      permission,
+    });
+
+    // Если прав недостаточно, возвращаем ошибку.
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
 
     const trailsService = new Trail();
     const response = await trailsService.delete({ urlSlug, idUserDB });
@@ -206,7 +231,7 @@ export async function postTrail(formData: FormData): Promise<ResponseServer<null
 }
 
 /**
- * Отправка заполненной формы обновления новости на сервер.
+ * Обновление данных маршрута.
  */
 export const putTrail = async (formData: FormData) => {
   try {

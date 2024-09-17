@@ -1,4 +1,3 @@
-import { revalidatePath } from 'next/cache';
 import { Document, ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
@@ -599,9 +598,6 @@ export class News {
       if (!newsDeleted.acknowledged || newsDeleted.deletedCount === 0) {
         throw new Error('Ошибка при удалении новости с БД!');
       }
-
-      // Ревалидация данных после удаления новости.
-      revalidatePath('/');
 
       return {
         data: null,

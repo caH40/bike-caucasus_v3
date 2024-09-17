@@ -139,45 +139,32 @@ export class Trail {
         throw new Error(`Маршрут с urlSlug:${urlSlug} не найден в БД`);
       }
 
-      let query = {} as { urlSlug: string; 'author._id'?: string };
-      // Модератор с правами на удаление маршрута может удалить любой маршрут.
-      if (
-        userDB.role.permissions.some((permission) =>
-          ['moderation.trail.delete', 'all'].includes(permission)
-        )
-      ) {
-        query = { urlSlug };
-      } else {
-        // Пользователь может удалить только свой маршрут.
-        query = { urlSlug, 'author._id': idUserDB };
-      }
-      const trailDeletedDB = await TrailModel.findOneAndDelete(query);
-
-      // Если Пользователь не является автором маршрута, или модератор-пользователь у которого нет
-      // прав на удаление маршрутов, отсутствует permissions - moderation.trail.delete то проброс исключения!
-      if (!trailDeletedDB) {
-        throw new Error(
-          `У вас нет прав на удаление маршрута с urlSlug:${urlSlug}. Запрос от пользователя bcId:${userDB.id}`
-        );
-      }
-
       // Экземпляр сервиса работы с Облаком
       const cloud = new Cloud();
       // Удаление всех файлов новости с Облака.
-      await cloud.deleteFile({ prefix: trailDeletedDB.poster.replace(fileNameFormUrl, '$1') });
       await cloud.deleteFile({
-        prefix: trailDeletedDB.trackGPX.replace(fileNameFormUrl, '$1'),
+        prefix: trailDBForDelete.poster.replace(fileNameFormUrl, '$1'),
       });
-      for (const block of trailDeletedDB.blocks) {
+      await cloud.deleteFile({
+        prefix: trailDBForDelete.trackGPX.replace(fileNameFormUrl, '$1'),
+      });
+      for (const block of trailDBForDelete.blocks) {
         if (block.image) {
           await cloud.deleteFile({ prefix: block.image.replace(fileNameFormUrl, '$1') });
         }
       }
 
+      const newsDeleted: { acknowledged: boolean; deletedCount: number } =
+        await trailDBForDelete.deleteOne();
+
+      if (!newsDeleted.acknowledged || newsDeleted.deletedCount === 0) {
+        throw new Error('Ошибка при удалении маршрута с БД!');
+      }
+
       return {
         data: null,
         ok: true,
-        message: `Маршрут удалён!`,
+        message: 'Маршрут удалён!',
       };
     } catch (error) {
       this.errorLogger(error); // логирование
