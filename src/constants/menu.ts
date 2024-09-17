@@ -81,7 +81,7 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     name: 'Новости',
     classes: [],
     href: '/moderation/news/create',
-    permission: 'moderation.news.create',
+    permission: 'moderation.news',
     icon: IconNewspaper,
   },
   {

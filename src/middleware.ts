@@ -1,13 +1,8 @@
-// export { default } from 'next-auth/middleware';
-
-// export const config = {
-//   matcher: ['/account/(.*)'],
-// };
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
 export default withAuth(
-  // `withAuth` augments your `Request` with the user's token.
+  // `withAuth` добавляет токен пользователя в запрос.
   function middleware(req) {
     const token = req.nextauth.token;
 
@@ -16,23 +11,25 @@ export default withAuth(
       return NextResponse.redirect(new URL('/access-denied', req.url));
     }
 
-    // Разрешения пользователя, находящиеся в token (включенные в callback ->jwt из бд).
+    // Разрешения пользователя, находящиеся в token (включенные в callback ->jwt из БД).
     const userPermissions = token.rolePermissions || [];
 
-    // Для admin открыты все маршруты
+    // Для admin открыты все маршруты.
     if (userPermissions.includes('all')) {
       return NextResponse.next();
     }
 
     const pathname = req.nextUrl.pathname;
 
-    // Find a matching path with dynamic path handling
+    // Проверка пути с динамическими маршрутами
     const path = paths.find((p) => {
-      // if (p.path.includes('[id]')) {
-      //   // Replace '[id]' with a regex pattern and test the pathname
-      //   const regex = new RegExp(`^${p.path.replace('[id]', '\\w+')}$`);
-      //   return regex.test(pathname);
-      // }
+      if (p.path.includes('[urlSlug]')) {
+        // Регулярное выражение для обработки динамического маршрута.
+        const regex = new RegExp(`^${p.path.replace('[urlSlug]', '[\\w-]+')}$`);
+
+        return regex.test(pathname);
+      }
+
       return p.path === pathname;
     });
 
@@ -40,6 +37,7 @@ export default withAuth(
       return NextResponse.redirect(new URL('/access-denied', req.url));
     }
 
+    // Проверка разрешений
     const hasPermission = path.permission.some((p) => userPermissions.includes(p));
 
     if (!hasPermission) {
@@ -61,6 +59,7 @@ export const config = {
   ],
 };
 
+// Обновлённый список путей с поддержкой динамических маршрутов.
 const paths = [
   {
     path: '/moderation',
@@ -75,24 +74,28 @@ const paths = [
     permission: ['moderation.news.edit'],
   },
   {
+    path: '/moderation/news/edit/[urlSlug]', // Добавляем динамический маршрут
+    permission: ['moderation.news.edit'],
+  },
+  {
     path: '/moderation/news/list',
     permission: ['moderation.news.list'],
   },
   {
     path: '/account',
-    permission: ['authorized'], // Для авторизованного пользователя.
+    permission: ['authorized'],
   },
   {
     path: '/account/profile',
-    permission: ['authorized'], // Для авторизованного пользователя.
+    permission: ['authorized'],
   },
   {
     path: '/account/team',
-    permission: ['authorized'], // Для авторизованного пользователя.
+    permission: ['authorized'],
   },
   {
     path: '/account/details',
-    permission: ['authorized'], // Для авторизованного пользователя.
+    permission: ['authorized'],
   },
   {
     path: '/admin',
@@ -110,13 +113,4 @@ const paths = [
     path: '/admin/logs/errors',
     permission: ['admin'],
   },
-  // {
-  //   path: '/products/create',
-  //   permission: ['products.create', 'products.all'],
-  // },
-  // {
-  //   path: '/products/[id]',
-  //   permission: ['products.edit', 'products.view', 'products.delete', 'products.all'],
-  // },
 ];
-// moderation.calendar разрешение на модерацию календаря

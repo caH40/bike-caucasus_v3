@@ -98,7 +98,7 @@ export default async function NewsPage({ params }: Props) {
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
         {/* popup меня управления новостью */}
-        <PermissionCheck permission={'moderation'}>
+        <PermissionCheck permission={'moderation.news'}>
           <div className={styles.ellipsis} id="popup-control-menu-news">
             <MenuEllipsisControl
               urlSlug={newsOne.urlSlug}
