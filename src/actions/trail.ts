@@ -12,6 +12,8 @@ import { revalidatePath } from 'next/cache';
 import { TWeatherForecast } from '@/types/weather.types';
 import { getGPSData } from './gpx';
 import { WeatherService } from '@/services/Weather';
+import { errorHandlerClient } from './error-handler';
+import { parseError } from '@/errors/parse';
 
 type TGetTrails = {
   bikeType: string | null;
@@ -160,5 +162,44 @@ export async function getForecastWeather({
     return res.data;
   } catch (error) {
     return null;
+  }
+}
+
+/**
+ * Создание маршрута.
+ */
+export async function postTrail(formData: FormData): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const author = session?.user.idDB;
+    if (!author) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Разрешение для создание маршрута.
+    const permission = 'moderation.trails.create';
+    const permissionAdmin = 'all';
+
+    // Проверка наличия прав на создание маршрута.
+    if (
+      !session.user.role.permissions.some(
+        (elm) => elm === permission || elm === permissionAdmin
+      )
+    ) {
+      throw new Error('У вас нет прав для создания маршрута!');
+    }
+
+    const trailService = new Trail();
+    const response = await trailService.post({ formData, author });
+
+    revalidatePath(`/trails`);
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
   }
 }

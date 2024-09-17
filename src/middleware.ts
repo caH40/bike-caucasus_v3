@@ -81,6 +81,27 @@ const paths = [
     path: '/moderation/news/list',
     permission: ['moderation.news.list'],
   },
+  // Доступ к маршрутам
+  {
+    path: '/moderation/trails',
+    permission: ['moderation.trails'],
+  },
+  {
+    path: '/moderation/trails/create',
+    permission: ['moderation.trails.create'],
+  },
+  {
+    path: '/moderation/trails/edit',
+    permission: ['moderation.trails.edit'],
+  },
+  {
+    path: '/moderation/news/trails/[urlSlug]', // Добавляем динамический маршрут
+    permission: ['moderation.trails.edit'],
+  },
+  {
+    path: '/moderation/trails/list',
+    permission: ['moderation.trails.list'],
+  },
   {
     path: '/account',
     permission: ['authorized'],

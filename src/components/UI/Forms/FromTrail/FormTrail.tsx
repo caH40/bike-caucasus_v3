@@ -27,7 +27,7 @@ import type { TTrailDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 
 type Props = {
-  fetchTrailCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  postTrail?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   fetchTrailEdited?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   trailForEdit?: TTrailDto & { posterOldUrl?: string | null };
 };
@@ -39,11 +39,7 @@ type Props = {
  * Если trailForEdit не undefined, значит происходит редактирование Маршрута, иначе создание.
  * @returns
  */
-export default function FormTrail({
-  fetchTrailCreated,
-  fetchTrailEdited,
-  trailForEdit,
-}: Props) {
+export default function FormTrail({ postTrail, fetchTrailEdited, trailForEdit }: Props) {
   const [title, setTitle] = useState<string>(trailForEdit ? trailForEdit.title : '');
   const [region, setRegion] = useState<string>(trailForEdit ? trailForEdit.region : '');
   const [difficultyLevel, setDifficultyLevel] = useState<string>(
@@ -212,8 +208,8 @@ export default function FormTrail({
       ok: false,
       message: messageErr,
     };
-    if (fetchTrailCreated) {
-      response = await fetchTrailCreated(formData);
+    if (postTrail) {
+      response = await postTrail(formData);
     } else if (fetchTrailEdited) {
       response = await fetchTrailEdited(formData);
     } else {
