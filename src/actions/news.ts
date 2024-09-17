@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 
 import { News } from '@/services/news';
@@ -8,7 +9,6 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
-import { revalidatePath } from 'next/cache';
 
 type ParamsNews = {
   idUserDB?: string;
@@ -57,31 +57,71 @@ export async function countView(idNews: string): Promise<void> {
  * Отправка заполненной формы создания новости на сервер.
  */
 export const postNews = async (formData: FormData) => {
-  const session = await getServerSession(authOptions);
+  try {
+    const session = await getServerSession(authOptions);
 
-  const author = session?.user.idDB;
-  if (!author) {
-    throw new Error('Нет авторизации, нет idDB!');
+    const author = session?.user.idDB;
+    if (!author) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    const news = new News();
+    const response = await news.create({ formData, author });
+
+    revalidatePath(`/`);
+
+    return response;
+  } catch (error) {
+    return handlerErrorDB(error);
   }
-
-  const news = new News();
-  const response = await news.create({ formData, author });
-
-  revalidatePath(`/`);
-
-  return response;
 };
 
 /**
  * Отправка заполненной формы обновления новости на сервер.
  */
 export const putNewsOne = async (formData: FormData) => {
-  const newsService = new News();
-  const response = await newsService.put(formData);
+  try {
+    // Получаем текущую сессию пользователя с использованием next-auth.
+    const session = await getServerSession(authOptions);
 
-  revalidatePath(`/`);
+    // Проверяем, есть ли у пользователя ID в базе данных.
+    const idUserDB = session?.user.idDB;
+    if (!idUserDB) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
 
-  return response;
+    // Извлекаем urlSlug (уникальный идентификатор новости) из formData.
+    const urlSlug = formData.get('urlSlug');
+    // Проверяем, что urlSlug существует и имеет тип строки.
+    if (!urlSlug || typeof urlSlug !== 'string') {
+      throw new Error('Некорректный или отсутствующий urlSlug!');
+    }
+
+    // Определяем требуемое разрешение для редактирования новости.
+    const permission = 'moderation.news.edit';
+
+    // Создаем экземпляр сервиса для работы с новостями.
+    const newsService = new News();
+
+    // Проверяем права пользователя на редактирование данной новости.
+    const res = await newsService.checkPermission({ urlSlug, idUserDB, permission });
+
+    // Если прав недостаточно, возвращаем ошибку.
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
+
+    // Обновляем новость с помощью метода сервиса
+    const response = await newsService.put(formData);
+
+    // Перегенерируем кэш для главной страницы после изменения данных.
+    revalidatePath(`/`);
+
+    // Возвращаем ответ сервера
+    return response;
+  } catch (error) {
+    return handlerErrorDB(error);
+  }
 };
 
 /**
