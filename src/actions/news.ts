@@ -9,6 +9,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
+import { PermissionService } from '@/services/Permission';
 
 type ParamsNews = {
   idUserDB?: string;
@@ -104,7 +105,12 @@ export const putNewsOne = async (formData: FormData) => {
     const newsService = new News();
 
     // Проверяем права пользователя на редактирование данной новости.
-    const res = await newsService.checkPermission({ urlSlug, idUserDB, permission });
+    const res = await PermissionService.checkPermission({
+      entity: 'news',
+      urlSlug,
+      idUserDB,
+      permission,
+    });
 
     // Если прав недостаточно, возвращаем ошибку.
     if (!res.ok) {
@@ -218,7 +224,12 @@ export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>>
     const permission = 'moderation.news.delete';
 
     const newsService = new News();
-    const res = await newsService.checkPermission({ urlSlug, idUserDB, permission });
+    const res = await PermissionService.checkPermission({
+      entity: 'news',
+      urlSlug,
+      idUserDB,
+      permission,
+    });
 
     if (!res.ok) {
       throw new Error(res.message);
