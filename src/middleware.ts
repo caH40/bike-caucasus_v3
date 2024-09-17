@@ -95,7 +95,7 @@ const paths = [
     permission: ['moderation.trails.edit'],
   },
   {
-    path: '/moderation/news/trails/[urlSlug]', // Добавляем динамический маршрут
+    path: '/moderation/trails/edit/[urlSlug]', // Добавляем динамический маршрут
     permission: ['moderation.trails.edit'],
   },
   {

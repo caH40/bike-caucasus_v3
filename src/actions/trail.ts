@@ -14,6 +14,7 @@ import { getGPSData } from './gpx';
 import { WeatherService } from '@/services/Weather';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
+import { PermissionService } from '@/services/Permission';
 
 type TGetTrails = {
   bikeType: string | null;
@@ -203,3 +204,51 @@ export async function postTrail(formData: FormData): Promise<ResponseServer<null
     return handlerErrorDB(error);
   }
 }
+
+/**
+ * Отправка заполненной формы обновления новости на сервер.
+ */
+export const putTrail = async (formData: FormData) => {
+  try {
+    // Получаем текущую сессию пользователя с использованием next-auth.
+    const session = await getServerSession(authOptions);
+
+    // Проверяем, есть ли у пользователя ID в базе данных.
+    const idUserDB = session?.user.idDB;
+    if (!idUserDB) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Извлекаем urlSlug (уникальный идентификатор страницы) из formData.
+    const urlSlug = formData.get('urlSlug');
+    // Проверяем, что urlSlug существует и имеет тип строки.
+    if (!urlSlug || typeof urlSlug !== 'string') {
+      throw new Error('Некорректный или отсутствующий urlSlug!');
+    }
+
+    // Определяем требуемое разрешение для редактирования новости.
+    const permission = 'moderation.trails.edit';
+
+    const res = await PermissionService.checkPermission({
+      entity: 'trail',
+      urlSlug,
+      idUserDB,
+      permission,
+    });
+
+    // Если прав недостаточно, возвращаем ошибку.
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
+
+    const trailService = new Trail();
+    const response = await trailService.put({ formData });
+
+    revalidatePath(`/`);
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+};

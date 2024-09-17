@@ -28,7 +28,7 @@ import styles from '../Form.module.css';
 
 type Props = {
   postTrail?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  fetchTrailEdited?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  putTrail?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
   trailForEdit?: TTrailDto & { posterOldUrl?: string | null };
 };
 
@@ -39,7 +39,7 @@ type Props = {
  * Если trailForEdit не undefined, значит происходит редактирование Маршрута, иначе создание.
  * @returns
  */
-export default function FormTrail({ postTrail, fetchTrailEdited, trailForEdit }: Props) {
+export default function FormTrail({ postTrail, putTrail, trailForEdit }: Props) {
   const [title, setTitle] = useState<string>(trailForEdit ? trailForEdit.title : '');
   const [region, setRegion] = useState<string>(trailForEdit ? trailForEdit.region : '');
   const [difficultyLevel, setDifficultyLevel] = useState<string>(
@@ -210,8 +210,8 @@ export default function FormTrail({ postTrail, fetchTrailEdited, trailForEdit }:
     };
     if (postTrail) {
       response = await postTrail(formData);
-    } else if (fetchTrailEdited) {
-      response = await fetchTrailEdited(formData);
+    } else if (putTrail) {
+      response = await putTrail(formData);
     } else {
       return toast.error(messageErr);
     }

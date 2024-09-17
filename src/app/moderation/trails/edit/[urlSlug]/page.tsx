@@ -1,13 +1,12 @@
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { TTrailDto } from '@/types/dto.types';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { getTrail } from '@/actions/trail';
-import { Trail } from '@/services/Trail';
 import FormTrail from '@/components/UI/Forms/FromTrail/FormTrail';
 import IconRoute from '@/components/Icons/IconRoute';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { getTrail, putTrail } from '@/actions/trail';
+import { TTrailDto } from '@/types/dto.types';
 
 type Props = {
   params: { urlSlug: string };
@@ -36,20 +35,6 @@ export default async function TrailEditCurrentPage({ params }: Props) {
     trail.posterOldUrl = trail?.poster;
   }
 
-  /**
-   * Отправка заполненной формы обновления новости на сервер.
-   */
-  const fetchTrailEdited = async (formData: FormData) => {
-    'use server';
-
-    const trailService = new Trail();
-    const response = await trailService.put({ formData });
-
-    revalidatePath(`/`);
-
-    return response;
-  };
-
   return (
     <>
       <TitleAndLine
@@ -58,7 +43,7 @@ export default async function TrailEditCurrentPage({ params }: Props) {
         Icon={IconRoute}
       />
       {trail ? (
-        <FormTrail fetchTrailEdited={fetchTrailEdited} trailForEdit={trail} />
+        <FormTrail putTrail={putTrail} trailForEdit={trail} />
       ) : (
         <span>Не получены данные Новости для редактирования</span>
       )}
