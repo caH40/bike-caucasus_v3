@@ -14,7 +14,7 @@ import { getGPSData } from './gpx';
 import { WeatherService } from '@/services/Weather';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
-import { PermissionService } from '@/services/Permission';
+import { PermissionsService } from '@/services/Permissions';
 
 type TGetTrails = {
   bikeType: string | null;
@@ -82,7 +82,7 @@ export async function deleteTrail(urlSlug: string): Promise<ResponseServer<null>
     // Определяем требуемое разрешение для редактирования новости.
     const permission = 'moderation.trails.delete';
 
-    const res = await PermissionService.checkPermission({
+    const res = await PermissionsService.checkPermission({
       entity: 'trail',
       urlSlug,
       idUserDB,
@@ -254,7 +254,7 @@ export const putTrail = async (formData: FormData) => {
     // Определяем требуемое разрешение для редактирования новости.
     const permission = 'moderation.trails.edit';
 
-    const res = await PermissionService.checkPermission({
+    const res = await PermissionsService.checkPermission({
       entity: 'trail',
       urlSlug,
       idUserDB,

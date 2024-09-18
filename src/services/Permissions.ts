@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { errorLogger } from '@/errors/error';
 import { ResponseServer } from '@/types/index.interface';
@@ -6,7 +8,9 @@ import { Permission as PermissionModel } from '@/database/mongodb/Models/Permiss
 import { dtoPermission, dtoPermissions } from '@/dto/permissions';
 import type { TPermissionDocument } from '@/types/models.interface';
 import type { TPermissionDto } from '@/types/dto.types';
-import mongoose from 'mongoose';
+import { User as UserModel } from '@/database/mongodb/Models/User';
+import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
+import { News as NewsModel } from '@/database/mongodb/Models/News';
 
 /**
  * Класс работы с разрешениями (доступами) к ресурсам сайта.
@@ -163,6 +167,71 @@ export class PermissionsService {
     } catch (error) {
       await this.errorLogger(error);
       return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Проверка на наличие разрешений у пользователя для удаления, редактирование новости.
+   * Удалять, редактировать может админ или пользователь, создавший новость.
+   */
+  static async checkPermission({
+    entity,
+    urlSlug,
+    idUserDB,
+    permission,
+  }: {
+    entity: 'news' | 'trail';
+    urlSlug: string;
+    idUserDB: string;
+    permission: string;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await connectToMongo();
+
+      // Проверка, является ли модератор, удаляющий,редактирующий новость, администратором.
+      const user: { role: { name: string; permissions: string[] } } | null =
+        await UserModel.findOne({ _id: idUserDB }, { role: true })
+          .populate({ path: 'role', select: ['permissions', 'name', '-_id'] })
+          .lean();
+
+      // Проверка наличия пользователя и его разрешений.
+      if (!user) {
+        throw new Error('Пользователь не найден!');
+      }
+
+      // Ответ на успешную проверку разрешения на выполняемую модерацию.
+      const responseSuccess = {
+        data: null,
+        ok: true,
+        message: `Получено разрешение на модерацию ${
+          entity === 'news' ? 'новости' : 'маршрута'
+        } с urlSlug:${urlSlug}!`,
+      };
+
+      // Администраторы могут модифицировать любую новость.
+      if (user.role.name === 'admin') {
+        return responseSuccess;
+      }
+
+      if (!user.role.permissions.includes(permission)) {
+        throw new Error('У вас нет прав на выполнение данной операции!');
+      }
+
+      // Универсальный поиск по типу сущности
+      const Model = entity === 'news' ? NewsModel : TrailModel;
+      const nameEntity = entity === 'news' ? 'новости' : 'маршрута';
+
+      const response = await Model.findOne({ urlSlug, author: idUserDB }, { _id: true });
+
+      if (!response) {
+        throw new Error(`У вас нет прав на модерацию данного ${nameEntity}!`);
+      }
+
+      return responseSuccess;
+    } catch (error) {
+      errorLogger(error); // логирование
+      return handlerErrorDB(error);
     }
   }
 }

@@ -9,7 +9,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
-import { PermissionService } from '@/services/Permission';
+import { PermissionsService } from '@/services/Permissions';
 
 type ParamsNews = {
   idUserDB?: string;
@@ -105,7 +105,7 @@ export const putNewsOne = async (formData: FormData) => {
     const newsService = new News();
 
     // Проверяем права пользователя на редактирование данной новости.
-    const res = await PermissionService.checkPermission({
+    const res = await PermissionsService.checkPermission({
       entity: 'news',
       urlSlug,
       idUserDB,
@@ -224,7 +224,7 @@ export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>>
     const permission = 'moderation.news.delete';
 
     const newsService = new News();
-    const res = await PermissionService.checkPermission({
+    const res = await PermissionsService.checkPermission({
       entity: 'news',
       urlSlug,
       idUserDB,
