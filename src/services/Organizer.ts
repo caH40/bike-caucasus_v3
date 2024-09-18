@@ -117,6 +117,39 @@ export class OrganizerService {
   }
 
   /**
+   * Получить Организатора по creatorId или id модератора для последующей модерации.
+   */
+  public async getOneForModerate({
+    userIdDB,
+  }: {
+    userIdDB: string;
+  }): Promise<ResponseServer<TDtoOrganizer | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const organizerDB: (Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser }) | null =
+        await OrganizerModel.findOne({ $or: [{ creator: userIdDB }, { moderators: userIdDB }] })
+          .populate({
+            path: 'creator',
+            select: userPublicSelect,
+          })
+          .lean();
+
+      if (!organizerDB) {
+        throw new Error('Не найден запрашиваемый Организатор!');
+      }
+
+      const organizer = dtoCOrganizer(organizerDB);
+
+      return { data: organizer, ok: true, message: 'Организатор найден!' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
    * Создание нового Организатора по _id или по creatorId.
    */
   public async post({

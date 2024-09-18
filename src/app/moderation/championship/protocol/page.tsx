@@ -8,7 +8,7 @@ import FormSelectionChampionship from '@/components/UI/Forms/FormSelectionChampi
  * Страница выбора Чемпионата и заезда для работы с финишным протоколом.
  */
 export default async function ChampionshipRaceForProtocolPage() {
-  const championships = await getChampionships({});
+  const championships = await getChampionships({ forModeration: true });
 
   if (!championships.data) {
     return (

@@ -62,7 +62,7 @@ export async function getChampionships({
 }): Promise<ResponseServer<TDtoChampionship[] | null>> {
   try {
     const session = await getServerSession(authOptions);
-    const idUserDB = session?.user.idDB;
+    const userIdDB = session?.user.idDB;
 
     if (forModeration) {
       // Проверка наличия прав на редактирование Чемпионатов
@@ -78,7 +78,7 @@ export async function getChampionships({
 
     const championshipService = new ChampionshipService();
     const championship = await championshipService.getMany({
-      idUserDB,
+      userIdDB,
       forModeration,
       needTypes,
     });

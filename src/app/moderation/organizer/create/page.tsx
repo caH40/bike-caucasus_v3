@@ -1,6 +1,3 @@
-import { getServerSession } from 'next-auth';
-
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import IconOrganizers from '@/components/Icons/IconOrganizers';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { fetchOrganizerCreated, getOrganizer } from '@/actions/organizer';
@@ -13,14 +10,7 @@ import styles from './OrganizerCreatePage.module.css';
  * Страница создания/удаления Организатора Чемпионатов.
  */
 export default async function OrganizerCreatePage() {
-  const session = await getServerSession(authOptions);
-
-  const userIdDB = session?.user.idDB;
-  if (!userIdDB) {
-    return <h1>Нет авторизации!</h1>;
-  }
-
-  const organizer = await getOrganizer({ creatorId: userIdDB });
+  const organizer = await getOrganizer({});
 
   // Пользователь еще не создавал Организатора Чемпионатов.
   const hasNotOrganizer = organizer.message === 'Не найден запрашиваемый Организатор!';

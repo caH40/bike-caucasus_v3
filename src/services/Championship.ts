@@ -105,11 +105,11 @@ export class ChampionshipService {
    * Получение всех Чемпионатов.
    */
   public async getMany({
-    idUserDB,
+    userIdDB,
     forModeration,
     needTypes,
   }: {
-    idUserDB?: string;
+    userIdDB?: string;
     forModeration?: boolean;
     needTypes?: TChampionshipTypes[];
   }): Promise<ResponseServer<TDtoChampionship[] | null>> {
@@ -119,10 +119,10 @@ export class ChampionshipService {
 
       let query: any = { ...(needTypes && { type: needTypes }) };
 
-      // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные idUserDB.
-      if (forModeration && idUserDB) {
+      // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные Организатором userIdDB, или их модераторами userIdDB.
+      if (forModeration && userIdDB) {
         const organizer: { _id: ObjectId } | null = await OrganizerModel.findOne(
-          { creator: idUserDB },
+          { $or: [{ creator: userIdDB }, { moderators: userIdDB }] },
           { _id: true }
         ).lean();
 

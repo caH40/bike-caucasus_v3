@@ -275,6 +275,7 @@ export type TOrganizerDocument = Document & TOrganizer;
 export type TOrganizer = {
   _id: mongoose.Types.ObjectId;
   creator: mongoose.Types.ObjectId;
+  moderators: mongoose.Types.ObjectId[]; // Список модераторов, которые могут создавать и редактировать чемпионаты от имени данного организатора.
   urlSlug: string;
   name: string;
   description: string;

@@ -1,11 +1,9 @@
-import { getServerSession } from 'next-auth';
-
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionship';
 import IconChampionship from '@/components/Icons/IconChampionship';
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+
 import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
-import { getOrganizer } from '@/actions/organizer';
+import { getOrganizerForModerate } from '@/actions/organizer';
 
 type Props = {
   params: {
@@ -17,22 +15,14 @@ type Props = {
  * Страница Редактирования запрашиваемого Чемпионата.
  */
 export default async function ChampionshipEditCurrentPage({ params: { urlSlug } }: Props) {
-  const session = await getServerSession(authOptions);
-
-  const userIdDB = session?.user.idDB;
-
-  if (!userIdDB) {
-    return <h1>Нет авторизации!</h1>;
-  }
-
   const championship = await getChampionship({ urlSlug, forModeration: true });
 
-  const { data: organizer } = await getOrganizer({ creatorId: userIdDB });
+  const { data: organizer } = await getOrganizerForModerate();
 
   if (!organizer || !championship.data) {
     return (
       <h1>
-        Не найден Организатора, перед созданием Чемпионата необходимо создать Организатора!
+        Не найден Организатор, перед созданием Чемпионата необходимо создать Организатора!
       </h1>
     );
   }

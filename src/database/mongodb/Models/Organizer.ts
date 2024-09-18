@@ -41,6 +41,7 @@ const organizerSchema = new Schema<TOrganizerDocument>(
       trim: true,
     },
     description: { type: String, default: null, trim: true }, // Описание организатора.
+    moderators: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     logoUrl: { type: String, default: null },
     contactInfo: { type: contactInfoSchema, required: true },
     address: { type: addressSchema, required: true, trim: true },

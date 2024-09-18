@@ -17,12 +17,17 @@ import type { ResponseServer } from '@/types/index.interface';
  */
 export async function getOrganizer({
   urlSlug,
-  creatorId,
 }: {
   urlSlug?: string;
-  creatorId?: string;
 }): Promise<ResponseServer<TDtoOrganizer | null>> {
   try {
+    const session = await getServerSession(authOptions);
+    const creatorId = session?.user.idDB;
+
+    if (!creatorId) {
+      throw new Error('Не получен _id модератора Чемпионата');
+    }
+
     // Проверка, что только один параметр предоставлен
     if ((!urlSlug && !creatorId) || (urlSlug && creatorId)) {
       throw new Error('Необходимо передать только один из параметров: _id или creatorId.');
@@ -45,6 +50,30 @@ export async function getOrganizer({
     return handlerErrorDB(error);
   }
 }
+
+/**
+ * Получить Организатора по creatorId или id модератора для последующей модерации.
+ */
+export async function getOrganizerForModerate(): Promise<ResponseServer<TDtoOrganizer | null>> {
+  try {
+    const session = await getServerSession(authOptions);
+    const userIdDB = session?.user.idDB;
+
+    // Проверка авторизации.
+    if (!userIdDB) {
+      throw new Error('Не получен _id модератора Чемпионата');
+    }
+
+    const organizerService = new OrganizerService();
+    const res = await organizerService.getOneForModerate({ userIdDB });
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
 /**
  * Получение Организаторов Чемпионатов.
  */

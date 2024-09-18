@@ -127,7 +127,10 @@ export type TDtoCalendarEvents = {
 /**
  * ДТО для Организатора.
  */
-export type TDtoOrganizer = Omit<TOrganizer, 'creator' | '_id' | 'createdAt' | 'updatedAt'> & {
+export type TDtoOrganizer = Omit<
+  TOrganizer,
+  'creator' | '_id' | 'createdAt' | 'updatedAt' | 'moderators'
+> & {
   _id: string;
   creator: TAuthor;
   createdAt: string;

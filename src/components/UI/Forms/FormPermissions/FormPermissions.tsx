@@ -76,8 +76,8 @@ export default function FormPermissions({ permission }: Props) {
             message: 'Название Разрешения должно быть больше 2х символов',
           },
           maxLength: {
-            value: 30,
-            message: 'Название события не может быть больше 30 символов',
+            value: 50,
+            message: 'Название события не может быть больше 50 символов',
           },
           pattern: {
             value: /^[a-z.]+$/i,
