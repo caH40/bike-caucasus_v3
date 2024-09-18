@@ -2,6 +2,10 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconResults from '@/components/Icons/IconResults';
 import WrapperResultRaceEdit from '@/components/WrapperResultRaceEdit/WrapperResultRaceEdit';
 import { getResultRaceForRider, putResultRaceRider } from '@/actions/result-race';
+import { getChampionship } from '@/actions/championship';
+import { getOrganizerForModerate } from '@/actions/organizer';
+import styles from '../../../layout.module.css';
+import { checkPermissionOrganizer } from '@/actions/permissions';
 
 type Props = {
   params: {
@@ -22,6 +26,29 @@ export default async function ResultRaceEditPage({ params: { resultId } }: Props
         <p>{result.message}</p>
       </>
     );
+  }
+
+  const [championship, organizer] = await Promise.all([
+    getChampionship({ urlSlug: result.data.championship.urlSlug, forModeration: true }),
+    getOrganizerForModerate(),
+  ]);
+
+  if (!organizer.data || !championship.data) {
+    return (
+      <h2 className={styles.error}>
+        Не найден Организатор, перед созданием Чемпионата необходимо создать Организатора!
+      </h2>
+    );
+  }
+
+  // Проверка разрешения на редактирование.
+  const responsePermission = await checkPermissionOrganizer({
+    organizerId: organizer.data?._id,
+    championshipId: championship.data.organizer._id,
+  });
+
+  if (!responsePermission.ok) {
+    return <h2 className={styles.error}>{responsePermission.message}</h2>;
   }
 
   return (

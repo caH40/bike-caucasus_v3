@@ -39,11 +39,7 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
   });
 
   if (!responsePermission.ok) {
-    return (
-      <h2 className={styles.error}>
-        Вы не являетесь Организатором или модератором для данного Чемпионата!
-      </h2>
-    );
+    return <h2 className={styles.error}>{responsePermission.message}</h2>;
   }
 
   const parentChampionships = await getToursAndSeries({ organizerId: organizer.data._id });
