@@ -4,6 +4,7 @@ import IconChampionship from '@/components/Icons/IconChampionship';
 
 import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
+import styles from '../ChampionshipEditPage.module.css';
 
 type Props = {
   params: {
@@ -15,18 +16,32 @@ type Props = {
  * Страница Редактирования запрашиваемого Чемпионата.
  */
 export default async function ChampionshipEditCurrentPage({ params: { urlSlug } }: Props) {
-  const championship = await getChampionship({ urlSlug, forModeration: true });
+  // Получение чемпионата для редактирования.
+  // Проверка прав пользователя на редактирование Чемпионата и получение данных Организатора.
+  const [championship, organizer] = await Promise.all([
+    getChampionship({ urlSlug, forModeration: true }),
+    getOrganizerForModerate(),
+  ]);
 
-  const { data: organizer } = await getOrganizerForModerate();
-
-  if (!organizer || !championship.data) {
+  if (!organizer.data || !championship.data) {
     return (
-      <h1>
+      <h2 className={styles.error}>
         Не найден Организатор, перед созданием Чемпионата необходимо создать Организатора!
-      </h1>
+      </h2>
     );
   }
-  const parentChampionships = await getToursAndSeries({ organizerId: organizer._id });
+
+  // Если чемпионат создан не текущим организатором, то редактирование запрещено!
+  // !!!! Добавит исключение для админа.
+  if (organizer.data._id !== championship.data.organizer._id) {
+    return (
+      <h2 className={styles.error}>
+        Вы не являетесь Организатором или модератором для данного Чемпионата!
+      </h2>
+    );
+  }
+
+  const parentChampionships = await getToursAndSeries({ organizerId: organizer.data._id });
 
   return (
     <>
@@ -35,7 +50,7 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
         putChampionship={putChampionship}
         championshipForEdit={championship.data}
         parentChampionships={parentChampionships.data || []}
-        organizer={organizer}
+        organizer={organizer.data}
       />
     </>
   );
