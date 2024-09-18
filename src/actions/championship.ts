@@ -11,6 +11,7 @@ import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
+import { getOrganizerForModerate } from './organizer';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -146,11 +147,23 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
     }
 
     const championshipService = new ChampionshipService();
-    const champ = await championshipService.getOne({ urlSlug });
-    if (champ.data?.status === 'completed') {
+    // Проверка наличия запрашиваемого чемпионата.
+    const championship = await championshipService.getOne({ urlSlug });
+    if (!championship.data) {
+      throw new Error(`Чемпионат не найден!`);
+    }
+
+    if (championship.data.status === 'completed') {
       throw new Error(
-        `Чемпионат "${champ.data.name}" завершен! Запрет на удаление завершенного чемпионата!`
+        `Чемпионат "${championship.data.name}" завершен! Запрет на удаление завершенного чемпионата!`
       );
+    }
+
+    // Запрос Организатора на проверку соответствия Организатора, который создал удаляемый Чемпионат и Организатора с userId пользователя, который запрашивает удаление.
+    const organizer = await getOrganizerForModerate();
+
+    if (organizer.data?._id !== championship.data?.organizer._id) {
+      throw new Error('Вы не являетесь Организатором или модератором для данного Чемпионата!');
     }
 
     const response = await championshipService.delete({ urlSlug });
