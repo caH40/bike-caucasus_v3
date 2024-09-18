@@ -6,6 +6,9 @@ import { parseError } from '@/errors/parse';
 import { TPermissionDto } from '@/types/dto.types';
 import { ResponseServer } from '@/types/index.interface';
 import { revalidatePath } from 'next/cache';
+import { handlerErrorDB } from '@/services/mongodb/error';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 
 const permissionsService = new PermissionsService();
 
@@ -108,5 +111,36 @@ export async function deletePermission({
   } catch (error) {
     errorHandlerClient(parseError(error));
     return { data: null, ok: false, message: 'Ошибка в серверном экшене deletePermission' };
+  }
+}
+
+/**
+ * Серверный экшен проверки на соответствие Организатора, который создал модерируемы Чемпионат и Организатора с userId пользователя, который запрашивает действие на модерацию. Модерировать может администратор.
+ */
+export async function checkPermissionOrganizer({
+  organizerId,
+  championshipId,
+}: {
+  organizerId: string;
+  championshipId: string;
+}): Promise<ResponseServer<null>> {
+  try {
+    const session = await getServerSession(authOptions);
+    const userIdDB = session?.user.idDB;
+
+    // Проверка авторизации.
+    if (!userIdDB) {
+      throw new Error('Не получен _id модератора Чемпионата');
+    }
+
+    const responsePermission = await PermissionsService.checkPermissionOrganizer({
+      organizerId,
+      championshipId,
+      userIdDB,
+    });
+
+    return responsePermission;
+  } catch (error) {
+    return handlerErrorDB(error);
   }
 }

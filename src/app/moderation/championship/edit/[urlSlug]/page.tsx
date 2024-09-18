@@ -4,6 +4,7 @@ import IconChampionship from '@/components/Icons/IconChampionship';
 
 import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
+import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../ChampionshipEditPage.module.css';
 
 type Props = {
@@ -31,9 +32,13 @@ export default async function ChampionshipEditCurrentPage({ params: { urlSlug } 
     );
   }
 
-  // Если чемпионат создан не текущим организатором, то редактирование запрещено!
-  // !!!! Добавит исключение для админа.
-  if (organizer.data._id !== championship.data.organizer._id) {
+  // Проверка разрешения на редактирование.
+  const responsePermission = await checkPermissionOrganizer({
+    organizerId: organizer.data?._id,
+    championshipId: championship.data?.organizer._id,
+  });
+
+  if (!responsePermission.ok) {
     return (
       <h2 className={styles.error}>
         Вы не являетесь Организатором или модератором для данного Чемпионата!

@@ -234,4 +234,60 @@ export class PermissionsService {
       return handlerErrorDB(error);
     }
   }
+
+  /**
+   * Проверка на соответствие Организатора, который создал модерируемы Чемпионат и Организатора с userId пользователя, который запрашивает действие на модерацию. Модерировать может администратор.
+   */
+  static async checkPermissionOrganizer({
+    organizerId,
+    championshipId,
+    userIdDB,
+  }: {
+    organizerId: string;
+    championshipId: string;
+    userIdDB: string;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await connectToMongo();
+
+      const userDB: { role: { name: string } } | null = await UserModel.findOne(
+        { _id: userIdDB },
+        { _id: false, role: true }
+      )
+        .populate({ path: 'role', select: ['name', '-_id'] })
+        .lean();
+
+      // Проверка найденного пользователя.
+      if (!userDB) {
+        throw new Error(
+          `Не найден пользователь, запрашиваемый модерацию, в БД с _id${userIdDB}`
+        );
+      }
+
+      // Ответ на успешную проверку разрешения на выполняемую модерацию.
+      const responseSuccess = {
+        data: null,
+        ok: true,
+        message: 'Модерация разрешена',
+      };
+
+      // Администратор может модерировать любые чемпионаты.
+      if (userDB.role.name === 'admin') {
+        return responseSuccess;
+      }
+
+      if (organizerId !== championshipId) {
+        throw new Error(
+          'Вы не являетесь Организатором или модератором для данного Чемпионата!'
+        );
+      }
+
+      // Ответ на успешную проверку разрешения на выполняемую модерацию.
+      return responseSuccess;
+    } catch (error) {
+      errorLogger(error); // логирование
+      return handlerErrorDB(error);
+    }
+  }
 }

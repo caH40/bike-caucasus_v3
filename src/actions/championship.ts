@@ -12,6 +12,7 @@ import type { TDtoChampionship } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 import { getOrganizerForModerate } from './organizer';
+import { PermissionsService } from '@/services/Permissions';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -139,10 +140,10 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
   'use server';
   try {
     const session = await getServerSession(authOptions);
-    const idUserDB = session?.user.idDB;
+    const userIdDB = session?.user.idDB;
 
     // Проверка авторизации пользователя.
-    if (!idUserDB) {
+    if (!userIdDB) {
       throw new Error('Необходима авторизация и наличие idUserDB!');
     }
 
@@ -162,10 +163,22 @@ export async function deleteChampionship(urlSlug: string): Promise<ResponseServe
     // Запрос Организатора на проверку соответствия Организатора, который создал удаляемый Чемпионат и Организатора с userId пользователя, который запрашивает удаление.
     const organizer = await getOrganizerForModerate();
 
-    if (organizer.data?._id !== championship.data?.organizer._id) {
-      throw new Error('Вы не являетесь Организатором или модератором для данного Чемпионата!');
+    if (!organizer.data) {
+      throw new Error('Не найден Организатор!');
     }
 
+    // Если проходит проверка, то пробрасывается ошибка, а следующий код не выполняется.
+    const responsePermission = await PermissionsService.checkPermissionOrganizer({
+      organizerId: organizer.data?._id,
+      championshipId: championship.data?.organizer._id,
+      userIdDB,
+    });
+
+    if (!responsePermission.ok) {
+      throw new Error(responsePermission.message);
+    }
+
+    // Удаление чемпионата.
     const response = await championshipService.delete({ urlSlug });
 
     revalidatePath('/championship');
