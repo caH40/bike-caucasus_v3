@@ -162,7 +162,7 @@ export const getNavLinksChampionshipPopup = (urlSlug: string): TMenuOnPage[] => 
   {
     id: 1,
     name: 'Финишные протоколы',
-    href: `/moderation/championship/protocol/${urlSlug}`,
+    href: `/moderation/championship/protocol/${urlSlug}/1`, // По умолчанию открывается 1 Заезд.
     permission: 'moderation.championship.protocol',
     icon: IconEditOld,
     classes: [],

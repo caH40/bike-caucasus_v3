@@ -25,7 +25,7 @@ export default withAuth(
     const path = paths.find((p) => {
       if (p.path.includes('[urlSlug]')) {
         // Регулярное выражение для обработки динамического маршрута.
-        const regex = new RegExp(`^${p.path.replace('[urlSlug]', '[\\w-]+')}$`);
+        const regex = new RegExp(`^${p.path.replace(/\[urlSlug\]/g, '[\\w-]+')}$`);
 
         return regex.test(pathname);
       }
@@ -101,6 +101,39 @@ const paths = [
   {
     path: '/moderation/trails/list',
     permission: ['moderation.trails.list'],
+  },
+  // Доступ к чемпионатам.
+  {
+    path: '/moderation/championship',
+    permission: ['moderation.championship'],
+  },
+  {
+    path: '/moderation/championship/create',
+    permission: ['moderation.championship.create'],
+  },
+  {
+    path: '/moderation/championship/edit',
+    permission: ['moderation.championship.edit'],
+  },
+  {
+    path: '/moderation/championship/edit/[urlSlug]', // Добавляем динамический маршрут
+    permission: ['moderation.championship.edit'],
+  },
+  {
+    path: '/moderation/championship/list',
+    permission: ['moderation.championship.list'],
+  },
+  {
+    path: '/moderation/championship/protocol',
+    permission: ['moderation.championship.protocol'],
+  },
+  {
+    path: '/moderation/championship/protocol/[urlSlug]',
+    permission: ['moderation.championship.protocol'],
+  },
+  {
+    path: '/moderation/championship/protocol/[urlSlug]/[urlSlug]',
+    permission: ['moderation.championship.protocol'],
   },
   {
     path: '/account',
