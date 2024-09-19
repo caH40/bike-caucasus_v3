@@ -5,9 +5,9 @@ import { errorLogger } from '@/errors/error';
 import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { handlerErrorDB } from './mongodb/error';
 import { Permission as PermissionModel } from '@/database/mongodb/Models/Permission';
-import { dtoPermission, dtoPermissions } from '@/dto/permissions';
-import type { TPermissionDocument } from '@/types/models.interface';
-import type { TPermissionDto } from '@/types/dto.types';
+import { dtoPermission, dtoPermissions, dtoRoles } from '@/dto/permissions';
+import type { TPermissionDocument, TRoleModel } from '@/types/models.interface';
+import type { TPermissionDto, TRoleDto } from '@/types/dto.types';
 import { User as UserModel } from '@/database/mongodb/Models/User';
 import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
 import { News as NewsModel } from '@/database/mongodb/Models/News';
@@ -195,6 +195,28 @@ export class PermissionsService {
         data: null,
         ok: true,
         message: `Роль ${res.name} успешно создана!`,
+      };
+    } catch (error) {
+      await this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение всех Ролей пользователей на сайте.
+   */
+  public async getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const rolesDB: TRoleModel[] = await RoleModel.find().lean();
+
+      const rolesAfterDto = dtoRoles(rolesDB);
+      return {
+        data: rolesAfterDto,
+        ok: true,
+        message: 'Все существующие Роли на сайте.',
       };
     } catch (error) {
       await this.errorLogger(error);

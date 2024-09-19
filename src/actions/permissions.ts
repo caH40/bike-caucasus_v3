@@ -3,7 +3,7 @@
 import { PermissionsService } from '@/services/Permissions';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { parseError } from '@/errors/parse';
-import { TPermissionDto } from '@/types/dto.types';
+import { TPermissionDto, TRoleDto } from '@/types/dto.types';
 import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { revalidatePath } from 'next/cache';
 import { handlerErrorDB } from '@/services/mongodb/error';
@@ -130,6 +130,24 @@ export async function postRole({
     return res;
   } catch (error) {
     return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен получения всех Ролей пользователей на сайте.
+ */
+export async function getRoles(): Promise<TRoleDto[] | null> {
+  try {
+    const res = await permissionsService.getRoles();
+
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
+
+    return res.data;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return null;
   }
 }
 
