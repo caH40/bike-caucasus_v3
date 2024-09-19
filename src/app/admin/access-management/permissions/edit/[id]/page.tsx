@@ -13,7 +13,7 @@ export default async function PermissionEditPage({ params }: Props) {
 
   return (
     <>
-      <TitleAndLine title="Редактирование Роли и Разрешений" Icon={IconEdit} />
+      <TitleAndLine title="Редактирование Разрешений" Icon={IconEdit} />
 
       <div className={styles.block}>
         {permission ? <FormPermissions permission={permission} /> : 'Не найдено разрешение'}
