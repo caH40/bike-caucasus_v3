@@ -87,7 +87,7 @@ export default function FormPermissions({ permission }: Props) {
         validationText={errors.name ? errors.name.message : ''}
       />
 
-      {/* Блок ввода Названия */}
+      {/* Блок ввода описания */}
       <BoxTextarea
         label="Описание:*"
         id="description"

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { errorLogger } from '@/errors/error';
-import { ResponseServer } from '@/types/index.interface';
+import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { handlerErrorDB } from './mongodb/error';
 import { Permission as PermissionModel } from '@/database/mongodb/Models/Permission';
 import { dtoPermission, dtoPermissions } from '@/dto/permissions';
@@ -11,6 +11,7 @@ import type { TPermissionDto } from '@/types/dto.types';
 import { User as UserModel } from '@/database/mongodb/Models/User';
 import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
 import { News as NewsModel } from '@/database/mongodb/Models/News';
+import { Role as RoleModel } from '@/database/mongodb/Models/Role';
 
 /**
  * Класс работы с разрешениями (доступами) к ресурсам сайта.
@@ -163,6 +164,37 @@ export class PermissionsService {
         data: null,
         ok: true,
         message: `Удалено Разрешение "${res.name}"`,
+      };
+    } catch (error) {
+      await this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Создание нового Роли.
+   */
+  public async postRole({ newRole }: { newRole: TFormRole }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const checkedDuplicate = await RoleModel.findOne({ name: newRole.name }).lean();
+
+      if (checkedDuplicate) {
+        throw new Error('Роль с таким названием уже существует!');
+      }
+
+      const res = await RoleModel.create(newRole);
+
+      if (!res) {
+        throw new Error('Неизвестная ошибка при создании роли');
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Роль ${res.name} успешно создана!`,
       };
     } catch (error) {
       await this.errorLogger(error);

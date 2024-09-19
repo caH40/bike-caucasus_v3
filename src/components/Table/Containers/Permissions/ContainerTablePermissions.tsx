@@ -7,13 +7,26 @@ import { lcRecordsOnPage } from '@/constants/local-storage';
 import TablePermissions from '../../TablePermissions/TablePermissions';
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
 import styles from './ContainerTablePermissions.module.css';
+import { usePermissionTable } from '@/store/permission-table';
 
-type Props = { permissions: TPermissionDto[] | null };
+type Props = {
+  permissions: TPermissionDto[] | null;
+  hiddenColumnHeaders: string[];
+  captionTitle: string;
+};
 
 /**
  * Блок для таблиц и их управления, что бы был один клиентский компонент.
  */
-export default function ContainerTablePermissions({ permissions }: Props) {
+export default function ContainerTablePermissions({
+  permissions,
+  hiddenColumnHeaders,
+  captionTitle,
+}: Props) {
+  // Id разрешений, добавленных в форме редактирования Роли.
+  const permissionsAdded = usePermissionTable((state) => state.permissions);
+
+  // Строка поиска разрешения.
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
@@ -40,13 +53,17 @@ export default function ContainerTablePermissions({ permissions }: Props) {
       return;
     }
     setPermissionsFiltered(
-      permissions.filter(
-        (elm) =>
-          elm.name.toLowerCase().includes(search.toLowerCase()) ||
-          elm.description.toLowerCase().includes(search.toLowerCase())
-      )
+      permissions.filter((elm) => {
+        const nameFiltered = elm.name.toLowerCase().includes(search.toLowerCase());
+        const descFiltered = elm.description.toLowerCase().includes(search.toLowerCase());
+
+        // Удаление Разрешения, которое было добавлено в форме создания Роли.
+        const permissionsAddedFiltered = !permissionsAdded.includes(elm.name);
+
+        return (nameFiltered || descFiltered) && permissionsAddedFiltered;
+      })
     );
-  }, [search, permissions]);
+  }, [search, permissions, permissionsAdded]);
 
   return (
     <>
@@ -61,7 +78,12 @@ export default function ContainerTablePermissions({ permissions }: Props) {
       </div>
 
       {/* Таблица */}
-      <TablePermissions permissions={permissionsFiltered} docsOnPage={docsOnPage} />
+      <TablePermissions
+        permissions={permissionsFiltered}
+        docsOnPage={docsOnPage}
+        hiddenColumnHeaders={hiddenColumnHeaders}
+        captionTitle={captionTitle}
+      />
     </>
   );
 }

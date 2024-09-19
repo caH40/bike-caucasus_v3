@@ -4,6 +4,7 @@ import cn from 'classnames/bind';
 
 import type { CSSVariables, TIconProps } from '@/types/index.interface';
 import styles from './icons.module.css';
+import { Tooltip } from 'react-tooltip';
 
 const cx = cn.bind(styles);
 
@@ -12,6 +13,7 @@ export default function IconPlus({
   squareSize = 24,
   getClick,
   colors = { default: 'currentColor', active: 'currentColor', hover: 'currentColor' },
+  tooltip,
 }: TIconProps) {
   const style: React.CSSProperties & CSSVariables = {
     width: squareSize,
@@ -28,6 +30,7 @@ export default function IconPlus({
         active: isActive,
       })}
       style={style}
+      id={tooltip?.id}
     >
       <svg
         width="24"
@@ -54,6 +57,9 @@ export default function IconPlus({
           strokeWidth="2"
         />
       </svg>
+      <Tooltip anchorSelect={`#${tooltip?.id}`} place="top" className={cx('tooltip')}>
+        {tooltip && <div dangerouslySetInnerHTML={{ __html: tooltip.text }} />}
+      </Tooltip>
     </div>
   );
 }

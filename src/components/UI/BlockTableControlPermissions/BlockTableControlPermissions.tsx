@@ -8,12 +8,12 @@ import IconEditOld from '@/components/Icons/IconEditOld';
 import IconDelete from '@/components/Icons/IconDelete';
 import { translationForModeration } from '@/constants/texts';
 import { deleteItem } from './delete';
-import styles from './BlockTableControlAdmin.module.css';
+import styles from './BlockTableControlPermissions.module.css';
 
 /**
  * Блок Модерации маршрутом.
  */
-export default function BlockTableControlAdmin({
+export default function BlockTableControlPermissions({
   propsTable,
   type,
 }: {

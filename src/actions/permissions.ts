@@ -4,7 +4,7 @@ import { PermissionsService } from '@/services/Permissions';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { parseError } from '@/errors/parse';
 import { TPermissionDto } from '@/types/dto.types';
-import { ResponseServer } from '@/types/index.interface';
+import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { revalidatePath } from 'next/cache';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { getServerSession } from 'next-auth';
@@ -111,6 +111,25 @@ export async function deletePermission({
   } catch (error) {
     errorHandlerClient(parseError(error));
     return { data: null, ok: false, message: 'Ошибка в серверном экшене deletePermission' };
+  }
+}
+
+/**
+ * Серверный экшен создания Роли.
+ */
+export async function postRole({
+  newRole,
+}: {
+  newRole: TFormRole;
+}): Promise<ResponseServer<null>> {
+  try {
+    const res = await permissionsService.postRole({ newRole });
+
+    revalidatePath('/admin/roles');
+
+    return res;
+  } catch (error) {
+    return handlerErrorDB(error);
   }
 }
 

@@ -15,14 +15,20 @@ export default async function PermissionsPage({}: Props) {
 
   return (
     <>
-      <TitleAndLine title="Создание Роли и Разрешений" Icon={IconCreate} />
-      <TitleAndLine title="Создание Разрешения (доступа)" hSize={2} />
+      <TitleAndLine title="Создание Разрешения (доступа)" Icon={IconCreate} />
 
+      {/* Форма создания/редактирования разрешений. */}
       <div className={styles.block}>
         <FormPermissions />
       </div>
-
-      <ContainerTablePermissions permissions={permissions} />
+      <ContainerTablePermissions
+        permissions={permissions}
+        hiddenColumnHeaders={[
+          'Выбор разрешений для добавления',
+          'Выбор разрешений для удаления',
+        ]}
+        captionTitle={'Все разрешения'}
+      />
     </>
   );
 }

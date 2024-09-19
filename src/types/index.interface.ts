@@ -742,3 +742,12 @@ export type TResultRaceRideFromDB = Omit<
 > & {
   championship: Pick<TChampionship, 'name' | 'urlSlug' | 'races' | 'endDate'>;
 };
+
+/**
+ * Данные для формы модерации Роли.
+ */
+export interface TFormRole {
+  name: string;
+  description: string;
+  permissions: string[];
+}
