@@ -69,6 +69,7 @@ export default function FormPermissions({ permission }: Props) {
         type="text"
         defaultValue={permission?.name ? permission.name : ''}
         loading={isLoading}
+        disabled={!!permission} // При редактировании нельзя изменять название Роли.
         register={register('name', {
           required: 'Обязательное поле',
           minLength: {
@@ -111,7 +112,7 @@ export default function FormPermissions({ permission }: Props) {
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
-        <Button name={permission ? 'Обновить' : 'Добавить'} theme="green" loading={isLoading} />
+        <Button name={permission ? 'Обновить' : 'Создать'} theme="green" loading={isLoading} />
       </div>
     </form>
   );

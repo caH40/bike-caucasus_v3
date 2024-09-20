@@ -160,7 +160,7 @@ export function FormRole({ role, permissions, putRole }: Params) {
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
-        <Button name={role ? 'Обновить' : 'Добавить'} theme="green" loading={isLoading} />
+        <Button name={role ? 'Обновить' : 'Создать'} theme="green" loading={isLoading} />
       </div>
     </form>
   );

@@ -73,10 +73,7 @@ export class PermissionsService {
     try {
       // Подключение к БД.
       await this.dbConnection();
-      const res = await PermissionModel.findOneAndUpdate(
-        { _id },
-        { $set: { name, description } }
-      );
+      const res = await PermissionModel.findOneAndUpdate({ _id }, { $set: { description } });
 
       if (!res) {
         throw new Error(`Разрешение (permission) ${name} не найдено!`);
