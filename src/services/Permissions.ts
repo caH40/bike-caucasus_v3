@@ -151,19 +151,35 @@ export class PermissionsService {
    */
   public async delete({ _id }: { _id: string }): Promise<ResponseServer<null>> {
     try {
+      // Проверка строки _id на валидность
+      if (!mongoose.Types.ObjectId.isValid(_id)) {
+        throw new Error(`Неверный формат _id: ${_id}`);
+      }
       // Подключение к БД.
       await this.dbConnection();
-      const res: { _id: mongoose.Types.ObjectId; name: string } | null =
+
+      // Удаление Разрешения.
+      const permissionDB: { _id: mongoose.Types.ObjectId; name: string } | null =
         await PermissionModel.findOneAndDelete({ _id }, { _id: true, name: true }).lean();
 
-      if (!res) {
+      if (!permissionDB) {
         throw new Error(`Не найдено Разрешение с _id:${_id}`);
+      }
+
+      // Удаление удаленного Разрешения из массива разрешений в Ролях.
+      const rolesDB = await RoleModel.updateMany(
+        { permissions: permissionDB.name },
+        { $pull: { permissions: permissionDB.name } }
+      );
+
+      if (!rolesDB.acknowledged) {
+        throw new Error(`Ошибки при удалении Разрешения ${permissionDB.name} из Ролей`);
       }
 
       return {
         data: null,
         ok: true,
-        message: `Удалено Разрешение "${res.name}"`,
+        message: `Удалено Разрешение "${permissionDB.name}"`,
       };
     } catch (error) {
       this.errorLogger(error);

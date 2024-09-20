@@ -66,6 +66,6 @@ export function dtoGetUsersSimplePublic(users: TProfileSimpleFromDB[]): TProfile
 export function dtoGetRole(role: TRoleModel): TRoleDto {
   return {
     ...role,
-    _id: String(role._id),
+    _id: String(role?._id),
   };
 }
