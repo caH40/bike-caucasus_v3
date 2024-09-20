@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache';
+// import { revalidatePath } from 'next/cache';
 import { ignoreError } from './ignore';
 import { parseError } from './parse';
 import { Logger } from '@/services/logger';
@@ -28,7 +28,7 @@ export const errorLogger = async (error: unknown): Promise<void> => {
     const errorParsed = parseError(error);
     await logger.saveError(errorParsed);
 
-    revalidatePath('/admin/logs/errors');
+    // revalidatePath('/admin/logs/errors');
   } catch (error) {
     console.error(error); // eslint-disable-line
   }

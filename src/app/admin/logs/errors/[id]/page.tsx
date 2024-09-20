@@ -8,6 +8,7 @@ type Props = {
     id: string;
   };
 };
+export const dynamic = 'force-dynamic';
 
 /**
  * Страница подобной информации об запрашиваемой ошибке на сервере

@@ -8,6 +8,8 @@ import type { TGetErrorsDto } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 import styles from './LogsErrorsPage.module.css';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Получает список ошибок из логов.
  * @returns - Промис с данными логов ошибок или null в случае ошибки.
