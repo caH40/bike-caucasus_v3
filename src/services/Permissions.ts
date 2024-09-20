@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { errorLogger } from '@/errors/error';
@@ -12,6 +12,7 @@ import { User as UserModel } from '@/database/mongodb/Models/User';
 import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
 import { News as NewsModel } from '@/database/mongodb/Models/News';
 import { Role as RoleModel } from '@/database/mongodb/Models/Role';
+import { Document } from 'mongoose';
 
 /**
  * Класс работы с разрешениями (доступами) к ресурсам сайта.
@@ -274,17 +275,47 @@ export class PermissionsService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const res: { _id: mongoose.Types.ObjectId; name: string } | null =
-        await RoleModel.findOneAndDelete({ _id }, { _id: true, name: true }).lean();
+      // Получение id Роли User.
+      const roleUser: { _id: ObjectId } | null = await RoleModel.findOne(
+        { name: 'user' },
+        { _id: true }
+      ).lean();
 
-      if (!res) {
+      if (!roleUser) {
+        throw new Error(
+          'Не найдена роль user для использования её в качестве замены удаляемой роли у пользователей!'
+        );
+      }
+
+      // Удаление Роли.
+      const roleDB: ({ _id: mongoose.Types.ObjectId; name: string } & Document) | null =
+        await RoleModel.findOne({ _id }, { _id: true, name: true });
+
+      if (!roleDB) {
         throw new Error(`Не найдена Роль с _id:${_id}`);
+      }
+
+      if (['admin', 'user'].includes(roleDB.name)) {
+        throw new Error('Нельзя удалять роли "admin" или "user"!');
+      }
+
+      await roleDB.deleteOne();
+
+      const usersDB = await UserModel.updateMany(
+        { role: roleDB._id },
+        { $set: { role: roleUser._id } }
+      );
+
+      if (!usersDB.acknowledged) {
+        throw new Error(
+          `Ошибки при замене Роли ${roleDB.name} в документах User на роль "user"`
+        );
       }
 
       return {
         data: null,
         ok: true,
-        message: `Удалена Роль "${res.name}"`,
+        message: `Удалена Роль "${roleDB.name}"`,
       };
     } catch (error) {
       this.errorLogger(error);
