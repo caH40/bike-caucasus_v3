@@ -93,7 +93,8 @@ export const authOptions: AuthOptions = {
       } else if (user) {
         token.email = user.email;
       }
-      token.rolePermissions = userDB?.role.permissions || [];
+
+      token.rolePermissions = userDB?.role?.permissions || [];
       return token;
     },
 

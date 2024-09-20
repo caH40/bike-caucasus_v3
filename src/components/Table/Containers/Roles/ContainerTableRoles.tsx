@@ -2,36 +2,26 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { TPermissionDto } from '@/types/dto.types';
+import { TRoleDto } from '@/types/dto.types';
 import { lcRecordsOnPage } from '@/constants/local-storage';
-import TablePermissions from '../../TablePermissions/TablePermissions';
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
 import styles from './ContainerTableRoles.module.css';
-import { usePermissionTable } from '@/store/permission-table';
+import TableRoles from '../../TableRoles/TableRoles';
 
 type Props = {
-  permissions: TPermissionDto[] | null;
-  hiddenColumnHeaders: string[];
-  captionTitle: string;
+  roles: TRoleDto[];
 };
 
 /**
  * Блок для таблиц и их управления, что бы был один клиентский компонент.
  */
-export default function ContainerTableRoles({
-  permissions,
-  hiddenColumnHeaders,
-  captionTitle,
-}: Props) {
-  // Id разрешений, добавленных в форме редактирования Роли.
-  const permissionsAdded = usePermissionTable((state) => state.permissions);
-
+export default function ContainerTableRoles({ roles }: Props) {
   // Строка поиска разрешения.
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [permissionsFiltered, setPermissionsFiltered] = useState(permissions || []);
+  const [rolesFiltered, setRolesFiltered] = useState(roles || []);
 
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
@@ -49,21 +39,18 @@ export default function ContainerTableRoles({
   }, [docsOnPage]);
 
   useMemo(() => {
-    if (!permissions) {
+    if (!roles) {
       return;
     }
-    setPermissionsFiltered(
-      permissions.filter((elm) => {
+    setRolesFiltered(
+      roles.filter((elm) => {
         const nameFiltered = elm.name.toLowerCase().includes(search.toLowerCase());
-        const descFiltered = elm.description.toLowerCase().includes(search.toLowerCase());
+        const descFiltered = elm.description?.toLowerCase().includes(search.toLowerCase());
 
-        // Удаление Разрешения, которое было добавлено в форме создания Роли.
-        const permissionsAddedFiltered = !permissionsAdded.includes(elm.name);
-
-        return (nameFiltered || descFiltered) && permissionsAddedFiltered;
+        return nameFiltered || descFiltered;
       })
     );
-  }, [search, permissions, permissionsAdded]);
+  }, [search, roles]);
 
   return (
     <>
@@ -78,12 +65,7 @@ export default function ContainerTableRoles({
       </div>
 
       {/* Таблица */}
-      <TablePermissions
-        permissions={permissionsFiltered}
-        docsOnPage={docsOnPage}
-        hiddenColumnHeaders={hiddenColumnHeaders}
-        captionTitle={captionTitle}
-      />
+      <TableRoles roles={rolesFiltered} docsOnPage={docsOnPage} />
     </>
   );
 }

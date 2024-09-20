@@ -49,7 +49,7 @@ export default function BlockTableAddPermissions({
           key={icon.id}
           squareSize={20}
           colors={icon.colors}
-          tooltip={{ text: icon.tooltip, id: `blockTableControlAdmin${index}` }}
+          tooltip={{ text: icon.tooltip, id: `BlockTableAddPermissions${index}` }}
         />
       ))}
     </div>

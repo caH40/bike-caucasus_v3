@@ -136,7 +136,7 @@ export async function postRole({
 /**
  * Серверный экшен получения всех Ролей пользователей на сайте.
  */
-export async function getRoles(): Promise<TRoleDto[] | null> {
+export async function getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
   try {
     const res = await permissionsService.getRoles();
 
@@ -144,10 +144,26 @@ export async function getRoles(): Promise<TRoleDto[] | null> {
       throw new Error(res.message);
     }
 
-    return res.data;
+    return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
-    return null;
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен удаления Роли пользователя на сайте.
+ */
+export async function deleteRole({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+  try {
+    const res = await permissionsService.deleteRole({ _id });
+
+    revalidatePath('/admin/roles');
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return { data: null, ok: false, message: 'Ошибка в серверном экшене deletePermission' };
   }
 }
 

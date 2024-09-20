@@ -87,7 +87,7 @@ export class PermissionsService {
         message: `Данные Разрешения (permission) ${name} успешно обновлены!`,
       };
     } catch (error) {
-      await this.errorLogger(error);
+      this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
   }
@@ -107,7 +107,7 @@ export class PermissionsService {
         message: 'Список всех разрешение (permission) для доступа к ресурсам сайта.',
       };
     } catch (error) {
-      await this.errorLogger(error);
+      this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
   }
@@ -141,7 +141,7 @@ export class PermissionsService {
         message: `Разрешение с _id:${_id}`,
       };
     } catch (error) {
-      await this.errorLogger(error);
+      this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
   }
@@ -166,7 +166,7 @@ export class PermissionsService {
         message: `Удалено Разрешение "${res.name}"`,
       };
     } catch (error) {
-      await this.errorLogger(error);
+      this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
   }
@@ -197,7 +197,7 @@ export class PermissionsService {
         message: `Роль ${res.name} успешно создана!`,
       };
     } catch (error) {
-      await this.errorLogger(error);
+      this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
   }
@@ -219,7 +219,33 @@ export class PermissionsService {
         message: 'Все существующие Роли на сайте.',
       };
     } catch (error) {
-      await this.errorLogger(error);
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение всех Ролей пользователей на сайте.
+   */
+  public async deleteRole({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const res: { _id: mongoose.Types.ObjectId; name: string } | null =
+        await RoleModel.findOneAndDelete({ _id }, { _id: true, name: true }).lean();
+
+      if (!res) {
+        throw new Error(`Не найдена Роль с _id:${_id}`);
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Удалена Роль "${res.name}"`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
   }

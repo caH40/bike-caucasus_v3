@@ -2,7 +2,7 @@ import { toast } from 'sonner';
 
 import { translationForModeration } from '@/constants/texts';
 import { ResponseServer } from '@/types/index.interface';
-import { deletePermission } from '@/actions/permissions';
+import { deletePermission, deleteRole } from '@/actions/permissions';
 
 type Params = {
   type: string;
@@ -25,6 +25,10 @@ export const deleteItem = async ({ type, _id }: Params) => {
     switch (type) {
       case 'permissions':
         res = await deletePermission({ _id });
+        break;
+
+      case 'roles':
+        res = await deleteRole({ _id });
         break;
 
       default:
