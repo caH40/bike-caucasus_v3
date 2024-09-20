@@ -747,6 +747,7 @@ export type TResultRaceRideFromDB = Omit<
  * Данные для формы модерации Роли.
  */
 export interface TFormRole {
+  _id?: string;
   name: string;
   description: string;
   permissions: string[];

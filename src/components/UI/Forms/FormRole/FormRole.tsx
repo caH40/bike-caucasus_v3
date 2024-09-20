@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import cn from 'classnames';
 
@@ -12,30 +13,50 @@ import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import ContainerTablePermissionsForForm from '@/components/Table/Containers/Permissions/ContainerTablePermissionsForForm';
 import { usePermissionTable } from '@/store/permission-table';
 import { toast } from 'sonner';
-import { TFormRole } from '@/types/index.interface';
+import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { postRole } from '@/actions/permissions';
+import { useRouter } from 'next/navigation';
 
 type Params = {
   role?: TRoleDto;
   permissions: TPermissionDto[];
+  // eslint-disable-next-line no-unused-vars
+  putRole?: ({ roleEdited }: { roleEdited: TFormRole }) => Promise<ResponseServer<null>>;
 };
 
 /**
  * Форма создания Ролей для пользователей.
  */
-export function FormRole({ role, permissions }: Params) {
+export function FormRole({ role, permissions, putRole }: Params) {
   // Id разрешений, добавленных в форме редактирования Роли.
   const permissionsAdded = usePermissionTable((state) => state.permissions);
   const resetPermissions = usePermissionTable((state) => state.resetPermissions);
+  const initPermission = usePermissionTable((state) => state.initPermission);
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
+  const router = useRouter();
+
+  // Если существует role, значит осуществляется редактирование этой роли.
+  // Установка массива разрешений в хранилище для последующего редактирования.
+  useEffect(() => {
+    if (!role) {
+      return;
+    }
+    initPermission(role.permissions);
+  }, [initPermission, role]);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Omit<TFormRole, '_id'>>({ mode: 'all' });
+  } = useForm<Omit<TFormRole, '_id'>>({
+    mode: 'all',
+    defaultValues: {
+      name: role ? role.name : '',
+      description: role ? role.description : '',
+    },
+  });
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<Omit<TFormRole, '_id'>> = async (dataForm) => {
@@ -43,21 +64,34 @@ export function FormRole({ role, permissions }: Params) {
       return toast.error('Необходимо добавить минимум одно Разрешение для Роли ');
     }
 
-    const newRole = { ...dataForm, permissions: permissionsAdded };
+    const roleFromForm = { ...dataForm, permissions: permissionsAdded };
 
     try {
       // Старт отображения спинера загрузки.
       setLoading(true);
 
-      const response = await postRole({ newRole });
+      let response = {} as ResponseServer<null>;
+
+      if (putRole && role) {
+        response = await putRole({ roleEdited: { ...roleFromForm, _id: role._id } });
+      } else {
+        response = await postRole({ newRole: roleFromForm });
+      }
 
       if (!response.ok) {
         throw new Error(response.message);
       }
 
-      reset();
       toast.success(response.message);
       resetPermissions();
+
+      // Если редактирование Роли, то после сохранения данных переход на родительскую страницу.
+      if (putRole && role) {
+        router.push('/admin/access-management/roles/edit');
+      } else {
+        // После создании Роли очищать все поля формы.
+        reset();
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -78,8 +112,8 @@ export function FormRole({ role, permissions }: Params) {
         id="name"
         autoComplete="off"
         type="text"
-        defaultValue={role?.name ? role.name : ''}
         loading={isLoading}
+        disabled={!!role} // При редактировании нельзя изменять название Роли.
         register={register('name', {
           required: 'Обязательное поле',
           minLength: {
@@ -104,7 +138,6 @@ export function FormRole({ role, permissions }: Params) {
         id="description"
         autoComplete="off"
         type="text"
-        defaultValue={role?.description ? role.description : ''}
         loading={isLoading}
         register={register('description', {
           required: 'Обязательное поле',

@@ -5,7 +5,7 @@ import { errorLogger } from '@/errors/error';
 import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { handlerErrorDB } from './mongodb/error';
 import { Permission as PermissionModel } from '@/database/mongodb/Models/Permission';
-import { dtoPermission, dtoPermissions, dtoRoles } from '@/dto/permissions';
+import { dtoPermission, dtoPermissions, dtoRole, dtoRoles } from '@/dto/permissions';
 import type { TPermissionDocument, TRoleModel } from '@/types/models.interface';
 import type { TPermissionDto, TRoleDto } from '@/types/dto.types';
 import { User as UserModel } from '@/database/mongodb/Models/User';
@@ -203,6 +203,32 @@ export class PermissionsService {
   }
 
   /**
+   * Получение Роли пользователей на сайте.
+   */
+  public async getRole({ _id }: { _id: string }): Promise<ResponseServer<TRoleDto | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const roleDB: TRoleModel | null = await RoleModel.findOne({ _id }).lean();
+
+      if (!roleDB) {
+        throw new Error(`Не найдена запрашиваемая Роль с _id:${_id}`);
+      }
+
+      const roleAfterDto = dtoRole(roleDB);
+      return {
+        data: roleAfterDto,
+        ok: true,
+        message: 'Запрашиваемая Роль на сайте.',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
    * Получение всех Ролей пользователей на сайте.
    */
   public async getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
@@ -243,6 +269,37 @@ export class PermissionsService {
         data: null,
         ok: true,
         message: `Удалена Роль "${res.name}"`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление данных Роли.
+   */
+  public async putRole({
+    roleEdited,
+  }: {
+    roleEdited: TFormRole;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+      const res = await RoleModel.findOneAndUpdate(
+        { _id: roleEdited._id },
+        { $set: { description: roleEdited.description, permissions: roleEdited.permissions } }
+      );
+
+      if (!res) {
+        throw new Error(`Роль с _id ${roleEdited._id} не найдена!`);
+      }
+
+      return {
+        data: null,
+        ok: true,
+        message: `Данные Роли ${roleEdited.name} успешно обновлены!`,
       };
     } catch (error) {
       this.errorLogger(error);

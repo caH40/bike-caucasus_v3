@@ -63,7 +63,7 @@ export async function putPermission({
   try {
     const res = await permissionsService.put({ _id, name, description });
 
-    revalidatePath('/admin/roles');
+    revalidatePath('/');
 
     return res;
   } catch (error) {
@@ -85,7 +85,7 @@ export async function postPermission({
   try {
     const res = await permissionsService.post({ name, description });
 
-    revalidatePath('/admin/roles');
+    revalidatePath('/');
 
     return res;
   } catch (error) {
@@ -105,7 +105,7 @@ export async function deletePermission({
   try {
     const res = await permissionsService.delete({ _id });
 
-    revalidatePath('/admin/roles');
+    revalidatePath('/');
 
     return res;
   } catch (error) {
@@ -125,10 +125,34 @@ export async function postRole({
   try {
     const res = await permissionsService.postRole({ newRole });
 
-    revalidatePath('/admin/roles');
+    revalidatePath('/');
 
     return res;
   } catch (error) {
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен получения Роли пользователей на сайте.
+ */
+export async function getRole({
+  _id,
+}: {
+  _id: string;
+}): Promise<ResponseServer<TRoleDto | null>> {
+  try {
+    const res = await permissionsService.getRole({
+      _id,
+    });
+
+    if (!res.ok) {
+      throw new Error(res.message);
+    }
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
     return handlerErrorDB(error);
   }
 }
@@ -158,12 +182,32 @@ export async function deleteRole({ _id }: { _id: string }): Promise<ResponseServ
   try {
     const res = await permissionsService.deleteRole({ _id });
 
-    revalidatePath('/admin/roles');
+    revalidatePath('/');
 
     return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
-    return { data: null, ok: false, message: 'Ошибка в серверном экшене deletePermission' };
+    return { data: null, ok: false, message: 'Ошибка в серверном экшене deleteRole' };
+  }
+}
+
+/**
+ * Серверный экшен обновления данных Роли пользователей на сайте.
+ */
+export async function putRole({
+  roleEdited,
+}: {
+  roleEdited: TFormRole;
+}): Promise<ResponseServer<null>> {
+  try {
+    const res = await permissionsService.putRole({ roleEdited });
+
+    revalidatePath('/');
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return { data: null, ok: false, message: 'Ошибка в серверном экшене putRole' };
   }
 }
 

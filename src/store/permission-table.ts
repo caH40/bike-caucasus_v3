@@ -6,6 +6,7 @@ type TPermission = {
   addPermission: (name: string) => void; // eslint-disable-line
   removePermission: (name: string) => void; // eslint-disable-line
   resetPermissions: () => void; // eslint-disable-line
+  initPermission: (permissions: string[]) => void; // eslint-disable-line
 };
 
 /**
@@ -13,6 +14,9 @@ type TPermission = {
  */
 export const usePermissionTable = create<TPermission>((set) => ({
   permissions: [],
+  initPermission: (permissions) => {
+    set({ permissions });
+  },
   addPermission: (name) => {
     set((state) => ({
       permissions: state.permissions.includes(name)

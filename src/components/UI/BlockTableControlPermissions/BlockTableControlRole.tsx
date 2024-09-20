@@ -14,7 +14,7 @@ import styles from './BlockTableControlPermissions.module.css';
 export default function BlockTableControlRole({
   propsTable,
 }: {
-  propsTable: CellContext<TRoleDto & { index: number }, unknown>;
+  propsTable: CellContext<TRoleDto & { index: number }, string>;
 }): JSX.Element {
   const router = useRouter();
 

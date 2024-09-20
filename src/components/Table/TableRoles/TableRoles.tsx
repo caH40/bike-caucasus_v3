@@ -11,7 +11,6 @@ import {
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
-import BlockTableControlPermissions from '@/components/UI/BlockTableControlPermissions/BlockTableControlPermissions';
 import Pagination from '@/components/UI/Pagination/Pagination';
 import { TRoleDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
@@ -24,7 +23,7 @@ type Props = {
   docsOnPage?: number;
 };
 
-const columns: ColumnDef<TRoleDto & { index: number }>[] = [
+const columns: ColumnDef<TRoleDto & { index: number }, any>[] = [
   {
     header: '#',
     accessorKey: 'index',
