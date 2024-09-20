@@ -18,4 +18,8 @@ export const translationForModeration = {
     m: 'чемпионат',
     a: 'чемпионата',
   },
+  roles: {
+    m: 'Роль',
+    a: 'Роли',
+  },
 } as { [key: string]: any };
