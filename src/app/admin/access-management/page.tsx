@@ -3,8 +3,6 @@ import Wrapper from '@/components/Wrapper/Wrapper';
 
 import styles from './roles.module.css';
 
-export const dynamic = 'force-dynamic';
-
 export default async function RolesAdminPage() {
   return (
     <Wrapper

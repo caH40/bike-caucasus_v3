@@ -5,6 +5,8 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {};
 
+export const dynamic = 'force-dynamic';
+
 export default async function page({}: Props) {
   const roles = await getRoles();
   if (!roles.data) {

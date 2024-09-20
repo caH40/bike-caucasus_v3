@@ -6,6 +6,8 @@ import { FormRole } from '@/components/UI/Forms/FormRole/FormRole';
 import ContainerTablePermissions from '@/components/Table/Containers/Permissions/ContainerTablePermissions';
 import styles from './RoleEditPage.module.css';
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: { id: string };
 };

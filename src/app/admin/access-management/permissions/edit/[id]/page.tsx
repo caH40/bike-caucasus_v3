@@ -4,6 +4,8 @@ import { getPermission } from '@/actions/permissions';
 import IconEdit from '@/components/Icons/IconEdit';
 import styles from './PermissionEditPage.module.css';
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: { id: string };
 };
