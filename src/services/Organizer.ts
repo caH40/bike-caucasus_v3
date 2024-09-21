@@ -13,16 +13,7 @@ import { Cloud } from './cloud';
 import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
 import { fileNameFormUrl } from '@/constants/regex';
-
-type GetOneParams =
-  | {
-      urlSlug?: never;
-      creatorId: string;
-    }
-  | {
-      urlSlug: string;
-      creatorId?: never;
-    };
+import { ObjectId } from 'mongoose';
 
 /**
  * Класс сервиса работы с сущностью Организатор.
@@ -74,29 +65,15 @@ export class OrganizerService {
    */
   public async getOne({
     urlSlug,
-    creatorId,
-  }: GetOneParams): Promise<ResponseServer<TDtoOrganizer | null>> {
+  }: {
+    urlSlug: string;
+  }): Promise<ResponseServer<TDtoOrganizer | null>> {
     try {
-      // Проверка, что только один параметр предоставлен
-      if ((!urlSlug && !creatorId) || (urlSlug && creatorId)) {
-        throw new Error(
-          'Необходимо передать только один из параметров: urlSlug или creatorId.'
-        );
-      }
-
       // Подключение к БД.
       await this.dbConnection();
 
-      let query = {} as { urlSlug: string } | { creator: string };
-
-      if (urlSlug) {
-        query = { urlSlug };
-      } else if (creatorId) {
-        query = { creator: creatorId };
-      }
-
       const organizerDB: (Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser }) | null =
-        await OrganizerModel.findOne(query)
+        await OrganizerModel.findOne({ urlSlug })
           .populate({
             path: 'creator',
             select: userPublicSelect,
@@ -110,6 +87,35 @@ export class OrganizerService {
       const organizer = dtoCOrganizer(organizerDB);
 
       return { data: organizer, ok: true, message: 'Организатор найден!' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Проверка наличия Организатора у Пользователя.
+   */
+  public async checkHasOrganizer({
+    userIdDB,
+  }: {
+    userIdDB: string;
+  }): Promise<ResponseServer<{ urlSlug: string | null } | null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      const organizerDB: { _id: ObjectId; urlSlug: string } | null =
+        await OrganizerModel.findOne(
+          { creator: userIdDB },
+          { _id: true, urlSlug: true }
+        ).lean();
+
+      return {
+        data: { urlSlug: organizerDB ? organizerDB.urlSlug : null },
+        ok: true,
+        message: 'Если urlSlug существует, значит Организатор создан.',
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

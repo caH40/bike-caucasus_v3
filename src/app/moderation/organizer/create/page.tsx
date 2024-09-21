@@ -1,6 +1,6 @@
 import IconOrganizers from '@/components/Icons/IconOrganizers';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { fetchOrganizerCreated, getOrganizer } from '@/actions/organizer';
+import { checkHasOrganizer, fetchOrganizerCreated } from '@/actions/organizer';
 import FromOrganizer from '@/components/UI/Forms/FromOrganizer/FromOrganizer';
 import styles from './OrganizerCreatePage.module.css';
 
@@ -10,10 +10,13 @@ import styles from './OrganizerCreatePage.module.css';
  * Страница создания/удаления Организатора Чемпионатов.
  */
 export default async function OrganizerCreatePage() {
-  const organizer = await getOrganizer({});
+  const organizer = await checkHasOrganizer();
 
-  // Пользователь еще не создавал Организатора Чемпионатов.
-  const hasNotOrganizer = organizer.message === 'Не найден запрашиваемый Организатор!';
+  const hasOrganizer = !!organizer.data?.urlSlug;
+
+  if (!organizer.ok) {
+    return <h2 className={styles.error}>{organizer.message}</h2>;
+  }
 
   return (
     <>
@@ -22,7 +25,8 @@ export default async function OrganizerCreatePage() {
         hSize={1}
         Icon={IconOrganizers}
       />
-      {hasNotOrganizer ? (
+      {/* Если нет Организатора то отображается форма создания */}
+      {!hasOrganizer ? (
         <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />
       ) : (
         <h2>
@@ -30,9 +34,6 @@ export default async function OrganizerCreatePage() {
           соответствующий пункт меню. У пользователя может быть только один Организатор
           Чемпионатов!
         </h2>
-      )}
-      {!organizer.ok && !hasNotOrganizer && (
-        <h2 className={styles.error}>{organizer.message}</h2>
       )}
     </>
   );

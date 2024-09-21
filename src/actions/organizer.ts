@@ -13,36 +13,46 @@ import type { TDtoOrganizer } from '@/types/dto.types';
 import type { ResponseServer } from '@/types/index.interface';
 
 /**
- * Получение данных организатора или по _id Организатора или по _id(creatorId) создателя Организатора.
+ * Получение данных организатора для публичного отображения.
  */
 export async function getOrganizer({
   urlSlug,
 }: {
-  urlSlug?: string;
+  urlSlug: string;
 }): Promise<ResponseServer<TDtoOrganizer | null>> {
   try {
+    const organizerService = new OrganizerService();
+    const res = await organizerService.getOne({ urlSlug });
+
+    return res;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+/**
+ * Проверка наличия Организатора у Пользователя.
+ */
+export async function checkHasOrganizer(): Promise<
+  ResponseServer<{ urlSlug: string | null } | null>
+> {
+  try {
     const session = await getServerSession(authOptions);
-    const creatorId = session?.user.idDB;
+    const userIdDB = session?.user.idDB;
 
-    if (!creatorId) {
-      throw new Error('Не получен _id модератора Чемпионата');
+    // Проверка авторизации.
+    if (!userIdDB) {
+      throw new Error('Нет авторизации!');
     }
 
-    // Проверка, что только один параметр предоставлен
-    if ((!urlSlug && !creatorId) || (urlSlug && creatorId)) {
-      throw new Error('Необходимо передать только один из параметров: _id или creatorId.');
-    }
-
-    let query = {} as { urlSlug: string } | { creatorId: string };
-
-    if (urlSlug) {
-      query = { urlSlug };
-    } else if (creatorId) {
-      query = { creatorId };
+    const { permissions } = session.user.role;
+    // Проверка авторизации.
+    if (!permissions.some((permission) => ['organizer.create', 'all'].includes(permission))) {
+      throw new Error('Нет Разрешений для создания/модерации Организатора!');
     }
 
     const organizerService = new OrganizerService();
-    const res = await organizerService.getOne(query);
+    const res = await organizerService.checkHasOrganizer({ userIdDB });
 
     return res;
   } catch (error) {
