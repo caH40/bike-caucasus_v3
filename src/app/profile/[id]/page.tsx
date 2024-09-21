@@ -1,11 +1,10 @@
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
-import { UserService } from '@/services/user';
+
 import { getLogoProfile } from '@/libs/utils/profile';
 import { blurBase64 } from '@/libs/image';
 import { generateMetadataProfile } from '@/meta/meta';
@@ -15,6 +14,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getResultsRaceForRider } from '@/actions/result-race';
 import TableResultsRider from '@/components/Table/TableResultsRider/TableResultsRider';
 import styles from './ProfilePage.module.css';
+import { getProfile } from '@/actions/user';
 
 type Props = {
   params: {
@@ -27,19 +27,19 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return await generateMetadataProfile(props);
 }
 
-const userService = new UserService();
-
 /**
- * Страница профиля пользователя
+ * Страница профиля пользователя.
  */
 export default async function ProfilePage({ params: { id } }: Props) {
-  const { data: profile } = await userService.getProfile({ id: +id });
-
-  if (!profile) {
-    notFound();
-  }
   const session = await getServerSession(authOptions);
   const userIdDbFromSession = session?.user.idDB;
+
+  const { data: profile } = await getProfile({ userId: +id });
+
+  // Если нет данных, то пользователь не найден.
+  if (!profile) {
+    return <h2>Пользователь не найден</h2>;
+  }
 
   const profileImage = getLogoProfile(
     profile.imageFromProvider,

@@ -752,3 +752,18 @@ export interface TFormRole {
   description: string;
   permissions: string[];
 }
+
+/**
+ * Данные для формы модерации Пользователя.
+ */
+export interface TFormModerateUser {
+  _id: string;
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  patronymic?: string;
+  team?: string;
+  city?: string;
+  gender: 'male' | 'female';
+  roleName: string;
+}

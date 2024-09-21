@@ -1,0 +1,30 @@
+.wrapper {
+  width: 100%;
+}
+.wrapper__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.wrapper__hor {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.box__button {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+/* ====================================================================== */
+@media (max-width: 576px) {
+  .wrapper__rider {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .box__startNumber_new {
+    flex: 0 0 65px;
+  }
+}

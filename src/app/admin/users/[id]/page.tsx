@@ -1,12 +1,41 @@
+import { getRoles } from '@/actions/permissions';
+import { getProfile } from '@/actions/user';
+import { FormModerateUser } from '@/components/UI/Forms/FormModerateUser/FormModerateUser';
+
 type Props = {
   params: {
     id: string;
   };
 };
+/**
+ * Бан
+ * изменение роли
+ *
+ */
 
 /**
  * Страница модерации пользователя.
  */
-export default function UserModeration({ params: { id } }: Props) {
-  return <div>{id}</div>;
+export default async function UserModeration({ params: { id } }: Props) {
+  const [roles, profile] = await Promise.all([
+    getRoles(),
+    getProfile({ userId: +id, isPrivate: true }),
+  ]);
+
+  if (!profile.data) {
+    return <h2>Пользователь не найден!</h2>;
+  }
+  if (!roles.data) {
+    return <h2>Роли не найдены!</h2>;
+  }
+
+  // if ('email' in profile) {
+  //   console.log(profile);
+  // }
+
+  return (
+    <div>
+      <FormModerateUser profile={profile.data} roles={roles.data} />
+    </div>
+  );
 }

@@ -3,9 +3,39 @@
 import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { UserService } from '@/services/user';
-import { TProfileSimpleDto, TUserDtoPublic } from '@/types/dto.types';
+import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
 import { ResponseServer, TProfileForRegistration } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
+
+const userService = new UserService();
+
+/**
+ * Получение данных райдера.
+ */
+export async function getProfile({
+  userId,
+  isPrivate,
+}: {
+  userId: number;
+  isPrivate?: boolean;
+}): Promise<ResponseServer<TUserDto | TUserDtoPublic | null>> {
+  try {
+    const { data: profile } = await userService.getProfile({ id: userId, isPrivate });
+
+    if (!profile) {
+      throw new Error('Пользователь не найден!');
+    }
+
+    return {
+      data: profile,
+      ok: true,
+      message: 'Данные профиля пользователя',
+    };
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
 
 /**
  * Экшен получения данных райдера, в частности для Регистрации на Чемпионат.
