@@ -4,8 +4,14 @@ import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { UserService } from '@/services/user';
 import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
-import { ResponseServer, TProfileForRegistration } from '@/types/index.interface';
+import {
+  ResponseServer,
+  TProfileForRegistration,
+  TUserModeratedData,
+} from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 
 const userService = new UserService();
 
@@ -31,6 +37,32 @@ export async function getProfile({
       ok: true,
       message: 'Данные профиля пользователя',
     };
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Изменение данных пользователя администратором.
+ */
+export async function putUserModeratedData({
+  user,
+}: {
+  user: TUserModeratedData;
+}): Promise<ResponseServer<null>> {
+  try {
+    const session = await getServerSession(authOptions);
+    const role = session?.user.role.name;
+
+    // Проверка роли. Редактировать данные пользователей могут только администраторы сайта.
+    if (role !== 'admin') {
+      throw new Error('У вас нет прав для редактирования данных Пользователя!');
+    }
+
+    const response = await userService.putUserModeratedData({ user });
+
+    return response;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

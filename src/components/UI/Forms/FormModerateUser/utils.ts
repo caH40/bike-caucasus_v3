@@ -8,7 +8,7 @@ export const createOptionsRoles = (roles: TRoleDto[]): TOptions[] => {
   const options = roles.map((role, index) => ({
     id: index,
     translation: role.name,
-    name: role.name,
+    name: role._id,
   }));
 
   return options;

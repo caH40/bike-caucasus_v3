@@ -762,8 +762,22 @@ export interface TFormModerateUser {
   firstName?: string;
   lastName?: string;
   patronymic?: string;
-  team?: string;
   city?: string;
   gender: 'male' | 'female';
-  roleName: string;
+  roleId: string;
+}
+
+/**
+ * Обновленные данные Пользователя администратором.
+ */
+export interface TUserModeratedData {
+  id: number;
+  roleId: string;
+  person: {
+    firstName?: string;
+    lastName?: string;
+    patronymic?: string;
+    gender: 'male' | 'female';
+  };
+  city?: string;
 }

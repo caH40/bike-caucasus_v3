@@ -15,6 +15,7 @@ import type {
   TFormAccount,
   TFormProfile,
   TProfileSimpleFromDB,
+  TUserModeratedData,
 } from '@/types/index.interface';
 import type { IUserModel, TRoleModel } from '@/types/models.interface';
 
@@ -138,6 +139,41 @@ export class UserService {
 
       // Возвращение данных всех пользователей с успешным статусом
       return { data: users, ok: true, message: 'Данные всех пользователей.' };
+    } catch (error) {
+      this.errorLogger(error);
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получает все профили зарегистрированных пользователей.
+   */
+  async putUserModeratedData({
+    user,
+  }: {
+    user: TUserModeratedData;
+  }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к базе данных
+      await this.dbConnection();
+
+      const query = {
+        role: user.roleId,
+        ...(user.person.firstName && { 'person.firstName': user.person.firstName }),
+        ...(user.person.lastName && { 'person.lastName': user.person.lastName }),
+        ...(user.person.patronymic && { 'person.patronymic': user.person.patronymic }),
+        ...(user.person.gender && { 'person.gender': user.person.gender }),
+        ...(user.city && { city: user.city }),
+      };
+
+      const userDB = await User.findOneAndUpdate({ id: user.id }, { ...query });
+
+      if (!userDB) {
+        throw new Error(`Не найден пользователь для изменения данных с id:${user.id}`);
+      }
+
+      // Возвращение данных всех пользователей с успешным статусом
+      return { data: null, ok: true, message: 'Данные всех пользователей.' };
     } catch (error) {
       this.errorLogger(error);
       return handlerErrorDB(error);

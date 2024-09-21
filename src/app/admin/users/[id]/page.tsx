@@ -2,16 +2,13 @@ import { getRoles } from '@/actions/permissions';
 import { getProfile } from '@/actions/user';
 import { FormModerateUser } from '@/components/UI/Forms/FormModerateUser/FormModerateUser';
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: {
     id: string;
   };
 };
-/**
- * Бан
- * изменение роли
- *
- */
 
 /**
  * Страница модерации пользователя.

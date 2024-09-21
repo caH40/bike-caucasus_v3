@@ -3,6 +3,7 @@
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import cn from 'classnames';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 import Button from '../../Button/Button';
 import SelectCustom from '../../SelectCustom/SelectCustom';
@@ -14,6 +15,7 @@ import BoxInput from '../../BoxInput/BoxInput';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import { genderOptions } from '@/constants/other';
 import styles from './FormModerateUser.module.css';
+import { putUserModeratedData } from '@/actions/user';
 
 type Params = {
   profile: TUserDto | TUserDtoPublic;
@@ -27,11 +29,12 @@ export function FormModerateUser({ profile, roles }: Params) {
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
 
+  const router = useRouter();
+
   const {
     register,
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<TFormModerateUser>({
     mode: 'all',
@@ -41,7 +44,8 @@ export function FormModerateUser({ profile, roles }: Params) {
       firstName: profile.person.firstName,
       lastName: profile.person.lastName,
       patronymic: profile.person.patronymic,
-      roleName: profile.role.name,
+      roleId: profile.role._id,
+      city: profile.city,
     },
   });
 
@@ -51,17 +55,27 @@ export function FormModerateUser({ profile, roles }: Params) {
       // Старт отображения спинера загрузки.
       setLoading(true);
 
-      console.log(dataForm);
+      const user = {
+        id: +dataForm.id,
+        roleId: dataForm.roleId,
+        person: {
+          ...(dataForm.firstName && { firstName: dataForm.firstName }),
+          ...(dataForm.lastName && { lastName: dataForm.lastName }),
+          ...(dataForm.patronymic && { patronymic: dataForm.patronymic }),
+          ...(dataForm.gender && { gender: dataForm.gender }),
+        },
+        ...(dataForm.city && { city: dataForm.city }),
+      };
 
-      // let response = {} as ResponseServer<null>;
+      const response = await putUserModeratedData({ user });
 
-      // if (!response.ok) {
-      //   throw new Error(response.message);
-      // }
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
 
-      // toast.success(response.message);
+      toast.success(response.message);
 
-      reset();
+      router.refresh();
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -84,6 +98,7 @@ export function FormModerateUser({ profile, roles }: Params) {
             id="_id-FormModerateUser"
             autoComplete="off"
             type="text"
+            disabled={true}
             register={register('_id')}
             validationText={errors.lastName?.message}
             hasError={!!errors.lastName?.message}
@@ -95,6 +110,7 @@ export function FormModerateUser({ profile, roles }: Params) {
             id="id-FormModerateUser"
             autoComplete="off"
             type="text"
+            disabled={true}
             register={register('id')}
             hideCheckmark={true}
           />
@@ -164,27 +180,12 @@ export function FormModerateUser({ profile, roles }: Params) {
             hasError={!!errors.city?.message}
             hideCheckmark={true}
           />
-
-          <BoxInput
-            label="Команда:"
-            id="team-BlockInputsRegisteredRider"
-            autoComplete="offered"
-            type="text"
-            // loading={loading}
-            register={register('team', {
-              minLength: { value: 2, message: '> 1' },
-              maxLength: { value: 30, message: '< 30' },
-            })}
-            validationText={errors.team?.message}
-            hasError={!!errors.team?.message}
-            hideCheckmark={true}
-          />
         </div>
 
         {/* Блок выбора роли для Пользователя */}
         <div className={styles.full__width}>
           <Controller
-            name="roleName"
+            name="roleId"
             control={control}
             render={({ field }) => (
               <SelectCustom
@@ -193,7 +194,7 @@ export function FormModerateUser({ profile, roles }: Params) {
                 options={createOptionsRoles(roles)}
                 label="Выберите Роль для пользователя на сайте:*"
                 defaultValue={profile.role.name}
-                validationText={errors.roleName?.message || ''}
+                validationText={errors.roleId?.message || ''}
               />
             )}
           />
