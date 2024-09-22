@@ -11,6 +11,7 @@ import { type IRegistrationForm } from '@/types/index.interface';
 import { errorHandlerClient } from '@/actions/error-handler';
 import Modal from '@/components/UI/Modal/Modal';
 import { parseError } from '@/errors/parse';
+import { useLoadingStore } from '@/store/loading';
 
 /**
  * Страница регистрации
@@ -20,9 +21,11 @@ export default function RegistrationPage() {
   const [isCreatedUser, setIsCreatedUser] = useState(false);
   const setModal = useModalStore((state) => state.setModal);
   const isActive = useModalStore((state) => state.isActive);
+  const setLoading = useLoadingStore((state) => state.setLoading);
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
     try {
+      setLoading(true);
       const url = '/api/auth/registration';
       const response = await fetch(url, {
         method: 'post',
@@ -51,6 +54,8 @@ export default function RegistrationPage() {
       setModal('Регистрация прошла успешно!', <Answer email={data.email} />);
     } catch (error) {
       errorHandlerClient(parseError(error));
+    } finally {
+      setLoading(false);
     }
   };
 

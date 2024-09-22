@@ -1,3 +1,5 @@
+import Script from 'next/script';
+import { Suspense } from 'react';
 import cn from 'classnames';
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
@@ -10,8 +12,7 @@ import ModalLoading from '@/components/ModalLoading/ModalLoading';
 import MobileMenu from '@/components/UI/MobileMenu/MobileMenu';
 import { metadataHomePage } from '@/meta/meta';
 import './globals.css';
-import Script from 'next/script';
-import { Suspense } from 'react';
+
 import YandexMetrika from '@/components/YandexMetrika/YandexMetrika';
 
 export const metadata: Metadata = metadataHomePage;
@@ -24,8 +25,10 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={cn(roboto.className, montserrat_Alternates.variable, 'body')}>
-        {/* <!-- Yandex.Metrika counter --> */}
+        {/* спиннер загрузки */}
+        <ModalLoading />
 
+        {/* <!-- Yandex.Metrika counter --> */}
         <Script id="metrika-counter" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
               m[i].l=1*new Date();
@@ -78,7 +81,6 @@ export default function RootLayout({
             <Header />
             <main className="main">
               <MobileMenu />
-              <ModalLoading />
 
               {children}
             </main>

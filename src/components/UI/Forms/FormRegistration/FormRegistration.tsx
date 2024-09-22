@@ -50,7 +50,7 @@ export default function FormRegistration({ onSubmit, validationAll }: Props) {
         register={validatePassword(register)}
         label="Пароль"
         linkLabel="Забыли пароль?"
-        link="password-reset"
+        link="reset-password"
         validationText={errors.password ? errors.password.message : ''}
       />
       <BoxButtonAuth

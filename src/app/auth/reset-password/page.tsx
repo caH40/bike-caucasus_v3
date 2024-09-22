@@ -5,22 +5,25 @@ import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import Modal from '@/components/UI/Modal/Modal';
+import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
+import FormResetPassword from '@/components/UI/Forms/FormResetPassword/FormResetPassword';
 import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { useModalStore } from '@/store/modal';
-import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
-import FormResetPassword from '@/components/UI/Forms/FormResetPassword/FormResetPassword';
+import { useLoadingStore } from '@/store/loading';
 import { type IRegistrationForm } from '@/types/index.interface';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
 
 export default function PasswordReset() {
   const [showForm, setShowForm] = useState(true);
+  const setLoading = useLoadingStore((state) => state.setLoading);
   const setModal = useModalStore((state) => state.setModal);
   const isActive = useModalStore((state) => state.isActive);
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
     try {
+      setLoading(true);
       const url = `${server}/api/auth/reset-password`;
       const response = await fetch(url, {
         method: 'POST',
@@ -47,6 +50,8 @@ export default function PasswordReset() {
       setModal('Сброс пароля!', <Answer email={data.email} />);
     } catch (error) {
       errorHandlerClient(parseError(error));
+    } finally {
+      setLoading(false);
     }
   };
 

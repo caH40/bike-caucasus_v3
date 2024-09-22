@@ -16,6 +16,7 @@ import t from '@/locales/ru/authorization.json';
 
 import styles from './page.module.css';
 import Button from '@/components/UI/Button/Button';
+import { useLoadingStore } from '@/store/loading';
 
 const cx = classNames.bind(styles);
 /**
@@ -33,22 +34,31 @@ function AuthWithSearchParams() {
  */
 export default function LoginPage() {
   const [showCredentials, setShowCredentials] = useState(false);
+  const setLoading = useLoadingStore((state) => state.setLoading);
+
   // данные валидации с сервера
   const [validationAll, setValidationAll] = useState('');
   const router = useRouter();
   const nodeRef = useRef(null);
 
   const onSubmit: SubmitHandler<IRegistrationForm> = async (dataForm) => {
-    const response = await signIn('credentials', { ...dataForm, redirect: false });
+    try {
+      setLoading(true);
+      const response = await signIn('credentials', { ...dataForm, redirect: false });
 
-    if (!response?.ok) {
-      toast.error(t.login.toast.error);
-      setValidationAll(t.login.toast.error);
-    } else {
+      if (!response?.ok) {
+        throw new Error();
+      }
+
       toast.success(t.login.toast.success);
       router.back();
 
       setValidationAll('');
+    } catch (error) {
+      toast.error(t.login.toast.error);
+      setValidationAll(t.login.toast.error);
+    } finally {
+      setLoading(false);
     }
   };
 
