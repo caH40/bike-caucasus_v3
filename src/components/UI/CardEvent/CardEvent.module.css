@@ -34,6 +34,9 @@
 .dh {
   background-color: var(--bg-dh);
 }
+.tt {
+  background-color: var(--bg-tt);
+}
 /* ====================================================================== */
 @media (max-width: 768px) {
   .title {
