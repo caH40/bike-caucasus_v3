@@ -121,7 +121,7 @@ export default function TablePermissions({
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr className={styles.tr} key={row.id}>
+              <tr className={cx('tr', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className={styles.td} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

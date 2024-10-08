@@ -15,6 +15,7 @@ import Pagination from '@/components/UI/Pagination/Pagination';
 import { TRoleDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
 import BlockTableControlRole from '@/components/UI/BlockTableControlPermissions/BlockTableControlRole';
+import { content } from '@/libs/utils/text';
 
 const cx = cn.bind(styles);
 
@@ -44,6 +45,9 @@ const columns: ColumnDef<TRoleDto & { index: number }, any>[] = [
   {
     header: 'Описание Роли',
     accessorKey: 'description',
+    cell: (props) => (
+      <div dangerouslySetInnerHTML={{ __html: content.replaceCRLFtoBR(props.getValue()) }} />
+    ),
   },
   {
     header: 'Модерация',
@@ -100,7 +104,7 @@ export default function TableRoles({ roles, docsOnPage = 10 }: Props) {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr className={styles.tr} key={row.id}>
+              <tr className={cx('tr', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className={styles.td} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
