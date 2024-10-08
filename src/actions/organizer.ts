@@ -46,8 +46,13 @@ export async function checkHasOrganizer(): Promise<
     }
 
     const { permissions } = session.user.role;
+
     // Проверка авторизации.
-    if (!permissions.some((permission) => ['organizer.create', 'all'].includes(permission))) {
+    if (
+      !permissions.some((permission) =>
+        ['moderation.organizer.create', 'all'].includes(permission)
+      )
+    ) {
       throw new Error('Нет Разрешений для создания/модерации Организатора!');
     }
 

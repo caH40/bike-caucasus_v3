@@ -136,6 +136,18 @@ const paths = [
     permission: ['moderation.championship.protocol'],
   },
   {
+    path: '/moderation/organizer',
+    permission: ['moderation.organizer'],
+  },
+  {
+    path: '/moderation/organizer/create',
+    permission: ['moderation.organizer.create'],
+  },
+  {
+    path: '/moderation/organizer/edit',
+    permission: ['moderation.organizer.edit'],
+  },
+  {
     path: '/account',
     permission: ['authorized'],
   },
