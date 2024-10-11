@@ -1,6 +1,7 @@
 // обработка дат
 
 import { TTimeDetails } from '@/types/index.interface';
+import { getDateTime } from './calendar';
 
 /**
  * обработка даты для работы с form
@@ -87,4 +88,23 @@ export function millisecondsToTimeDetails(totalMilliseconds: number): TTimeDetai
     seconds: getString(seconds),
     milliseconds: getString(milliseconds),
   };
+}
+
+/**
+ * Получение строки даты проведения Чемпионата.
+ */
+export function getDateChampionship({
+  startDate,
+  endDate,
+}: {
+  startDate: Date;
+  endDate: Date;
+}): string {
+  // Если соревнование однодневное.
+  if (startDate.toISOString() === endDate.toISOString()) {
+    return getDateTime(startDate).dateDDMMYYYY;
+  }
+
+  // Если соревнование длится больше одного дня.
+  return `${getDateTime(startDate).dateDDMMYYYY} - ${getDateTime(startDate).dateDDMMYYYY}`;
 }

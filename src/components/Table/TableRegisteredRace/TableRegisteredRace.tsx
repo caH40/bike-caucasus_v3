@@ -10,6 +10,7 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
+import { toast } from 'sonner';
 
 import TdRider from '../Td/TdRider';
 import BlockStartNumber from '../Td/BlockStartNumber';
@@ -20,13 +21,17 @@ import { getPdfRegistered } from '@/libs/pdf/registeredRace';
 import { getPdfBlankForProtocol } from '@/libs/pdf/blankForProtocol';
 import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
+import { TChampionshipForRegisteredClient } from '@/types/index.interface';
+import { getDateChampionship } from '@/libs/utils/date';
 
 const cx = cn.bind(styles);
 
+// Данных champ может не быть в случае создании таблицы зарегистрированных участников
+// для страницы Регистрации. Данные по Чемпионату берутся из другого запроса.
 type Props = {
   registeredRidersInRace: TChampRegistrationRiderDto;
   docsOnPage?: number;
-  champ?: { championshipName: string; championshipType: string };
+  champ?: TChampionshipForRegisteredClient;
   showFooter?: boolean;
 };
 
@@ -119,10 +124,16 @@ export default function TableRegisteredRace({
 
   // Скачивание PDF файла таблицы с зарегистрированными райдерами.
   const handlerClickRegistered = () => {
-    const championshipName = champ?.championshipName
-      ? champ?.championshipName
-      : 'Название Чемпионата';
-    const subTitles = [championshipName, `Заезд: ${registeredRidersInRace.raceName}`];
+    if (!champ) {
+      toast.error('Не получены данные Чемпионата');
+      return;
+    }
+
+    const subTitles = [
+      champ.name,
+      `Заезд: ${registeredRidersInRace.raceName}`,
+      `Дата: ${getDateChampionship({ startDate: champ.startDate, endDate: champ.endDate })}`,
+    ];
 
     // Получение отсортированных данных из таблицы
     const sortedData = table.getRowModel().rows.map((row) => row.original);
@@ -130,15 +141,22 @@ export default function TableRegisteredRace({
     const columnsWithIndex = columns.map((column) =>
       column.header === '#' ? { accessorKey: 'index', header: '#' } : column
     );
+
     getPdfRegistered({ columns: columnsWithIndex, data: sortedData, subTitles });
   };
 
   // Скачивание PDF файла таблицы бланка протокола с участниками для фиксации результатов.
   const handlerClickBlankProtocol = () => {
-    const championshipName = champ?.championshipName
-      ? champ?.championshipName
-      : 'Название Чемпионата';
-    const subTitles = [championshipName, `Заезд: ${registeredRidersInRace.raceName}`];
+    if (!champ) {
+      toast.error('Не получены данные Чемпионата');
+      return;
+    }
+
+    const subTitles = [
+      champ.name,
+      `Заезд: ${registeredRidersInRace.raceName}`,
+      `Дата: ${getDateChampionship({ startDate: champ.startDate, endDate: champ.endDate })}`,
+    ];
     getPdfBlankForProtocol({ subTitles });
   };
 

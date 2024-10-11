@@ -6,6 +6,7 @@ import TableRegisteredRace from '../../TableRegisteredRace/TableRegisteredRace';
 
 /**
  * Блок для таблиц и их управления, что бы был один клиентский компонент.
+ * Таблица
  */
 export default function ContainerTableRegisteredRace() {
   const registeredRiders = useRegistrationRace((state) => state.registeredRiders);

@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
@@ -10,24 +10,22 @@ import {
   dtoRegisteredRidersChamp,
   dtoRegistrationsRider,
 } from '@/dto/registration-champ';
+import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
+import { User } from '@/database/mongodb/Models/User';
 import type {
   ResponseServer,
+  TChampionshipForRegistered,
+  TChampionshipForRegisteredClient,
   TRegisteredRiderFromDB,
   TRegistrationRaceDataFromForm,
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
-import type {
-  TChampionshipTypes,
-  TRace,
-  TRaceRegistrationStatus,
-} from '@/types/models.interface';
+import type { TRace, TRaceRegistrationStatus } from '@/types/models.interface';
 import type {
   TChampRegistrationRiderDto,
   TRaceRegistrationDto,
   TRegistrationRiderDto,
 } from '@/types/dto.types';
-import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
-import { User } from '@/database/mongodb/Models/User';
 
 /**
  * Класс работы с сущностью Регистрация на Чемпионат.
@@ -238,41 +236,21 @@ export class RegistrationChampService {
   }): Promise<
     ResponseServer<{
       champRegistrationRiders: TChampRegistrationRiderDto[];
-      championshipName: string;
-      championshipType: TChampionshipTypes;
+      championship: TChampionshipForRegisteredClient;
     } | null>
   > {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
-      // Проверка существования Чемпионата.
-      const champ: {
-        _id: ObjectId;
-        races: TRace[];
-        name: string;
-        type: TChampionshipTypes;
-      } | null = await ChampionshipModel.findOne(
-        {
-          urlSlug,
-        },
-        {
-          _id: true,
-          races: true,
-          name: true,
-          type: true,
-        }
-      ).lean();
-
-      if (!champ) {
-        throw new Error(
-          `Не найден чемпионат с urlSlug:"${urlSlug}" и заездом №${raceNumber} для добавления финишного результата!`
-        );
-      }
+      const { championship, races, championshipId } = await this.getChampionshipData({
+        urlSlug,
+        raceNumber,
+      });
 
       const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(
         {
-          championship: champ._id,
+          championship: championshipId,
         },
         { payment: false }
       )
@@ -297,11 +275,8 @@ export class RegistrationChampService {
 
       const registeredRiders = dtoRegisteredRidersChamp({
         riders: registeredRidersDb,
-        races: raceNumber
-          ? champ.races.filter((race) => race.number === raceNumber)
-          : champ.races,
-        championshipName: champ.name,
-        championshipType: champ.type,
+        championship,
+        races,
       });
 
       return {
@@ -541,5 +516,58 @@ export class RegistrationChampService {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Получение основных данных чемпионата (Этапа).
+   * Если raceNumber существует, значит получение необходимы данные только этого заезда.
+   * Если raceNumber === undefined значит необходимы данные всех заездов.
+   */
+  private async getChampionshipData({
+    urlSlug,
+    raceNumber,
+  }: {
+    urlSlug: string;
+    raceNumber?: number;
+  }): Promise<{
+    championship: TChampionshipForRegisteredClient;
+    races: TRace[];
+    championshipId: mongoose.Types.ObjectId;
+  }> {
+    // Подключение к БД осуществляется в методе в котором вызывается данный метод.
+
+    const champDB: TChampionshipForRegistered | null = await ChampionshipModel.findOne(
+      {
+        urlSlug,
+      },
+      {
+        _id: true,
+        races: true,
+        name: true,
+        type: true,
+        startDate: true,
+        endDate: true,
+      }
+    ).lean();
+
+    if (!champDB) {
+      throw new Error(
+        `Не найден чемпионат с urlSlug:"${urlSlug}" и заездом №${raceNumber} для добавления финишного результата!`
+      );
+    }
+
+    // Получение данных Заезда с raceNumber, или данных всех заездов.
+    const races = raceNumber
+      ? champDB.races.filter((race) => race.number === raceNumber)
+      : champDB.races;
+
+    const championship: TChampionshipForRegisteredClient = {
+      name: champDB.name,
+      type: champDB.type,
+      startDate: champDB.startDate,
+      endDate: champDB.endDate,
+    };
+
+    return { championship, races, championshipId: champDB._id };
   }
 }

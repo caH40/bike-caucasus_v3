@@ -36,12 +36,12 @@ export const getPdfRegistered = ({ columns, data, subTitles }: Params) => {
   doc.text('Список зарегистрированных участников', 14, 16);
 
   doc.setFont('Roboto-Regular', 'normal');
-  doc.setFontSize(16);
+  doc.setFontSize(15);
   // Отрисовка строк из массива, высота строки 8мм.
   let startY = 24;
   subTitles.forEach((elm) => {
     doc.text(elm, 14, startY);
-    startY += 8;
+    startY += 7;
   });
 
   // Формируем заголовки таблицы

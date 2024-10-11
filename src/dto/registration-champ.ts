@@ -5,8 +5,12 @@ import type {
   TRaceRegistrationDto,
   TRegistrationRiderDto,
 } from '@/types/dto.types';
-import type { TRegisteredRiderFromDB, TRegistrationRiderFromDB } from '@/types/index.interface';
-import { TChampionshipTypes, TRace } from '@/types/models.interface';
+import type {
+  TChampionshipForRegisteredClient,
+  TRegisteredRiderFromDB,
+  TRegistrationRiderFromDB,
+} from '@/types/index.interface';
+import { TRace } from '@/types/models.interface';
 
 /**
  * ДТО Зарегистрированного райдера в Заезде.
@@ -56,18 +60,15 @@ export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegi
  */
 export function dtoRegisteredRidersChamp({
   riders,
+  championship,
   races,
-  championshipName,
-  championshipType,
 }: {
   riders: TRegisteredRiderFromDB[];
+  championship: TChampionshipForRegisteredClient;
   races: TRace[];
-  championshipName: string;
-  championshipType: TChampionshipTypes;
 }): {
   champRegistrationRiders: TChampRegistrationRiderDto[];
-  championshipName: string;
-  championshipType: TChampionshipTypes;
+  championship: TChampionshipForRegisteredClient;
 } {
   const ridersAfterDto = riders.map((rider) => dtoRegisteredRider(rider));
 
@@ -77,7 +78,7 @@ export function dtoRegisteredRidersChamp({
     raceRegistrationRider: ridersAfterDto.filter((rider) => rider.raceNumber === race.number),
   }));
 
-  return { championshipName, championshipType, champRegistrationRiders };
+  return { championship, champRegistrationRiders };
 }
 
 /**

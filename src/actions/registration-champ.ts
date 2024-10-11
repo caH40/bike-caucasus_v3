@@ -14,8 +14,12 @@ import type {
   TRaceRegistrationDto,
   TRegistrationRiderDto,
 } from '@/types/dto.types';
-import type { ResponseServer, TRegistrationRaceDataFromForm } from '@/types/index.interface';
-import type { TChampionshipTypes, TRaceRegistrationStatus } from '@/types/models.interface';
+import type {
+  ResponseServer,
+  TChampionshipForRegisteredClient,
+  TRegistrationRaceDataFromForm,
+} from '@/types/index.interface';
+import type { TRaceRegistrationStatus } from '@/types/models.interface';
 
 const regService = new RegistrationChampService();
 
@@ -92,8 +96,7 @@ export async function getRegisteredRidersChamp({
 }): Promise<
   ResponseServer<{
     champRegistrationRiders: TChampRegistrationRiderDto[];
-    championshipName: string;
-    championshipType: TChampionshipTypes;
+    championship: TChampionshipForRegisteredClient;
   } | null>
 > {
   try {

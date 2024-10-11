@@ -781,3 +781,23 @@ export interface TUserModeratedData {
   };
   city?: string;
 }
+
+/**
+ * Получение данных об чемпионате для таблицы зарегистрированных участников.
+ */
+export type TChampionshipForRegistered = {
+  _id: mongoose.Types.ObjectId;
+  races: TRace[];
+  name: string;
+  type: TChampionshipTypes;
+  startDate: Date;
+  endDate: Date;
+};
+
+/**
+ * Получение данных об чемпионате для таблицы зарегистрированных участников.
+ */
+export type TChampionshipForRegisteredClient = Omit<
+  TChampionshipForRegistered,
+  'races' | '_id'
+>;

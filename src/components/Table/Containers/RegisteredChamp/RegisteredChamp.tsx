@@ -1,11 +1,12 @@
 'use client';
 
+import { TChampionshipForRegisteredClient } from '@/types/index.interface';
 import TableRegisteredRace from '../../TableRegisteredRace/TableRegisteredRace';
 import { TChampRegistrationRiderDto } from '@/types/dto.types';
 
 type Props = {
   registeredRidersInRace: TChampRegistrationRiderDto;
-  champ: { championshipName: string; championshipType: string };
+  champ: TChampionshipForRegisteredClient;
   showFooter?: boolean;
 };
 

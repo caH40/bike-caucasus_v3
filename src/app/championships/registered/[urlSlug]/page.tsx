@@ -31,16 +31,13 @@ export default async function ChampionshipRegistered({ params: { urlSlug } }: Pr
           <>
             <TitleAndLine
               hSize={1}
-              title={`Зарегистрированные участники: ${data.championshipName}`}
+              title={`Зарегистрированные участники: ${data.championship.name}`}
             />
             {data.champRegistrationRiders.map((race) => (
               <div className={styles.wrapper__table} key={race.raceName}>
                 <ContainerTableRegisteredChamp
                   registeredRidersInRace={race}
-                  champ={{
-                    championshipName: data.championshipName,
-                    championshipType: data.championshipType,
-                  }}
+                  champ={data.championship}
                   showFooter={true}
                 />
               </div>
