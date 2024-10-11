@@ -26,7 +26,7 @@ export default function Author({ data }: Props) {
           alt={'Постер новости'}
           src={getLogoProfile(
             data.author?.imageFromProvider,
-            data.author?.provider.image,
+            data.author?.provider?.image,
             data.author?.image
           )}
           className={styles.author__img}
