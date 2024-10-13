@@ -45,6 +45,14 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
   },
   {
     id: 4,
+    name: 'Документы',
+    classes: [],
+    href: `/championships/documents/${urlSlug}`,
+    permission: null,
+    icon: IconRegistration,
+  },
+  {
+    id: 5,
     name: 'Все Чемпионаты',
     classes: [],
     href: `/championships`,
