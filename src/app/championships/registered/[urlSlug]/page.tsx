@@ -37,7 +37,6 @@ export default async function ChampionshipRegistered({ params: { urlSlug } }: Pr
               <div className={styles.wrapper__table} key={race.raceName}>
                 <ContainerTableRegisteredChamp
                   registeredRidersInRace={race}
-                  champ={data.championship}
                   showFooter={true}
                 />
               </div>

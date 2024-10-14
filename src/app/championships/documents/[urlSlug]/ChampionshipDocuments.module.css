@@ -13,6 +13,13 @@
 .wrapper__table {
   margin-bottom: 2rem;
 }
+.description {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+.spacer__section {
+  margin-bottom: 2rem;
+}
 /* ====================================================================== */
 @media (max-width: 1200px) {
   .wrapper {

@@ -1,12 +1,10 @@
 'use client';
 
-import { TChampionshipForRegisteredClient } from '@/types/index.interface';
 import TableRegisteredRace from '../../TableRegisteredRace/TableRegisteredRace';
 import { TChampRegistrationRiderDto } from '@/types/dto.types';
 
 type Props = {
   registeredRidersInRace: TChampRegistrationRiderDto;
-  champ: TChampionshipForRegisteredClient;
   showFooter?: boolean;
 };
 
@@ -15,7 +13,7 @@ type Props = {
  */
 export default function ContainerTableRegisteredChamp({
   registeredRidersInRace,
-  champ,
+
   showFooter,
 }: Props) {
   return (
@@ -23,7 +21,6 @@ export default function ContainerTableRegisteredChamp({
       {/* Таблица */}
       <TableRegisteredRace
         registeredRidersInRace={registeredRidersInRace}
-        champ={champ}
         docsOnPage={10}
         showFooter={showFooter}
       />

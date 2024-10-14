@@ -1,7 +1,6 @@
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { UserOptions } from 'jspdf-autotable';
-import { ColumnDef } from '@tanstack/react-table';
 
 import '../fonts/base64/roboto-bold';
 import '../fonts/base64/roboto-regular';
@@ -14,20 +13,50 @@ type jsPDFCustom = jsPDF & {
   autoTable: (options: UserOptions) => void;
 };
 
-type TColumns = ColumnDef<TRaceRegistrationDto & { index: number }> & {
-  header: any; // Маскирование ошибки типизации.
-  accessorKey: any; // Маскирование ошибки типизации.
-};
 type Params = {
-  columns: any;
-  data: (TRaceRegistrationDto & { index: number })[];
+  data: TRaceRegistrationDto[];
   subTitles: string[];
 };
+
+const columns = [
+  {
+    accessorKey: 'index',
+    header: '#',
+  },
+  {
+    header: 'Номер',
+    accessorKey: 'startNumber',
+  },
+  {
+    header: 'Участник',
+    accessorKey: 'rider',
+  },
+  {
+    header: 'Команда',
+    accessorKey: 'rider.team',
+  },
+  {
+    header: 'Город',
+    accessorKey: 'rider.city',
+  },
+  {
+    header: 'Год рождения',
+    accessorKey: 'rider.yearBirthday',
+  },
+  {
+    header: 'Статус',
+    accessorKey: 'status',
+  },
+  {
+    header: 'Дата',
+    accessorKey: 'createdAt',
+  },
+];
 
 /**
  *  Скачивание PDF файла таблицы.
  */
-export const getPdfRegistered = ({ columns, data, subTitles }: Params) => {
+export const getPdfRegistered = ({ data, subTitles }: Params) => {
   const doc = new jsPDF() as jsPDFCustom;
 
   // Установка шрифта для заголовка
@@ -45,59 +74,46 @@ export const getPdfRegistered = ({ columns, data, subTitles }: Params) => {
   });
 
   // Формируем заголовки таблицы
-  const headers = columns.map((col: TColumns) =>
-    typeof col.header === 'string' ? col.header : ''
-  );
+  const headers = columns.map((col) => (typeof col.header === 'string' ? col.header : ''));
 
   // Формируем данные для таблицы
   const body = data.map((row, indexRow) => {
-    return columns.map((col: TColumns) => {
-      let cellValue;
+    return columns.map((col) => {
       // Используем switch для обработки различных колонок
       switch (col.accessorKey) {
         case 'index':
-          cellValue = indexRow + 1;
-          break;
+          return indexRow + 1;
 
         case 'startNumber':
-          cellValue = row.startNumber;
-          break;
+          return row.startNumber || '';
 
         case 'rider':
           // Обрабатываем колонку "Участник"
-          cellValue = `${row.rider.firstName} ${row.rider.lastName}`;
-          break;
+          return `${row.rider.firstName} ${row.rider.lastName}`;
 
         case 'rider.city':
           // Обрабатываем колонку "Город"
-          cellValue = row.rider.city || 'н/д';
-          break;
+          return row.rider.city || 'н/д';
 
         case 'rider.yearBirthday':
-          // Обрабатываем колонку "Город"
-          cellValue = row.rider.yearBirthday;
-          break;
+          // Обрабатываем колонку "Год рождения"
+          return row.rider.yearBirthday;
 
         case 'rider.team':
           // Обрабатываем колонку "Команда"
-          cellValue = row.rider.team || 'н/д';
-          break;
+          return row.rider.team || 'н/д';
 
         case 'status':
           // Обрабатываем колонку "Статус"
-          cellValue = registrationStatusMap.get(row.status)?.translation || 'н/д';
-          break;
+          return registrationStatusMap.get(row.status)?.translation || 'н/д';
 
         case 'createdAt':
           // Обрабатываем колонку "Дата"
-          cellValue = getDateTime(new Date(row.createdAt)).dateDDMMYYYY;
-          break;
+          return getDateTime(new Date(row.createdAt)).dateDDMMYYYY;
 
         default:
-          cellValue = 'н/д';
+          return 'н/д';
       }
-
-      return cellValue;
     });
   });
 

@@ -10,19 +10,13 @@ import {
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
-import { toast } from 'sonner';
 
 import TdRider from '../Td/TdRider';
 import BlockStartNumber from '../Td/BlockStartNumber';
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
-import IconPdf from '@/components/Icons/IconPDF';
 import { getDateTime } from '@/libs/utils/calendar';
-import { getPdfRegistered } from '@/libs/pdf/registeredRace';
-import { getPdfBlankForProtocol } from '@/libs/pdf/blankForProtocol';
 import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
-import { TChampionshipForRegisteredClient } from '@/types/index.interface';
-import { getDateChampionship } from '@/libs/utils/date';
 
 const cx = cn.bind(styles);
 
@@ -31,7 +25,6 @@ const cx = cn.bind(styles);
 type Props = {
   registeredRidersInRace: TChampRegistrationRiderDto;
   docsOnPage?: number;
-  champ?: TChampionshipForRegisteredClient;
   showFooter?: boolean;
 };
 
@@ -88,7 +81,6 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
 export default function TableRegisteredRace({
   registeredRidersInRace,
   docsOnPage = 10,
-  champ,
   showFooter,
 }: Props) {
   const data = useMemo(() => {
@@ -121,44 +113,6 @@ export default function TableRegisteredRace({
     table.setPageSize(docsOnPage);
     table.setPageIndex(0);
   }, [docsOnPage, table]);
-
-  // Скачивание PDF файла таблицы с зарегистрированными райдерами.
-  const handlerClickRegistered = () => {
-    if (!champ) {
-      toast.error('Не получены данные Чемпионата');
-      return;
-    }
-
-    const subTitles = [
-      champ.name,
-      `Заезд: ${registeredRidersInRace.raceName}`,
-      `Дата: ${getDateChampionship({ startDate: champ.startDate, endDate: champ.endDate })}`,
-    ];
-
-    // Получение отсортированных данных из таблицы
-    const sortedData = table.getRowModel().rows.map((row) => row.original);
-
-    const columnsWithIndex = columns.map((column) =>
-      column.header === '#' ? { accessorKey: 'index', header: '#' } : column
-    );
-
-    getPdfRegistered({ columns: columnsWithIndex, data: sortedData, subTitles });
-  };
-
-  // Скачивание PDF файла таблицы бланка протокола с участниками для фиксации результатов.
-  const handlerClickBlankProtocol = () => {
-    if (!champ) {
-      toast.error('Не получены данные Чемпионата');
-      return;
-    }
-
-    const subTitles = [
-      champ.name,
-      `Заезд: ${registeredRidersInRace.raceName}`,
-      `Дата: ${getDateChampionship({ startDate: champ.startDate, endDate: champ.endDate })}`,
-    ];
-    getPdfBlankForProtocol({ subTitles });
-  };
 
   return (
     <div className={styles.wrapper}>
@@ -207,30 +161,7 @@ export default function TableRegisteredRace({
           </tbody>
           {showFooter && (
             <tfoot className={cx('footer')}>
-              <tr>
-                <td colSpan={table.getHeaderGroups()[0].headers.length}>
-                  {registeredRidersInRace.raceName && (
-                    <div className={styles.footer__files}>
-                      <IconPdf
-                        squareSize={24}
-                        getClick={handlerClickBlankProtocol}
-                        tooltip={{
-                          id: `dlPdfProtocol-${registeredRidersInRace.raceNumber}`,
-                          text: 'Бланк протокола для фиксации результатов участников, pdf',
-                        }}
-                      />
-                      <IconPdf
-                        squareSize={24}
-                        getClick={handlerClickRegistered}
-                        tooltip={{
-                          id: `dlPdfRegistered-${registeredRidersInRace.raceNumber}`,
-                          text: 'Таблица зарегистрированных участников, pdf',
-                        }}
-                      />
-                    </div>
-                  )}
-                </td>
-              </tr>
+              <tr></tr>
             </tfoot>
           )}
         </table>
