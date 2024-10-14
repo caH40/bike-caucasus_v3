@@ -1,4 +1,5 @@
 import IconChampionship from '@/components/Icons/IconChampionship';
+import IconDocument from '@/components/Icons/IconDocument';
 import IconInfo from '@/components/Icons/IconInfo';
 import IconRegistration from '@/components/Icons/IconRegistration';
 import IconResults from '@/components/Icons/IconResults';
@@ -49,7 +50,7 @@ export const buttonsMenuChampionshipPage = (urlSlug: string): TMenuOnPage[] => [
     classes: [],
     href: `/championships/documents/${urlSlug}`,
     permission: null,
-    icon: IconRegistration,
+    icon: IconDocument,
   },
   {
     id: 5,
