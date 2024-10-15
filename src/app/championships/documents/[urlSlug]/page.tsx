@@ -26,7 +26,6 @@ export default async function ChampionshipDocuments({ params: { urlSlug } }: Pro
   if (!registeredRidersChamp.data) {
     return <h2>{registeredRidersChamp.message}</h2>;
   }
-  console.log(registeredRidersChamp);
 
   const protocols = await getProtocolsRaces({ urlSlug });
 
