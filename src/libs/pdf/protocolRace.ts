@@ -94,6 +94,16 @@ export const getPdfProtocolRace = ({ data, subTitles }: Params) => {
     });
 
     const body = protocolCurrent.map((row, indexRow) => {
+      // Установка отставаний от лидера и от райдера впереди.
+      const gapLeader =
+        (category === 'Общая'
+          ? row.gapsInCategories.absolute?.toLeader
+          : row.gapsInCategories.category?.toLeader) ?? 0;
+      const gapPrev =
+        (category === 'Общая'
+          ? row.gapsInCategories.absolute?.toPrev
+          : row.gapsInCategories.category?.toPrev) ?? 0;
+
       return columns.map((col) => {
         switch (col.accessorKey) {
           case 'index':
@@ -105,13 +115,9 @@ export const getPdfProtocolRace = ({ data, subTitles }: Params) => {
           case 'raceTimeInMilliseconds':
             return formatTimeToStr(row.raceTimeInMilliseconds);
           case 'gapsInCategories.absolute.toLeader':
-            return GapTimeFormatter.getGapsInProtocol(
-              row.gapsInCategories.absolute?.toLeader ?? 0
-            );
+            return GapTimeFormatter.getGapsInProtocol(gapLeader);
           case 'gapsInCategories.absolute.toPrev':
-            return GapTimeFormatter.getGapsInProtocol(
-              row.gapsInCategories.absolute?.toPrev ?? 0
-            );
+            return GapTimeFormatter.getGapsInProtocol(gapPrev);
           case 'city':
             return row.profile.city || 'н/д';
           case 'categoryAge':
