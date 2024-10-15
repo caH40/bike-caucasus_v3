@@ -26,6 +26,7 @@ export default async function ChampionshipDocuments({ params: { urlSlug } }: Pro
   if (!registeredRidersChamp.data) {
     return <h2>{registeredRidersChamp.message}</h2>;
   }
+  console.log(registeredRidersChamp);
 
   const protocols = await getProtocolsRaces({ urlSlug });
 
@@ -35,7 +36,10 @@ export default async function ChampionshipDocuments({ params: { urlSlug } }: Pro
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
         <>
-          <TitleAndLine hSize={1} title={`Документы Чемпионата`} />
+          <TitleAndLine
+            hSize={1}
+            title={`Документы "${registeredRidersChamp.data.championship.name}"`}
+          />
           <p className={styles.description}>
             На данной странице представлены документы для скачивания, включая стартовые и
             регистрационные протоколы участников, финишные протоколы с результатами велосипедных
