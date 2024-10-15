@@ -186,17 +186,17 @@ export function calculateAverageSpeed(distanceKm?: number, timeMs?: number): num
  * @param {string} category - Название категории, которую нужно преобразовать.
  * @returns {string} - Преобразованное название категории с кириллическими обозначениями.
  */
-export function replaceCategorySymbols(category: string): string {
+export function replaceCategorySymbols(category: string, fullName?: boolean): string {
   let result = category;
 
   // Заменяем "F" на "Ж"
   if (category.includes('F')) {
-    result = result.replace('F', 'Ж');
+    result = fullName ? result.replace('F', 'женщины ') : result.replace('F', 'Ж');
   }
 
   // Заменяем "M" на "М"
   if (category.includes('M')) {
-    result = result.replace('M', 'М');
+    result = fullName ? result.replace('M', 'мужчины ') : result.replace('M', 'М');
   }
 
   return result;

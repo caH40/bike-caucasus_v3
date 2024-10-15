@@ -44,7 +44,7 @@ export class GapTimeFormatter {
 
   // Метод для форматирования гэпа в строку
   static gapWithStr(gap: string | null): string | null {
-    if (gap === null) {
+    if (gap === null || gap === '0') {
       return null;
     }
 

@@ -7,6 +7,9 @@ import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerDownloadRegistered from '@/components/ClientContainers/ContainerDownloadRegistered/ContainerDownloadRegistered';
 import styles from './ChampionshipDocuments.module.css';
+import ContainerDownloadRaceProtocol from '@/components/ClientContainers/ContainerDownloadRaceProtocol/ContainerDownloadRaceProtocol';
+
+import { getProtocolsRaces } from '@/actions/result-race';
 
 // Создание динамических meta данных.
 // export async function generateMetadata(props: Props): Promise<Metadata> {}
@@ -20,9 +23,14 @@ type Props = {
 export default async function ChampionshipDocuments({ params: { urlSlug } }: Props) {
   const registeredRidersChamp = await getRegisteredRidersChamp({ urlSlug });
 
+  if (!registeredRidersChamp.data) {
+    return <h2>{registeredRidersChamp.message}</h2>;
+  }
+
+  const protocols = await getProtocolsRaces({ urlSlug });
+
   const buttons = buttonsMenuChampionshipPage(urlSlug);
 
-  // const data = [];
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
@@ -32,20 +40,28 @@ export default async function ChampionshipDocuments({ params: { urlSlug } }: Pro
             На данной странице представлены документы для скачивания, включая стартовые и
             регистрационные протоколы участников, финишные протоколы с результатами велосипедных
             соревнований, а также общие положения, описывающие правила и условия проведения
-            мероприятий.
+            мероприятия.
           </p>
 
           <section className={styles.spacer__section}>
             <TitleAndLine hSize={2} title={'Регистрация'} />
-            {registeredRidersChamp.data && (
-              <ContainerDownloadRegistered
-                championship={registeredRidersChamp.data.championship}
-                champRegistrationRiders={registeredRidersChamp.data.champRegistrationRiders}
-              />
-            )}
+
+            <ContainerDownloadRegistered
+              championship={registeredRidersChamp.data.championship}
+              champRegistrationRiders={registeredRidersChamp.data.champRegistrationRiders}
+            />
           </section>
 
-          <TitleAndLine hSize={2} title={'Финишные протоколы'} />
+          {protocols.data && (
+            <section className={styles.spacer__section}>
+              <TitleAndLine hSize={2} title={'Финишные протоколы'} />
+
+              <ContainerDownloadRaceProtocol
+                championship={registeredRidersChamp.data.championship}
+                protocols={protocols.data}
+              />
+            </section>
+          )}
         </>
       </div>
 

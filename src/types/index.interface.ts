@@ -14,6 +14,7 @@ import {
 } from './models.interface';
 import { Dispatch, LegacyRef, SetStateAction } from 'react';
 import mongoose from 'mongoose';
+import { TResultRaceDto } from './dto.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -801,3 +802,12 @@ export type TChampionshipForRegisteredClient = Omit<
   TChampionshipForRegistered,
   'races' | '_id'
 >;
+
+/**
+ * Протокол заезда с результатами райдеров.
+ */
+export type TProtocolRace = {
+  protocol: TResultRaceDto[];
+  categories: string[];
+  race: { name: string; number: number };
+};

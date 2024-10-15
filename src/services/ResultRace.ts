@@ -10,10 +10,11 @@ import { User as UserModel } from '@/database/mongodb/Models/User';
 import { dtoResultsRace, dtoResultsRaceRider, dtoResultRaceRider } from '@/dto/results-race';
 import {
   ResponseServer,
+  TProtocolRace,
   TResultRaceFromDB,
   TResultRaceRideFromDB,
 } from '@/types/index.interface';
-import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
+import { TResultRaceRiderDto } from '@/types/dto.types';
 import { getCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
@@ -237,7 +238,7 @@ export class ResultRaceService {
   }: {
     championshipId: string;
     raceNumber: number;
-  }): Promise<ResponseServer<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
+  }): Promise<ResponseServer<TProtocolRace | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -248,7 +249,7 @@ export class ResultRaceService {
           _id: championshipId,
           'races.number': raceNumber,
         },
-        { _id: true, name: true }
+        { _id: true, name: true, races: true }
       ).lean();
 
       if (!champDB) {
@@ -256,6 +257,13 @@ export class ResultRaceService {
           `Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber} для добавления финишного результата!`
         );
       }
+
+      // Данные заезда.
+      const raceCurrent = champDB.races.find((race) => race.number === raceNumber);
+      if (!raceCurrent) {
+        throw new Error(`Не найден заезд №${raceNumber} в чемпионате с _id:${championshipId}!`);
+      }
+      const race = { name: raceCurrent.name, number: raceCurrent.number };
 
       // Получение результатов заезда raceNumber в чемпионате championshipId.
       const resultsRaceDB: TResultRaceFromDB[] = await ResultRaceModel.find(
@@ -289,7 +297,7 @@ export class ResultRaceService {
       const categoriesSorted = sortCategoriesString([...categoriesSet]);
 
       return {
-        data: { protocol: resultsSorted, categories: categoriesSorted },
+        data: { protocol: resultsSorted, categories: categoriesSorted, race },
         ok: true,
         message: 'Протокол заезда Чемпионата',
       };

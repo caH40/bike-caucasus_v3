@@ -4,13 +4,14 @@
 import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { ResponseServer } from '@/types/index.interface';
+import { ResponseServer, TProtocolRace } from '@/types/index.interface';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { ResultRaceService } from '@/services/ResultRace';
 import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
+import { ChampionshipService } from '@/services/Championship';
 
 /**
  * Сохранение результата райдера в Заезде Чемпионата.
@@ -70,7 +71,48 @@ export async function getProtocolRace({
 }
 
 /**
- * Получение протокола Заезда Чемпионата.
+ * Получение всех протоколов Заездов Чемпионата и списка категорий в заезде.
+ */
+export async function getProtocolsRaces({
+  urlSlug,
+}: {
+  urlSlug: string;
+}): Promise<ResponseServer<TProtocolRace[] | null>> {
+  try {
+    const championshipService = new ChampionshipService();
+    const { data, message } = await championshipService.getOne({ urlSlug });
+
+    if (!data) {
+      throw new Error(message);
+    }
+    const resultRaceService = new ResultRaceService();
+
+    const responseProtocols = await Promise.all(
+      data.races.map((race) =>
+        resultRaceService.getProtocolRace({
+          championshipId: data._id,
+          raceNumber: race.number,
+        })
+      )
+    );
+
+    // Не используется filter и map так как не проходил проверку типизации при билдинге приложения!!!
+    const protocols = [] as TProtocolRace[];
+    responseProtocols.forEach((elm) => {
+      if (elm.data !== null) {
+        protocols.push(elm.data);
+      }
+    });
+
+    return { data: protocols, ok: true, message: 'Все протоколы заездов Чемпионата' };
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Обновление протокола Заезда Чемпионата.
  */
 export async function updateProtocolRace({
   championshipId,
@@ -94,7 +136,7 @@ export async function updateProtocolRace({
 }
 
 /**
- * Получение протокола Заезда Чемпионата.
+ * Получение протоколов Заездов Чемпионатов в которых участвовал райдер riderId.
  */
 export async function getResultsRaceForRider({
   riderId,
@@ -115,7 +157,7 @@ export async function getResultsRaceForRider({
 }
 
 /**
- * Получение протокола Заезда Чемпионата.
+ * Получение протокола Заезда Чемпионата в котором участвовал райдер riderId
  */
 export async function getResultRaceForRider({
   resultId,
