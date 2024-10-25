@@ -43,7 +43,9 @@ export default async function Home() {
             <BlockNews idUserDB={session?.user.idDB} />
           </div>
 
-          <AdContainer adsNumber={11} maxWidth={1105} />
+          {/* <div className={cx('spacer', 'block__ad')}>
+            <AdContainer adsNumber={11} maxWidth={1105} />
+          </div> */}
         </Wrapper>
       </div>
 
