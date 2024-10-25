@@ -53,7 +53,8 @@ export const adBlocks: AdsBlock[] = [
   {
     id: 11,
     label: 'C-A-5213436-11',
-    description: 'Баннер, trails page for mobile',
+    description: 'RTB, Домашняя страница',
+    type: 'widget',
   },
 ];
 // <!-- Yandex.RTB C-A-5213436-11 -->
@@ -64,6 +65,18 @@ export const adBlocks: AdsBlock[] = [
 //     blockId: 'C-A-5213436-11'
 //   })
 // })</script>
+
+// <!-- Yandex.RTB R-A-5213436-10 -->
+// <div id="yandex_rtb_R-A-5213436-10"></div>
+// <script>
+// window.yaContextCb.push(() => {
+//     Ya.Context.AdvManager.render({
+//         "blockId": "R-A-5213436-10",
+//         "renderTo": "yandex_rtb_R-A-5213436-10"
+//     })
+// })
+// </script>
+
 // {
 //   id: 16,
 //   label: 'C-A-5165832-16',
