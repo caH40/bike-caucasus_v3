@@ -36,14 +36,18 @@ export default async function Home() {
             <NewsShort idUserDB={session?.user.idDB} />
             <BlockNewsImportant />
 
-            <div className={cx('gap__aside', 'block__ad-mobile')}>
+            <div className={cx('spacer', 'block__ad-mobile')}>
               <AdContainer adsNumber={13} />
             </div>
 
             <BlockNews idUserDB={session?.user.idDB} />
           </div>
+
+          <AdContainer adsNumber={10} />
         </Wrapper>
       </div>
+
+      {/* Боковая панель */}
       <aside className={styles.wrapper__aside}>
         <div className={styles.webcam__title__mobile}>
           <TitleAndLine hSize={2} title="Вебкамеры на горе Шаджатмаз" />
@@ -52,11 +56,11 @@ export default async function Home() {
           <Webcam />
         </div>
 
-        <div className={cx('gap__aside', 'block__ad')}>
+        <div className={cx('spacer', 'block__ad')}>
           <AdContainer adsNumber={8} />
         </div>
 
-        <div className={styles.gap__aside}>
+        <div className={styles.spacer}>
           <TitleAndLine hSize={2} title="Календарь событий" />
         </div>
         <Calendar events={events} />

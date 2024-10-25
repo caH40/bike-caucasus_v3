@@ -9,16 +9,6 @@ type AdsBlock = {
  * Объект рекламных блоков, созданных в РСЯ
  */
 export const adBlocks: AdsBlock[] = [
-  // {
-  //   id: 1,
-  //   label: 'R-A-5165832-1',
-  //   description: 'Floor Ad, Desktop',
-  // },
-  // {
-  //   id: 2,
-  //   label: 'R-A-5165832-2',
-  //   description: 'Floor Ad, Mobile',
-  // },
   {
     id: 5,
     label: 'R-A-5213436-5',
@@ -60,7 +50,20 @@ export const adBlocks: AdsBlock[] = [
     label: 'R-A-5213436-14',
     description: 'Баннер, trails page for mobile',
   },
+  {
+    id: 10,
+    label: 'C-A-5213436-11',
+    description: 'Баннер, trails page for mobile',
+  },
 ];
+// <!-- Yandex.RTB C-A-5213436-11 -->
+// <div id="yandex_rtb_C-A-5213436-11"></div>
+// <script>window.yaContextCb.push(()=>{
+//   Ya.Context.AdvManager.renderWidget({
+//     renderTo: 'yandex_rtb_C-A-5213436-11',
+//     blockId: 'C-A-5213436-11'
+//   })
+// })</script>
 // {
 //   id: 16,
 //   label: 'C-A-5165832-16',
