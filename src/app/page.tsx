@@ -43,7 +43,7 @@ export default async function Home() {
             <BlockNews idUserDB={session?.user.idDB} />
           </div>
 
-          <AdContainer adsNumber={10} />
+          <AdContainer adsNumber={11} />
         </Wrapper>
       </div>
 

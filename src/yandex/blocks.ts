@@ -51,7 +51,7 @@ export const adBlocks: AdsBlock[] = [
     description: 'Баннер, trails page for mobile',
   },
   {
-    id: 10,
+    id: 11,
     label: 'C-A-5213436-11',
     description: 'Баннер, trails page for mobile',
   },
