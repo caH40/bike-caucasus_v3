@@ -37,6 +37,12 @@ export default function WebcamPage() {
       <aside className={styles.wrapper__aside}>
         <AdContainer adsNumber={5} />
       </aside>
+
+      
+      {/* Рекомендательный виджет (реклама) */}
+      <div className={styles.rtb}>
+        <AdContainer adsNumber={12} maxWidth={1105} />
+      </div>
     </main>
   );
 }

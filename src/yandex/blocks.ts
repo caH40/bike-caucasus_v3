@@ -53,33 +53,13 @@ export const adBlocks: AdsBlock[] = [
   {
     id: 11,
     label: 'C-A-5213436-11',
-    description: 'RTB, Домашняя страница',
+    description: 'RTB1, Домашняя страница',
+    type: 'widget',
+  },
+  {
+    id: 12,
+    label: 'C-A-5213436-12',
+    description: 'RTB2, Вебкамеры',
     type: 'widget',
   },
 ];
-// <!-- Yandex.RTB C-A-5213436-11 -->
-// <div id="yandex_rtb_C-A-5213436-11"></div>
-// <script>window.yaContextCb.push(()=>{
-//   Ya.Context.AdvManager.renderWidget({
-//     renderTo: 'yandex_rtb_C-A-5213436-11',
-//     blockId: 'C-A-5213436-11'
-//   })
-// })</script>
-
-// <!-- Yandex.RTB R-A-5213436-10 -->
-// <div id="yandex_rtb_R-A-5213436-10"></div>
-// <script>
-// window.yaContextCb.push(() => {
-//     Ya.Context.AdvManager.render({
-//         "blockId": "R-A-5213436-10",
-//         "renderTo": "yandex_rtb_R-A-5213436-10"
-//     })
-// })
-// </script>
-
-// {
-//   id: 16,
-//   label: 'C-A-5165832-16',
-//   description: 'РВ, Main',
-//   type: 'widget',
-// },
