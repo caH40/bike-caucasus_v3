@@ -40,12 +40,13 @@ const Navbar = () => {
               <PermissionCheck permission={link.permission} key={link.id}>
                 <li className={styles.item}>
                   <span
-                    className={cx('link', { active: isActivePage(link.href) })}
+                    className={cx('link', 'item__popup', { active: isActivePage(link.href) })}
                     onClick={() => setActivePopupId(link.id)}
                   >
                     {link.name}
                   </span>
 
+                  {/* Попап меню в текущей кнопке навигации */}
                   {activePopupId === link.id && (
                     <div
                       className={styles.block__popup}
