@@ -32,6 +32,11 @@ export default async function ChampionshipsPage() {
       <aside className={styles.wrapper__aside}>
         <AdContainer adsNumber={6} />
       </aside>
+
+      {/* Рекомендательный виджет (реклама) */}
+      <div className={styles.rtb}>
+        <AdContainer adsNumber={17} maxWidth={1105} />
+      </div>
     </div>
   );
 }

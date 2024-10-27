@@ -2,17 +2,23 @@
   display: grid;
   grid-gap: 1rem 20px;
   grid-template-columns: 1fr 350px;
+  grid-template-rows: auto auto;
 }
 .wrapper__main {
   position: relative;
 }
-/* .wrapper__aside {
-  margin-top: 39px;
-} */
 .wrapper__trails {
   display: grid;
   grid-gap: 1rem 2rem;
   grid-template-columns: repeat(auto-fit, 308px);
+}
+.wrapper__aside {
+  overflow: hidden;
+}
+.rtb {
+  grid-column: 1 / -1; /* Занимает колонки от первой (1) до последней (-1) */
+  width: 100%;
+  overflow: hidden;
 }
 /* ====================================================================== */
 @media (max-width: 992px) {
@@ -21,5 +27,9 @@
   }
   .wrapper__aside {
     margin-top: 0px;
+  }
+
+  .rtb {
+    display: none;
   }
 }

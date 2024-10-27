@@ -29,6 +29,11 @@ export default async function CalendarPage() {
       <aside className={styles.wrapper__aside}>
         <AdContainer adsNumber={10} />
       </aside>
+
+      {/* Рекомендательный виджет (реклама) */}
+      <div className={styles.rtb}>
+        <AdContainer adsNumber={18} maxWidth={1105} />
+      </div>
     </div>
   );
 }

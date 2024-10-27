@@ -1,12 +1,18 @@
 .wrapper {
   display: grid;
-  grid-template-columns: 1fr 468px;
+  grid-template-columns: 1fr 350px;
+  grid-template-rows: auto auto;
   align-items: start;
   gap: 2rem 20px;
   letter-spacing: 0.08rem;
 }
 .wrapper__aside {
-  margin-top: 39px;
+  overflow: hidden;
+}
+.rtb {
+  grid-column: 1 / -1; /* Занимает колонки от первой (1) до последней (-1) */
+  width: 100%;
+  overflow: hidden;
 }
 /* ====================================================================== */
 @media (max-width: 1300px) {
@@ -15,5 +21,8 @@
   }
   .wrapper__aside {
     margin-top: 0;
+  }
+  .rtb {
+    display: none;
   }
 }

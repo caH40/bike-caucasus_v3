@@ -65,7 +65,19 @@ export const adBlocks: AdsBlock[] = [
   {
     id: 16,
     label: 'C-A-5213436-16',
-    description: 'RTB2, Маршруты',
+    description: 'RTB3, Маршруты',
+    type: 'widget',
+  },
+  {
+    id: 17,
+    label: 'C-A-5213436-17',
+    description: 'RTB4, Чемпионаты',
+    type: 'widget',
+  },
+  {
+    id: 18,
+    label: 'C-A-5213436-18',
+    description: 'RTB4, Организаторы, Календарь',
     type: 'widget',
   },
 ];
