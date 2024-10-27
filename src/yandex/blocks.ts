@@ -62,4 +62,10 @@ export const adBlocks: AdsBlock[] = [
     description: 'RTB2, Вебкамеры',
     type: 'widget',
   },
+  {
+    id: 16,
+    label: 'C-A-5213436-16',
+    description: 'RTB2, Маршруты',
+    type: 'widget',
+  },
 ];
