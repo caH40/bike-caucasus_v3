@@ -42,10 +42,6 @@ export default async function Home() {
 
             <BlockNews idUserDB={session?.user.idDB} />
           </div>
-
-          {/* <div className={cx('spacer', 'block__ad')}>
-            <AdContainer adsNumber={11} maxWidth={1105} />
-          </div> */}
         </Wrapper>
       </div>
 
@@ -67,6 +63,11 @@ export default async function Home() {
         </div>
         <Calendar events={events} />
       </aside>
+
+      {/* Рекомендательный виджет (реклама) */}
+      <div className={styles.rtb}>
+        <AdContainer adsNumber={11} maxWidth={1105} />
+      </div>
     </div>
   );
 }

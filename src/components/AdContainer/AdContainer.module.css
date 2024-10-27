@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 .test {
-  width: 100%;
+  width: 1200px;
   aspect-ratio: 16/9;
   background-color: blueviolet;
 }

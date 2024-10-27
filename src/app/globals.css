@@ -133,7 +133,7 @@ select {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  max-width: 1620px;
+  max-width: 2200px;
   margin: 0px auto;
   padding: 0px 10px;
 }
@@ -155,14 +155,9 @@ select {
   text-decoration-color: var(--link-color);
 }
 /* ====================================================================== */
-@media (min-width: 1919px) {
+@media (max-width: 1920px) {
   .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    max-width: 2200px;
-    margin: 0px auto;
-    padding: 0px 10px;
+    max-width: 1720px;
   }
 }
 @media (max-width: 992px) {
