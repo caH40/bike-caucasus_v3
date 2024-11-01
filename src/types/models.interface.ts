@@ -44,6 +44,11 @@ export type IUserModel = {
     whatsapp?: string;
     garminConnect?: string;
   };
+  notification?: {
+    development: boolean; // Оповещение на email об изменениях на сайте.
+    events: boolean; // Оповещение на email об новых Эвентах.
+    news: boolean; // Оповещение на email о новостях.
+  };
   createdAt: Date;
   updatedAt: Date;
 };

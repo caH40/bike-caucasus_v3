@@ -73,6 +73,11 @@ const userSchema = new Schema<IUserModel>(
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
+    notification: {
+      development: { type: Boolean, default: true },
+      events: { type: Boolean, default: true },
+      news: { type: Boolean, default: true },
+    },
   },
   { timestamps: true }
 );
