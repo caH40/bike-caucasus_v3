@@ -29,8 +29,10 @@ export default function RootLayout({
         <ModalLoading />
 
         {/* <!-- Yandex.Metrika counter --> */}
-        <Script id="metrika-counter" strategy="afterInteractive">
-          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        {process.env.NODE_ENV !== 'development' && (
+          <>
+            <Script id="metrika-counter" strategy="afterInteractive">
+              {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
               m[i].l=1*new Date();
               for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
               k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
@@ -43,13 +45,13 @@ export default function RootLayout({
                     accurateTrackBounce:true,
                     webvisor:false
               });`}
-        </Script>
+            </Script>
 
-        <Script
-          id="yandex-ads-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `window.yaContextCb = window.yaContextCb || [];
+            <Script
+              id="yandex-ads-init"
+              strategy="beforeInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `window.yaContextCb = window.yaContextCb || [];
           window.yaContextCb.push(() => {
             Ya.Context.AdvManager.render({
               "blockId": "R-A-5213436-4",
@@ -62,18 +64,21 @@ export default function RootLayout({
               "platform": "touch"
             });
           });`,
-          }}
-        />
-        <Script
-          id="yandex-ads-script"
-          src="https://yandex.ru/ads/system/context.js"
-          strategy="afterInteractive"
-          async
-        />
+              }}
+            />
 
-        <Suspense fallback={<></>}>
-          <YandexMetrika />
-        </Suspense>
+            <Script
+              id="yandex-ads-script"
+              src="https://yandex.ru/ads/system/context.js"
+              strategy="afterInteractive"
+              async
+            />
+
+            <Suspense fallback={<></>}>
+              <YandexMetrika />
+            </Suspense>
+          </>
+        )}
 
         {/* <!-- /Yandex.Metrika counter --> */}
         <Providers>
