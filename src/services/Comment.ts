@@ -33,9 +33,7 @@ export class CommentService {
       await this.dbConnection();
 
       // Получение комментариев для поста.
-      const commentsDB: (Omit<TCommentDocument, 'author'> & { author: TAuthorFromUser } & {
-        isLikedByUser: boolean;
-      })[] = await CommentModel.find({ document })
+      const commentsDB = await CommentModel.find({ document })
         .populate({
           path: 'author',
           select: [
@@ -49,7 +47,11 @@ export class CommentService {
             'image',
           ],
         })
-        .lean();
+        .lean<
+          (Omit<TCommentDocument, 'author'> & { author: TAuthorFromUser } & {
+            isLikedByUser: boolean;
+          })[]
+        >();
 
       if (idUserDB) {
         commentsDB
@@ -129,10 +131,9 @@ export class CommentService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const userDb: { _id: ObjectId } | null = await User.findOne(
-        { _id: authorIdDB },
-        { _id: true }
-      ).lean();
+      const userDb = await User.findOne({ _id: authorIdDB }, { _id: true }).lean<{
+        _id: ObjectId;
+      }>();
 
       if (!userDb) {
         throw new Error(
@@ -226,12 +227,9 @@ export class CommentService {
       // Подключение к БД.
       this.dbConnection();
 
-      const userDB: { role: TRoleModel; id: number } | null = await User.findOne(
-        { _id: idUserDB },
-        { role: true, id: true, _id: false }
-      )
+      const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
         .populate('role')
-        .lean();
+        .lean<{ role: TRoleModel; id: number }>();
 
       if (!userDB) {
         throw new Error(`Не найден пользователь с _id:${userDB}`);

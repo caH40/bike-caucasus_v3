@@ -46,9 +46,9 @@ export const authOptions: AuthOptions = {
         const { username, password } = credentials;
 
         await connectToMongo();
-        const userDB: IUserModel | null = await User.findOne({
+        const userDB = await User.findOne({
           'credentials.username': username.toLowerCase(),
-        }).lean();
+        }).lean<IUserModel>();
 
         if (!userDB || !userDB.credentials) {
           return null;
@@ -79,12 +79,9 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       await connectToMongo();
-      const userDB: { role: Omit<TRoleModel, '_id'> } | null = await User.findOne(
-        { email: token.email },
-        { role: true }
-      )
+      const userDB = await User.findOne({ email: token.email }, { role: true })
         .populate('role')
-        .lean();
+        .lean<{ role: Omit<TRoleModel, '_id'> }>();
 
       // добавление в токен данных user
       if (account && account.provider === 'vk') {
@@ -209,14 +206,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         await connectToMongo();
-        const userDB: {
-          id: number;
-          role: Omit<TRoleModel, '_id'>;
-          _id: ObjectId;
-          image?: string;
-          imageFromProvider: boolean;
-          provider: { image: string };
-        } | null = await User.findOne(
+        const userDB = await User.findOne(
           { email: token.email },
           {
             id: true,
@@ -227,7 +217,14 @@ export const authOptions: AuthOptions = {
           }
         )
           .populate({ path: 'role', select: ['name', 'description', 'permissions'] })
-          .lean();
+          .lean<{
+            id: number;
+            role: Omit<TRoleModel, '_id'>;
+            _id: ObjectId;
+            image?: string;
+            imageFromProvider: boolean;
+            provider: { image: string };
+          }>();
 
         // при отсутствии пользователя в БД выходить из сессии
         if (!userDB) {

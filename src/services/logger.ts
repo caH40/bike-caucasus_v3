@@ -34,7 +34,7 @@ export class Logger {
   public async getErrors(): Promise<ResponseServer<TGetErrorsDto[] | null>> {
     try {
       await this.dbConnection();
-      const logsDB: TLogsErrorModel[] = await LogsError.find().lean();
+      const logsDB = await LogsError.find().lean<TLogsErrorModel[]>();
       logsDB.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       return {
@@ -54,7 +54,7 @@ export class Logger {
   public async getError(_id: string): Promise<ResponseServer<TGetErrorsDto | null>> {
     try {
       await this.dbConnection();
-      const logDB: TLogsErrorModel | null = await LogsError.findOne({ _id }).lean();
+      const logDB = await LogsError.findOne({ _id }).lean<TLogsErrorModel>();
 
       if (!logDB) {
         throw new Error(`Лог ошибки с _id:${_id} не найден!`);

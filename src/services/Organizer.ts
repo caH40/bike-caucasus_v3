@@ -43,13 +43,12 @@ export class OrganizerService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const organizersDB: (Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser })[] =
-        await OrganizerModel.find()
-          .populate({
-            path: 'creator',
-            select: userPublicSelect,
-          })
-          .lean();
+      const organizersDB = await OrganizerModel.find()
+        .populate({
+          path: 'creator',
+          select: userPublicSelect,
+        })
+        .lean<(Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser })[]>();
 
       const organizers = dtoCOrganizers(organizersDB);
 
@@ -72,13 +71,12 @@ export class OrganizerService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const organizerDB: (Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser }) | null =
-        await OrganizerModel.findOne({ urlSlug })
-          .populate({
-            path: 'creator',
-            select: userPublicSelect,
-          })
-          .lean();
+      const organizerDB = await OrganizerModel.findOne({ urlSlug })
+        .populate({
+          path: 'creator',
+          select: userPublicSelect,
+        })
+        .lean<Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser }>();
 
       if (!organizerDB) {
         throw new Error('Не найден запрашиваемый Организатор!');
@@ -105,11 +103,10 @@ export class OrganizerService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const organizerDB: { _id: ObjectId; urlSlug: string } | null =
-        await OrganizerModel.findOne(
-          { creator: userIdDB },
-          { _id: true, urlSlug: true }
-        ).lean();
+      const organizerDB = await OrganizerModel.findOne(
+        { creator: userIdDB },
+        { _id: true, urlSlug: true }
+      ).lean<{ _id: ObjectId; urlSlug: string }>();
 
       return {
         data: { urlSlug: organizerDB ? organizerDB.urlSlug : null },
@@ -134,13 +131,14 @@ export class OrganizerService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const organizerDB: (Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser }) | null =
-        await OrganizerModel.findOne({ $or: [{ creator: userIdDB }, { moderators: userIdDB }] })
-          .populate({
-            path: 'creator',
-            select: userPublicSelect,
-          })
-          .lean();
+      const organizerDB = await OrganizerModel.findOne({
+        $or: [{ creator: userIdDB }, { moderators: userIdDB }],
+      })
+        .populate({
+          path: 'creator',
+          select: userPublicSelect,
+        })
+        .lean<Omit<TOrganizer, 'creator'> & { creator: TAuthorFromUser }>();
 
       if (!organizerDB) {
         throw new Error('Не найден запрашиваемый Организатор!');

@@ -97,7 +97,7 @@ export class PermissionsService {
     try {
       // Подключение к БД.
       await this.dbConnection();
-      const permissionsDB: TPermissionDocument[] = await PermissionModel.find().lean();
+      const permissionsDB = await PermissionModel.find().lean<TPermissionDocument[]>();
 
       return {
         data: dtoPermissions(permissionsDB),
@@ -125,9 +125,9 @@ export class PermissionsService {
 
       // Подключение к БД.
       await this.dbConnection();
-      const permissionDB: TPermissionDocument | null = await PermissionModel.findOne({
+      const permissionDB = await PermissionModel.findOne({
         _id,
-      }).lean();
+      }).lean<TPermissionDocument>();
 
       if (!permissionDB) {
         throw new Error(`Разрешение (permission) _id:${_id} не найдено!`);
@@ -157,8 +157,10 @@ export class PermissionsService {
       await this.dbConnection();
 
       // Удаление Разрешения.
-      const permissionDB: { _id: mongoose.Types.ObjectId; name: string } | null =
-        await PermissionModel.findOneAndDelete({ _id }, { _id: true, name: true }).lean();
+      const permissionDB = await PermissionModel.findOneAndDelete(
+        { _id },
+        { _id: true, name: true }
+      ).lean<{ _id: mongoose.Types.ObjectId; name: string }>();
 
       if (!permissionDB) {
         throw new Error(`Не найдено Разрешение с _id:${_id}`);
@@ -224,7 +226,7 @@ export class PermissionsService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const roleDB: TRoleModel | null = await RoleModel.findOne({ _id }).lean();
+      const roleDB = await RoleModel.findOne({ _id }).lean<TRoleModel>();
 
       if (!roleDB) {
         throw new Error(`Не найдена запрашиваемая Роль с _id:${_id}`);
@@ -250,7 +252,7 @@ export class PermissionsService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const rolesDB: TRoleModel[] = await RoleModel.find().lean();
+      const rolesDB = await RoleModel.find().lean<TRoleModel[]>();
 
       const rolesAfterDto = dtoRoles(rolesDB);
       return {
@@ -273,10 +275,9 @@ export class PermissionsService {
       await this.dbConnection();
 
       // Получение id Роли User.
-      const roleUser: { _id: ObjectId } | null = await RoleModel.findOne(
-        { name: 'user' },
-        { _id: true }
-      ).lean();
+      const roleUser = await RoleModel.findOne({ name: 'user' }, { _id: true }).lean<{
+        _id: ObjectId;
+      }>();
 
       if (!roleUser) {
         throw new Error(
@@ -371,10 +372,9 @@ export class PermissionsService {
       await connectToMongo();
 
       // Проверка, является ли модератор, удаляющий,редактирующий новость, администратором.
-      const user: { role: { name: string; permissions: string[] } } | null =
-        await UserModel.findOne({ _id: idUserDB }, { role: true })
-          .populate({ path: 'role', select: ['permissions', 'name', '-_id'] })
-          .lean();
+      const user = await UserModel.findOne({ _id: idUserDB }, { role: true })
+        .populate({ path: 'role', select: ['permissions', 'name', '-_id'] })
+        .lean<{ role: { name: string; permissions: string[] } }>();
 
       // Проверка наличия пользователя и его разрешений.
       if (!user) {
@@ -432,12 +432,9 @@ export class PermissionsService {
       // Подключение к БД.
       await connectToMongo();
 
-      const userDB: { role: { name: string } } | null = await UserModel.findOne(
-        { _id: userIdDB },
-        { _id: false, role: true }
-      )
+      const userDB = await UserModel.findOne({ _id: userIdDB }, { _id: false, role: true })
         .populate({ path: 'role', select: ['name', '-_id'] })
-        .lean();
+        .lean<{ role: { name: string } }>();
 
       // Проверка найденного пользователя.
       if (!userDB) {

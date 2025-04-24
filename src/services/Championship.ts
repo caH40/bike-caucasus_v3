@@ -1,4 +1,4 @@
-import { Document, ObjectId } from 'mongoose';
+import { Document, ObjectId, Types } from 'mongoose';
 import slugify from 'slugify';
 
 import { errorLogger } from '@/errors/error';
@@ -76,9 +76,7 @@ export class ChampionshipService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const championshipDB: TChampionshipWithOrganizer | null = await ChampionshipModel.findOne(
-        { urlSlug }
-      )
+      const championshipDB = await ChampionshipModel.findOne({ urlSlug })
         .populate({
           path: 'organizer',
           select: organizerSelect,
@@ -87,7 +85,7 @@ export class ChampionshipService {
           path: 'parentChampionship',
           select: parentChampionshipSelect,
         })
-        .lean();
+        .lean<TChampionshipWithOrganizer>();
 
       if (!championshipDB) {
         throw new Error(`Не найден Чемпионат с urlSlug: ${urlSlug} в БД!`);
@@ -121,10 +119,10 @@ export class ChampionshipService {
 
       // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные Организатором userIdDB, или их модераторами userIdDB.
       if (forModeration && userIdDB) {
-        const organizer: { _id: ObjectId } | null = await OrganizerModel.findOne(
+        const organizer = await OrganizerModel.findOne(
           { $or: [{ creator: userIdDB }, { moderators: userIdDB }] },
           { _id: true }
-        ).lean();
+        ).lean<{ _id: ObjectId }>();
 
         if (!organizer) {
           throw new Error('У пользователя не создан Организатор!');
@@ -134,11 +132,7 @@ export class ChampionshipService {
       }
 
       // Получение Чемпионатов согласно запросу query.
-      const championshipsDB: (Omit<TChampionship, 'organizer'> & {
-        organizer: TOrganizerPublic;
-        parentChampionship: TParentChampionship;
-        stageDateDescription: TStageDateDescription[];
-      })[] = await ChampionshipModel.find(query)
+      const championshipsDB = await ChampionshipModel.find(query)
         .populate({
           path: 'organizer',
           select: organizerSelect,
@@ -147,7 +141,13 @@ export class ChampionshipService {
           path: 'parentChampionship',
           select: parentChampionshipSelect,
         })
-        .lean();
+        .lean<
+          (Omit<TChampionship, 'organizer'> & {
+            organizer: TOrganizerPublic;
+            parentChampionship: TParentChampionship;
+            stageDateDescription: TStageDateDescription[];
+          })[]
+        >();
 
       // Формирование данных для отображение Блока Этапов в карточке Чемпионата.
       for (const champ of championshipsDB) {
@@ -158,7 +158,7 @@ export class ChampionshipService {
           stages = await ChampionshipModel.find(
             { parentChampionship: champ._id },
             { stage: true, status: true, startDate: true, endDate: true, _id: false }
-          ).lean();
+          ).lean<TStageDateDescription[]>();
           stages.sort((a, b) => a.stage - b.stage);
         } else {
           stages = [
@@ -516,6 +516,7 @@ export class ChampionshipService {
             name: string;
             posterUrl: string;
             races: TRace[];
+            _id: Types.ObjectId;
           } & Document)
         | null = await ChampionshipModel.findOne(
         { urlSlug },
@@ -536,7 +537,7 @@ export class ChampionshipService {
 
       // Удаление документов регистрации райдеров, зарегистрированных на удаляемый Чемпионат.
       const regService = new RegistrationChampService();
-      await regService.deleteMany({ champId: championshipDB._id });
+      await regService.deleteMany({ champId: String(championshipDB._id) });
 
       // Экземпляр сервиса работы с Облаком.
       const cloudService = new Cloud();
@@ -577,18 +578,20 @@ export class ChampionshipService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const championshipsDB: {
-        _id: ObjectId;
-        status: TChampionshipStatus;
-        startDate: Date;
-        endDate: Date;
-        urlSlug: string;
-      }[] = await ChampionshipModel.find(
+      const championshipsDB = await ChampionshipModel.find(
         {
           status: ['upcoming', 'ongoing'],
         },
         { _id: true, status: true, startDate: true, endDate: true, urlSlug: true }
-      ).lean();
+      ).lean<
+        {
+          _id: ObjectId;
+          status: TChampionshipStatus;
+          startDate: Date;
+          endDate: Date;
+          urlSlug: string;
+        }[]
+      >();
 
       // Подготовка данных для пакетного обновления
       const bulkOps = championshipsDB.map((champ) => {
@@ -633,17 +636,19 @@ export class ChampionshipService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const championshipsDB: {
-        _id: ObjectId;
-        name: string;
-        quantityStages: number | null;
-      }[] = await ChampionshipModel.find(
+      const championshipsDB = await ChampionshipModel.find(
         {
           organizer: organizerId,
           type: ['series', 'tour'],
         },
         { name: true, quantityStages: true }
-      ).lean();
+      ).lean<
+        {
+          _id: ObjectId;
+          name: string;
+          quantityStages: number | null;
+        }[]
+      >();
 
       const championshipsWithAvailableStageNumber: {
         _id: ObjectId;

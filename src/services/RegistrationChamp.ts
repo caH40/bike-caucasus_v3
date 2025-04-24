@@ -185,7 +185,7 @@ export class RegistrationChampService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(
+      const registeredRidersDb = await RaceRegistrationModel.find(
         {
           championship: championshipId,
           raceNumber,
@@ -208,7 +208,7 @@ export class RegistrationChampService {
             'provider.image',
           ],
         })
-        .lean();
+        .lean<TRegisteredRiderFromDB[]>();
 
       const registeredRiders = dtoRegisteredRiders(registeredRidersDb);
 
@@ -248,7 +248,7 @@ export class RegistrationChampService {
         raceNumber,
       });
 
-      const registeredRidersDb: TRegisteredRiderFromDB[] = await RaceRegistrationModel.find(
+      const registeredRidersDb = await RaceRegistrationModel.find(
         {
           championship: championshipId,
         },
@@ -271,7 +271,7 @@ export class RegistrationChampService {
             'provider.image',
           ],
         })
-        .lean();
+        .lean<TRegisteredRiderFromDB[]>();
 
       const registeredRiders = dtoRegisteredRidersChamp({
         riders: registeredRidersDb,
@@ -325,10 +325,10 @@ export class RegistrationChampService {
       }
 
       // Проверка существования Чемпионата.
-      const champ: { _id: ObjectId } | null = await ChampionshipModel.findOne(
+      const champ = await ChampionshipModel.findOne(
         { _id: championshipId, 'races.number': raceNumber },
         { _id: true, races: true }
-      ).lean();
+      ).lean<{ _id: ObjectId }>();
 
       if (!champ) {
         throw new Error('Не найден Чемпионат с Заездом!');
@@ -374,16 +374,15 @@ export class RegistrationChampService {
       await this.dbConnection();
 
       // Запрос для получения _id Rider.
-      const riderDB: { _id: ObjectId } | null = await User.findOne(
-        { id: riderId },
-        { _id: true }
-      ).lean();
+      const riderDB = await User.findOne({ id: riderId }, { _id: true }).lean<{
+        _id: ObjectId;
+      }>();
 
       if (!riderDB) {
         throw new Error(`Не найден Пользователь в БД с id на сайте: ${riderId} `);
       }
 
-      const registrationsDb: TRegistrationRiderFromDB[] = await RaceRegistrationModel.find(
+      const registrationsDb = await RaceRegistrationModel.find(
         {
           rider: riderDB._id,
         },
@@ -410,7 +409,7 @@ export class RegistrationChampService {
           ],
           populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
         })
-        .lean();
+        .lean<TRegistrationRiderFromDB[]>();
 
       const registrationsFiltered = registrationsDb.filter(
         (reg) => reg.championship && reg.championship.status === 'upcoming'
@@ -446,37 +445,36 @@ export class RegistrationChampService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const registeredInChamp: TRegistrationRiderFromDB | null =
-        await RaceRegistrationModel.findOne(
-          {
-            rider: idRiderDB,
-            status: 'registered',
-            championship: champId,
-          },
-          {
-            rider: true,
-            raceNumber: true,
-            startNumber: true,
-            status: true,
-            createdAt: true,
-          }
-        )
-          .populate({
-            path: 'championship',
-            select: [
-              'status',
-              'name',
-              'races',
-              'posterUrl',
-              'startDate',
-              'endDate',
-              'urlSlug',
-              'type',
-              'parentChampionship',
-            ],
-            populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
-          })
-          .lean();
+      const registeredInChamp = await RaceRegistrationModel.findOne(
+        {
+          rider: idRiderDB,
+          status: 'registered',
+          championship: champId,
+        },
+        {
+          rider: true,
+          raceNumber: true,
+          startNumber: true,
+          status: true,
+          createdAt: true,
+        }
+      )
+        .populate({
+          path: 'championship',
+          select: [
+            'status',
+            'name',
+            'races',
+            'posterUrl',
+            'startDate',
+            'endDate',
+            'urlSlug',
+            'type',
+            'parentChampionship',
+          ],
+          populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
+        })
+        .lean<TRegistrationRiderFromDB>();
 
       const registeredInChampFromDto = dtoCheckRegisteredInChamp(registeredInChamp);
 

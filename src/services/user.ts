@@ -58,18 +58,17 @@ export class UserService {
       }
 
       const query = id ? { id } : { _id: idDB };
-      const userDB: (Omit<IUserModel, 'role'> & { role: TRoleModel }) | null =
-        await User.findOne(query, {
-          'provider.id': false,
-          'credentials.password': false,
-          'credentials._id': false,
-          'social._id': false,
-          createdAt: false,
-          updatedAt: false,
-          __v: false,
-        })
-          .populate({ path: 'role', select: ['name', 'description', 'permissions'] })
-          .lean();
+      const userDB = await User.findOne(query, {
+        'provider.id': false,
+        'credentials.password': false,
+        'credentials._id': false,
+        'social._id': false,
+        createdAt: false,
+        updatedAt: false,
+        __v: false,
+      })
+        .populate({ path: 'role', select: ['name', 'description', 'permissions'] })
+        .lean<Omit<IUserModel, 'role'> & { role: TRoleModel }>();
 
       if (!userDB) {
         throw new Error('Пользователь не найден');
@@ -112,7 +111,7 @@ export class UserService {
       await this.dbConnection();
 
       // Получение всех пользователей из базы данных и преобразование результата в простой объект JavaScript
-      const usersDB: (Omit<IUserModel, 'role'> & { role: TRoleModel })[] = await User.find(
+      const usersDB = await User.find(
         {},
         {
           'provider.id': false,
@@ -123,7 +122,7 @@ export class UserService {
         }
       )
         .populate('role')
-        .lean();
+        .lean<(Omit<IUserModel, 'role'> & { role: TRoleModel })[]>();
 
       // Заполнение Имени и Фамилии данными, если они не заданны.
       const usersFilledName = usersDB.map((user) => ({

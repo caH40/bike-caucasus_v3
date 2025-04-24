@@ -38,7 +38,7 @@ export class CalendarService {
    */
   public async getMany(): Promise<ResponseServer<TDtoCalendarEvents[] | null>> {
     try {
-      const eventsDB: TCalendarEventDocument[] = await CalendarEvent.find().lean();
+      const eventsDB = await CalendarEvent.find().lean<TCalendarEventDocument[]>();
 
       const events = dtoCalendarEvents(eventsDB);
 

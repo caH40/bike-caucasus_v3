@@ -127,10 +127,10 @@ export class News {
       // Подключение к БД.
       await this.dbConnection();
 
-      const newsDB: { createdAt: Date; filePdf: string } | null = await NewsModel.findOne(
+      const newsDB = await NewsModel.findOne(
         { urlSlug: news.urlSlug },
         { createdAt: true, filePdf: true, _id: false }
-      ).lean();
+      ).lean<{ createdAt: Date; filePdf: string }>();
 
       if (!newsDB) {
         throw new Error(`Не найдена новость с urlSlug:${news.urlSlug} для редактирования!`);
@@ -273,10 +273,7 @@ export class News {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB: (Omit<TNews, 'author'> & { author: TAuthor } & {
-        isLikedByUser: boolean;
-        commentsCount: number;
-      })[] = await NewsModel.find(query)
+      const newsDB = await NewsModel.find(query)
         .sort({ createdAt: -1 })
         .populate({
           path: 'author',
@@ -290,7 +287,12 @@ export class News {
             'image',
           ],
         })
-        .lean();
+        .lean<
+          (Omit<TNews, 'author'> & { author: TAuthor } & {
+            isLikedByUser: boolean;
+            commentsCount: number;
+          })[]
+        >();
 
       for (const newsOne of newsDB) {
         const commentsDB = await CommentModel.find({
@@ -346,12 +348,7 @@ export class News {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB:
-        | (Omit<TNews, 'author'> & { author: TAuthor } & {
-            isLikedByUser: boolean;
-            commentsCount: number;
-          })
-        | null = await NewsModel.findOne({ urlSlug })
+      const newsDB = await NewsModel.findOne({ urlSlug })
         .populate({
           path: 'author',
           select: [
@@ -364,7 +361,12 @@ export class News {
             'image',
           ],
         })
-        .lean();
+        .lean<
+          Omit<TNews, 'author'> & { author: TAuthor } & {
+            isLikedByUser: boolean;
+            commentsCount: number;
+          }
+        >();
 
       if (!newsDB) {
         throw new ErrorCustom(`Не найдена запрашиваемая новость с адресом ${urlSlug}`, 404);
@@ -413,10 +415,10 @@ export class News {
       // Подключение к БД.
       this.dbConnection();
 
-      const newsDB: { viewsCount: number; likesCount: number } | null = await NewsModel.findOne(
+      const newsDB = await NewsModel.findOne(
         { _id: idNews },
         { viewsCount: true, likesCount: true, _id: false }
-      ).lean();
+      ).lean<{ viewsCount: number; likesCount: number }>();
 
       if (!newsDB) {
         throw new Error(`Не найдена запрашиваемая новость с _id:${idNews}`);

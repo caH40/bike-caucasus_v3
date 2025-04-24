@@ -55,12 +55,7 @@ export class Trail {
       await this.dbConnection();
 
       // Получаем информацию о маршруте из БД.
-      const trailDB:
-        | (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
-            isLikedByUser: boolean;
-            commentsCount: number;
-          })
-        | null = await TrailModel.findOne({
+      const trailDB = await TrailModel.findOne({
         urlSlug,
       })
         .populate({
@@ -76,7 +71,12 @@ export class Trail {
           ],
         }) // Получаем информацию об авторе маршрута
         // .populate({ path: 'comments' }) // Нет модели/описания типов.
-        .lean();
+        .lean<
+          Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
+            isLikedByUser: boolean;
+            commentsCount: number;
+          }
+        >();
 
       // Если маршрут не найден, генерируем исключение.
       if (!trailDB) {
@@ -122,12 +122,9 @@ export class Trail {
       // Подключение к БД.
       this.dbConnection();
 
-      const userDB: { role: TRoleModel; id: number } | null = await User.findOne(
-        { _id: idUserDB },
-        { role: true, id: true, _id: false }
-      )
+      const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
         .populate('role')
-        .lean();
+        .lean<{ role: TRoleModel; id: number }>();
 
       if (!userDB) {
         throw new Error(`Не найден пользователь с _id:${userDB}`);
@@ -220,10 +217,7 @@ export class Trail {
       const regex = new RegExp(search || '', 'i'); // 'i' флаг делает поиск регистронезависимым
 
       // Получаем информацию о маршруте из БД.
-      const trailsDB: (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
-        isLikedByUser: boolean;
-        commentsCount: number;
-      })[] = await TrailModel.find({
+      const trailsDB = await TrailModel.find({
         ...query,
         $or: [
           { title: { $regex: regex } },
@@ -250,7 +244,12 @@ export class Trail {
           ],
         }) // Получаем информацию об авторе маршрута
         // .populate({ path: 'comments' }) // Нет модели/описания типов.
-        .lean();
+        .lean<
+          (Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
+            isLikedByUser: boolean;
+            commentsCount: number;
+          })[]
+        >();
 
       // Фильтрация найденных маршрутов по ключевому слову search.
       // const trailsFiltered = trailsDB.filter((trail) =>
@@ -432,17 +431,17 @@ export class Trail {
       // Подключение к БД.
       this.dbConnection();
 
-      const trailDB: {
+      const trailDB = await TrailModel.findOne(
+        { _id: idTrail },
+        { count: true, likedBy: true }
+      ).lean<{
         count: {
           views: number;
           likes: number;
           shares: number;
         };
         likedBy: ObjectId[];
-      } | null = await TrailModel.findOne(
-        { _id: idTrail },
-        { count: true, likedBy: true }
-      ).lean();
+      }>();
 
       if (!trailDB) {
         throw new Error(`Не найдена запрашиваемая новость с _id:${idTrail}`);
@@ -480,10 +479,10 @@ export class Trail {
       // Десериализация данных, полученных с клиента.
       const trail = deserializeTrailCreate(formData);
 
-      const trailDB: { createdAt: Date; trackGPX: string } | null = await TrailModel.findOne(
+      const trailDB = await TrailModel.findOne(
         { urlSlug: trail.urlSlug },
         { createdAt: true, trackGPX: true, _id: false }
-      ).lean();
+      ).lean<{ createdAt: Date; trackGPX: string }>();
 
       if (!trailDB) {
         throw new Error(`Не найден Маршрут с urlSlug:${trail.urlSlug} для редактирования!`);

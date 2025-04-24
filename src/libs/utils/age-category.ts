@@ -34,14 +34,14 @@ export async function getCategoryAgeProfile({
     }
 
     // Получение название категории, соответствующей запрашиваемым параметрам.
-    const ageCategoryDB: { name: string } | null = await AgeCategory.findOne(
+    const ageCategoryDB = await AgeCategory.findOne(
       {
         version: ageCategoryVersion,
         $and: [{ 'age.min': { $lte: age } }, { 'age.max': { $gte: age } }],
         gender,
       },
       { name: true, _id: false }
-    ).lean();
+    ).lean<{ name: string }>();
 
     if (!ageCategoryDB) {
       throw new Error(

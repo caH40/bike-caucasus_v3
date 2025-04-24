@@ -43,12 +43,12 @@ export class ResultRaceService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const resultDB: TResultRaceRideFromDB | null = await ResultRaceModel.findOne(
+      const resultDB = await ResultRaceModel.findOne(
         { _id: resultId },
         { createdAt: false, updatedAt: false, creator: false }
       )
         .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
-        .lean();
+        .lean<TResultRaceRideFromDB>();
 
       if (!resultDB) {
         throw new Error('Не найден обновляемый результат в БД!');
@@ -81,12 +81,12 @@ export class ResultRaceService {
         throw new Error(`Не найден пользователь с id: ${riderId} в БД!`);
       }
 
-      const resultsDB: TResultRaceRideFromDB[] = await ResultRaceModel.find(
+      const resultsDB = await ResultRaceModel.find(
         { rider: userDB._id },
         { createdAt: false, updatedAt: false, creator: false }
       )
         .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
-        .lean();
+        .lean<TResultRaceRideFromDB[]>();
 
       const resultsRaceRiderAfterDto = dtoResultsRaceRider(resultsDB);
 
@@ -150,7 +150,7 @@ export class ResultRaceService {
             raceNumber: dataDeserialized.raceNumber,
           },
           { _id: true }
-        ).lean();
+        ).lean<{ _id: ObjectId }>();
       }
 
       if (resultRaceDB?._id) {
@@ -172,7 +172,9 @@ export class ResultRaceService {
 
       let riderDB = {} as { _id: ObjectId } | null;
       if (dataDeserialized.id) {
-        riderDB = await UserModel.findOne({ id: dataDeserialized.id }, { _id: true }).lean();
+        riderDB = await UserModel.findOne({ id: dataDeserialized.id }, { _id: true }).lean<{
+          _id: ObjectId;
+        }>();
       }
 
       if (registrationDB) {
@@ -266,7 +268,7 @@ export class ResultRaceService {
       const race = { name: raceCurrent.name, number: raceCurrent.number };
 
       // Получение результатов заезда raceNumber в чемпионате championshipId.
-      const resultsRaceDB: TResultRaceFromDB[] = await ResultRaceModel.find(
+      const resultsRaceDB = await ResultRaceModel.find(
         {
           championship: championshipId,
           raceNumber,
@@ -277,7 +279,7 @@ export class ResultRaceService {
           path: 'rider',
           select: ['id', 'image', 'imageFromProvider', 'provider.image', '-_id'],
         })
-        .lean();
+        .lean<TResultRaceFromDB[]>();
 
       // Подготовка данных для клиента.
       const resultsAfterDto = dtoResultsRace(resultsRaceDB);
@@ -423,7 +425,9 @@ export class ResultRaceService {
     championshipId: string,
     raceNumber: number
   ): Promise<TResultRaceDocument[]> {
-    return ResultRaceModel.find({ championship: championshipId, raceNumber }).lean();
+    return ResultRaceModel.find({ championship: championshipId, raceNumber }).lean<
+      TResultRaceDocument[]
+    >();
   }
 
   /**
@@ -502,17 +506,17 @@ export class ResultRaceService {
       }
 
       // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
-      const checkNumberDB: {
-        _id: ObjectId;
-        profile: { lastName: string; firstName: string };
-      } | null = await ResultRaceModel.findOne(
+      const checkNumberDB = await ResultRaceModel.findOne(
         {
           championship: resultDB.championship,
           raceNumber: resultDB.raceNumber,
           startNumber: dataDeserialized.startNumber,
         },
         { 'profile.lastName': true, 'profile.firstName': true }
-      ).lean();
+      ).lean<{
+        _id: ObjectId;
+        profile: { lastName: string; firstName: string };
+      }>();
 
       // Проверка String(registrationDB._id) !== dataDeserialized._id) что номер принадлежит не райдеру которому изменяется результат.
       if (checkNumberDB && String(checkNumberDB._id) !== dataDeserialized.resultId) {
