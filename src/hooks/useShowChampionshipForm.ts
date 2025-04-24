@@ -13,7 +13,7 @@ export function useShowChampionshipForm({
   const isStageOrSingle = typeInDB && ['single', 'stage'].includes(typeInDB);
   const isSeriesOrTour = typeInDB && ['series', 'tour'].includes(typeInDB);
   const isStage = typeInDB && ['stage'].includes(typeInDB);
-  const isSeriesOrTourInForm = typeInInput && ['series', 'tour'].includes(typeInInput);
+  const isSeriesOrTourInForm = !!typeInInput && ['series', 'tour'].includes(typeInInput);
   const isStageInForm = typeInInput && ['stage'].includes(typeInInput);
   const inputUndefined = typeof typeInInput === 'undefined';
   const showTrackInput =

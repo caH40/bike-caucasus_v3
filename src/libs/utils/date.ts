@@ -108,3 +108,21 @@ export function getDateChampionship({
   // Если соревнование длится больше одного дня.
   return `${getDateTime(startDate).dateDDMMYYYY} - ${getDateTime(startDate).dateDDMMYYYY}`;
 }
+
+/**
+ * Проверяет, что дата окончания не раньше даты начала.
+ *
+ * @param startDate - Дата начала (в формате строки).
+ * @param endDate - Дата окончания (в формате строки).
+ * @returns Строку с текстом ошибки, если дата окончания раньше даты начала, иначе `true`.
+ */
+export function validateEndDateNotBeforeStartDate(
+  startDate: string,
+  endDate: string,
+  text: string
+) {
+  if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
+    return text;
+  }
+  return true;
+}

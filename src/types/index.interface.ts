@@ -1,4 +1,4 @@
-import type { UseFormRegisterReturn } from 'react-hook-form';
+import type { UseFormRegisterReturn, UseFormReset } from 'react-hook-form';
 import {
   TCategoryAge,
   TChampionship,
@@ -12,9 +12,9 @@ import {
   TResultRace,
   TTrackGPXObj,
 } from './models.interface';
-import { Dispatch, LegacyRef, SetStateAction } from 'react';
+import { Dispatch, LegacyRef, MutableRefObject, SetStateAction } from 'react';
 import mongoose from 'mongoose';
-import { TResultRaceDto } from './dto.types';
+import { TDtoChampionship, TDtoOrganizer, TResultRaceDto } from './dto.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -820,4 +820,61 @@ export type TParamsProps = {
     urlSlug: string;
   }>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+/**
+ * Пропсы для компонента FormChampionship.
+ *
+ * @property organizer - Объект организатора, от имени которого создается или редактируется чемпионат.
+ * @property fetchChampionshipCreated - Функция для отправки формы создания чемпионата (POST-запрос).
+ * @property putChampionship - Функция для отправки формы редактирования чемпионата (PUT-запрос).
+ * @property championshipForEdit - Объект существующего чемпионата, если происходит редактирование.
+ * @property parentChampionships - Список доступных родительских чемпионатов для выбора и связи.
+ */
+export type TFormChampionshipProps = {
+  organizer: TDtoOrganizer;
+  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
+  putChampionship?: ({
+    dataSerialized,
+    urlSlug,
+  }: {
+    dataSerialized: FormData;
+    urlSlug: string;
+  }) => Promise<ResponseServer<any>>;
+  championshipForEdit?: TDtoChampionship;
+  parentChampionships: TParentChampionshipPreview[];
+};
+
+/**
+ * Пропсы для хука useSubmitChampionship.
+ *
+ * @property championshipForEdit - Данные чемпионата для редактирования (если режим редактирования).
+ * @property isSeriesOrTourInForm - Флаг, указывающий, является ли форма Серией или Туром.
+ * @property organizerId - ID организатора (владелец чемпионата).
+ * @property urlTracksForDel - Список ссылок на треки, которые нужно удалить (используется при редактировании).
+ * @property fetchChampionshipCreated - Функция для создания нового чемпионата (POST).
+ * @property putChampionship - Функция для обновления существующего чемпионата (PUT).
+ * @property reset - Функция сброса формы от react-hook-form.
+ */
+export type TUseSubmitChampionshipProps = {
+  championshipForEdit?: TDtoChampionship;
+  isSeriesOrTourInForm: boolean;
+  organizerId: any;
+  urlTracksForDel: MutableRefObject<string[]>;
+  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
+  putChampionship?: (args: {
+    dataSerialized: FormData;
+    urlSlug: string;
+  }) => Promise<ResponseServer<any>>;
+  reset: UseFormReset<TFormChampionshipCreate>;
+};
+
+/**
+ * Тип краткой информации о Чемпионате (Серии или Туре),
+ * доступной при выборе родительского чемпионата.
+ */
+export type TParentChampionshipPreview = {
+  _id: string;
+  name: string;
+  availableStage: number[];
 };

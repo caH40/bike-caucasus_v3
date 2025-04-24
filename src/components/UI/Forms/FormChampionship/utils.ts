@@ -2,8 +2,16 @@
 
 import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
-import { TRaceClient, TRaceForForm } from '@/types/index.interface';
+import { TDtoChampionship } from '@/types/dto.types';
+import {
+  TFormChampionshipCreate,
+  TOptions,
+  TParentChampionshipPreview,
+  TRaceClient,
+  TRaceForForm,
+} from '@/types/index.interface';
 import { TCategoryAge } from '@/types/models.interface';
+import { UseFormWatch } from 'react-hook-form';
 
 type Params = {
   name: string;
@@ -64,4 +72,57 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
       quantityRidersFinished: race.quantityRidersFinished,
     };
   });
+}
+
+/**
+ * Создание массива опция для SelectCustom выбора Родительского Чемпионата.
+ */
+export function createParentOptions(
+  parentChampionships: TParentChampionshipPreview[]
+): TOptions[] {
+  const options = parentChampionships.map((elm, index) => ({
+    id: index,
+    translation: elm.name,
+    name: elm._id,
+  }));
+
+  return options;
+}
+
+/**
+ * Создание массива Этапов.
+ */
+export function createStageNumbers(
+  parentChampionships: TParentChampionshipPreview[],
+  watch: UseFormWatch<TFormChampionshipCreate>,
+  championshipForEdit?: TDtoChampionship
+): TOptions[] {
+  // В массиве Туров и Серий находим выбранный parentChampionship.
+  // Если не найден такой Тур или Серия, это ошибка.
+  const parentChampionship = parentChampionships.find(
+    (elm) =>
+      elm._id === (watch('parentChampionship')?._id || championshipForEdit?.parentChampionship)
+  );
+
+  if (!parentChampionship) {
+    return [];
+  }
+
+  const options = parentChampionship.availableStage.map((elm) => ({
+    id: elm,
+    translation: String(elm),
+    name: String(elm),
+  }));
+
+  // Добавление текущего номера Этапа в Общий массив всех Свободных номеров Этапов в Серии или Туре.
+  if (championshipForEdit?.stage) {
+    options.push({
+      id: championshipForEdit?.stage,
+      translation: String(championshipForEdit?.stage),
+      name: String(championshipForEdit?.stage),
+    });
+    options.sort((a, b) => +a.name - +b.name);
+  }
+
+  return options;
 }

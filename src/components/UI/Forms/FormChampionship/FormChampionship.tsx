@@ -1,19 +1,19 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+
 import cn from 'classnames';
-import { useRouter } from 'next/navigation';
 
 import { useLoadingStore } from '@/store/loading';
+import { useShowChampionshipForm } from '@/hooks/useShowChampionshipForm';
+import { useSubmitChampionship } from './useSubmitChampionship';
 import { content, TextValidationService } from '@/libs/utils/text';
 import { getDateTime } from '@/libs/utils/calendar';
 import { championshipTypes } from '@/constants/championship';
 import { bikeTypes } from '@/constants/trail';
-import { serializationChampionship } from '@/libs/utils/serialization/championship';
-import { formateAndStripContent, getRacesInit } from './utils';
-import { useShowChampionshipForm } from '@/hooks/useShowChampionshipForm';
+import { createParentOptions, createStageNumbers, getRacesInit } from './utils';
+import { validateEndDateNotBeforeStartDate } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import BoxInput from '../../BoxInput/BoxInput';
 import Button from '../../Button/Button';
@@ -21,31 +21,11 @@ import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import SelectCustom from '../../SelectCustom/SelectCustom';
 import BlockRaceAdd from '../../BlockRaceAdd/BlockRaceAdd';
-import type {
-  ResponseServer,
-  TFormChampionshipCreate,
-  TOptions,
-} from '@/types/index.interface';
-import type { TDtoChampionship, TDtoOrganizer } from '@/types/dto.types';
 import t from '@/locales/ru/moderation/championship.json';
 import styles from '../Form.module.css';
-import { formatCategoriesFields } from './categories-format';
 
-type Props = {
-  organizer: TDtoOrganizer;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  putChampionship?: ({
-    // eslint-disable-next-line no-unused-vars
-    dataSerialized,
-    // eslint-disable-next-line no-unused-vars
-    urlSlug,
-  }: {
-    dataSerialized: FormData;
-    urlSlug: string;
-  }) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  championshipForEdit?: TDtoChampionship;
-  parentChampionships: { _id: string; name: string; availableStage: number[] }[];
-};
+// types
+import type { TFormChampionshipCreate, TFormChampionshipProps } from '@/types/index.interface';
 
 /**
  * Форма создания/редактирования Чемпионата.
@@ -56,18 +36,13 @@ export default function FormChampionship({
   putChampionship,
   championshipForEdit,
   parentChampionships,
-}: Props) {
-  const router = useRouter();
-
+}: TFormChampionshipProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
-  const setLoading = useLoadingStore((state) => state.setLoading);
-  const isEditing = !!championshipForEdit;
 
   // Постер Чемпионата существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
     championshipForEdit ? championshipForEdit.posterUrl : null
   );
-  // console.log(championshipForEdit);
 
   // Используем хук useForm из библиотеки react-hook-form для управления состоянием формы.
   const {
@@ -100,142 +75,24 @@ export default function FormChampionship({
       isCreatingForm: !championshipForEdit,
     });
 
+  // Функция отправки формы создания/редактирования Чемпионата.
+  const onSubmit = useSubmitChampionship({
+    championshipForEdit,
+    isSeriesOrTourInForm,
+    organizerId: organizer._id,
+    urlTracksForDel,
+    fetchChampionshipCreated,
+    putChampionship,
+    reset,
+  });
+
   const initParentChampionship = parentChampionships.find(
     (elm) => elm._id === championshipForEdit?.parentChampionship?._id
   );
 
-  // Обработка формы после нажатия кнопки "Отправить".
-  const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
-    const racesWithCategoriesFormatted = dataForm.races.map((race) => {
-      const { categoriesAgeFemale, categoriesAgeMale } = formatCategoriesFields({
-        categoriesAgeFemale: race.categoriesAgeFemale,
-        categoriesAgeMale: race.categoriesAgeMale,
-      });
-
-      return { ...race, categoriesAgeFemale, categoriesAgeMale };
-    });
-
-    // Старт отображение статуса загрузки.
-    setLoading(true);
-
-    // Сериализация данных перед отправкой на сервер.
-    const championshipId = championshipForEdit?._id;
-    const parentChampionshipId = dataForm.parentChampionship?._id;
-
-    // Обработка текстов.
-    const { nameStripedHtmlTags, descriptionFormatted } = formateAndStripContent({
-      name: dataForm.name,
-      description: dataForm.description,
-    });
-
-    // Если Серия или Тур, то убрать объект инициализации из races.
-    if (isSeriesOrTourInForm) {
-      dataForm.races = [];
-    }
-
-    const dataSerialized = serializationChampionship({
-      dataForm: {
-        ...dataForm,
-        races: racesWithCategoriesFormatted,
-        name: nameStripedHtmlTags,
-        description: descriptionFormatted,
-      },
-      championshipId,
-      parentChampionshipId,
-      organizerId: organizer._id,
-      isEditing,
-      urlTracksForDel: urlTracksForDel.current,
-    });
-
-    // Отправка данных на сервер и получение ответа после завершения операции.
-    const messageErr = t.errors.hasNotPropsFunction;
-    let response = {
-      data: null,
-      ok: false,
-      message: messageErr,
-    };
-
-    if (fetchChampionshipCreated) {
-      response = await fetchChampionshipCreated(dataSerialized);
-    } else if (putChampionship && championshipForEdit) {
-      response = await putChampionship({
-        dataSerialized,
-        urlSlug: championshipForEdit.urlSlug,
-      });
-    } else {
-      return toast.error(messageErr);
-    }
-
-    // Завершение отображение статуса загрузки.
-    setLoading(false);
-
-    // Отображение статуса сохранения События в БД.
-    if (response.ok) {
-      reset();
-      toast.success(response.message);
-
-      router.push('/moderation/championship/list');
-    } else {
-      toast.error(response.message);
-    }
-  };
-
   const textValidation = new TextValidationService();
 
-  const validateDates = (startDate: string, endDate: string) => {
-    if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
-      return t.validation.texts.endDate;
-    }
-    return true;
-  };
-
-  /**
-   * Создание массива опция для SelectCustom выбора Родительского Чемпионата.
-   */
-  const createParentOptions = (): TOptions[] => {
-    const options = parentChampionships.map((elm, index) => ({
-      id: index,
-      translation: elm.name,
-      name: elm._id,
-    }));
-
-    return options;
-  };
-
-  /**
-   * Создание массива Этапов.
-   */
-  const createStageNumbers = (): TOptions[] => {
-    // В массиве Туров и Серий находим выбранный parentChampionship.
-    // Если не найден такой Тур или Серия, это ошибка.
-    const parentChampionship = parentChampionships.find(
-      (elm) =>
-        elm._id ===
-        (watch('parentChampionship')?._id || championshipForEdit?.parentChampionship)
-    );
-
-    if (!parentChampionship) {
-      return [];
-    }
-
-    const options = parentChampionship.availableStage.map((elm) => ({
-      id: elm,
-      translation: String(elm),
-      name: String(elm),
-    }));
-
-    // Добавление текущего номера Этапа в Общий массив всех Свободных номеров Этапов в Серии или Туре.
-    if (championshipForEdit?.stage) {
-      options.push({
-        id: championshipForEdit?.stage,
-        translation: String(championshipForEdit?.stage),
-        name: String(championshipForEdit?.stage),
-      });
-      options.sort((a, b) => +a.name - +b.name);
-    }
-
-    return options;
-  };
+  const stageNumbers = createStageNumbers(parentChampionships, watch, championshipForEdit);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
@@ -309,7 +166,7 @@ export default function FormChampionship({
                   <SelectCustom
                     state={field.value}
                     setState={field.onChange}
-                    options={createParentOptions()}
+                    options={createParentOptions(parentChampionships)}
                     label={t.labels.parentChampionshipId}
                     defaultValue={t.hasNotFilters}
                     validationText={
@@ -328,13 +185,13 @@ export default function FormChampionship({
           <BoxSelectNew
             label={t.labels.stage}
             id="stage"
-            options={createStageNumbers()}
+            options={stageNumbers}
             defaultValue={championshipForEdit?.stage ? String(championshipForEdit.stage) : '1'}
             loading={isLoading}
             register={register('stage', {
               ...(!championshipForEdit ? { required: t.required } : {}),
             })}
-            disabled={!createStageNumbers().length}
+            disabled={!stageNumbers.length}
             validationText={errors.stage ? errors.stage.message : ''}
           />
         )}
@@ -415,7 +272,12 @@ export default function FormChampionship({
           loading={isLoading}
           register={register('endDate', {
             required: t.required,
-            validate: (value) => validateDates(watch('startDate'), value),
+            validate: (value) =>
+              validateEndDateNotBeforeStartDate(
+                watch('startDate'),
+                value,
+                t.validation.texts.endDate
+              ),
           })}
           validationText={errors.endDate ? errors.endDate.message : ''}
         />

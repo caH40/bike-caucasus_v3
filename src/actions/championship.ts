@@ -9,7 +9,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ResponseServer, TParentChampionshipPreview } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 import { getOrganizerForModerate } from './organizer';
 import { PermissionsService } from '@/services/Permissions';
@@ -245,7 +245,7 @@ export async function getToursAndSeries({
   organizerId,
 }: {
   organizerId: string;
-}): Promise<ResponseServer<{ _id: string; name: string; availableStage: number[] }[] | null>> {
+}): Promise<ResponseServer<TParentChampionshipPreview[] | null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
