@@ -12,16 +12,23 @@ import styles from './ChampionshipResults.module.css';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataResultsRace(props);
+  return await generateMetadataResultsRace(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  props);
 }
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
-export default async function ChampionshipResults({ params: { urlSlug } }: Props) {
+export default async function ChampionshipResults(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug
+  } = params;
+
   const buttons = buttonsMenuChampionshipPage(urlSlug);
 
   const championship = await getChampionship({ urlSlug });

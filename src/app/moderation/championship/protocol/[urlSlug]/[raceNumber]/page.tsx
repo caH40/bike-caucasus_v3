@@ -9,16 +9,23 @@ import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../../../layout.module.css';
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
     raceNumber: string;
-  };
+  }>;
 };
 
 /**
  * Страница добавления/редактирования финишного протокола Заезда в Чемпионате
  */
-export default async function ProtocolRaceEditPage({ params: { urlSlug, raceNumber } }: Props) {
+export default async function ProtocolRaceEditPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug,
+    raceNumber
+  } = params;
+
   const [championship, organizer] = await Promise.all([
     getChampionship({ urlSlug, forModeration: true }),
     getOrganizerForModerate(),

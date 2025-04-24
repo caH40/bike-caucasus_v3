@@ -8,15 +8,21 @@ import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../ChampionshipEditPage.module.css';
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
 /**
  * Страница Редактирования запрашиваемого Чемпионата.
  */
-export default async function ChampionshipEditCurrentPage({ params: { urlSlug } }: Props) {
+export default async function ChampionshipEditCurrentPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug
+  } = params;
+
   // Получение чемпионата для редактирования.
   // Проверка прав пользователя на редактирование Чемпионата и получение данных Организатора.
   const [championship, organizer] = await Promise.all([

@@ -24,15 +24,22 @@ import styles from './Championship.module.css';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataChampionship(props);
+  return await generateMetadataChampionship(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  props);
 }
 
-type Props = { params: { urlSlug: string } };
+type Props = { params: Promise<{ urlSlug: string }> };
 
 /**
  * Страница описания Чемпионата как отдельного, так и серии заездов.
  */
-export default async function ChampionshipPage({ params: { urlSlug } }: Props) {
+export default async function ChampionshipPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug
+  } = params;
+
   const [championship, championships] = await Promise.all([
     getChampionship({ urlSlug }),
     getChampionships({ needTypes: ['stage'] }),

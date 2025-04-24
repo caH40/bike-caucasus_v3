@@ -6,13 +6,14 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 
 type Props = {
-  params: { urlSlug: string };
+  params: Promise<{ urlSlug: string }>;
 };
 
 /**
  * Страница редактирования новости.
  */
-export default async function NewsEditCurrentPage({ params }: Props) {
+export default async function NewsEditCurrentPage(props: Props) {
+  const params = await props.params;
   revalidatePath(`/`); // ????????!!!!!!!!! Зачем???
 
 

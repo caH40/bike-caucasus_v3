@@ -5,15 +5,21 @@ import { FormModerateUser } from '@/components/UI/Forms/FormModerateUser/FormMod
 export const dynamic = 'force-dynamic';
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 /**
  * Страница модерации пользователя.
  */
-export default async function UserModeration({ params: { id } }: Props) {
+export default async function UserModeration(props: Props) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
   const [roles, profile] = await Promise.all([
     getRoles(),
     getProfile({ userId: +id, isPrivate: true }),

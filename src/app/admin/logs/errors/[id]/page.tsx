@@ -4,16 +4,17 @@ import ShowServerError from '@/components/UI/ShowServerError/ShowServerError';
 import styles from './LogErrorDescription.module.css';
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 export const dynamic = 'force-dynamic';
 
 /**
  * Страница подобной информации об запрашиваемой ошибке на сервере
  */
-export default async function LogErrorDescription({ params }: Props) {
+export default async function LogErrorDescription(props: Props) {
+  const params = await props.params;
   const { data: log, ok, message } = await getLogError({ id: params.id });
 
   return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler } from 'react-hook-form';
@@ -12,9 +12,9 @@ import { errorHandlerClient } from '@/actions/error-handler';
 import { type IRegistrationForm } from '@/types/index.interface';
 
 type Params = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
@@ -23,7 +23,13 @@ const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
  * Страница создание нового пароля
  * id hash для смены пароля у пользователя
  */
-export default function CreateNewPassword({ params: { id } }: Params) {
+export default function CreateNewPassword(props: Params) {
+  const params = use(props.params);
+
+  const {
+    id
+  } = params;
+
   const [validationAll, setValidationAll] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [userId, setUserId] = useState('');

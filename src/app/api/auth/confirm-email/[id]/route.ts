@@ -3,10 +3,11 @@ import { confirmEmailService } from './service';
 import { errorLogger } from '@/errors/error';
 
 type Params = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: Request, props: Params) {
+  const params = await props.params;
   try {
     const messageRes = await confirmEmailService(params.id);
 

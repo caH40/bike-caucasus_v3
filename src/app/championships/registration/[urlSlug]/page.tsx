@@ -19,19 +19,26 @@ import BlockMessage from '@/components/BlockMessage/BlockMessage';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataChampRegistration(props);
+  return await generateMetadataChampRegistration(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  props);
 }
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
 /**
  * Страница регистрации на Соревнование/Этап.
  */
-export default async function Registration({ params: { urlSlug } }: Props) {
+export default async function Registration(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug
+  } = params;
+
   const session = await getServerSession(authOptions);
   const idRiderDB = session?.user?.idDB;
 

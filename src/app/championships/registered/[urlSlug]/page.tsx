@@ -11,16 +11,23 @@ import styles from './ChampionshipRegistered.module.css';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataChampRegistered(props);
+  return await generateMetadataChampRegistered(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  props);
 }
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
-export default async function ChampionshipRegistered({ params: { urlSlug } }: Props) {
+export default async function ChampionshipRegistered(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug
+  } = params;
+
   const { data } = await getRegisteredRidersChamp({ urlSlug });
 
   const buttons = buttonsMenuChampionshipPage(urlSlug);

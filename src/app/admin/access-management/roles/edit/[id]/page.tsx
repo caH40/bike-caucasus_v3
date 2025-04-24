@@ -9,10 +9,16 @@ import styles from './RoleEditPage.module.css';
 export const dynamic = 'force-dynamic';
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default async function RoleEditPage({ params: { id } }: Props) {
+export default async function RoleEditPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
   const [permissions, role] = await Promise.all([getPermissions(), getRole({ _id: id })]);
 
   if (!role || !role.data || !permissions) {

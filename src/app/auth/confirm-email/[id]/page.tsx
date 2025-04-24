@@ -27,7 +27,8 @@ const fetchData = async (id: string): Promise<string> => {
   }
 };
 
-export default async function ConfirmEmail({ params }: { params: { id: string } }) {
+export default async function ConfirmEmail(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const messageResponse = await fetchData(params.id);
   return (
     <div className="page404">

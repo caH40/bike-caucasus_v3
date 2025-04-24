@@ -31,16 +31,18 @@ const cx = cn.bind(styles);
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataTrail(props);
+  return await generateMetadataTrail(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  props);
 }
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
-export default async function TrailPage({ params }: Props) {
+export default async function TrailPage(props: Props) {
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   const idUserDB = session?.user.idDB;
 

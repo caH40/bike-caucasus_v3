@@ -22,19 +22,21 @@ import styles from './NewsPage.module.css';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataNews(props);
+  return await generateMetadataNews(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+  props);
 }
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
 /**
  * Страница Новости
  */
-export default async function NewsPage({ params }: Props) {
+export default async function NewsPage(props: Props) {
+  const params = await props.params;
   const session = await getServerSession(authOptions);
 
   const idUserDB = session?.user.idDB;

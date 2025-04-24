@@ -8,15 +8,21 @@ import styles from '../../../layout.module.css';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 
 type Props = {
-  params: {
+  params: Promise<{
     resultId: string;
-  };
+  }>;
 };
 
 /**
  * Страница редактирования финишного результата Заезда в Чемпионате.
  */
-export default async function ResultRaceEditPage({ params: { resultId } }: Props) {
+export default async function ResultRaceEditPage(props: Props) {
+  const params = await props.params;
+
+  const {
+    resultId
+  } = params;
+
   const result = await getResultRaceForRider({ resultId });
 
   if (!result.data) {

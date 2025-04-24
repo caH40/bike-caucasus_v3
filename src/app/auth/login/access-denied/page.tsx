@@ -4,11 +4,17 @@ import AuthBlock from '@/components/UI/AuthBlock/AuthBlock';
 import styles from './access-denied.module.css';
 
 type Props = {
-  params: {};
-  searchParams: { error: string };
+  params: Promise<{}>;
+  searchParams: Promise<{ error: string }>;
 };
 
-export default function AccessDenied({ searchParams: { error } }: Props) {
+export default async function AccessDenied(props: Props) {
+  const searchParams = await props.searchParams;
+
+  const {
+    error
+  } = searchParams;
+
   return (
     <AuthBlock>
       <h1 className={styles.title}>Отказ в доступе</h1>

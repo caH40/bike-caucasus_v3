@@ -9,13 +9,14 @@ import { getTrail, putTrail } from '@/actions/trail';
 import { TTrailDto } from '@/types/dto.types';
 
 type Props = {
-  params: { urlSlug: string };
+  params: Promise<{ urlSlug: string }>;
 };
 
 /**
  * Страница редактирования Маршрута.
  */
-export default async function TrailEditCurrentPage({ params }: Props) {
+export default async function TrailEditCurrentPage(props: Props) {
+  const params = await props.params;
   revalidatePath(`/`);
   const session = await getServerSession(authOptions);
 

@@ -15,12 +15,18 @@ import { getProtocolsRaces } from '@/actions/result-race';
 // export async function generateMetadata(props: Props): Promise<Metadata> {}
 
 type Props = {
-  params: {
+  params: Promise<{
     urlSlug: string;
-  };
+  }>;
 };
 
-export default async function ChampionshipDocuments({ params: { urlSlug } }: Props) {
+export default async function ChampionshipDocuments(props: Props) {
+  const params = await props.params;
+
+  const {
+    urlSlug
+  } = params;
+
   const registeredRidersChamp = await getRegisteredRidersChamp({ urlSlug });
 
   if (!registeredRidersChamp.data) {
