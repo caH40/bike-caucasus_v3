@@ -3,7 +3,7 @@ import { type Metadata } from 'next';
 import Image from 'next/image';
 import cn from 'classnames/bind';
 import { notFound } from 'next/navigation';
-// import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic';
 
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { regions } from '@/constants/trail';
@@ -18,10 +18,9 @@ import InteractiveBlock from '@/components/UI/InteractiveBlock/InteractiveBlock'
 import BlockComments from '@/components/BlockComments/BlockComments';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getComments } from '@/actions/comment';
-// import Weather from '@/components/Weather/Weather';
+import Weather from '@/components/Weather/Weather';
 import Author from '@/components/Author/Author';
-// const Weather = dynamic(() => import('@/components/Weather/Weather'), { ssr: false });
-// const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
+const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
 import { getNavLinksTrailPopup } from '@/constants/navigation';
@@ -127,16 +126,20 @@ export default async function TrailPage(props: Props) {
           </div>
 
           <TitleAndLine hSize={2} title={`Карта и профиль высоты маршрута ${trail.title}`} />
-          <div className={styles.box__map}>
-            {/* <MapWithElevation url={trail.trackGPX} /> */}
-          </div>
+
+          {/* FIXME: Для исключения двойного рейдинга MapContainer в следствии чего возникает ошибка в srict mode, отключил рендеренг данного компонента в dev режиме */}
+          {process.env.NODE_ENV !== 'development' && (
+            <div className={styles.box__map}>
+              <MapWithElevation url={trail.trackGPX} />
+            </div>
+          )}
 
           <TrailTotal trail={trail} />
 
           {/* Блок погоды */}
           {trail.trackGPX && (
             <div className={styles.box__weather}>
-              {/* <Weather urlTrack={trail.trackGPX} startLocation={trail.startLocation} /> */}
+              <Weather urlTrack={trail.trackGPX} startLocation={trail.startLocation} />
             </div>
           )}
 
