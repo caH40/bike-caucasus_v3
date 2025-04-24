@@ -811,3 +811,13 @@ export type TProtocolRace = {
   categories: string[];
   race: { name: string; number: number };
 };
+
+/**
+ * Пропсы для params, searchParams.
+ */
+export type TParamsProps = {
+  params: Promise<{
+    urlSlug: string;
+  }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};

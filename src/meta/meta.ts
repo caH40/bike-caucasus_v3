@@ -19,12 +19,8 @@ import {
   getTitleResultsRace,
 } from '@/app/championships/utils';
 
-type Props = {
-  params: Promise<{
-    urlSlug: string;
-  }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+// types
+import { TParamsProps } from '@/types/index.interface';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -79,7 +75,7 @@ export const metadataHomePage = {
 /**
  * Метаданные для страницы Новость "/news/[urlSlug]".
  */
-export async function generateMetadataNews({ params }: Props): Promise<Metadata> {
+export async function generateMetadataNews({ params }: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
 
   const news = await getNewsOne({ urlSlug });
@@ -144,7 +140,7 @@ export async function generateMetadataTrails(): Promise<Metadata> {
 /**
  * Метаданные для страницы Маршрут "/trails/[urlSlug]".
  */
-export async function generateMetadataTrail({ params }: Props): Promise<Metadata> {
+export async function generateMetadataTrail({ params }: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
 
   const trail = await getTrail(urlSlug);
@@ -198,13 +194,15 @@ export function generateMetadataCalendar(): Metadata {
 export async function generateMetadataProfile({
   params,
 }: {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }): Promise<Metadata> {
   const userService = new UserService();
 
-  const { data: profile } = await userService.getProfile({ id: +params.id });
+  const { id } = await params;
+
+  const { data: profile } = await userService.getProfile({ id: +id });
   if (!profile) {
     return metadata404Page;
   }
@@ -246,7 +244,7 @@ export const metadataOrganizers: Metadata = {
 /**
  * Метаданные для страницы Организатор "/organizers/[urlSlug]".
  */
-export async function generateMetadataOrganizer({ params }: Props): Promise<Metadata> {
+export async function generateMetadataOrganizer({ params }: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
 
   const organizerService = new OrganizerService();
@@ -294,7 +292,9 @@ export const metadataChampionships: Metadata = {
 /**
  * Метаданные для страницы Чемпионат "/championships/[urlSlug]".
  */
-export async function generateMetadataChampionship({ params }: Props): Promise<Metadata> {
+export async function generateMetadataChampionship({
+  params,
+}: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
   const { data } = await getChampionship({ urlSlug });
 
@@ -321,7 +321,9 @@ export async function generateMetadataChampionship({ params }: Props): Promise<M
 /**
  * Метаданные для страницы Регистрация на Чемпионат "/championships/registration/[urlSlug]".
  */
-export async function generateMetadataChampRegistration({ params }: Props): Promise<Metadata> {
+export async function generateMetadataChampRegistration({
+  params,
+}: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
   const { data } = await getChampionship({ urlSlug });
 
@@ -348,7 +350,9 @@ export async function generateMetadataChampRegistration({ params }: Props): Prom
 /**
  * Метаданные для страницы Регистрация на Чемпионат "/championships/registered/[urlSlug]".
  */
-export async function generateMetadataChampRegistered({ params }: Props): Promise<Metadata> {
+export async function generateMetadataChampRegistered({
+  params,
+}: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
   const { data } = await getChampionship({ urlSlug });
 
@@ -375,7 +379,7 @@ export async function generateMetadataChampRegistered({ params }: Props): Promis
 /**
  * Метаданные для страницы Результаты заездов "/championships/results/registered/[urlSlug]".
  */
-export async function generateMetadataResultsRace({ params }: Props): Promise<Metadata> {
+export async function generateMetadataResultsRace({ params }: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
   const { data } = await getChampionship({ urlSlug });
 

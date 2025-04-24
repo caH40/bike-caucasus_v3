@@ -24,8 +24,7 @@ import styles from './Championship.module.css';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataChampionship(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-  props);
+  return await generateMetadataChampionship(props);
 }
 
 type Props = { params: Promise<{ urlSlug: string }> };
@@ -36,9 +35,7 @@ type Props = { params: Promise<{ urlSlug: string }> };
 export default async function ChampionshipPage(props: Props) {
   const params = await props.params;
 
-  const {
-    urlSlug
-  } = params;
+  const { urlSlug } = params;
 
   const [championship, championships] = await Promise.all([
     getChampionship({ urlSlug }),

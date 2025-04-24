@@ -17,8 +17,7 @@ import { generateMetadataOrganizer } from '@/meta/meta';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataOrganizer(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-  props);
+  return await generateMetadataOrganizer(props);
 }
 
 type Props = {
@@ -46,9 +45,7 @@ type Props = {
 export default async function OrganizerPage(props: Props) {
   const params = await props.params;
 
-  const {
-    urlSlug
-  } = params;
+  const { urlSlug } = params;
 
   const organizer = await getOrganizer({ urlSlug });
 

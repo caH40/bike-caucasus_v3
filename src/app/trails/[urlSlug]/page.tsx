@@ -3,7 +3,7 @@ import { type Metadata } from 'next';
 import Image from 'next/image';
 import cn from 'classnames/bind';
 import { notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 
 import Wrapper from '@/components/Wrapper/Wrapper';
 import { regions } from '@/constants/trail';
@@ -20,8 +20,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getComments } from '@/actions/comment';
 // import Weather from '@/components/Weather/Weather';
 import Author from '@/components/Author/Author';
-const Weather = dynamic(() => import('@/components/Weather/Weather'), { ssr: false });
-const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
+// const Weather = dynamic(() => import('@/components/Weather/Weather'), { ssr: false });
+// const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
 import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
 import { getNavLinksTrailPopup } from '@/constants/navigation';
@@ -31,8 +31,7 @@ const cx = cn.bind(styles);
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataTrail(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-  props);
+  return await generateMetadataTrail(props);
 }
 
 type Props = {
@@ -129,7 +128,7 @@ export default async function TrailPage(props: Props) {
 
           <TitleAndLine hSize={2} title={`Карта и профиль высоты маршрута ${trail.title}`} />
           <div className={styles.box__map}>
-            <MapWithElevation url={trail.trackGPX} />
+            {/* <MapWithElevation url={trail.trackGPX} /> */}
           </div>
 
           <TrailTotal trail={trail} />
@@ -137,7 +136,7 @@ export default async function TrailPage(props: Props) {
           {/* Блок погоды */}
           {trail.trackGPX && (
             <div className={styles.box__weather}>
-              <Weather urlTrack={trail.trackGPX} startLocation={trail.startLocation} />
+              {/* <Weather urlTrack={trail.trackGPX} startLocation={trail.startLocation} /> */}
             </div>
           )}
 

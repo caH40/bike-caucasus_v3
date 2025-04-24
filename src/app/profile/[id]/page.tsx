@@ -24,8 +24,7 @@ type Props = {
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataProfile(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-  props);
+  return await generateMetadataProfile(props);
 }
 
 /**
@@ -34,9 +33,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function ProfilePage(props: Props) {
   const params = await props.params;
 
-  const {
-    id
-  } = params;
+  const { id } = params;
 
   const session = await getServerSession(authOptions);
   const userIdDbFromSession = session?.user.idDB;

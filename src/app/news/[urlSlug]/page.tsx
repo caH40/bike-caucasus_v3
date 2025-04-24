@@ -22,8 +22,7 @@ import styles from './NewsPage.module.css';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  return await generateMetadataNews(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-  props);
+  return await generateMetadataNews(props);
 }
 
 type Props = {
