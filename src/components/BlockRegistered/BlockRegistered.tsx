@@ -16,7 +16,7 @@ export default function BlockRegistered({ registeredInChamp }: Props) {
           <dt className={styles.desc__title}>Дистанция</dt>
           <dd className={styles.desc__detail}>{registeredInChamp.race.distance} км</dd>
 
-          {registeredInChamp.race.ascent && (
+          {registeredInChamp.race.ascent != null && (
             <>
               <dt className={styles.desc__title}>Общий набор</dt>
               <dd className={styles.desc__detail}>{registeredInChamp.race.ascent} м</dd>

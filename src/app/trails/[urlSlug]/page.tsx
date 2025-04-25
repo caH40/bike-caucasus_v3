@@ -127,12 +127,9 @@ export default async function TrailPage(props: Props) {
 
           <TitleAndLine hSize={2} title={`Карта и профиль высоты маршрута ${trail.title}`} />
 
-          {/* FIXME: Для исключения двойного рейдинга MapContainer в следствии чего возникает ошибка в srict mode, отключил рендеренг данного компонента в dev режиме */}
-          {process.env.NODE_ENV !== 'development' && (
-            <div className={styles.box__map}>
-              <MapWithElevation url={trail.trackGPX} />
-            </div>
-          )}
+          <div className={styles.box__map}>
+            <MapWithElevation url={trail.trackGPX} />
+          </div>
 
           <TrailTotal trail={trail} />
 

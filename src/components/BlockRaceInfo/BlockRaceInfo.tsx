@@ -19,7 +19,7 @@ export default function BlockRaceInfo({ race, raceNumber }: Props) {
             <dt className={styles.desc__title}>Дистанция</dt>
             <dd className={styles.desc__detail}>{race.distance} км</dd>
 
-            {race.ascent && (
+            {race.ascent != null && (
               <>
                 <dt className={styles.desc__title}>Общий набор</dt>
                 <dd className={styles.desc__detail}>{race.ascent} м</dd>

@@ -20,7 +20,7 @@ export default function ParamsRace({ race }: Props) {
         </div>
       </div>
 
-      {race.ascent && (
+      {race?.ascent != null && (
         <div className={styles.box}>
           <IconParamsAscent squareSize={24} />
           <div className={styles.description}>

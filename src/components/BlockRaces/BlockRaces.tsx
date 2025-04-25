@@ -8,8 +8,7 @@ import styles from './BlockRaces.module.css';
 import ParamsRace from '../ParamsRace/ParamsRace';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
 import { TRaceClient } from '@/types/index.interface';
-
-const MapWithElevation = dynamic(() => import('@/components/Map/Map'), { ssr: false });
+const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 
 type Props = {
   races: TRaceClient[];

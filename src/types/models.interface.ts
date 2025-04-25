@@ -324,6 +324,10 @@ export type TChampionship = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Типы Чемпионатов.
+ */
 export type TChampionshipTypes = 'tour' | 'series' | 'single' | 'stage';
 export type TTrackGPXObj = {
   url: string; // URL трек заезда в облаке.
