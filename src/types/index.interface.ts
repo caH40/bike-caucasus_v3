@@ -505,7 +505,7 @@ export type TFormChampionshipCreate = Omit<
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
   startDate: string;
   endDate: string;
-  races: TRaceForForm[];
+  races: TRaceForForm[] | null;
   parentChampionship: { _id: string; name: string };
 };
 export type TCategoryAgeFromForm = {

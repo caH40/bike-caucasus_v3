@@ -3,9 +3,7 @@
 import { toast } from 'sonner';
 import { SubmitHandler } from 'react-hook-form';
 
-import { formatCategoriesFields } from './categories-format';
 import { useLoadingStore } from '@/store/loading';
-import { formateAndStripContent } from './utils';
 import { serializationChampionship } from '@/libs/utils/serialization/championship';
 import t from '@/locales/ru/moderation/championship.json';
 
@@ -32,15 +30,6 @@ export const useSubmitChampionship = ({
 
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormChampionshipCreate> = async (dataForm) => {
-    const racesWithCategoriesFormatted = dataForm.races.map((race) => {
-      const { categoriesAgeFemale, categoriesAgeMale } = formatCategoriesFields({
-        categoriesAgeFemale: race.categoriesAgeFemale,
-        categoriesAgeMale: race.categoriesAgeMale,
-      });
-
-      return { ...race, categoriesAgeFemale, categoriesAgeMale };
-    });
-
     // Старт отображение статуса загрузки.
     setLoading(true);
 
@@ -48,24 +37,11 @@ export const useSubmitChampionship = ({
     const championshipId = championshipForEdit?._id;
     const parentChampionshipId = dataForm.parentChampionship?._id;
 
-    // Обработка текстов.
-    const { nameStripedHtmlTags, descriptionFormatted } = formateAndStripContent({
-      name: dataForm.name,
-      description: dataForm.description,
-    });
-
-    // Если Серия или Тур, то убрать объект инициализации из races.
-    if (isSeriesOrTourInForm) {
-      dataForm.races = [];
-    }
-
     // Сериализация данных в FormData перед отправкой на сервер.
     const dataSerialized = serializationChampionship({
       dataForm: {
         ...dataForm,
-        races: racesWithCategoriesFormatted,
-        name: nameStripedHtmlTags,
-        description: descriptionFormatted,
+        races: isSeriesOrTourInForm ? null : dataForm.races, // Если Серия или Тур, то убрать объект инициализации из races.
       },
       championshipId,
       parentChampionshipId,
@@ -82,6 +58,7 @@ export const useSubmitChampionship = ({
       message: messageErr,
     };
 
+    // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
     if (fetchChampionshipCreated) {
       response = await fetchChampionshipCreated(dataSerialized);
     } else if (putChampionship && championshipForEdit) {

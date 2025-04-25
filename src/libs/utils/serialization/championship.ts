@@ -1,3 +1,5 @@
+import { formatCategoriesFields } from '@/components/UI/Forms/FormChampionship/categories-format';
+import { formateAndStripContent } from '@/components/UI/Forms/FormChampionship/utils';
 import type { TFormChampionshipCreate } from '@/types/index.interface';
 
 type Params = {
@@ -24,8 +26,14 @@ export function serializationChampionship({
 }: Params): FormData {
   const formData = new FormData();
 
-  formData.set('name', dataForm.name);
-  formData.set('description', dataForm.description);
+  // Обработка текстов.
+  const { nameStripedHtmlTags, descriptionFormatted } = formateAndStripContent({
+    name: dataForm.name,
+    description: dataForm.description,
+  });
+
+  formData.set('name', nameStripedHtmlTags);
+  formData.set('description', descriptionFormatted);
   formData.set('startDate', dataForm.startDate);
   formData.set('endDate', dataForm.endDate);
 
@@ -64,8 +72,25 @@ export function serializationChampionship({
     formData.set('urlTracksForDel', JSON.stringify(urlTracksForDel));
   }
 
-  if (dataForm.races) {
-    dataForm.races.forEach((race, index) => {
+  // Преобразование races в необходимую структуру для сервера.
+  const racesWithCategoriesFormatted =
+    dataForm.races &&
+    dataForm.races.map((race) => {
+      const { categoriesAgeFemale, categoriesAgeMale } = formatCategoriesFields({
+        categoriesAgeFemale: race.categoriesAgeFemale,
+        categoriesAgeMale: race.categoriesAgeMale,
+      });
+
+      return {
+        ...race,
+        categoriesAgeFemale,
+        categoriesAgeMale,
+      };
+    });
+
+  // Преобразование поля races и добавление в fomData.
+  if (racesWithCategoriesFormatted) {
+    racesWithCategoriesFormatted.forEach((race, index) => {
       formData.set(`races[${index}][number]`, race.number.toString());
       formData.set(`races[${index}][name]`, race.name);
       formData.set(`races[${index}][description]`, race.description);
