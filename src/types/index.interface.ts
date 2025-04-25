@@ -1,4 +1,13 @@
-import type { UseFormRegisterReturn, UseFormReset } from 'react-hook-form';
+import type {
+  Control,
+  FieldArrayWithId,
+  FieldErrors,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+  UseFormRegister,
+  UseFormRegisterReturn,
+  UseFormReset,
+} from 'react-hook-form';
 import {
   TCategoryAge,
   TChampionship,
@@ -873,11 +882,18 @@ export type TUseSubmitChampionshipProps = {
 };
 
 /**
- * Тип краткой информации о Чемпионате (Серии или Туре),
- * доступной при выборе родительского чемпионата.
+ * Пропсы для компонента BlockRaceAdd.
  */
-// export type TParentChampionshipPreview = {
-//   _id: string;
-//   name: string;
-//   availableStage: number[];
-// };
+export type TBlockRaceAddProps = {
+  race: TRaceForForm;
+  races: FieldArrayWithId<TFormChampionshipCreate, 'races', 'id'>[];
+  index: number;
+  register: UseFormRegister<TFormChampionshipCreate>;
+  append: UseFieldArrayAppend<TFormChampionshipCreate, 'races'>;
+  remove: UseFieldArrayRemove;
+  errors: FieldErrors<TFormChampionshipCreate>;
+  control: Control<TFormChampionshipCreate, any>;
+  isLoading: boolean;
+  urlTracksForDel: MutableRefObject<string[]>;
+  hideCategoryBlock?: boolean;
+};

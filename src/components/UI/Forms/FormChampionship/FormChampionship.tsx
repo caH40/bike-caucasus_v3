@@ -347,6 +347,7 @@ export default function FormChampionship({
               control={control}
               isLoading={isLoading}
               urlTracksForDel={urlTracksForDel}
+              hideCategoryBlock={type === 'stage'} // Для этапа категории настраиваются в общем объекте Чемпионата.
             />
           </div>
         ))}

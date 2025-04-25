@@ -1,41 +1,22 @@
-import { MouseEvent, MutableRefObject, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import Image from 'next/image';
-import {
-  Control,
-  Controller,
-  FieldArrayWithId,
-  FieldErrors,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
-  UseFormRegister,
-} from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
+import { buttonsGender } from '@/constants/buttons';
+import { raceInit } from '@/constants/championship';
+import { TextValidationService } from '@/libs/utils/text';
 import BoxInput from '../BoxInput/BoxInput';
 import BoxTextarea from '../BoxTextarea/BoxTextarea';
 import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
-import { raceInit } from '@/constants/championship';
 import IconInfo from '@/components/Icons/IconInfo';
-import type { TFormChampionshipCreate, TRaceForForm } from '@/types/index.interface';
-import { TextValidationService } from '@/libs/utils/text';
-import styles from './BlockRaceAdd.module.css';
 import t from '@/locales/ru/moderation/championship.json';
 import BlockCategorySet from '../BlockCategorySet/BlockCategorySet';
 import FilterRidersForAddResult from '../Filters/FilterRidersForAddResult/Filters';
-import { buttonsGender } from '@/constants/buttons';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import styles from './BlockRaceAdd.module.css';
 
-type Props = {
-  race: TRaceForForm;
-  races: FieldArrayWithId<TFormChampionshipCreate, 'races', 'id'>[];
-  index: number;
-  register: UseFormRegister<TFormChampionshipCreate>;
-  append: UseFieldArrayAppend<TFormChampionshipCreate, 'races'>;
-  remove: UseFieldArrayRemove;
-  errors: FieldErrors<TFormChampionshipCreate>;
-  control: Control<TFormChampionshipCreate, any>;
-  isLoading: boolean;
-  urlTracksForDel: MutableRefObject<string[]>;
-};
+// types
+import type { TBlockRaceAddProps, TRaceForForm } from '@/types/index.interface';
 
 const textValidation = new TextValidationService();
 
@@ -50,7 +31,8 @@ export default function BlockRaceAdd({
   control,
   isLoading,
   urlTracksForDel,
-}: Props) {
+  hideCategoryBlock,
+}: TBlockRaceAddProps) {
   const [genderButtonNumber, setGenderButtonNumber] = useState<number>(0);
 
   // Выбор пола для добавления категорий
@@ -243,28 +225,31 @@ export default function BlockRaceAdd({
           )}
         />
 
-        <div className={styles.block__categories}>
-          <TitleAndLine title={'Возрастные категории'} hSize={3} />
-          {/* <div>блок схема отображения диапазона категорий в м/ж</div> */}
+        {!hideCategoryBlock && (
+          <div className={styles.block__categories}>
+            <TitleAndLine title={'Возрастные категории'} hSize={3} />
+            {/* <div>блок схема отображения диапазона категорий в м/ж</div> */}
 
-          {/* Блок установки возрастных категорий */}
-          <div className={styles.spacer__buttons_cat}>
-            <FilterRidersForAddResult
-              activeIdBtn={genderButtonNumber}
-              setActiveIdBtn={setGenderButtonNumber}
-              buttons={buttonsGender}
+            {/* Блок установки возрастных категорий */}
+            <div className={styles.spacer__buttons_cat}>
+              <FilterRidersForAddResult
+                activeIdBtn={genderButtonNumber}
+                setActiveIdBtn={setGenderButtonNumber}
+                buttons={buttonsGender}
+              />
+            </div>
+
+            <BlockCategorySet
+              key={`BlockCategorySet-${categoryProperty}`}
+              register={register}
+              errors={errors}
+              races={races}
+              index={index}
+              control={control}
+              categoryProperty={categoryProperty}
             />
           </div>
-          <BlockCategorySet
-            key={`BlockCategorySet-${categoryProperty}`}
-            register={register}
-            errors={errors}
-            races={races}
-            index={index}
-            control={control}
-            categoryProperty={categoryProperty}
-          />
-        </div>
+        )}
       </div>
     </div>
   );
