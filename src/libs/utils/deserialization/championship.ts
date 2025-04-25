@@ -10,7 +10,7 @@ export function deserializeChampionship(serializedFormData: FormData) {
     organizerId?: string;
     parentChampionshipId?: string;
     urlTracksForDel: string[];
-    rases: TRaceForFormDeserialized[];
+    races: TRaceForFormDeserialized[];
   } & {
     [key: string]: any;
   };
