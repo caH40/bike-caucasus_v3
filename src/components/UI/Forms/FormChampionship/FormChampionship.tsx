@@ -132,6 +132,8 @@ export default function FormChampionship({
             id="quantityStages"
             autoComplete="off"
             type="number"
+            min="1"
+            step="1"
             defaultValue={
               championshipForEdit?.quantityStages
                 ? String(championshipForEdit.quantityStages)

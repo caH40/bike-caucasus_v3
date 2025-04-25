@@ -16,7 +16,7 @@ export default function BoxSelect({
   loading,
   hideCheckmark,
   ...props
-}: PropsBoxInput) {
+}: PropsBoxInput & React.SelectHTMLAttributes<HTMLSelectElement>) {
   const options = ['мужской', 'женский'];
   return (
     <div className={styles.wrapper}>

@@ -39,8 +39,6 @@ export type PropsBoxInput = {
   hideCheckmark?: boolean;
   defaultValue?: string;
   register?: UseFormRegisterReturn; // FieldValues
-  min?: string;
-  max?: string;
   loading?: boolean;
   refTextArea?: LegacyRef<HTMLTextAreaElement>;
   tooltip?: { text: string; id: string };

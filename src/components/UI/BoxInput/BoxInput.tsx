@@ -20,7 +20,7 @@ export default function BoxInput({
   hideCheckmark,
   hasError,
   ...props
-}: PropsBoxInput) {
+}: PropsBoxInput & React.InputHTMLAttributes<HTMLInputElement>) {
   // Отключение отправки формы при нажатии Enter в полу input.
   const handlerEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

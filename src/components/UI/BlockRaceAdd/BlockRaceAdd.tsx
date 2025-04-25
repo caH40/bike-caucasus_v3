@@ -171,6 +171,8 @@ export default function BlockRaceAdd({
           id={`races.${index}.laps`}
           autoComplete="off"
           type="number"
+          step="1"
+          min="1"
           defaultValue={''}
           loading={isLoading}
           register={register(`races.${index}.laps`, {
