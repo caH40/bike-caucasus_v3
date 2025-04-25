@@ -14,7 +14,12 @@ import {
 } from './models.interface';
 import { Dispatch, LegacyRef, MutableRefObject, SetStateAction } from 'react';
 import mongoose from 'mongoose';
-import { TDtoChampionship, TDtoOrganizer, TResultRaceDto } from './dto.types';
+import {
+  TDtoChampionship,
+  TDtoOrganizer,
+  TResultRaceDto,
+  TToursAndSeriesDto,
+} from './dto.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -840,7 +845,7 @@ export type TFormChampionshipProps = {
     urlSlug: string;
   }) => Promise<ResponseServer<any>>;
   championshipForEdit?: TDtoChampionship;
-  parentChampionships: TParentChampionshipPreview[];
+  parentChampionships: TToursAndSeriesDto[];
 };
 
 /**
@@ -871,8 +876,8 @@ export type TUseSubmitChampionshipProps = {
  * Тип краткой информации о Чемпионате (Серии или Туре),
  * доступной при выборе родительского чемпионата.
  */
-export type TParentChampionshipPreview = {
-  _id: string;
-  name: string;
-  availableStage: number[];
-};
+// export type TParentChampionshipPreview = {
+//   _id: string;
+//   name: string;
+//   availableStage: number[];
+// };

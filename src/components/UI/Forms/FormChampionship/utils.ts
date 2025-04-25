@@ -2,11 +2,10 @@
 
 import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
-import { TDtoChampionship } from '@/types/dto.types';
+import { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import {
   TFormChampionshipCreate,
   TOptions,
-  TParentChampionshipPreview,
   TRaceClient,
   TRaceForForm,
 } from '@/types/index.interface';
@@ -77,9 +76,7 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
 /**
  * Создание массива опция для SelectCustom выбора Родительского Чемпионата.
  */
-export function createParentOptions(
-  parentChampionships: TParentChampionshipPreview[]
-): TOptions[] {
+export function createParentOptions(parentChampionships: TToursAndSeriesDto[]): TOptions[] {
   const options = parentChampionships.map((elm, index) => ({
     id: index,
     translation: elm.name,
@@ -93,7 +90,7 @@ export function createParentOptions(
  * Создание массива Этапов.
  */
 export function createStageNumbers(
-  parentChampionships: TParentChampionshipPreview[],
+  parentChampionships: TToursAndSeriesDto[],
   watch: UseFormWatch<TFormChampionshipCreate>,
   championshipForEdit?: TDtoChampionship
 ): TOptions[] {

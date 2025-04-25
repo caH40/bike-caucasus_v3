@@ -26,6 +26,7 @@ import styles from '../Form.module.css';
 
 // types
 import type { TFormChampionshipCreate, TFormChampionshipProps } from '@/types/index.interface';
+import useParentChampionshipDates from '@/hooks/useParentChampionshipDates';
 
 /**
  * Форма создания/редактирования Чемпионата.
@@ -38,6 +39,8 @@ export default function FormChampionship({
   parentChampionships,
 }: TFormChampionshipProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
+
+  // console.log(parentChampionships);
 
   // Постер Чемпионата существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
@@ -58,6 +61,11 @@ export default function FormChampionship({
       races: getRacesInit(championshipForEdit?.races), // Начальное значение массива гонок, полученное из функции getRacesInit.
     },
   });
+
+  // Получения дат старта и финиша родительского чемпионата, если создаются этапы для него.
+  const parentId = watch('parentChampionship._id');
+  const type = watch('type'); // Получаем значение типа
+  const parentChampDates = useParentChampionshipDates(parentChampionships, parentId, type);
 
   // Используем хук useFieldArray для работы с динамическими массивами полей в форме.
   const { fields, append, remove } = useFieldArray({
@@ -249,7 +257,8 @@ export default function FormChampionship({
           id="startDate"
           autoComplete="off"
           type="date"
-          // min={getDateTime(new Date()).isoDate}
+          min={parentChampDates && parentChampDates.startDate}
+          max={parentChampDates && parentChampDates.endDate}
           defaultValue={
             championshipForEdit
               ? championshipForEdit.startDate
@@ -268,6 +277,8 @@ export default function FormChampionship({
           id="endDate"
           autoComplete="off"
           type="date"
+          min={parentChampDates && parentChampDates.startDate}
+          max={parentChampDates && parentChampDates.endDate}
           defaultValue={
             championshipForEdit ? championshipForEdit.endDate : getDateTime(new Date()).isoDate
           }

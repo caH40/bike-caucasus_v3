@@ -25,7 +25,7 @@ import type {
   TRace,
   TTrackGPXObj,
 } from '@/types/models.interface';
-import type { TDtoChampionship } from '@/types/dto.types';
+import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
 import { parseGPX } from '@/libs/utils/parse-gpx';
@@ -35,6 +35,7 @@ import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
 import { RegistrationChampService } from './RegistrationChamp';
+import { TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -510,15 +511,13 @@ export class ChampionshipService {
   }
 
   /**
-   * Получение всех Туров и Серий у Организатора..
+   * Получение всех Туров и Серий у Организатора.
    */
   public async getToursAndSeries({
     organizerId,
   }: {
     organizerId: string;
-  }): Promise<
-    ResponseServer<{ _id: string; name: string; availableStage: number[] }[] | null>
-  > {
+  }): Promise<ResponseServer<TToursAndSeriesDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -528,21 +527,12 @@ export class ChampionshipService {
           organizer: organizerId,
           type: ['series', 'tour'],
         },
-        { name: true, quantityStages: true }
-      ).lean<
-        {
-          _id: ObjectId;
-          name: string;
-          quantityStages: number | null;
-        }[]
-      >();
+        { name: true, quantityStages: true, startDate: true, endDate: true }
+      ).lean<TGetToursAndSeriesFromMongo[]>();
 
-      const championshipsWithAvailableStageNumber: {
-        _id: ObjectId;
-        name: string;
-        quantityStages: number | null;
+      const championshipsWithAvailableStageNumber: (TGetToursAndSeriesFromMongo & {
         availableStage: number[];
-      }[] = [];
+      })[] = [];
 
       for (const camp of championshipsDB) {
         // Если вдруг у Тура или Серии не указано количество Этапов.

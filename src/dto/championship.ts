@@ -1,7 +1,5 @@
-import { ObjectId } from 'mongoose';
-
 import { getDateTime } from '@/libs/utils/calendar';
-import type { TDtoChampionship } from '@/types/dto.types';
+import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
   TChampionshipWithOrganizer,
   TOrganizerForClient,
@@ -9,6 +7,7 @@ import type {
 } from '@/types/index.interface';
 
 import { formatTRacesToClient } from './registration-champ';
+import { TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 
 /**
  * ДТО массива Чемпионатов.
@@ -66,11 +65,14 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
  * ДТО массива Туров и Серий.
  */
 export function dtoToursAndSeries(
-  championships: { _id: ObjectId; name: string; availableStage: number[] }[]
-): { _id: string; name: string; availableStage: number[] }[] {
-  return championships.map((championship) => ({
-    _id: String(championship._id),
-    name: championship.name,
-    availableStage: championship.availableStage,
+  championships: (TGetToursAndSeriesFromMongo & {
+    availableStage: number[];
+  })[]
+): TToursAndSeriesDto[] {
+  return championships.map((champ) => ({
+    ...champ,
+    startDate: champ.startDate.toISOString(),
+    endDate: champ.endDate.toISOString(),
+    _id: String(champ._id),
   }));
 }

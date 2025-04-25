@@ -21,6 +21,7 @@ import {
   TRoleModel,
   TTrail,
 } from './models.interface';
+import { TGetToursAndSeriesFromMongo } from './mongo.types';
 
 /**
  * Одна новость с сервера.
@@ -316,4 +317,14 @@ export type TResultRaceRiderDto = {
     endDate: number;
     race: Pick<TRace, 'ascent' | 'description' | 'distance' | 'laps' | 'name' | 'number'>;
   };
+};
+
+export type TToursAndSeriesDto = Omit<
+  TGetToursAndSeriesFromMongo,
+  '_id' | 'startDate' | 'endDate'
+> & {
+  _id: string;
+  startDate: string;
+  endDate: string;
+  availableStage: number[];
 };
