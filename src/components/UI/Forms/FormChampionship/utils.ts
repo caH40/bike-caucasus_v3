@@ -9,7 +9,7 @@ import {
   TRaceClient,
   TRaceForForm,
 } from '@/types/index.interface';
-import { TCategoryAge } from '@/types/models.interface';
+import { TCategoryAge } from '@/types/index.interface';
 import { UseFormWatch } from 'react-hook-form';
 
 type Params = {
@@ -66,6 +66,8 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
       trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
       trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
       registeredRiders: race.registeredRiders || [],
+      categoriesAge: race.categoriesAge,
+      categoriesSkillLevel: race.categoriesSkillLevel,
       categoriesAgeFemale: categoriesAge(race.categoriesAgeFemale),
       categoriesAgeMale: categoriesAge(race.categoriesAgeMale),
       quantityRidersFinished: race.quantityRidersFinished,

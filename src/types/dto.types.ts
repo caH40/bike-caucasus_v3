@@ -307,7 +307,7 @@ export type TResultRaceRiderDto = {
   points: any;
   disqualification?: TDisqualification;
   categoryAge: string;
-  categorySkillLevel?: string;
+  categorySkillLevel: string | null;
   averageSpeed?: number;
   lapTimes?: number[];
   remarks?: string;

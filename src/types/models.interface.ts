@@ -1,5 +1,5 @@
 import mongoose, { Document, ObjectId } from 'mongoose';
-import { TFormCalendar } from './index.interface';
+import { TCategories, TCategoryAge, TFormCalendar } from './index.interface';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
@@ -313,6 +313,7 @@ export type TChampionship = {
   races: TRace[];
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
+  categories: TCategories;
   // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   // single Соревнование с одним этапом.
   // series Соревнование несколькими этапами, за которые начисляются очки, в конце серии подводятся
@@ -349,15 +350,25 @@ export type TRace = {
   ascent?: number; // Набор высоты на дистанции в метрах.
   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
+  categoriesAge: string; // Название пакета возрастных категорий из Чемпионата.
+  categoriesSkillLevel: string | null; // Название пакета категорий по уровню подготовки из Чемпионата.
+  quantityRidersFinished: number; // Общее количество финишировавших.
   categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
   categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
-  quantityRidersFinished: number; // Общее количество финишировавших.
 };
-export type TCategoryAge = {
-  min: number;
-  max: number;
-  name?: string;
-};
+// export type TRace = {
+//   number: number; // Порядковый номер.
+//   name: string; // Должно быть уникальным в рамках одного Соревнования/Этапа.
+//   description: string; // Краткие детали Заезда.
+//   laps: number; // Количество кругов.
+//   distance: number; // Дистанция Заезда в километрах.
+//   ascent?: number; // Набор высоты на дистанции в метрах.
+//   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
+//   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
+//   categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
+//   categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
+//   quantityRidersFinished: number; // Общее количество финишировавших.
+// };
 
 /**
  * Тип схемы регистрация Райдера (User) на Заезд Чемпионата.
@@ -367,8 +378,9 @@ export type TPaymentMethod = 'card' | 'paymentSystem' | 'cash';
 export type TRaceRegistrationStatus = 'registered' | 'canceled' | 'banned';
 export type TRaceRegistrationDocument = TRaceRegistration & Document;
 export type TRaceRegistration = {
-  _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции
-  championship: mongoose.Types.ObjectId; // Ссылка на чемпионат
+  _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
+  championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
+  categorySkillLevel: string | null; // Название выбранной категории скила, берётся из настроек Чемпионата. Если не указана, значит деление по возрасту.
   raceNumber: number; // Номер заезда в Соревновании/Этапе.
   rider: mongoose.Types.ObjectId; // Ссылка на Юзера.
   startNumber: number; // Номер участника на старте.
@@ -405,7 +417,7 @@ export type TResultRace = {
   points: any; // Заработанные очки в заезде. В разработке.
   disqualification?: TDisqualification; // Дисквалификация райдера в заезде.
   categoryAge: string; // Выставляется автоматически при запуске расчета.
-  categorySkillLevel?: string; // Выставляется вручную. Ручное деление по мастерству (Профики, элита, А ...). Если существует, значит деление по категориям согласно categorySkillLevel, а не по возрасту.
+  categorySkillLevel: string | null; // Выставляется вручную. Ручное деление по мастерству (Профики, элита, А ...). Если существует, значит деление по категориям согласно categorySkillLevel, а не по возрасту.
   averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
   lapTimes?: number[]; // Время, затраченное на каждый круг (массив времен в миллисекундах).
   remarks?: string; // Примечания или комментарии.

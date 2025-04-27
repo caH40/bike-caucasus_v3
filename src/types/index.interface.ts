@@ -9,7 +9,6 @@ import type {
   UseFormReset,
 } from 'react-hook-form';
 import {
-  TCategoryAge,
   TChampionship,
   TChampionshipStatus,
   TChampionshipTypes,
@@ -896,4 +895,42 @@ export type TBlockRaceAddProps = {
   isLoading: boolean;
   urlTracksForDel: MutableRefObject<string[]>;
   hideCategoryBlock?: boolean;
+};
+
+/**
+ * Возрастные и уровневые категории, которые могут быть использованы в чемпионате.
+ * Каждый набор имеет уникальное имя, по которому будет ссылаться заезд.
+ */
+export type TCategories = {
+  // Наборы возрастных категорий, делятся по полу.
+  // Каждый набор имеет уникальное имя, которое затем указывается в заезде.
+  age: {
+    name: string; // Уникальное название набора возрастных категорий, например "masters2025".
+    female: TCategoryAge[]; // Женские возрастные категории.
+    male: TCategoryAge[]; // Мужские возрастные категории.
+  }[];
+  // Наборы категорий по уровню подготовки (буквенные категории: A, B, C, Pro и т.п.)
+  // Каждый набор имеет уникальное имя, которое затем указывается в заезде.
+  skillLevel: {
+    name: string; // Уникальное название набора уровневых категорий, например "standard2025".
+    female: TCategorySkillLevel[]; // Женские категории по уровню подготовки.
+    male: TCategorySkillLevel[]; // Мужские категории по уровню подготовки.
+  }[];
+};
+
+/**
+ * Описание одной возрастной категории (используется в пределах набора).
+ */
+export type TCategoryAge = {
+  min: number; // Минимальный возраст (включительно).
+  max: number; // Максимальный возраст (включительно).
+  name?: string; // Необязательное название, например "Юниоры 18-23".
+};
+
+/**
+ * Описание одной категории по уровню подготовки (буквенной категории).
+ */
+export type TCategorySkillLevel = {
+  name: string; // Название категории, например: "A", "B", "Pro".
+  description?: string; // Описание категории, например: "Для опытных гонщиков".
 };

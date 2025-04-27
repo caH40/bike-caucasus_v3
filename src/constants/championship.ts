@@ -80,5 +80,7 @@ export const raceInit: TRaceForForm = {
       name: '',
     },
   ],
+  categoriesAge: 'default',
+  categoriesSkillLevel: null,
   quantityRidersFinished: 0,
 };

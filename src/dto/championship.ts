@@ -51,6 +51,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     posterUrl: championship.posterUrl,
     status: championship.status,
     type: championship.type,
+    categories: championship.categories,
     bikeType: championship.bikeType,
     races: formatTRacesToClient(championship.races),
     startDate,

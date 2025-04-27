@@ -1,6 +1,6 @@
 import { AgeCategory } from '@/database/mongodb/Models/AgeCategory';
 import { errorLogger } from '@/errors/error';
-import { TCategoryAge } from '@/types/models.interface';
+import { TCategoryAge } from '@/types/index.interface';
 
 type Params = {
   birthday: Date | string;
