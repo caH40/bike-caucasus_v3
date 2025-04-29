@@ -13,6 +13,7 @@ import type {
   TChampionshipWithOrganizer,
   TOrganizerPublic,
   TParentChampionship,
+  TPutCategoriesParams,
   TRaceForFormDeserialized,
   TSaveFile,
   TStageDateDescription,
@@ -36,6 +37,7 @@ import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
 import { RegistrationChampService } from './RegistrationChamp';
 import { TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
+import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -297,6 +299,67 @@ export class ChampionshipService {
       }
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление пакетов категорий для чемпионата.
+   * Приходит массив пакетов TCategories:
+   * 1. Пакет по умолчанию у которого есть _id и он не изменяется и не удаляется (создается при создании чемпионата);
+   * 2. Дополнительный(ые) пакеты категорий, если есть несколько заездов в Чемпионате с разными категориями.
+   */
+  async putCategories({
+    categoriesConfigs,
+    championshipId,
+  }: TPutCategoriesParams): Promise<ResponseServer<null>> {
+    try {
+      // Проверка на дубликаты названий пакетов категорий.
+      this.validateUniqueCategoryNames(categoriesConfigs);
+
+      // Получаем все существующие пакеты категорий (кроме 'default') для текущего чемпионата.
+      const oldCategories = await CategoriesModel.find(
+        { championship: championshipId, name: { $ne: 'default' } },
+        { _id: true }
+      ).lean<{ _id: Types.ObjectId }[]>();
+
+      const updatedIds = new Set<string>(); // Сохраняем _id обновлённых пакетов.
+
+      for (const config of categoriesConfigs) {
+        if (config._id) {
+          // Обновляем существующий пакет по _id.
+          await CategoriesModel.updateOne(
+            { _id: config._id },
+            {
+              $set: {
+                ...config,
+                championship: championshipId,
+              },
+            }
+          );
+          updatedIds.add(config._id); // Добавляем _id в список обновлённых.
+        } else {
+          // Создаём новый пакет, если _id нет.
+          const created = await CategoriesModel.create({
+            ...config,
+            championship: championshipId,
+          });
+          updatedIds.add(created._id.toString()); // Добавляем созданный _id.
+        }
+      }
+
+      // Удаляем те пакеты, _id которых не было среди обновлённых.
+      const toDelete = oldCategories.filter((cat) => !updatedIds.has(cat._id.toString()));
+
+      if (toDelete.length > 0) {
+        await CategoriesModel.deleteMany({
+          _id: { $in: toDelete.map((c) => c._id) },
+        });
+      }
+
+      return { data: null, ok: true, message: 'Пакеты категорий успешно обновлены.' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
@@ -720,4 +783,21 @@ export class ChampionshipService {
 
     return racesForSave;
   };
+
+  /**
+   * Проверяет уникальность названий пакетов категорий.
+   * @param categoriesConfigs Массив конфигураций категорий.
+   */
+  private validateUniqueCategoryNames(categoriesConfigs: Array<{ name: string }>): void {
+    const names = new Set<string>();
+
+    for (const config of categoriesConfigs) {
+      if (names.has(config.name)) {
+        throw new Error(
+          `Название пакета категорий должно быть уникальным. Дублируется название: "${config.name}"`
+        );
+      }
+      names.add(config.name);
+    }
+  }
 }

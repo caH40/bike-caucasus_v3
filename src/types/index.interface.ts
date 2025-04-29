@@ -922,3 +922,13 @@ export type TGetRaceCategoriesParams = {
   categoriesId: Types.ObjectId;
   raceNumber: number;
 };
+
+/**
+ * Входные параметры метода обновления всех категорий для чемпионата, которые пришли с клиента.
+ */
+export type TPutCategoriesParams = {
+  categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & {
+    _id?: string; // Если отсутствует, значит добавляется новый пакет.
+  })[];
+  championshipId: string;
+};
