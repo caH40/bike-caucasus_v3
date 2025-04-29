@@ -9,7 +9,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ResponseServer, TPutCategoriesParams } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 import { getOrganizerForModerate } from './organizer';
 import { PermissionsService } from '@/services/Permissions';
@@ -267,6 +267,45 @@ export async function getToursAndSeries({
 
     const championshipService = new ChampionshipService();
     const response = await championshipService.getToursAndSeries({ organizerId });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен обновление пакетов категорий для чемпионата.
+ */
+export async function putCategories({
+  categoriesConfigs,
+  championshipId,
+}: TPutCategoriesParams): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const creator = session?.user.idDB;
+    if (!creator) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Проверка наличия прав на создание Чемпионата.
+    if (
+      !session.user.role.permissions.some(
+        (elm) => elm === 'moderation.championship.create' || elm === 'all'
+      )
+    ) {
+      throw new Error('У вас нет прав для изменения категорий Чемпионата!');
+    }
+
+    const championshipService = new ChampionshipService();
+    const response = await championshipService.putCategories({
+      categoriesConfigs,
+      championshipId,
+    });
 
     return response;
   } catch (error) {
