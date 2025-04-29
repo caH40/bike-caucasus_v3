@@ -1,6 +1,5 @@
 import mongoose, { Schema, model, models, Model } from 'mongoose';
 
-import { CategoriesSchema } from './Schema/Category';
 import { RaceSchema } from './Schema/Race';
 
 // types
@@ -35,7 +34,6 @@ const championshipSchema = new Schema<TChampionshipDocument>(
     },
     type: { type: String, default: 'single', required: true },
     bikeType: { type: String, default: 'road', required: true },
-    categories: CategoriesSchema,
     races: [{ type: RaceSchema, default: [] }],
     posterUrl: { type: String, default: null },
   },

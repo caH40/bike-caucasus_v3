@@ -10,7 +10,7 @@ import BoxTextarea from '../BoxTextarea/BoxTextarea';
 import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
 import IconInfo from '@/components/Icons/IconInfo';
 import t from '@/locales/ru/moderation/championship.json';
-import BlockCategorySet from '../BlockCategorySet/BlockCategorySet';
+// import BlockCategorySet from '../BlockCategorySet/BlockCategorySet';
 import FilterRidersForAddResult from '../Filters/FilterRidersForAddResult/Filters';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import styles from './BlockRaceAdd.module.css';
@@ -239,7 +239,7 @@ export default function BlockRaceAdd({
               />
             </div>
 
-            <BlockCategorySet
+            {/* <BlockCategorySet
               key={`BlockCategorySet-${categoryProperty}`}
               register={register}
               errors={errors}
@@ -247,7 +247,7 @@ export default function BlockRaceAdd({
               index={index}
               control={control}
               categoryProperty={categoryProperty}
-            />
+            /> */}
           </div>
         )}
       </div>

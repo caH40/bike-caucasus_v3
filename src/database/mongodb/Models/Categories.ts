@@ -1,5 +1,10 @@
-import { TCategories, TCategoryAge, TCategorySkillLevel } from '@/types/index.interface';
-import { Schema } from 'mongoose';
+import mongoose, { model, models, Schema } from 'mongoose';
+
+// types
+import { TCategoryAge, TCategorySkillLevel } from '@/types/index.interface';
+import { TCategories } from '@/types/models.interface';
+
+interface ICategoryDocument extends Omit<TCategories, '_id'>, Document {}
 
 // Схемы Категорий в Чемпионатах.
 const CategoryAgeSchema = new Schema<TCategoryAge>(
@@ -20,8 +25,10 @@ const CategorySkillLevelSchema = new Schema<TCategorySkillLevel>(
 );
 
 // Основная схема TCategories
-export const CategoriesSchema = new Schema<TCategories>(
+export const CategoriesSchema = new Schema<ICategoryDocument>(
   {
+    championship: { type: mongoose.Schema.Types.ObjectId, ref: 'Championship', required: true },
+    name: { type: String, required: true }, // Должно быть уникальным в пределах одного Чемпионата.
     age: [
       {
         name: { type: String, required: true },
@@ -39,3 +46,6 @@ export const CategoriesSchema = new Schema<TCategories>(
   },
   { _id: false }
 );
+
+export const CategoriesModel =
+  models.CategoriesModel || model<ICategoryDocument>('Categories', CategoriesSchema);

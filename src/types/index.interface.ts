@@ -9,6 +9,7 @@ import type {
   UseFormReset,
 } from 'react-hook-form';
 import {
+  TCategories,
   TChampionship,
   TChampionshipStatus,
   TChampionshipTypes,
@@ -519,31 +520,29 @@ export type TFormChampionshipCreate = Omit<
   races: TRaceForForm[] | null;
   parentChampionship: { _id: string; name: string };
 };
+
 export type TCategoryAgeFromForm = {
   min: string; // Значение минимального возраста из формы (всегда приходит как строка).
   max: string; // Значение максимального возраста из формы (всегда приходит как строка).
   name: string; // Название категории (например, "М10-20").
 };
-export type TRaceForForm = Omit<
-  TRace,
-  'trackGPX' | 'registeredRiders' | 'categoriesAgeFemale' | 'categoriesAgeMale'
-> & {
+
+export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders' | 'categories'> & {
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
   trackGPX?: TTrackGPXObj;
-  categoriesAgeFemale: TCategoryAgeFromForm[]; // Женские возрастные категории.
-  categoriesAgeMale: TCategoryAgeFromForm[]; // Мужские возрастные категории.
+  categories: Omit<TCategories, 'championship'>;
   registeredRiders: string[];
 };
+
 export type TRaceForFormDeserialized = Omit<
   TRace,
-  'trackGPX' | 'registeredRiders' | 'categoriesAgeFemale' | 'categoriesAgeMale'
+  'trackGPX' | 'registeredRiders' | 'categories'
 > & {
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
   trackGPX?: TTrackGPXObj;
-  categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
-  categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
+  categories: TCategories | null;
   registeredRiders: string[];
 };
 
@@ -898,27 +897,6 @@ export type TBlockRaceAddProps = {
 };
 
 /**
- * Возрастные и уровневые категории, которые могут быть использованы в чемпионате.
- * Каждый набор имеет уникальное имя, по которому будет ссылаться заезд.
- */
-export type TCategories = {
-  // Наборы возрастных категорий, делятся по полу.
-  // Каждый набор имеет уникальное имя, которое затем указывается в заезде.
-  age: {
-    name: string; // Уникальное название набора возрастных категорий, например "masters2025".
-    female: TCategoryAge[]; // Женские возрастные категории.
-    male: TCategoryAge[]; // Мужские возрастные категории.
-  }[];
-  // Наборы категорий по уровню подготовки (буквенные категории: A, B, C, Pro и т.п.)
-  // Каждый набор имеет уникальное имя, которое затем указывается в заезде.
-  skillLevel: {
-    name: string; // Уникальное название набора уровневых категорий, например "standard2025".
-    female: TCategorySkillLevel[]; // Женские категории по уровню подготовки.
-    male: TCategorySkillLevel[]; // Мужские категории по уровню подготовки.
-  }[];
-};
-
-/**
  * Описание одной возрастной категории (используется в пределах набора).
  */
 export type TCategoryAge = {
@@ -929,6 +907,7 @@ export type TCategoryAge = {
 
 /**
  * Описание одной категории по уровню подготовки (буквенной категории).
+ * Данные категории проставляется при регистрации (или в финишном протоколе).
  */
 export type TCategorySkillLevel = {
   name: string; // Название категории, например: "A", "B", "Pro".

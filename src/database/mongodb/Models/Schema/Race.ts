@@ -2,7 +2,6 @@ import mongoose, { Schema } from 'mongoose';
 
 // types
 import { TRace } from '@/types/models.interface';
-import { TCategoryAge } from '@/types/index.interface';
 
 // Трэк заезда.
 const trackGPXSchema = new Schema(
@@ -17,14 +16,14 @@ const trackGPXSchema = new Schema(
   },
   { _id: false }
 );
-const categoryAgeSchema = new Schema<TCategoryAge>(
-  {
-    min: Number,
-    max: Number,
-    name: String,
-  },
-  { _id: false }
-);
+// const categoryAgeSchema = new Schema<TCategoryAge>(
+//   {
+//     min: Number,
+//     max: Number,
+//     name: String,
+//   },
+//   { _id: false }
+// );
 
 export const RaceSchema = new Schema<TRace>(
   {
@@ -42,10 +41,9 @@ export const RaceSchema = new Schema<TRace>(
         default: [],
       },
     ],
-    categoriesAge: { type: String }, // Название пакета возрастных категорий из Чемпионата.
-    categoriesSkillLevel: { type: String, default: null }, // Название пакета категорий по уровню подготовки из Чемпионата.
-    categoriesAgeFemale: [{ type: categoryAgeSchema, default: [] }],
-    categoriesAgeMale: [{ type: categoryAgeSchema, default: [] }],
+    categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Categories' },
+    // categoriesAgeFemale: [{ type: categoryAgeSchema, default: [] }],
+    // categoriesAgeMale: [{ type: categoryAgeSchema, default: [] }],
     quantityRidersFinished: { type: Number, default: 0 },
   },
 

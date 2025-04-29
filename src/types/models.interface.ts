@@ -1,5 +1,5 @@
-import mongoose, { Document, ObjectId } from 'mongoose';
-import { TCategories, TCategoryAge, TFormCalendar } from './index.interface';
+import mongoose, { Document, ObjectId, Types } from 'mongoose';
+import { TCategoryAge, TCategorySkillLevel, TFormCalendar } from './index.interface';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
@@ -313,7 +313,6 @@ export type TChampionship = {
   races: TRace[];
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
-  categories: TCategories;
   // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   // single Соревнование с одним этапом.
   // series Соревнование несколькими этапами, за которые начисляются очки, в конце серии подводятся
@@ -350,11 +349,8 @@ export type TRace = {
   ascent?: number; // Набор высоты на дистанции в метрах.
   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
-  categoriesAge: string; // Название пакета возрастных категорий из Чемпионата.
-  categoriesSkillLevel: string | null; // Название пакета категорий по уровню подготовки из Чемпионата.
+  categories: Types.ObjectId; // _id Пакета категорий для заезда.
   quantityRidersFinished: number; // Общее количество финишировавших.
-  categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
-  categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
 };
 // export type TRace = {
 //   number: number; // Порядковый номер.
@@ -453,3 +449,27 @@ export type TGapsInCategories = {
   absoluteGenderFemale: TGap | null;
 };
 export type TGap = { toLeader: number | null; toPrev: number | null }; // null если райдер является лидером и никого нет впереди.
+
+/**
+ * Возрастные и уровневые категории, которые могут быть использованы в чемпионате.
+ * Каждый набор имеет уникальное имя, по которому будет ссылаться заезд.
+ */
+export type TCategories = {
+  _id?: Types.ObjectId;
+  championship: Types.ObjectId;
+  name: string; // Название пакета категорий для чемпионата, может быть несколько в чемпионате, для разных заездов.
+  // Наборы возрастных категорий, делятся по полу.
+  // Каждый набор имеет уникальное имя, которое затем указывается в заезде.
+  age: {
+    name: string; // Уникальное название набора возрастных категорий, например "masters2025".
+    female: TCategoryAge[]; // Женские возрастные категории.
+    male: TCategoryAge[]; // Мужские возрастные категории.
+  }[];
+  // Наборы категорий по уровню подготовки (буквенные категории: A, B, C, Pro и т.п.)
+  // Каждый набор имеет уникальное имя, которое затем указывается в заезде.
+  skillLevel?: {
+    name: string; // Уникальное название набора уровневых категорий, например "standard2025".
+    female: TCategorySkillLevel[]; // Женские категории по уровню подготовки.
+    male: TCategorySkillLevel[]; // Мужские категории по уровню подготовки.
+  }[];
+};

@@ -1,3 +1,5 @@
+import { TChampionshipTypes } from '@/types/models.interface';
+
 /**
  * Хук логики отображения блоков в Форме создания и редактирования Чемпионата.
  */
@@ -6,7 +8,7 @@ export function useShowChampionshipForm({
   typeInDB,
   isCreatingForm,
 }: {
-  typeInInput: string | undefined;
+  typeInInput: TChampionshipTypes | undefined;
   typeInDB: string | undefined;
   isCreatingForm: boolean;
 }) {
