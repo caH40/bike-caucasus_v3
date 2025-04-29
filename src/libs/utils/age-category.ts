@@ -65,7 +65,7 @@ export async function getCategoryAgeProfile({
  *
  * @returns {string} - Возрастная категория райдера.
  */
-export function getCategoryAge({
+export function createStringCategoryAge({
   yearBirthday,
   categoriesAge,
   gender,

@@ -10,15 +10,18 @@ import { User as UserModel } from '@/database/mongodb/Models/User';
 import { dtoResultsRace, dtoResultsRaceRider, dtoResultRaceRider } from '@/dto/results-race';
 import {
   ResponseServer,
+  TGetRaceCategoriesParams,
   TProtocolRace,
   TResultRaceFromDB,
   TResultRaceRideFromDB,
 } from '@/types/index.interface';
 import { TResultRaceRiderDto } from '@/types/dto.types';
-import { getCategoryAge } from '@/libs/utils/age-category';
+import { createStringCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRaceDocument } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
 import { processResults } from '@/libs/utils/results';
+import { CategoriesModel } from '@/database/mongodb/Models/Categories';
+import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -183,12 +186,19 @@ export class ResultRaceService {
         );
       }
 
+      const categoriesDB = await this.getRaceCategories({
+        championshipId: dataDeserialized.championshipId,
+        categoriesId: champDB.races[0].categories,
+        raceNumber: dataDeserialized.raceNumber,
+      });
+
       // Присвоение возрастной категории
-      const categoriesAgeMale = champDB.races[0].categoriesAgeMale;
-      const categoriesAgeFemale = champDB.races[0].categoriesAgeFemale;
+      const categoriesAgeMale = categoriesDB.age.male;
+      const categoriesAgeFemale = categoriesDB.age.female;
       const isFemale = dataDeserialized.gender === 'female';
 
-      const categoryAge = getCategoryAge({
+      // Создание название возрастной категории на основании возрастных рамок в которые попадает райдер.
+      const categoryAge = createStringCategoryAge({
         yearBirthday: dataDeserialized.yearBirthday,
         categoriesAge: isFemale ? categoriesAgeFemale : categoriesAgeMale,
         gender: isFemale ? 'F' : 'M',
@@ -334,10 +344,18 @@ export class ResultRaceService {
       // Получение результатов заезда.
       const resultsRaceDB = await this.getResultsRace(championshipId, raceNumber);
 
+      // Получение категорий заезда.
+      const categoriesDB = await this.getRaceCategories({
+        championshipId,
+        categoriesId: race.categories,
+        raceNumber,
+      });
+
       // Обработка данных.
       const { resultsUpdated, quantityRidersFinished } = processResults({
         results: resultsRaceDB,
-        race,
+        categories: categoriesDB,
+        raceDistance: race.distance,
       });
 
       // Обновление позиций и прочих данных.
@@ -559,5 +577,26 @@ export class ResultRaceService {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Получение категорий для заезда raceNumber чемпионата championshipId.
+   */
+  private async getRaceCategories({
+    championshipId,
+    categoriesId,
+    raceNumber,
+  }: TGetRaceCategoriesParams): Promise<TGetRaceCategoriesFromMongo> {
+    const categoriesDB = await CategoriesModel.findOne(
+      { _id: categoriesId },
+      { age: true, skillLevel: true, _id: false }
+    ).lean<TGetRaceCategoriesFromMongo>();
+
+    if (!categoriesDB) {
+      throw new Error(
+        `Не найден пакет категорий для чемпионата ${championshipId} и заезда №${raceNumber}`
+      );
+    }
+    return categoriesDB;
   }
 }

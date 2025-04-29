@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongoose';
+import { TCategories } from './models.interface';
 
 /**
  * Данные чемпионата из MongoDB в формате .lean().
@@ -10,3 +11,8 @@ export type TGetToursAndSeriesFromMongo = {
   startDate: Date;
   endDate: Date;
 };
+
+/**
+ * Получение категорий для заезда raceNumber чемпионата championshipId из MongoDB в формате .lean().
+ */
+export type TGetRaceCategoriesFromMongo = Pick<TCategories, 'age' | 'skillLevel'>;

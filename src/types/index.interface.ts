@@ -22,7 +22,7 @@ import {
   TTrackGPXObj,
 } from './models.interface';
 import { Dispatch, LegacyRef, MutableRefObject, SetStateAction } from 'react';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import {
   TDtoChampionship,
   TDtoOrganizer,
@@ -912,4 +912,13 @@ export type TCategoryAge = {
 export type TCategorySkillLevel = {
   name: string; // Название категории, например: "A", "B", "Pro".
   description?: string; // Описание категории, например: "Для опытных гонщиков".
+};
+
+/**
+ * Входные параметры приватного метода получения категорий для заезда raceNumber чемпионата championshipId.
+ */
+export type TGetRaceCategoriesParams = {
+  championshipId: string;
+  categoriesId: Types.ObjectId;
+  raceNumber: number;
 };

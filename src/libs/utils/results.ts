@@ -1,6 +1,8 @@
-import { TRace, TResultRaceDocument } from '@/types/models.interface';
-import { getCategoryAge } from './age-category';
+import { createStringCategoryAge } from './age-category';
 import { calculateAverageSpeed } from './championship';
+
+import { TResultRaceDocument } from '@/types/models.interface';
+import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
 
 /**
  * Обрабатывает результаты заезда, обновляет счетчики и категории.
@@ -11,10 +13,12 @@ import { calculateAverageSpeed } from './championship';
  */
 export function processResults({
   results,
-  race,
+  categories,
+  raceDistance,
 }: {
   results: TResultRaceDocument[];
-  race: TRace;
+  categories: TGetRaceCategoriesFromMongo;
+  raceDistance: number;
 }): {
   resultsUpdated: TResultRaceDocument[];
   quantityRidersFinished: number;
@@ -29,9 +33,10 @@ export function processResults({
   // Обновление данных результатов.
   results.forEach((result) => {
     const isFemale = result.profile.gender === 'female';
-    const categoryAge = getCategoryAge({
+
+    const categoryAge = createStringCategoryAge({
       yearBirthday: result.profile.yearBirthday,
-      categoriesAge: isFemale ? race.categoriesAgeFemale : race.categoriesAgeMale,
+      categoriesAge: isFemale ? categories.age.female : categories.age.male,
       gender: isFemale ? 'F' : 'M',
     });
 
@@ -57,7 +62,7 @@ export function processResults({
   // Установка мест и средней скорости.
   results.forEach((result) => {
     setPositions(result, categoriesInRace, quantityRidersFinishedMap);
-    result.averageSpeed = calculateAverageSpeed(race.distance, result.raceTimeInMilliseconds);
+    result.averageSpeed = calculateAverageSpeed(raceDistance, result.raceTimeInMilliseconds);
   });
 
   return {

@@ -1,4 +1,4 @@
-import mongoose, { model, models, Schema } from 'mongoose';
+import mongoose, { model, models, Schema, Document } from 'mongoose';
 
 // types
 import { TCategoryAge, TCategorySkillLevel } from '@/types/index.interface';
@@ -25,27 +25,24 @@ const CategorySkillLevelSchema = new Schema<TCategorySkillLevel>(
 );
 
 // Основная схема TCategories
-export const CategoriesSchema = new Schema<ICategoryDocument>(
-  {
-    championship: { type: mongoose.Schema.Types.ObjectId, ref: 'Championship', required: true },
-    name: { type: String, required: true }, // Должно быть уникальным в пределах одного Чемпионата.
-    age: [
-      {
-        name: { type: String, required: true },
-        female: { type: [CategoryAgeSchema], required: true },
-        male: { type: [CategoryAgeSchema], required: true },
-      },
-    ],
-    skillLevel: [
-      {
-        name: { type: String, required: true },
-        female: { type: [CategorySkillLevelSchema], required: true },
-        male: { type: [CategorySkillLevelSchema], required: true },
-      },
-    ],
-  },
-  { _id: false }
-);
+export const CategoriesSchema = new Schema<ICategoryDocument>({
+  championship: { type: mongoose.Schema.Types.ObjectId, ref: 'Championship', required: true },
+  name: { type: String, required: true }, // Должно быть уникальным в пределах одного Чемпионата.
+  age: [
+    {
+      name: { type: String, required: true },
+      female: { type: [CategoryAgeSchema], required: true },
+      male: { type: [CategoryAgeSchema], required: true },
+    },
+  ],
+  skillLevel: [
+    {
+      name: { type: String, required: true },
+      female: { type: [CategorySkillLevelSchema], required: true },
+      male: { type: [CategorySkillLevelSchema], required: true },
+    },
+  ],
+});
 
 export const CategoriesModel =
-  models.CategoriesModel || model<ICategoryDocument>('Categories', CategoriesSchema);
+  models.Categories || model<ICategoryDocument>('Categories', CategoriesSchema);
