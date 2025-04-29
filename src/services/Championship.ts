@@ -661,14 +661,15 @@ export class ChampionshipService {
           coordStart,
         };
 
+        // Сохранение пакета категорий в БД,
+
         raceForSave.number = race.number;
         raceForSave.name = race.name;
         raceForSave.description = race.description;
         raceForSave.laps = race.laps;
         raceForSave.distance = race.distance;
         raceForSave.ascent = race.ascent;
-        raceForSave.categoriesAgeMale = race.categoriesAgeMale;
-        raceForSave.categoriesAgeFemale = race.categoriesAgeFemale;
+        raceForSave.categories = new Types.ObjectId(race.categoriesId);
         raceForSave.trackGPX = trackGPX;
 
         racesForSave.push(raceForSave);
@@ -734,8 +735,7 @@ export class ChampionshipService {
           raceForSave.distance = race.distance;
           raceForSave.ascent = race.ascent;
           raceForSave.registeredRiders = race.registeredRiders;
-          raceForSave.categoriesAgeMale = race.categoriesAgeMale;
-          raceForSave.categoriesAgeFemale = race.categoriesAgeFemale;
+          raceForSave.categories = new Types.ObjectId(race.categoriesId);
 
           racesForSave.push(raceForSave);
 
@@ -763,8 +763,7 @@ export class ChampionshipService {
             raceForSave.distance = race.distance;
             raceForSave.ascent = race.ascent;
             raceForSave.registeredRiders = race.registeredRiders;
-            raceForSave.categoriesAgeMale = race.categoriesAgeMale;
-            raceForSave.categoriesAgeFemale = race.categoriesAgeFemale;
+            raceForSave.categories = new Types.ObjectId(race.categoriesId);
 
             racesForSave.push(raceForSave);
           }

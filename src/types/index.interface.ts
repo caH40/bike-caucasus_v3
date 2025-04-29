@@ -542,7 +542,7 @@ export type TRaceForFormDeserialized = Omit<
   trackGPXFile: File | null;
   trackGPXUrl: string | null;
   trackGPX?: TTrackGPXObj;
-  categories: TCategories | null;
+  categoriesId: string; // _id пакета категорий в БД.
   registeredRiders: string[];
 };
 
