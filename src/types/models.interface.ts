@@ -309,7 +309,6 @@ export type TChampionship = {
   stage: number | null; // Номер этапа, если это этап.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
-  trackGPX?: TTrackGPXObj;
   races: TRace[];
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.

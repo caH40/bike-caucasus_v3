@@ -1,3 +1,4 @@
+import { formatCategoriesFields } from '@/components/UI/Forms/FormChampionship/categories-format';
 import { formateAndStripContent } from '@/components/UI/Forms/FormChampionship/utils';
 import type { TFormChampionshipCreate } from '@/types/index.interface';
 
@@ -69,6 +70,54 @@ export function serializationChampionship({
 
   if (!!urlTracksForDel?.length) {
     formData.set('urlTracksForDel', JSON.stringify(urlTracksForDel));
+  }
+
+  // Преобразование races в необходимую структуру для сервера.
+  const racesWithCategoriesFormatted =
+    dataForm.races &&
+    dataForm.races.map((race) => {
+      const { categoriesAgeFemale, categoriesAgeMale } = formatCategoriesFields({
+        categoriesAgeFemale: race.categoriesAgeFemale,
+        categoriesAgeMale: race.categoriesAgeMale,
+      });
+
+      return {
+        ...race,
+        categoriesAgeFemale,
+        categoriesAgeMale,
+      };
+    });
+
+  // Преобразование поля races и добавление в fomData.
+  if (racesWithCategoriesFormatted) {
+    racesWithCategoriesFormatted.forEach((race, index) => {
+      formData.set(`races[${index}][number]`, race.number.toString());
+      formData.set(`races[${index}][name]`, race.name);
+      formData.set(`races[${index}][description]`, race.description);
+      formData.set(`races[${index}][distance]`, race.distance.toString());
+      formData.set(`races[${index}][laps]`, race.laps.toString());
+      formData.set(`races[${index}][registeredRiders]`, JSON.stringify(race.registeredRiders));
+      formData.set(
+        `races[${index}][categoriesAgeFemale]`,
+        JSON.stringify(race.categoriesAgeFemale)
+      );
+      formData.set(
+        `races[${index}][categoriesAgeMale]`,
+        JSON.stringify(race.categoriesAgeMale)
+      );
+
+      if (race.ascent !== undefined) {
+        formData.set(`races[${index}][ascent]`, race.ascent.toString());
+      }
+
+      if (race.trackGPXFile) {
+        formData.set(`races[${index}][trackGPXFile]`, race.trackGPXFile);
+      }
+
+      if (race.trackGPXUrl) {
+        formData.set(`races[${index}][trackGPXUrl]`, race.trackGPXUrl);
+      }
+    });
   }
 
   return formData;

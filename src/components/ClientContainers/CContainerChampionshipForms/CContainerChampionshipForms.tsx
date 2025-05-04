@@ -15,6 +15,7 @@ export default function CContainerChampionshipForms({
   organizer,
   fetchChampionshipCreated,
   parentChampionships,
+  championshipForEdit,
 }: TCContainerChampionshipFormsProps) {
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
   const [isFormDirty, setIsFormDirty] = useState(false);
@@ -52,13 +53,15 @@ export default function CContainerChampionshipForms({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.spacer}>
-        <ChampionshipFormNavigation
-          buttons={championshipFormNavigationButtons}
-          activeIdBtn={activeIdBtn}
-          setActiveIdBtn={handleChangeTab}
-        />
-      </div>
+      {championshipForEdit && (
+        <div className={styles.spacer}>
+          <ChampionshipFormNavigation
+            buttons={championshipFormNavigationButtons}
+            activeIdBtn={activeIdBtn}
+            setActiveIdBtn={handleChangeTab}
+          />
+        </div>
+      )}
 
       {formComponents[activeIdBtn]}
     </div>

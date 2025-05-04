@@ -508,22 +508,31 @@ export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { 
  */
 export type TFormChampionshipCreate = Omit<
   TChampionship,
-  | '_id'
-  | 'organizer'
-  | 'startDate'
-  | 'endDate'
-  | 'status'
-  | 'trackGPX'
-  | 'parentChampionship'
-  | 'races'
+  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'parentChampionship' | 'races'
 > & {
   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
   startDate: string;
   endDate: string;
-  races: TRaceForForm[] | null;
   parentChampionship: { _id: string; name: string };
 };
+// export type TFormChampionshipCreate = Omit<
+//   TChampionship,
+//   | '_id'
+//   | 'organizer'
+//   | 'startDate'
+//   | 'endDate'
+//   | 'status'
+//   | 'parentChampionship'
+//   | 'races'
+// > & {
+//   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
+//   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
+//   startDate: string;
+//   endDate: string;
+//   races: TRaceForForm[] | null;
+//   parentChampionship: { _id: string; name: string };
+// };
 
 export type TCategoryAgeFromForm = {
   min: string; // Значение минимального возраста из формы (всегда приходит как строка).
@@ -877,7 +886,6 @@ export type TCContainerChampionshipFormsProps = {
  * Пропсы для хука useSubmitChampionship.
  *
  * @property championshipForEdit - Данные чемпионата для редактирования (если режим редактирования).
- * @property isSeriesOrTourInForm - Флаг, указывающий, является ли форма Серией или Туром.
  * @property organizerId - ID организатора (владелец чемпионата).
  * @property urlTracksForDel - Список ссылок на треки, которые нужно удалить (используется при редактировании).
  * @property fetchChampionshipCreated - Функция для создания нового чемпионата (POST).
@@ -886,7 +894,6 @@ export type TCContainerChampionshipFormsProps = {
  */
 export type TUseSubmitChampionshipProps = {
   championshipForEdit?: TDtoChampionship;
-  isSeriesOrTourInForm: boolean;
   organizerId: any;
   urlTracksForDel: MutableRefObject<string[]>;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;

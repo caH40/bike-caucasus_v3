@@ -215,7 +215,7 @@ export class ChampionshipService {
   }
 
   /**
-   * Создание нового Чемпионата по _id или по creatorId.
+   * Создание нового Чемпионата (основные настройки, без заездов и категорий) по _id или по creatorId.
    */
   public async post({
     serializedFormData,
@@ -240,7 +240,6 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
-        races,
       } = deserializeChampionship(serializedFormData);
 
       // Проверка на дубликат названия Чемпионата.
@@ -262,7 +261,7 @@ export class ChampionshipService {
       });
 
       // Обработка данных Заездов (дистанций).
-      const racesForSave = await this.handleRacesInPost(races);
+      // const racesForSave = await this.handleRacesInPost(races);
 
       // Создание slug из name для url страницы Чемпионата.
       const sequenceValue = await getNextSequenceValue('championship');
@@ -283,7 +282,6 @@ export class ChampionshipService {
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
         }),
-        ...(races && { races: racesForSave }),
         ...(quantityStages && { quantityStages }),
         ...(stage && { stage }),
       };

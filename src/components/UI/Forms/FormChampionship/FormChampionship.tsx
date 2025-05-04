@@ -12,7 +12,7 @@ import { content, TextValidationService } from '@/libs/utils/text';
 import { getDateTime } from '@/libs/utils/calendar';
 import { championshipTypes } from '@/constants/championship';
 import { bikeTypes } from '@/constants/trail';
-import { createParentOptions, createStageNumbers, getRacesInit } from './utils';
+import { createParentOptions, createStageNumbers } from './utils';
 import { validateEndDateNotBeforeStartDate } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import BoxInput from '../../BoxInput/BoxInput';
@@ -57,9 +57,6 @@ export default function FormChampionship({
     formState: { errors, isDirty }, // Объект состояния формы, содержащий ошибки валидации.
   } = useForm<TFormChampionshipCreate>({
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
-    defaultValues: {
-      races: getRacesInit(championshipForEdit?.races), // Начальное значение массива гонок, полученное из функции getRacesInit.
-    },
   });
 
   // Контроль были ли внесены изменения в форму или нет.
@@ -75,7 +72,7 @@ export default function FormChampionship({
   const urlTracksForDel = useRef<string[]>([]);
 
   // Отображения блоков в зависимости от использования формы и вводимых значений.
-  const { showQuantityStage, showNumberStage, isSeriesOrTourInForm } = useShowChampionshipForm({
+  const { showQuantityStage, showNumberStage } = useShowChampionshipForm({
     typeInInput: watch('type'),
     typeInDB: championshipForEdit?.type,
     isCreatingForm: !championshipForEdit,
@@ -84,7 +81,7 @@ export default function FormChampionship({
   // Функция отправки формы создания/редактирования Чемпионата.
   const onSubmit = useSubmitChampionship({
     championshipForEdit,
-    isSeriesOrTourInForm,
+    // isSeriesOrTourInForm,
     organizerId: organizer._id,
     urlTracksForDel,
     fetchChampionshipCreated,

@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
  */
 export const useSubmitChampionship = ({
   championshipForEdit,
+  isSeriesOrTourInForm,
   organizerId,
   urlTracksForDel,
   fetchChampionshipCreated,
@@ -39,7 +40,10 @@ export const useSubmitChampionship = ({
 
     // Сериализация данных в FormData перед отправкой на сервер.
     const dataSerialized = serializationChampionship({
-      dataForm,
+      dataForm: {
+        ...dataForm,
+        races: isSeriesOrTourInForm ? null : dataForm.races, // Если Серия или Тур, то убрать объект инициализации из races.
+      },
       championshipId,
       parentChampionshipId,
       organizerId,
