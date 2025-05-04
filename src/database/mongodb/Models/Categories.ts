@@ -28,20 +28,14 @@ const CategorySkillLevelSchema = new Schema<TCategorySkillLevel>(
 export const CategoriesSchema = new Schema<ICategoryDocument>({
   championship: { type: mongoose.Schema.Types.ObjectId, ref: 'Championship', required: true },
   name: { type: String, required: true }, // Должно быть уникальным в пределах одного Чемпионата.
-  age: [
-    {
-      name: { type: String, required: true },
-      female: { type: [CategoryAgeSchema], required: true },
-      male: { type: [CategoryAgeSchema], required: true },
-    },
-  ],
-  skillLevel: [
-    {
-      name: { type: String, required: true },
-      female: { type: [CategorySkillLevelSchema], required: true },
-      male: { type: [CategorySkillLevelSchema], required: true },
-    },
-  ],
+  age: {
+    female: { type: [CategoryAgeSchema], required: true },
+    male: { type: [CategoryAgeSchema], required: true },
+  },
+  skillLevel: {
+    female: { type: [CategorySkillLevelSchema], required: true },
+    male: { type: [CategorySkillLevelSchema], required: true },
+  },
 });
 
 export const CategoriesModel =

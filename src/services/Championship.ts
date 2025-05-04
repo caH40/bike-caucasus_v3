@@ -11,15 +11,12 @@ import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/cham
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
-  TOrganizerPublic,
-  TParentChampionship,
   TPutCategoriesParams,
   TRaceForFormDeserialized,
   TSaveFile,
   TStageDateDescription,
 } from '@/types/index.interface';
 import type {
-  TChampionship,
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
@@ -71,6 +68,9 @@ export class ChampionshipService {
     this.getCurrentStatus = getCurrentStatus;
   }
 
+  /**
+   * Данные по запрашиваемому Чемпионату по urlSlug.
+   */
   public async getOne({
     urlSlug,
   }: {
@@ -89,6 +89,7 @@ export class ChampionshipService {
           path: 'parentChampionship',
           select: parentChampionshipSelect,
         })
+        .populate('categoriesConfigs')
         .lean<TChampionshipWithOrganizer>();
 
       if (!championshipDB) {
@@ -145,13 +146,8 @@ export class ChampionshipService {
           path: 'parentChampionship',
           select: parentChampionshipSelect,
         })
-        .lean<
-          (Omit<TChampionship, 'organizer'> & {
-            organizer: TOrganizerPublic;
-            parentChampionship: TParentChampionship;
-            stageDateDescription: TStageDateDescription[];
-          })[]
-        >();
+        .populate('categoriesConfigs')
+        .lean<TChampionshipWithOrganizer[]>();
 
       // Формирование данных для отображение Блока Этапов в карточке Чемпионата.
       for (const champ of championshipsDB) {

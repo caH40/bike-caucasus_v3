@@ -491,10 +491,14 @@ export type TOrganizerForClient = Pick<
 > & {
   _id: string;
 };
-export type TChampionshipWithOrganizer = Omit<TChampionship, 'organizer'> & {
+export type TChampionshipWithOrganizer = Omit<
+  TChampionship,
+  'organizer' | 'categoriesConfigs'
+> & {
   organizer: TOrganizerPublic;
   stageDateDescription: TStageDateDescription[];
   parentChampionship: TParentChampionship;
+  categoriesConfigs: TCategories[];
 };
 export type TParentChampionship = Pick<TChampionship, '_id' | 'name' | 'stage' | 'type'>;
 export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { _id: string };

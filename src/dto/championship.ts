@@ -38,6 +38,17 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
   const { isoDate: createdAt } = getDateTime(championship.createdAt);
   const { isoDate: updatedAt } = getDateTime(championship.updatedAt);
 
+  const categories = championship.categoriesConfigs?.map((cat) => {
+    const _id = String(cat._id);
+
+    return {
+      _id,
+      name: cat.name,
+      age: cat.age,
+      skillLevel: cat.skillLevel,
+    };
+  });
+
   return {
     _id: String(championship._id),
     organizer,
@@ -51,7 +62,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     posterUrl: championship.posterUrl,
     status: championship.status,
     type: championship.type,
-    categories: championship.categories,
+    categoriesConfigs: categories,
     bikeType: championship.bikeType,
     races: formatTRacesToClient(championship.races),
     startDate,

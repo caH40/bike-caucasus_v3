@@ -8,6 +8,7 @@ import {
 import {
   IUserModel,
   TAuthorFromUser,
+  TCategories,
   TChampionship,
   TChampionshipTypes,
   TDisqualification,
@@ -151,6 +152,7 @@ export type TDtoChampionship = Omit<
   | 'updatedAt'
   | 'parentChampionship'
   | 'races'
+  | 'categoriesConfigs'
 > & {
   _id: string;
   organizer: TOrganizerForClient;
@@ -161,6 +163,7 @@ export type TDtoChampionship = Omit<
   createdAt: string;
   updatedAt: string;
   races: TRaceClient[];
+  categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & { _id: string })[];
 };
 
 /**

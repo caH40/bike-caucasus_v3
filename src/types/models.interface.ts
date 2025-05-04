@@ -313,6 +313,7 @@ export type TChampionship = {
   races: TRace[];
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
+  categoriesConfigs: mongoose.Types.ObjectId[];
   // Тип чемпионата (например, Тур, Серия заездов, Отдельный заезд).
   // single Соревнование с одним этапом.
   // series Соревнование несколькими этапами, за которые начисляются очки, в конце серии подводятся
