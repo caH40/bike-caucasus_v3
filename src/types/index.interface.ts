@@ -857,6 +857,20 @@ export type TFormChampionshipProps = {
   }) => Promise<ResponseServer<any>>;
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+};
+export type TCContainerChampionshipFormsProps = {
+  organizer: TDtoOrganizer;
+  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
+  putChampionship?: ({
+    dataSerialized,
+    urlSlug,
+  }: {
+    dataSerialized: FormData;
+    urlSlug: string;
+  }) => Promise<ResponseServer<any>>;
+  championshipForEdit?: TDtoChampionship;
+  parentChampionships: TToursAndSeriesDto[];
 };
 
 /**
@@ -881,6 +895,7 @@ export type TUseSubmitChampionshipProps = {
     urlSlug: string;
   }) => Promise<ResponseServer<any>>;
   reset: UseFormReset<TFormChampionshipCreate>;
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
 };
 
 /**

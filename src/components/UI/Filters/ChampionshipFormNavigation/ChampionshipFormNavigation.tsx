@@ -7,7 +7,7 @@ import { getPosition } from '../utils';
 type Props = {
   buttons: TOptions[];
   activeIdBtn: number;
-  setActiveIdBtn: React.Dispatch<React.SetStateAction<number>>;
+  setActiveIdBtn: ((id: number) => void) | React.Dispatch<React.SetStateAction<number>>;
 };
 
 /**

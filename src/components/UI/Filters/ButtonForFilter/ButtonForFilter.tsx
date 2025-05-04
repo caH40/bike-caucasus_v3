@@ -10,7 +10,7 @@ type Props = {
   active: boolean;
   children: Readonly<React.ReactNode>;
   position: 'center' | 'left' | 'right';
-  setActiveIdBtn: React.Dispatch<React.SetStateAction<number>>;
+  setActiveIdBtn: ((id: number) => void) | React.Dispatch<React.SetStateAction<number>>;
   id: number; // Номер (id) кнопки.
 };
 

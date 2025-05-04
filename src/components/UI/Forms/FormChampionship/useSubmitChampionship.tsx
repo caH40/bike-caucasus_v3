@@ -23,6 +23,7 @@ export const useSubmitChampionship = ({
   fetchChampionshipCreated,
   putChampionship,
   reset,
+  setIsFormDirty,
 }: TUseSubmitChampionshipProps): SubmitHandler<TFormChampionshipCreate> => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -77,7 +78,7 @@ export const useSubmitChampionship = ({
     if (response.ok) {
       reset();
       toast.success(response.message);
-
+      setIsFormDirty(false);
       router.push('/moderation/championship/list');
     } else {
       toast.error(response.message);

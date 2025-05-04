@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useRef, useState } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 
 import cn from 'classnames';
 
@@ -20,6 +20,7 @@ import Button from '../../Button/Button';
 import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import SelectCustom from '../../SelectCustom/SelectCustom';
+import BlockRaceAdd from '../../BlockRaceAdd/BlockRaceAdd';
 import t from '@/locales/ru/moderation/championship.json';
 import styles from '../Form.module.css';
 
@@ -28,15 +29,14 @@ import type { TFormChampionshipCreate, TFormChampionshipProps } from '@/types/in
 import useParentChampionshipDates from '@/hooks/useParentChampionshipDates';
 
 /**
- * Форма создания/редактирования Чемпионата.
+ * Форма редактирования категорий Чемпионата.
  */
-export default function FormChampionship({
+export default function FormChampionshipCategories({
   organizer,
   fetchChampionshipCreated,
   putChampionship,
   championshipForEdit,
   parentChampionships,
-  setIsFormDirty,
 }: TFormChampionshipProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
@@ -54,7 +54,7 @@ export default function FormChampionship({
     control, // Объект контроля для работы с динамическими полями (например, с массивами полей).
     reset, // Функция для сброса формы до значений по умолчанию.
     watch, // Функция для наблюдения за изменениями значений полей формы.
-    formState: { errors, isDirty }, // Объект состояния формы, содержащий ошибки валидации.
+    formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
   } = useForm<TFormChampionshipCreate>({
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
     defaultValues: {
@@ -62,24 +62,26 @@ export default function FormChampionship({
     },
   });
 
-  // Контроль были ли внесены изменения в форму или нет.
-  useEffect(() => {
-    setIsFormDirty?.(isDirty);
-  }, [isDirty, setIsFormDirty]);
-
   // Получения дат старта и финиша родительского чемпионата, если создаются этапы для него.
   const parentId = watch('parentChampionship._id');
   const type = watch('type'); // Получаем значение типа
   const parentChampDates = useParentChampionshipDates(parentChampionships, parentId, type);
 
+  // Используем хук useFieldArray для работы с динамическими массивами полей в форме.
+  const { fields, append, remove } = useFieldArray({
+    control, // Передаем объект контроля, полученный из useForm, для управления динамическими полями.
+    name: 'races', // Имя поля, которое соответствует массиву гонок в форме.
+  });
+
   const urlTracksForDel = useRef<string[]>([]);
 
   // Отображения блоков в зависимости от использования формы и вводимых значений.
-  const { showQuantityStage, showNumberStage, isSeriesOrTourInForm } = useShowChampionshipForm({
-    typeInInput: watch('type'),
-    typeInDB: championshipForEdit?.type,
-    isCreatingForm: !championshipForEdit,
-  });
+  const { showTrackInput, showQuantityStage, showNumberStage, isSeriesOrTourInForm } =
+    useShowChampionshipForm({
+      typeInInput: watch('type'),
+      typeInDB: championshipForEdit?.type,
+      isCreatingForm: !championshipForEdit,
+    });
 
   // Функция отправки формы создания/редактирования Чемпионата.
   const onSubmit = useSubmitChampionship({
@@ -90,7 +92,6 @@ export default function FormChampionship({
     fetchChampionshipCreated,
     putChampionship,
     reset,
-    setIsFormDirty,
   });
 
   const initParentChampionship = parentChampionships.find(
@@ -328,6 +329,27 @@ export default function FormChampionship({
           tooltip={{ text: t.tooltips.bikeType, id: 'bikeType' }}
         />
       </div>
+
+      {/* Блок добавления Race Заездов (Дистанций)*/}
+      {/* Заезд (дистанция) необходим только для страницы Одиночного Чемпионата или Этапа.
+       В Серии и туре только общее описание */}
+      {showTrackInput &&
+        fields.map((race, index) => (
+          <div className={styles.wrapper__block} key={race.id}>
+            <BlockRaceAdd
+              race={race}
+              races={fields}
+              index={index}
+              register={register}
+              append={append}
+              remove={remove}
+              errors={errors}
+              control={control}
+              isLoading={isLoading}
+              urlTracksForDel={urlTracksForDel}
+            />
+          </div>
+        ))}
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>

@@ -1,5 +1,5 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionship';
+import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionshipRaces';
 import IconChampionship from '@/components/Icons/IconChampionship';
 
 import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
@@ -19,9 +19,7 @@ type Props = {
 export default async function ChampionshipEditCurrentPage(props: Props) {
   const params = await props.params;
 
-  const {
-    urlSlug
-  } = params;
+  const { urlSlug } = params;
 
   // Получение чемпионата для редактирования.
   // Проверка прав пользователя на редактирование Чемпионата и получение данных Организатора.
