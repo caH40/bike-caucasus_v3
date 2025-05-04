@@ -1,8 +1,7 @@
-import { MouseEvent, useState } from 'react';
+import { MouseEvent } from 'react';
 import Image from 'next/image';
 import { Controller } from 'react-hook-form';
 
-import { buttonsGender } from '@/constants/buttons';
 import { raceInit } from '@/constants/championship';
 import { TextValidationService } from '@/libs/utils/text';
 import BoxInput from '../BoxInput/BoxInput';
@@ -10,9 +9,6 @@ import BoxTextarea from '../BoxTextarea/BoxTextarea';
 import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
 import IconInfo from '@/components/Icons/IconInfo';
 import t from '@/locales/ru/moderation/championship.json';
-// import BlockCategorySet from '../BlockCategorySet/BlockCategorySet';
-import FilterRidersForAddResult from '../Filters/FilterRidersForAddResult/Filters';
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import styles from './BlockRaceAdd.module.css';
 
 // types
@@ -31,15 +27,14 @@ export default function BlockRaceAdd({
   control,
   isLoading,
   urlTracksForDel,
-  hideCategoryBlock,
 }: TBlockRaceAddProps) {
-  const [genderButtonNumber, setGenderButtonNumber] = useState<number>(0);
+  // const [genderButtonNumber, setGenderButtonNumber] = useState<number>(0);
 
-  // Выбор пола для добавления категорий
-  const categoryProperty =
-    buttonsGender.find((btn) => btn.id === genderButtonNumber)?.name === 'male'
-      ? 'categoriesAgeMale'
-      : 'categoriesAgeFemale';
+  // // Выбор пола для добавления категорий
+  // const categoryProperty =
+  //   buttonsGender.find((btn) => btn.id === genderButtonNumber)?.name === 'male'
+  //     ? 'categoriesAgeMale'
+  //     : 'categoriesAgeFemale';
 
   // Добавление Заезда.
   const addRace = (e: MouseEvent<HTMLButtonElement>): void => {
@@ -224,33 +219,36 @@ export default function BlockRaceAdd({
             />
           )}
         />
-
-        {!hideCategoryBlock && (
-          <div className={styles.block__categories}>
-            <TitleAndLine title={'Возрастные категории'} hSize={3} />
-            {/* <div>блок схема отображения диапазона категорий в м/ж</div> */}
-
-            {/* Блок установки возрастных категорий */}
-            <div className={styles.spacer__buttons_cat}>
-              <FilterRidersForAddResult
-                activeIdBtn={genderButtonNumber}
-                setActiveIdBtn={setGenderButtonNumber}
-                buttons={buttonsGender}
-              />
-            </div>
-
-            {/* <BlockCategorySet
-              key={`BlockCategorySet-${categoryProperty}`}
-              register={register}
-              errors={errors}
-              races={races}
-              index={index}
-              control={control}
-              categoryProperty={categoryProperty}
-            /> */}
-          </div>
-        )}
       </div>
     </div>
   );
 }
+
+// Блок добавления категорий в заезд. Перемещен на отдельную страницу для добавления не в заезд, а в чемпионат.
+// {
+//   !hideCategoryBlock && (
+//     <div className={styles.block__categories}>
+//       <TitleAndLine title={'Возрастные категории'} hSize={3} />
+//       {/* <div>блок схема отображения диапазона категорий в м/ж</div> */}
+
+//       {/* Блок установки возрастных категорий */}
+//       <div className={styles.spacer__buttons_cat}>
+//         <FilterRidersForAddResult
+//           activeIdBtn={genderButtonNumber}
+//           setActiveIdBtn={setGenderButtonNumber}
+//           buttons={buttonsGender}
+//         />
+//       </div>
+
+//       <BlockCategorySet
+//         key={`BlockCategorySet-${categoryProperty}`}
+//         register={register}
+//         errors={errors}
+//         races={races}
+//         index={index}
+//         control={control}
+//         categoryProperty={categoryProperty}
+//       />
+//     </div>
+//   );
+// }

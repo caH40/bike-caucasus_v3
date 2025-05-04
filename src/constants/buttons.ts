@@ -24,3 +24,12 @@ export const buttonsGender: TOptions[] = [
   { id: 0, translation: 'Мужские', name: 'male' },
   { id: 1, translation: 'Женские', name: 'female' },
 ];
+
+/**
+ * Кнопки для выбора форм для заполнения данных чемпионата.
+ */
+export const championshipFormNavigationButtons: TOptions[] = [
+  { id: 0, translation: 'Основные', name: 'main' },
+  { id: 1, translation: 'Категории', name: 'categories' },
+  { id: 2, translation: 'Заезды', name: 'races' },
+];

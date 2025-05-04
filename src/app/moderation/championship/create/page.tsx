@@ -1,9 +1,11 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconChampionship from '@/components/Icons/IconChampionship';
-import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionship';
+
 import { fetchChampionshipCreated, getToursAndSeries } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import t from '@/locales/ru/moderation/championship.json';
+
+import CContainerChampionshipForms from '@/components/ClientContainers/CContainerChampionshipForms/CContainerChampionshipForms';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +24,8 @@ export default async function ChampionshipCreatePage() {
   return (
     <>
       <TitleAndLine title={t.titleCreate} hSize={1} Icon={IconChampionship} />
-      <FormChampionship
+
+      <CContainerChampionshipForms
         organizer={organizer}
         fetchChampionshipCreated={fetchChampionshipCreated}
         parentChampionships={parentChampionships.data || []}
