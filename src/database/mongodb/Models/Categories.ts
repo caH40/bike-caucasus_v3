@@ -33,8 +33,14 @@ export const CategoriesSchema = new Schema<ICategoryDocument>({
     male: { type: [CategoryAgeSchema], required: true },
   },
   skillLevel: {
-    female: { type: [CategorySkillLevelSchema], required: true },
-    male: { type: [CategorySkillLevelSchema], required: true },
+    type: new Schema(
+      {
+        female: { type: [CategorySkillLevelSchema] },
+        male: { type: [CategorySkillLevelSchema] },
+      },
+      { _id: false }
+    ),
+    default: undefined,
   },
 });
 

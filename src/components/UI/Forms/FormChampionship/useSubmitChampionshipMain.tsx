@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { SubmitHandler } from 'react-hook-form';
 
 import { useLoadingStore } from '@/store/loading';
-import { serializationChampionship } from '@/libs/utils/serialization/championship';
+import { serializationChampionshipMain } from '@/libs/utils/serialization/championshipMain';
 import t from '@/locales/ru/moderation/championship.json';
 
 // types
@@ -38,7 +38,7 @@ export const useSubmitChampionshipMain = ({
     const parentChampionshipId = dataForm.parentChampionship?._id;
 
     // Сериализация данных в FormData перед отправкой на сервер.
-    const dataSerialized = serializationChampionship({
+    const dataSerialized = serializationChampionshipMain({
       dataForm,
       championshipId,
       parentChampionshipId,

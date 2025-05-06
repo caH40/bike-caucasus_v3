@@ -1,4 +1,4 @@
-import { Document, ObjectId, Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import slugify from 'slugify';
 
 import { errorLogger } from '@/errors/error';
@@ -33,8 +33,9 @@ import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
 import { RegistrationChampService } from './RegistrationChamp';
-import { TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
+import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
+import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -286,11 +287,18 @@ export class ChampionshipService {
         ...(stage && { stage }),
       };
 
-      const response = await ChampionshipModel.create(createData);
+      // Создаём новый чемпионат на основе входных данных.
+      const championshipCreated = await ChampionshipModel.create(createData);
 
-      if (!response._id) {
-        throw new Error('Чемпионат не сохранился в БД!');
-      }
+      // Создаём дефолтные категории и привязываем их к чемпионату.
+      const categoriesCreated = await CategoriesModel.create({
+        championship: championshipCreated._id,
+        ...DEFAULT_STANDARD_CATEGORIES,
+      });
+
+      // Сохраняем ID созданных категорий в чемпионат (в поле categoriesConfigs).
+      championshipCreated.categoriesConfigs = [categoriesCreated._id];
+      await championshipCreated.save();
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
     } catch (error) {
@@ -455,23 +463,17 @@ export class ChampionshipService {
       // Подключение к БД.
       await this.dbConnection();
 
-      const championshipDB:
-        | ({
-            status: TChampionshipStatus;
-            name: string;
-            posterUrl: string;
-            races: TRace[];
-            _id: Types.ObjectId;
-          } & Document)
-        | null = await ChampionshipModel.findOne(
-        { urlSlug },
-        {
-          status: true,
-          name: true,
-          posterUrl: true,
-          races: true,
-        }
-      );
+      const championshipDB: TDeleteChampionshipFromMongo | null =
+        await ChampionshipModel.findOne(
+          { urlSlug },
+          {
+            status: true,
+            name: true,
+            posterUrl: true,
+            races: true,
+            categoriesConfigs: true,
+          }
+        );
 
       if (!championshipDB) {
         throw new Error(`Не найден Чемпионат с urlSlug: ${urlSlug} в БД!`);
@@ -501,6 +503,9 @@ export class ChampionshipService {
           });
         }
       }
+
+      // Удаление пакетов категорий.
+      await CategoriesModel.deleteMany({ _id: championshipDB.categoriesConfigs });
 
       return {
         data: null,

@@ -52,6 +52,28 @@ export const championshipStatusMap: TOptionsMap = new Map([
   ['cancelled', { translation: 'Отмененный' }],
 ]);
 
+export const DEFAULT_STANDARD_CATEGORIES = {
+  name: 'Стандартный',
+  description: 'Стандартные категории. Мужчины 18+. Женщины 18+.',
+  age: {
+    female: [
+      {
+        min: 18,
+        max: 120,
+        name: 'Ж18+',
+      },
+    ],
+    male: [
+      {
+        min: 18,
+        max: 120,
+        name: 'М18+',
+      },
+    ],
+  },
+  skillLevel: undefined,
+};
+
 /**
  * Начальные значения объекта Race (заезд) в Соревновании/Этапе.
  */
@@ -66,27 +88,6 @@ export const raceInit: TRaceForForm = {
   trackGPXFile: null,
   trackGPXUrl: null,
   registeredRiders: [],
-  categories: {
-    name: 'default',
-    age: [
-      {
-        name: '',
-        female: [
-          {
-            min: 18,
-            max: 120,
-            name: '',
-          },
-        ],
-        male: [
-          {
-            min: 18,
-            max: 120,
-            name: '',
-          },
-        ],
-      },
-    ],
-  },
+  categories: DEFAULT_STANDARD_CATEGORIES,
   quantityRidersFinished: 0,
 };

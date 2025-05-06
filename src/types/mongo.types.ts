@@ -1,5 +1,7 @@
 import { ObjectId } from 'mongoose';
-import { TCategories } from './models.interface';
+import { TCategories, TChampionshipStatus, TRace } from './models.interface';
+import { Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 /**
  * Данные чемпионата из MongoDB в формате .lean().
@@ -16,3 +18,15 @@ export type TGetToursAndSeriesFromMongo = {
  * Получение категорий для заезда raceNumber чемпионата championshipId из MongoDB в формате .lean().
  */
 export type TGetRaceCategoriesFromMongo = Pick<TCategories, 'age' | 'skillLevel'>;
+
+/**
+ * Удаление Чемпионата.
+ */
+export type TDeleteChampionshipFromMongo = {
+  status: TChampionshipStatus;
+  name: string;
+  posterUrl: string;
+  races: TRace[];
+  _id: Types.ObjectId;
+  categoriesConfigs: Types.ObjectId[];
+} & Document;
