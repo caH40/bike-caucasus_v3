@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 /**
  * Отправка формы создания/редактирования Чемпионата.
  */
-export const useSubmitChampionship = ({
+export const useSubmitChampionshipMain = ({
   championshipForEdit,
   organizerId,
   urlTracksForDel,
@@ -64,6 +64,7 @@ export const useSubmitChampionship = ({
         urlSlug: championshipForEdit.urlSlug,
       });
     } else {
+      setLoading(false);
       return toast.error(messageErr);
     }
 

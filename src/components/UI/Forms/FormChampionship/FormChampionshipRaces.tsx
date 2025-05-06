@@ -7,7 +7,7 @@ import cn from 'classnames';
 
 import { useLoadingStore } from '@/store/loading';
 import { useShowChampionshipForm } from '@/hooks/useShowChampionshipForm';
-import { useSubmitChampionship } from './useSubmitChampionship';
+import { useSubmitChampionship } from './useSubmitChampionshipMain';
 import { content, TextValidationService } from '@/libs/utils/text';
 import { getDateTime } from '@/libs/utils/calendar';
 import { championshipTypes } from '@/constants/championship';

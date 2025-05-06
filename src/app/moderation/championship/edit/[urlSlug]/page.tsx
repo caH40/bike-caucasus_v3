@@ -1,11 +1,10 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionshipRaces';
 import IconChampionship from '@/components/Icons/IconChampionship';
-
 import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../ChampionshipEditPage.module.css';
+import CContainerChampionshipForms from '@/components/ClientContainers/CContainerChampionshipForms/CContainerChampionshipForms';
 
 type Props = {
   params: Promise<{
@@ -51,7 +50,8 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
   return (
     <>
       <TitleAndLine title="Редактирование Чемпионата" hSize={1} Icon={IconChampionship} />
-      <FormChampionship
+
+      <CContainerChampionshipForms
         putChampionship={putChampionship}
         championshipForEdit={championship.data}
         parentChampionships={parentChampionships.data || []}

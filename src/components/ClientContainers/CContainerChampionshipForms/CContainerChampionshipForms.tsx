@@ -16,6 +16,7 @@ export default function CContainerChampionshipForms({
   fetchChampionshipCreated,
   parentChampionships,
   championshipForEdit,
+  putChampionship,
 }: TCContainerChampionshipFormsProps) {
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
   const [isFormDirty, setIsFormDirty] = useState(false);
@@ -45,6 +46,8 @@ export default function CContainerChampionshipForms({
         fetchChampionshipCreated={fetchChampionshipCreated}
         parentChampionships={parentChampionships}
         setIsFormDirty={setIsFormDirty}
+        championshipForEdit={championshipForEdit}
+        putChampionship={putChampionship}
       />
     ),
     1: <div>Категории</div>,

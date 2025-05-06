@@ -7,7 +7,7 @@ import cn from 'classnames';
 
 import { useLoadingStore } from '@/store/loading';
 import { useShowChampionshipForm } from '@/hooks/useShowChampionshipForm';
-import { useSubmitChampionship } from './useSubmitChampionship';
+import { useSubmitChampionshipMain } from './useSubmitChampionshipMain';
 import { content, TextValidationService } from '@/libs/utils/text';
 import { getDateTime } from '@/libs/utils/calendar';
 import { championshipTypes } from '@/constants/championship';
@@ -40,7 +40,7 @@ export default function FormChampionship({
 }: TFormChampionshipProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
-  // console.log(parentChampionships);
+  // console.log(championshipForEdit);
 
   // Постер Чемпионата существует при редактировании, url на изображение.
   const [posterUrl, setPosterUrl] = useState<string | null>(
@@ -79,7 +79,7 @@ export default function FormChampionship({
   });
 
   // Функция отправки формы создания/редактирования Чемпионата.
-  const onSubmit = useSubmitChampionship({
+  const onSubmit = useSubmitChampionshipMain({
     championshipForEdit,
     // isSeriesOrTourInForm,
     organizerId: organizer._id,
@@ -329,7 +329,7 @@ export default function FormChampionship({
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
         <Button
-          name={championshipForEdit ? t.btn.update : t.btn.add}
+          name={championshipForEdit ? t.btn.save : t.btn.add}
           theme="green"
           loading={isLoading}
         />

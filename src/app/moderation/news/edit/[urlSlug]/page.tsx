@@ -1,5 +1,3 @@
-import { revalidatePath } from 'next/cache';
-
 import { getNewsOne, putNewsOne } from '@/actions/news';
 import FormNews from '@/components/UI/Forms/FormNews/FormNews';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
@@ -14,8 +12,7 @@ type Props = {
  */
 export default async function NewsEditCurrentPage(props: Props) {
   const params = await props.params;
-  revalidatePath(`/`); // ????????!!!!!!!!! Зачем???
-
+  // revalidatePath(`/`); // ????????!!!!!!!!! Зачем???
 
   // !!!! Изменить логику удаления старого постера.
   const { urlSlug } = params;
