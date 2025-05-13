@@ -223,32 +223,3 @@ export default function BlockRaceAdd({
     </div>
   );
 }
-
-// Блок добавления категорий в заезд. Перемещен на отдельную страницу для добавления не в заезд, а в чемпионат.
-// {
-//   !hideCategoryBlock && (
-//     <div className={styles.block__categories}>
-//       <TitleAndLine title={'Возрастные категории'} hSize={3} />
-//       {/* <div>блок схема отображения диапазона категорий в м/ж</div> */}
-
-//       {/* Блок установки возрастных категорий */}
-//       <div className={styles.spacer__buttons_cat}>
-//         <FilterRidersForAddResult
-//           activeIdBtn={genderButtonNumber}
-//           setActiveIdBtn={setGenderButtonNumber}
-//           buttons={buttonsGender}
-//         />
-//       </div>
-
-//       <BlockCategorySet
-//         key={`BlockCategorySet-${categoryProperty}`}
-//         register={register}
-//         errors={errors}
-//         races={races}
-//         index={index}
-//         control={control}
-//         categoryProperty={categoryProperty}
-//       />
-//     </div>
-//   );
-// }

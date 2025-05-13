@@ -1,0 +1,13 @@
+.wrapper {
+  width: 100%;
+}
+.block__inputs {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.spacer {
+  margin-bottom: 2rem;
+}

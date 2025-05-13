@@ -1,11 +1,3 @@
-import {
-  Control,
-  FieldArrayWithId,
-  useFieldArray,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
-} from 'react-hook-form';
-
 import AddRemoveSquareButtonGroup from '../AddRemoveSquareButtonGroup/AddRemoveSquareButtonGroup';
 import TitleAndLine from '../TitleAndLine/TitleAndLine';
 import AddRemoveSquareButton from '../UI/Buttons/AddRemoveSquareButton';
@@ -13,18 +5,22 @@ import styles from './CategoriesSet.module.css';
 
 // types
 import { TCategoriesSetProps } from '@/types/index.interface';
-import BlockCategorySet from '../UI/BlockCategorySet/BlockCategorySet';
+import BlockCategories from '../UI/BlockCategories/BlockCategories';
 
 /**
- * Контейнер для блоков полей для заполнения данных по категориям в чемпионате.
+ * Общий контейнер для для заполнения данных по категориям в чемпионате.
  */
 function CategoriesSet({
+  categories,
+  register,
   isDefault,
   appendCategories,
   removeCategories,
   control,
+  errors,
   categoriesIndex,
 }: TCategoriesSetProps) {
+  // Добавление
   const addCategoriesFn = (): void => {
     const age = {
       female: [{ min: 0, max: 120, name: '' }],
@@ -73,7 +69,13 @@ function CategoriesSet({
         </AddRemoveSquareButtonGroup>
       </div>
 
-      {/* <BlockCategorySet /> */}
+      <BlockCategories
+        categories={categories}
+        control={control}
+        register={register}
+        categoriesIndex={categoriesIndex}
+        errors={errors}
+      />
     </div>
   );
 }

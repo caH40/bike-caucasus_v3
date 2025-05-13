@@ -881,7 +881,6 @@ export type TFormChampionshipCategoriesProps = {
     championshipId,
   }: TPutCategoriesParams) => Promise<ResponseServer<any>>;
   categoriesConfigs: TCategoriesConfigsClient[];
-  championshipName: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -991,6 +990,14 @@ export type TPutCategoriesParams = {
  * Пропсы компонента CategoriesSet/
  */
 export type TCategoriesSetProps = {
+  categories: FieldArrayWithId<
+    {
+      categories: TCategoriesConfigsClient[];
+    },
+    'categories',
+    'id'
+  >;
+  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
   isDefault?: boolean; // Пакет категорий по умолчанию, или дополнительный.
   appendCategories: UseFieldArrayAppend<
     {
@@ -999,10 +1006,7 @@ export type TCategoriesSetProps = {
     'categories'
   >;
   removeCategories: UseFieldArrayRemove;
-  control:
-    | Control<{
-        categories: TCategoriesConfigsClient[];
-      }>
-    | undefined;
+  control: Control<{ categories: TCategoriesConfigsClient[] }>;
+  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
   categoriesIndex: number;
 };

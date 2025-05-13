@@ -1,14 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-
 import cn from 'classnames';
 
 import { useLoadingStore } from '@/store/loading';
-
+import { useSubmitChampionshipCategories } from './useSubmitChampionshipCategories';
 import Button from '../../Button/Button';
-
+import CategoriesSet from '@/components/CategoriesSet/CategoriesSet';
 import t from '@/locales/ru/moderation/championship.json';
 import styles from '../Form.module.css';
 
@@ -18,19 +16,6 @@ import type {
   TFormChampionshipCategoriesProps,
 } from '@/types/index.interface';
 
-import { useSubmitChampionshipCategories } from './useSubmitChampionshipCategories';
-import BlockCategorySet from '../../BlockCategorySet/BlockCategorySet';
-import BoxInput from '../../BoxInput/BoxInput';
-import { TextValidationService } from '@/libs/utils/text';
-
-import AddSquareButton from '../../Buttons/AddSquareButton';
-import AddRemoveSquareButtonGroup from '../../../AddRemoveSquareButtonGroup/AddRemoveSquareButtonGroup';
-import AddRemoveSquareButton from '../../Buttons/AddRemoveSquareButton';
-import CategoriesSet from '@/components/CategoriesSet/CategoriesSet';
-// import BlockCategorySet from '../../BlockCategorySet/BlockCategorySet';
-
-const textValidation = new TextValidationService();
-
 /**
  * Форма редактирования категорий Чемпионата.
  */
@@ -38,7 +23,6 @@ export default function FormChampionshipCategories({
   putCategories,
   categoriesConfigs,
   setIsFormDirty,
-  championshipName,
 }: TFormChampionshipCategoriesProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
@@ -67,8 +51,6 @@ export default function FormChampionshipCategories({
     name: 'categories', // корневой массив
   });
 
-  console.log(categoriesFields);
-
   // Функция отправки формы редактирования категорий Чемпионата.
   const onSubmit = useSubmitChampionshipCategories();
 
@@ -78,19 +60,20 @@ export default function FormChampionshipCategories({
         <div className={styles.wrapper__block} key={categoriesIndex}>
           <CategoriesSet
             isDefault={field.name === 'Стандартный'}
+            categories={field}
+            register={register}
             appendCategories={appendCategories}
             removeCategories={removeCategories}
             control={control}
+            errors={errors}
             categoriesIndex={categoriesIndex}
           />
         </div>
       ))}
 
-      <div className={styles.wrapper__block}>
-        {/* Кнопка отправки формы. */}
-        <div className={styles.box__button}>
-          <Button name={t.btn.save} theme="green" loading={isLoading} />
-        </div>
+      {/* Кнопка отправки формы. */}
+      <div className={styles.box__button}>
+        <Button name={t.btn.save} theme="green" loading={isLoading} />
       </div>
     </form>
   );
