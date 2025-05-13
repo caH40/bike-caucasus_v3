@@ -846,13 +846,13 @@ export type TParamsProps = {
 };
 
 /**
- * Пропсы для компонента FormChampionship.
- *
+ * Пропсы для компонента FormChampionshipMain.
  * @property organizer - Объект организатора, от имени которого создается или редактируется чемпионат.
  * @property fetchChampionshipCreated - Функция для отправки формы создания чемпионата (POST-запрос).
  * @property putChampionship - Функция для отправки формы редактирования чемпионата (PUT-запрос).
  * @property championshipForEdit - Объект существующего чемпионата, если происходит редактирование.
  * @property parentChampionships - Список доступных родительских чемпионатов для выбора и связи.
+ * @property setIsFormDirty - Флаг фиксирующий изменения в форме.
  */
 export type TFormChampionshipProps = {
   organizer: TDtoOrganizer;
@@ -868,6 +868,30 @@ export type TFormChampionshipProps = {
   parentChampionships: TToursAndSeriesDto[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
 };
+
+/**
+ * Пропсы для компонента FormChampionshipCategories.
+ * @property putCategories - Функция для отправки формы редактирования категорий чемпионата.
+ * @property championshipForEdit - Объект существующего чемпионата, если происходит редактирование.
+ * @property setIsFormDirty - Флаг фиксирующий изменения в форме.
+ */
+export type TFormChampionshipCategoriesProps = {
+  putCategories?: ({
+    categoriesConfigs,
+    championshipId,
+  }: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  categoriesConfigs: TCategoriesConfigsClient[];
+  championshipName: string;
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+};
+
+/**
+ * Конфигурации категорий чемпионата на клиенте.
+ */
+export type TCategoriesConfigsClient = Omit<TCategories, '_id' | 'championship'> & {
+  _id?: string;
+};
+
 export type TCContainerChampionshipFormsProps = {
   organizer: TDtoOrganizer;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
@@ -880,6 +904,10 @@ export type TCContainerChampionshipFormsProps = {
   }) => Promise<ResponseServer<any>>;
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
+  putCategories?: ({
+    categoriesConfigs,
+    championshipId,
+  }: TPutCategoriesParams) => Promise<ResponseServer<any>>;
 };
 
 /**
@@ -957,4 +985,24 @@ export type TPutCategoriesParams = {
     _id?: string; // Если отсутствует, значит добавляется новый пакет.
   })[];
   championshipId: string;
+};
+
+/**
+ * Пропсы компонента CategoriesSet/
+ */
+export type TCategoriesSetProps = {
+  isDefault?: boolean; // Пакет категорий по умолчанию, или дополнительный.
+  appendCategories: UseFieldArrayAppend<
+    {
+      categories: TCategoriesConfigsClient[];
+    },
+    'categories'
+  >;
+  removeCategories: UseFieldArrayRemove;
+  control:
+    | Control<{
+        categories: TCategoriesConfigsClient[];
+      }>
+    | undefined;
+  categoriesIndex: number;
 };

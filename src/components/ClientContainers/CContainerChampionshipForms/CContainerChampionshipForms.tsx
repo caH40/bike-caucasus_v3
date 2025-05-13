@@ -5,8 +5,9 @@ import { useState } from 'react';
 import styles from './CContainerChampionshipForms.module.css';
 import { championshipFormNavigationButtons } from '@/constants/buttons';
 import ChampionshipFormNavigation from '@/components/UI/Filters/ChampionshipFormNavigation/ChampionshipFormNavigation';
-import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionship';
+import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionshipMain';
 import { TCContainerChampionshipFormsProps } from '@/types/index.interface';
+import FormChampionshipCategories from '@/components/UI/Forms/FormChampionship/FormChampionshipCategories';
 
 /**
  *  Клиентский контейнер для скачивания документов с зарегистрированными участниками Чемпионата.
@@ -17,6 +18,7 @@ export default function CContainerChampionshipForms({
   parentChampionships,
   championshipForEdit,
   putChampionship,
+  putCategories,
 }: TCContainerChampionshipFormsProps) {
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
   const [isFormDirty, setIsFormDirty] = useState(false);
@@ -50,7 +52,14 @@ export default function CContainerChampionshipForms({
         putChampionship={putChampionship}
       />
     ),
-    1: <div>Категории</div>,
+    1: championshipForEdit && (
+      <FormChampionshipCategories
+        putCategories={putCategories}
+        categoriesConfigs={championshipForEdit.categoriesConfigs}
+        championshipName={championshipForEdit.name}
+        setIsFormDirty={setIsFormDirty}
+      />
+    ),
     2: <div>Races</div>,
   };
 

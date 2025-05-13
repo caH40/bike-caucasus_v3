@@ -1,0 +1,13 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 14px;
+}
+.label {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--gray);
+  user-select: none;
+  white-space: nowrap;
+}

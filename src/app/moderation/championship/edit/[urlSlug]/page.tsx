@@ -1,6 +1,11 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconChampionship from '@/components/Icons/IconChampionship';
-import { getChampionship, getToursAndSeries, putChampionship } from '@/actions/championship';
+import {
+  getChampionship,
+  getToursAndSeries,
+  putChampionship,
+  putCategories,
+} from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../ChampionshipEditPage.module.css';
@@ -53,6 +58,7 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
 
       <CContainerChampionshipForms
         putChampionship={putChampionship}
+        putCategories={putCategories}
         championshipForEdit={championship.data}
         parentChampionships={parentChampionships.data || []}
         organizer={organizer.data}

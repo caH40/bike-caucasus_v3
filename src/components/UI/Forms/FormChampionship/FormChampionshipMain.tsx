@@ -30,7 +30,7 @@ import useParentChampionshipDates from '@/hooks/useParentChampionshipDates';
 /**
  * Форма создания/редактирования Чемпионата.
  */
-export default function FormChampionship({
+export default function FormChampionshipMain({
   organizer,
   fetchChampionshipCreated,
   putChampionship,

@@ -1,0 +1,6 @@
+.btn {
+  cursor: pointer;
+}
+.btn:hover {
+  opacity: 0.8;
+}
