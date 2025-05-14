@@ -1,26 +1,10 @@
-import { FieldErrors, UseFormRegister, Control, FieldArrayWithId } from 'react-hook-form';
-
-import BoxInput from '../BoxInput/BoxInput';
-import { TCategoriesConfigsClient } from '@/types/index.interface';
-import t from '@/locales/ru/moderation/championship.json';
-import styles from './BlockCategories.module.css';
 import { TextValidationService } from '@/libs/utils/text';
+import BoxInput from '../BoxInput/BoxInput';
+import t from '@/locales/ru/moderation/championship.json';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import BlockAgeCategory from '../BlockCategory/BlockAgeCategory';
-
-type Props = {
-  categories: FieldArrayWithId<
-    {
-      categories: TCategoriesConfigsClient[];
-    },
-    'categories',
-    'id'
-  >;
-  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
-  control: Control<{ categories: TCategoriesConfigsClient[] }>;
-  categoriesIndex: number;
-};
+import BlockCategory from '../BlockCategory/BlockCategory';
+import styles from './BlockCategories.module.css';
+import { TBlockCategoriesProps } from '@/types/index.interface';
 
 const textValidation = new TextValidationService();
 
@@ -33,7 +17,7 @@ export default function BlockCategories({
   errors,
   categoriesIndex,
   control,
-}: Props) {
+}: TBlockCategoriesProps) {
   // const key = `${index}-${categoryProperty}`;
 
   return (
@@ -70,8 +54,6 @@ export default function BlockCategories({
           autoComplete="off"
           type="text"
           defaultValue={categories.description}
-          // loading={isLoading}
-          disabled={categories.name === 'Стандартный'}
           register={register(`categories.${categoriesIndex}.description`, {
             maxLength: {
               value: 100,
@@ -91,7 +73,8 @@ export default function BlockCategories({
       <TitleAndLine title={'Возрастные категории'} />
 
       <div className={styles.spacer}>
-        <BlockAgeCategory
+        <BlockCategory
+          fieldKey={'age'}
           register={register}
           control={control}
           categoriesIndex={categoriesIndex}
@@ -100,6 +83,16 @@ export default function BlockCategories({
       </div>
 
       <TitleAndLine title={'Категории по уровню подготовки'} />
+
+      <div className={styles.spacer}>
+        <BlockCategory
+          fieldKey={'skillLevel'}
+          register={register}
+          control={control}
+          categoriesIndex={categoriesIndex}
+          errors={errors}
+        />
+      </div>
     </div>
   );
 }

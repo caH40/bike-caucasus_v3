@@ -7,17 +7,13 @@ export class TextValidationService {
   /**
    *  Функция проверки для пробелов. Не больше одного пробела
    */
-  public spaces(value: string | undefined) {
+  public spaces(value: unknown) {
     // Игнорирование undefined.
-    if (value === undefined) {
-      return true;
-    }
+    if (typeof value !== 'string') return true;
+
     // Регулярное выражение для проверки более двух пробелов подряд
-    const hasMoreThanTwoSpaces = /\s{2,}/.test(value);
-    if (hasMoreThanTwoSpaces) {
-      return 'Текст не может содержать более одного пробела подряд';
-    }
-    return true; // Возвращаем true, если проверка пройдена
+    const hasMoreThanOneSpace = /\s{2,}/.test(value);
+    return hasMoreThanOneSpace ? 'Текст не может содержать более одного пробела подряд' : true;
   }
 }
 

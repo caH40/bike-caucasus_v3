@@ -1,7 +1,10 @@
 import type {
   Control,
   FieldArrayWithId,
+  FieldError,
   FieldErrors,
+  FieldErrorsImpl,
+  Merge,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
   UseFormRegister,
@@ -1009,4 +1012,80 @@ export type TCategoriesSetProps = {
   control: Control<{ categories: TCategoriesConfigsClient[] }>;
   errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
   categoriesIndex: number;
+};
+
+export type TCategoriesFormType = { categories: TCategoriesConfigsClient[] };
+/**
+ * Пропсы для компонента AgeCategoryInputFields.
+ */
+export type TAgeCategoryInputFieldsProps = {
+  register: UseFormRegister<TCategoriesFormType>;
+
+  // Пол: male или female — нужен для метки
+  categoryProperty: 'male' | 'female';
+
+  // Префикс пути до конкретной категории, например: "categories.0.age.male.0"
+  fieldPathPrefix:
+    | `categories.${number}.age.male.${number}`
+    | `categories.${number}.age.female.${number}`
+    | `categories.${number}.skillLevel.male.${number}`
+    | `categories.${number}.skillLevel.female.${number}`;
+
+  // Ошибки валидации для полей min/max/name
+  fieldErrors:
+    | Merge<
+        FieldError,
+        FieldErrorsImpl<{
+          min: number;
+          max: number;
+          name: string;
+        }>
+      >
+    | undefined;
+};
+
+/**
+ * Пропсы для компонента SkillLevelCategoryInputFields.
+ */
+export type TSkillLevelCategoryInputFieldsProps = Omit<
+  TAgeCategoryInputFieldsProps,
+  'categoryProperty' | 'fieldErrors'
+> & {
+  fieldErrors:
+    | Merge<
+        FieldError,
+        FieldErrorsImpl<{
+          name: string;
+          description: number;
+        }>
+      >
+    | undefined;
+};
+
+/**
+ * Пропсы для компонента BlockCategories.
+ */
+export type TBlockCategoriesProps = {
+  categories: FieldArrayWithId<
+    {
+      categories: TCategoriesConfigsClient[];
+    },
+    'categories',
+    'id'
+  >;
+  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
+  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
+  control: Control<{ categories: TCategoriesConfigsClient[] }>;
+  categoriesIndex: number;
+};
+
+/**
+ * Пропсы для компонента BlockCategory.
+ */
+export type TBlockCategoryProps = {
+  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
+  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
+  control: Control<{ categories: TCategoriesConfigsClient[] }>;
+  categoriesIndex: number;
+  fieldKey: 'age' | 'skillLevel';
 };

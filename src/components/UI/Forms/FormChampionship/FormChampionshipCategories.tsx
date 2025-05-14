@@ -52,7 +52,11 @@ export default function FormChampionshipCategories({
   });
 
   // Функция отправки формы редактирования категорий Чемпионата.
-  const onSubmit = useSubmitChampionshipCategories();
+  // const onSubmit = useSubmitChampionshipCategories();
+
+  const onSubmit = (formData: { categories: TCategoriesConfigsClient[] }) => {
+    console.log(formData.categories);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>

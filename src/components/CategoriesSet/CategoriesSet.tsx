@@ -27,7 +27,7 @@ function CategoriesSet({
       male: [{ min: 0, max: 120, name: '' }],
     };
 
-    appendCategories({ age, name: '' });
+    appendCategories({ age, name: '', skillLevel: undefined });
   };
 
   const removeCategoriesFn = (): void => {
