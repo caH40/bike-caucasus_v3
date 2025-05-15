@@ -32,8 +32,6 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
     getOrganizerForModerate(),
   ]);
 
-  console.dir(championship.data?.categoriesConfigs, { depth: null });
-
   if (!organizer.data || !championship.data) {
     return (
       <h2 className={styles.error}>

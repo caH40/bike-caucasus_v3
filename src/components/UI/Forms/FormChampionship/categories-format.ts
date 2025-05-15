@@ -79,8 +79,8 @@ function checkSkillLevelCategories(skillLevelCategoriesConfigs: SkillLevelCatego
   hasMale: boolean;
   hasFemale: boolean;
 } {
-  const hasMale = skillLevelCategoriesConfigs?.male.length > 0;
-  const hasFemale = skillLevelCategoriesConfigs?.female.length > 0;
+  const hasMale = skillLevelCategoriesConfigs?.male?.length > 0;
+  const hasFemale = skillLevelCategoriesConfigs?.female?.length > 0;
 
   return { hasMale, hasFemale };
 }
