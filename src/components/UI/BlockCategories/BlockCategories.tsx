@@ -40,11 +40,7 @@ export default function BlockCategories({
             },
             validate: textValidation.spaces,
           })}
-          validationText={
-            errors?.categories?.[categoriesIndex]?.name
-              ? errors?.categories?.[categoriesIndex]?.name.message
-              : ''
-          }
+          validationText={errors?.categories?.[categoriesIndex]?.name?.message || ''}
           tooltip={{ text: t.tooltips.categoriesName, id: 'nameChampionship' }}
         />
 
@@ -61,11 +57,7 @@ export default function BlockCategories({
             },
             validate: textValidation.spaces,
           })}
-          validationText={
-            errors?.categories?.[categoriesIndex]?.description
-              ? errors?.categories?.[categoriesIndex]?.description.message
-              : ''
-          }
+          validationText={errors?.categories?.[categoriesIndex]?.description?.message || ''}
           tooltip={{ text: t.tooltips.categoriesDescription, id: `categoriesDescription` }}
         />
       </div>

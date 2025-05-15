@@ -326,15 +326,14 @@ export class ChampionshipService {
       // Проверка на дубликаты названий пакетов категорий.
       this.validateUniqueCategoryNames(categoriesConfigs);
 
-      // return { data: null, ok: false, message: 'Все ок!' };
-
       // Получаем все существующие пакеты категорий (кроме 'default') для текущего чемпионата.
       const oldCategories = await CategoriesModel.find(
         { championship: championshipId, name: { $ne: 'default' } },
         { _id: true }
       ).lean<{ _id: Types.ObjectId }[]>();
 
-      const updatedIds = new Set<string>(); // Сохраняем _id обновлённых пакетов.
+      // Сохраняем _id обновлённых пакетов.
+      const updatedIds = new Set<string>();
 
       for (const config of categoriesConfigs) {
         if (config._id) {
@@ -358,6 +357,12 @@ export class ChampionshipService {
           updatedIds.add(created._id.toString()); // Добавляем созданный _id.
         }
       }
+
+      // Обновление categoriesConfigs в Чемпионате.
+      await ChampionshipModel.findOneAndUpdate({
+        _id: championshipId,
+        categoriesConfigs: [...updatedIds],
+      });
 
       // Удаляем те пакеты, _id которых не было среди обновлённых.
       const toDelete = oldCategories.filter((cat) => !updatedIds.has(cat._id.toString()));

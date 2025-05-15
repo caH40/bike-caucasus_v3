@@ -10,7 +10,9 @@ export function getTimerLocal(
   long?: boolean
 ) {
   const dateForFormat = new Date(date);
-  if (!date || date === 0) return 'Дата отсутствует...';
+  if (!date || date === 0) {
+    return 'Дата отсутствует...';
+  }
 
   const formatterHourAndMinutes = new Intl.DateTimeFormat('ru', {
     hour: '2-digit',

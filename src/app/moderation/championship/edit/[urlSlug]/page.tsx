@@ -51,6 +51,7 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
   }
 
   const parentChampionships = await getToursAndSeries({ organizerId: organizer.data._id });
+  console.log(championship.data);
 
   return (
     <>
