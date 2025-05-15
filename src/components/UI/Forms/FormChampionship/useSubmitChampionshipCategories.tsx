@@ -1,12 +1,14 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 import { serializationChampionshipCategories } from '@/libs/utils/serialization/championshipCategories';
 import { useLoadingStore } from '@/store/loading';
 import {
   TCategoriesConfigsClient,
   TUseSubmitChampionshipCategoriesParams,
 } from '@/types/index.interface';
-import { toast } from 'sonner';
 
 /**
  * Отправка формы категории при редактировании Чемпионата.
@@ -14,10 +16,10 @@ import { toast } from 'sonner';
 export const useSubmitChampionshipCategories = ({
   putCategories,
   organizerId,
-  reset,
   setIsFormDirty,
   urlSlug,
 }: TUseSubmitChampionshipCategoriesParams) => {
+  const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
   const onSubmit = async (formData: { categories: TCategoriesConfigsClient[] }) => {
@@ -38,9 +40,11 @@ export const useSubmitChampionshipCategories = ({
 
     // Отображение статуса сохранения События в БД.
     if (response.ok) {
-      reset();
       toast.success(response.message);
       setIsFormDirty(false);
+
+      // Обновляем родительский серверный компонент.
+      router.refresh();
     } else {
       toast.error(response.message);
     }

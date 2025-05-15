@@ -15,6 +15,7 @@ import type {
   TCategoriesConfigsClient,
   TFormChampionshipCategoriesProps,
 } from '@/types/index.interface';
+import { useEffect } from 'react';
 
 /**
  * Форма редактирования категорий Чемпионата.
@@ -56,8 +57,16 @@ export default function FormChampionshipCategories({
     putCategories,
     urlSlug,
     setIsFormDirty,
-    reset,
   });
+
+  // Обновление состояние формы при обновлении данных categoriesConfigs из пропсов.
+  useEffect(() => {
+    if (categoriesConfigs) {
+      reset({
+        categories: categoriesConfigs,
+      });
+    }
+  }, [categoriesConfigs, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>

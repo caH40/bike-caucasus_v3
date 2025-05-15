@@ -946,9 +946,6 @@ export type TUseSubmitChampionshipParams = {
 export type TUseSubmitChampionshipCategoriesParams = {
   putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
   organizerId: string;
-  reset: UseFormReset<{
-    categories: TCategoriesConfigsClient[];
-  }>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
 };
