@@ -9,7 +9,9 @@ export class TextValidationService {
    */
   public spaces(value: unknown) {
     // Игнорирование undefined.
-    if (typeof value !== 'string') return true;
+    if (typeof value !== 'string') {
+      return true;
+    }
 
     // Регулярное выражение для проверки более двух пробелов подряд
     const hasMoreThanOneSpace = /\s{2,}/.test(value);
@@ -67,6 +69,22 @@ export const content = {
     }
 
     return input.replace(/<(?!\/?(a|br)(\s|\/?)[^>]*>)[^>]+>/gi, '');
+  },
+
+  /**
+   * Удаляет все пробелы, табы и переносы строк с начала и конца строки, оставив пробелы внутри текста без изменений.
+   */
+  trimSpaces: (input: string): string => {
+    return input.trim();
+  },
+
+  /**
+   * Очищает строку от HTML-тегов и убирает пробелы в начале и конце.
+   * @param input Исходный текст.
+   * @returns Очищенный текст без HTML-тегов и с обрезанными пробелами.
+   */
+  cleanText: (input: string): string => {
+    return content.trimSpaces(content.stripAllHtmlTags(input));
   },
 
   /**

@@ -20,8 +20,10 @@ import type {
  * Форма редактирования категорий Чемпионата.
  */
 export default function FormChampionshipCategories({
+  organizerId,
   putCategories,
   categoriesConfigs,
+  urlSlug,
   setIsFormDirty,
 }: TFormChampionshipCategoriesProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
@@ -52,11 +54,11 @@ export default function FormChampionshipCategories({
   });
 
   // Функция отправки формы редактирования категорий Чемпионата.
-  // const onSubmit = useSubmitChampionshipCategories();
-
-  const onSubmit = (formData: { categories: TCategoriesConfigsClient[] }) => {
-    console.log(formData.categories);
-  };
+  const onSubmit = useSubmitChampionshipCategories({
+    organizerId,
+    putCategories,
+    urlSlug,
+  });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>

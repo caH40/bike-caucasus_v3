@@ -1,16 +1,17 @@
-import { TCategoryAgeFromForm } from '@/types/index.interface';
+import { content } from '@/libs/utils/text';
 
-type TCategoriesAgeFromForm = {
-  categoriesAgeFemale: TCategoryAgeFromForm[]; // Массив женских возрастных категорий.
-  categoriesAgeMale: TCategoryAgeFromForm[]; // Массив мужских возрастных категорий.
+// types
+import {
+  TAgeCategoryFromForm,
+  TCategoryAge,
+  TCategorySkillLevel,
+} from '@/types/index.interface';
+
+const AGE_MAX = 120; // Максимально допустимый возраст для спортсменов.
+
+type TFormattedNameParams = TCategoryAge & {
+  letterForGender: string;
 };
-
-type TCategoriesAge = {
-  categoriesAgeFemale: TCategoryAgeFromForm[]; // Массив форматированных женских категорий.
-  categoriesAgeMale: TCategoryAgeFromForm[]; // Массив форматированных мужских категорий.
-};
-
-const ageMax = 120; // Максимально допустимый возраст для спортсменов.
 
 /**
  * Формирует имя категории на основе минимального и максимального возраста и пола.
@@ -20,27 +21,17 @@ const ageMax = 120; // Максимально допустимый возрас�
  * letterForGender - Буква, обозначающая пол (М - для мужчин, Ж - для женщин).
  * @returns {string} - Форматированное имя категории.
  */
-function getFormattedName({
-  min,
-  max,
-  name,
-  letterForGender,
-}: {
-  min: string;
-  max: string;
-  name: string;
-  letterForGender: string;
-}): string {
-  const nameTrimmed = name.trim(); // Удаление лишних пробелов из имени категории.
-  const maxNotLimit = +max >= ageMax; // Проверка, если максимальный возраст не ограничен.
+function getFormattedName({ min, max, name, letterForGender }: TFormattedNameParams): string {
+  const nameTrimmed = name.trim();
+  const minNum = Number(min);
+  const maxNum = Number(max);
+  const maxNotLimit = maxNum >= AGE_MAX;
 
-  // Форматирование имени категории: если max не ограничен, формат "Ж10+" или "М10+".
-  // Иначе формат "Ж10-20" или "М10-20".
-  if (maxNotLimit) {
-    return nameTrimmed === '' ? `${letterForGender}${min}+` : nameTrimmed;
+  if (nameTrimmed) {
+    return nameTrimmed;
   }
 
-  return nameTrimmed === '' ? `${letterForGender}${min}-${max}` : nameTrimmed;
+  return maxNotLimit ? `${letterForGender}${minNum}+` : `${letterForGender}${minNum}-${maxNum}`;
 }
 
 /**
@@ -49,19 +40,23 @@ function getFormattedName({
  * @param {'male' | 'female'} gender - Пол спортсменов (male для мужчин, female для женщин).
  * @returns {TCategoryAge[]} - Массив форматированных возрастных категорий с числами и именами.
  */
-function formatCategoryAge({
-  categoriesAge,
+export function formatAgeCategories({
+  ageCategories,
   gender,
 }: {
-  categoriesAge: TCategoryAgeFromForm[];
+  ageCategories: TAgeCategoryFromForm[];
   gender: 'male' | 'female';
-}): TCategoryAgeFromForm[] {
+}): TCategoryAge[] {
+  if (ageCategories.length === 0) {
+    return [];
+  }
+
   const letterForGender = gender === 'female' ? 'Ж' : 'М'; // Определение буквы для пола.
 
   // Преобразуем каждую категорию из формы в форматированную категорию.
-  return categoriesAge.map((category) => {
-    const min = category.min; // Преобразуем минимальное значение в число.
-    const max = category.max; // Преобразуем максимальное значение в число.
+  return ageCategories.map((category) => {
+    const min = Number(category.min);
+    const max = category.max ? Number(category.max) : AGE_MAX;
 
     // Формируем объект категории с отформатированными значениями.
     return {
@@ -72,30 +67,51 @@ function formatCategoryAge({
   });
 }
 
+type SkillLevelCategoriesConfigs = {
+  female: TCategorySkillLevel[];
+  male: TCategorySkillLevel[];
+};
+
 /**
- * Обрабатывает и форматирует возрастные категории для мужчин и женщин, преобразуя их из формы в удобный формат.
- * @param {TCategoriesAgeFromForm} categoriesAge - Массивы возрастных категорий для мужчин и женщин из формы.
- * @returns {TCategoriesAge} - Обработанные и форматированные категории для мужчин и женщин.
+ * Проверка на наличие категорий по уровню подготовки.
  */
-export function formatCategoriesFields({
-  categoriesAgeFemale,
-  categoriesAgeMale,
-}: TCategoriesAgeFromForm): TCategoriesAge {
-  // Форматируем женские категории.
-  const categoriesAgeFemaleFormatted = formatCategoryAge({
-    categoriesAge: categoriesAgeFemale,
-    gender: 'female',
-  });
+function checkSkillLevelCategories(skillLevelCategoriesConfigs: SkillLevelCategoriesConfigs): {
+  hasMale: boolean;
+  hasFemale: boolean;
+} {
+  const hasMale = skillLevelCategoriesConfigs?.male.length > 0;
+  const hasFemale = skillLevelCategoriesConfigs?.female.length > 0;
 
-  // Форматируем мужские категории.
-  const categoriesAgeMaleFormatted = formatCategoryAge({
-    categoriesAge: categoriesAgeMale,
-    gender: 'male',
-  });
+  return { hasMale, hasFemale };
+}
 
-  // Возвращаем обработанные категории.
-  return {
-    categoriesAgeFemale: categoriesAgeFemaleFormatted,
-    categoriesAgeMale: categoriesAgeMaleFormatted,
-  };
+/**
+ * Форматирует категории по уровню подготовки, очищая текстовые поля и
+ * возвращая объект с массивами категорий для мужчин и женщин.
+ * Если входной объект не содержит ни мужских, ни женских категорий, возвращает `undefined`.
+ * @param {SkillLevelCategoriesConfigs} skillLevelCategoriesConfigs - Объект с категориями по уровню подготовки, содержащий поля `male` и `female`.
+ * @returns {{ male: TCategorySkillLevel[]; female: TCategorySkillLevel[] } | undefined} Отформатированный объект категорий с очищенными полями `name` и `description`,
+ * либо `undefined`, если категории отсутствуют.
+ */
+export function formatSkillLevelCategories(
+  skillLevelCategoriesConfigs: SkillLevelCategoriesConfigs
+): { male: TCategorySkillLevel[]; female: TCategorySkillLevel[] } | undefined {
+  const { hasMale, hasFemale } = checkSkillLevelCategories(skillLevelCategoriesConfigs);
+
+  // Если нет ни мужских не женских категорий, значит поле skillLevel === undefined
+  if (!hasMale && !hasFemale) {
+    return undefined;
+  }
+
+  function cleanCategories(categories: TCategorySkillLevel[]) {
+    return categories.map((elm) => ({
+      name: content.cleanText(elm.name),
+      description: elm.description ? content.cleanText(elm.description) : undefined,
+    }));
+  }
+
+  const male = hasMale ? cleanCategories(skillLevelCategoriesConfigs.male) : [];
+  const female = hasFemale ? cleanCategories(skillLevelCategoriesConfigs.female) : [];
+
+  return { male, female };
 }

@@ -8,7 +8,7 @@ import { serializationChampionshipMain } from '@/libs/utils/serialization/champi
 import t from '@/locales/ru/moderation/championship.json';
 
 // types
-import { TFormChampionshipCreate, TUseSubmitChampionshipProps } from '@/types/index.interface';
+import { TFormChampionshipCreate, TUseSubmitChampionshipParams } from '@/types/index.interface';
 
 import { useRouter } from 'next/navigation';
 
@@ -23,7 +23,7 @@ export const useSubmitChampionshipMain = ({
   putChampionship,
   reset,
   setIsFormDirty,
-}: TUseSubmitChampionshipProps): SubmitHandler<TFormChampionshipCreate> => {
+}: TUseSubmitChampionshipParams): SubmitHandler<TFormChampionshipCreate> => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
   const isEditing = !!championshipForEdit;

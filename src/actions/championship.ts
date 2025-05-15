@@ -279,8 +279,9 @@ export async function getToursAndSeries({
  * Экшен обновление пакетов категорий для чемпионата.
  */
 export async function putCategories({
-  categoriesConfigs,
-  championshipId,
+  dataSerialized,
+  urlSlug,
+  organizerId,
 }: TPutCategoriesParams): Promise<ResponseServer<null>> {
   'use server';
   try {
@@ -292,20 +293,31 @@ export async function putCategories({
       throw new Error('Нет авторизации, нет idDB!');
     }
 
-    // Проверка наличия прав на создание Чемпионата.
-    if (
-      !session.user.role.permissions.some(
-        (elm) => elm === 'moderation.championship.create' || elm === 'all'
-      )
-    ) {
+    // Проверка наличия прав на редактирование категорий Чемпионата.
+    // Доступ разрешён, если у пользователя есть одно из разрешений из списка allowedPermissions.
+    const allowedPermissions = ['all', 'moderation.championship.create'];
+    const canEdit = session.user.role.permissions.some((p) => allowedPermissions.includes(p));
+    if (!canEdit) {
       throw new Error('У вас нет прав для изменения категорий Чемпионата!');
     }
 
     const championshipService = new ChampionshipService();
-    const response = await championshipService.putCategories({
-      categoriesConfigs,
-      championshipId,
-    });
+    const { data } = await championshipService.getOne({ urlSlug });
+
+    if (!data) {
+      throw new Error(
+        `Чемпионат с urlSlug:${urlSlug} не найден — невозможно сохранить изменения в категории!`
+      );
+    }
+
+    // Проверка, что редактируемый чемпионат действительно принадлежит организатору,
+    // от имени которого выполняется операция. Это предотвращает несанкционированное
+    // редактирование чемпионатов, принадлежащих другим организаторам.
+    if (data.organizer._id !== organizerId) {
+      throw new Error('У вас нет прав для изменения данного Чемпионата!');
+    }
+
+    const response = await championshipService.putCategories(dataSerialized);
 
     return response;
   } catch (error) {

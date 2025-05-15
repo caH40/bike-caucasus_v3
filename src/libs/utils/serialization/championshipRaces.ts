@@ -1,4 +1,3 @@
-import { formatCategoriesFields } from '@/components/UI/Forms/FormChampionship/categories-format';
 import { formateAndStripContent } from '@/components/UI/Forms/FormChampionship/utils';
 import type { TFormChampionshipCreate } from '@/types/index.interface';
 
@@ -72,25 +71,9 @@ export function serializationChampionship({
     formData.set('urlTracksForDel', JSON.stringify(urlTracksForDel));
   }
 
-  // Преобразование races в необходимую структуру для сервера.
-  const racesWithCategoriesFormatted =
-    dataForm.races &&
-    dataForm.races.map((race) => {
-      const { categoriesAgeFemale, categoriesAgeMale } = formatCategoriesFields({
-        categoriesAgeFemale: race.categoriesAgeFemale,
-        categoriesAgeMale: race.categoriesAgeMale,
-      });
-
-      return {
-        ...race,
-        categoriesAgeFemale,
-        categoriesAgeMale,
-      };
-    });
-
   // Преобразование поля races и добавление в fomData.
-  if (racesWithCategoriesFormatted) {
-    racesWithCategoriesFormatted.forEach((race, index) => {
+  if (dataForm.races) {
+    dataForm.races.forEach((race, index) => {
       formData.set(`races[${index}][number]`, race.number.toString());
       formData.set(`races[${index}][name]`, race.name);
       formData.set(`races[${index}][description]`, race.description);

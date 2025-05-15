@@ -32,7 +32,9 @@ export default function CContainerChampionshipForms({
       const confirmed = window.confirm(
         'Уверены, что хотите переключиться? Введённые вами данные будут потеряны. Сохранитесь перед переходом на другую страницу!'
       );
-      if (!confirmed) return;
+      if (!confirmed) {
+        return;
+      }
     }
 
     // При изменении активной формы сбрасывать isFormDirty в false.
@@ -52,14 +54,15 @@ export default function CContainerChampionshipForms({
         putChampionship={putChampionship}
       />
     ),
-    1: championshipForEdit && (
+    1: (championshipForEdit && putCategories && (
       <FormChampionshipCategories
+        organizerId={organizer._id}
         putCategories={putCategories}
         categoriesConfigs={championshipForEdit.categoriesConfigs}
-        championshipName={championshipForEdit.name}
+        urlSlug={championshipForEdit.urlSlug}
         setIsFormDirty={setIsFormDirty}
       />
-    ),
+    )) || <div>Не получены данные championshipForEdit или putCategories</div>,
     2: <div>Races</div>,
   };
 

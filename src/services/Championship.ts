@@ -11,7 +11,6 @@ import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/cham
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
-  TPutCategoriesParams,
   TRaceForFormDeserialized,
   TSaveFile,
   TStageDateDescription,
@@ -316,7 +315,7 @@ export class ChampionshipService {
   async putCategories({
     categoriesConfigs,
     championshipId,
-  }: TPutCategoriesParams): Promise<ResponseServer<null>> {
+  }: any): Promise<ResponseServer<null>> {
     try {
       // Проверка на дубликаты названий пакетов категорий.
       this.validateUniqueCategoryNames(categoriesConfigs);

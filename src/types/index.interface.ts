@@ -879,19 +879,27 @@ export type TFormChampionshipProps = {
  * @property setIsFormDirty - Флаг фиксирующий изменения в форме.
  */
 export type TFormChampionshipCategoriesProps = {
-  putCategories?: ({
-    categoriesConfigs,
-    championshipId,
-  }: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  organizerId: string;
+  putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
   categoriesConfigs: TCategoriesConfigsClient[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+  urlSlug: string;
 };
+
+/**
+ * Типы из формы.
+ */
+export type TAgeCategoryFromForm = { min: number | string; max: number | string; name: string };
 
 /**
  * Конфигурации категорий чемпионата на клиенте.
  */
-export type TCategoriesConfigsClient = Omit<TCategories, '_id' | 'championship'> & {
+export type TCategoriesConfigsClient = Omit<TCategories, '_id' | 'championship' | 'age'> & {
   _id?: string;
+  age: {
+    female: TAgeCategoryFromForm[];
+    male: TAgeCategoryFromForm[];
+  };
 };
 
 export type TCContainerChampionshipFormsProps = {
@@ -906,14 +914,11 @@ export type TCContainerChampionshipFormsProps = {
   }) => Promise<ResponseServer<any>>;
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
-  putCategories?: ({
-    categoriesConfigs,
-    championshipId,
-  }: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  putCategories?: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
 };
 
 /**
- * Пропсы для хука useSubmitChampionship.
+ * Параметры для хука useSubmitChampionship.
  *
  * @property championshipForEdit - Данные чемпионата для редактирования (если режим редактирования).
  * @property organizerId - ID организатора (владелец чемпионата).
@@ -922,7 +927,7 @@ export type TCContainerChampionshipFormsProps = {
  * @property putChampionship - Функция для обновления существующего чемпионата (PUT).
  * @property reset - Функция сброса формы от react-hook-form.
  */
-export type TUseSubmitChampionshipProps = {
+export type TUseSubmitChampionshipParams = {
   championshipForEdit?: TDtoChampionship;
   organizerId: any;
   urlTracksForDel: MutableRefObject<string[]>;
@@ -933,6 +938,17 @@ export type TUseSubmitChampionshipProps = {
   }) => Promise<ResponseServer<any>>;
   reset: UseFormReset<TFormChampionshipCreate>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+};
+
+/**
+ * Параметры для хука useSubmitChampionshipCategories.
+ */
+export type TUseSubmitChampionshipCategoriesParams = {
+  putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  organizerId: string;
+  reset: UseFormReset<TFormChampionshipCreate>;
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+  urlSlug: string;
 };
 
 /**
@@ -958,7 +974,7 @@ export type TBlockRaceAddProps = {
 export type TCategoryAge = {
   min: number; // Минимальный возраст (включительно).
   max: number; // Максимальный возраст (включительно).
-  name?: string; // Необязательное название, например "Юниоры 18-23".
+  name: string; // Название, например "Юниоры 18-23".
 };
 
 /**
@@ -983,11 +999,16 @@ export type TGetRaceCategoriesParams = {
  * Входные параметры метода обновления всех категорий для чемпионата, которые пришли с клиента.
  */
 export type TPutCategoriesParams = {
-  categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & {
-    _id?: string; // Если отсутствует, значит добавляется новый пакет.
-  })[];
-  championshipId: string;
+  dataSerialized: FormData;
+  organizerId: string;
+  urlSlug: string;
 };
+// export type TPutCategoriesParams = {
+//   categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & {
+//     _id?: string; // Если отсутствует, значит добавляется новый пакет.
+//   })[];
+//   championshipId: string;
+// };
 
 /**
  * Пропсы компонента CategoriesSet/
