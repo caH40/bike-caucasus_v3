@@ -317,7 +317,10 @@ export async function putCategories({
       throw new Error('У вас нет прав для изменения данного Чемпионата!');
     }
 
-    const response = await championshipService.putCategories(dataSerialized);
+    const response = await championshipService.putCategories({
+      dataSerialized,
+      championshipId: data._id,
+    });
 
     return response;
   } catch (error) {

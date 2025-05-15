@@ -946,7 +946,9 @@ export type TUseSubmitChampionshipParams = {
 export type TUseSubmitChampionshipCategoriesParams = {
   putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
   organizerId: string;
-  reset: UseFormReset<TFormChampionshipCreate>;
+  reset: UseFormReset<{
+    categories: TCategoriesConfigsClient[];
+  }>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
 };
@@ -1003,12 +1005,6 @@ export type TPutCategoriesParams = {
   organizerId: string;
   urlSlug: string;
 };
-// export type TPutCategoriesParams = {
-//   categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & {
-//     _id?: string; // Если отсутствует, значит добавляется новый пакет.
-//   })[];
-//   championshipId: string;
-// };
 
 /**
  * Пропсы компонента CategoriesSet/
@@ -1110,3 +1106,8 @@ export type TBlockCategoryProps = {
   categoriesIndex: number;
   fieldKey: 'age' | 'skillLevel';
 };
+
+/**
+ * Функция для десериализации данных при изменении категорий Чемпионата
+ */
+export type TDeserializedCategories = Omit<TCategories, '_id'> & { _id?: string };

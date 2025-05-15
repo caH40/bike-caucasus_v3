@@ -35,6 +35,7 @@ import { RegistrationChampService } from './RegistrationChamp';
 import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
+import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -313,12 +314,19 @@ export class ChampionshipService {
    * 2. Дополнительный(ые) пакеты категорий, если есть несколько заездов в Чемпионате с разными категориями.
    */
   async putCategories({
-    categoriesConfigs,
+    dataSerialized,
     championshipId,
-  }: any): Promise<ResponseServer<null>> {
+  }: {
+    dataSerialized: FormData;
+    championshipId: string;
+  }): Promise<ResponseServer<null>> {
     try {
+      const categoriesConfigs = deserializeCategories(dataSerialized);
+
       // Проверка на дубликаты названий пакетов категорий.
       this.validateUniqueCategoryNames(categoriesConfigs);
+
+      // return { data: null, ok: false, message: 'Все ок!' };
 
       // Получаем все существующие пакеты категорий (кроме 'default') для текущего чемпионата.
       const oldCategories = await CategoriesModel.find(

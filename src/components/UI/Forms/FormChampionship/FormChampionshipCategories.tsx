@@ -28,15 +28,12 @@ export default function FormChampionshipCategories({
 }: TFormChampionshipCategoriesProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
-  // console.log(categoriesConfigs);
-
-  // Используем хук useForm из библиотеки react-hook-form для управления состоянием формы.
   const {
-    register, // Функция для регистрации поля формы.
-    handleSubmit, // Функция для обработки отправки формы.
-    control, // Объект контроля для работы с динамическими полями (например, с массивами полей).
-    watch, // Функция для наблюдения за изменениями значений полей формы.
-    formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
   } = useForm<{ categories: TCategoriesConfigsClient[] }>({
     mode: 'all',
     defaultValues: {
@@ -58,6 +55,8 @@ export default function FormChampionshipCategories({
     organizerId,
     putCategories,
     urlSlug,
+    setIsFormDirty,
+    reset,
   });
 
   return (
