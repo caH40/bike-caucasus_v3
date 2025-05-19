@@ -39,6 +39,7 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
       </h2>
     );
   }
+  console.log(championship.data);
 
   // Проверка разрешения на редактирование.
   const responsePermission = await checkPermissionOrganizer({

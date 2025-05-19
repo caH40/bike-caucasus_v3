@@ -56,7 +56,6 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     name: championship.name,
     urlSlug: championship.urlSlug,
     description: championship.description,
-    trackGPX: championship.trackGPX,
     quantityStages: championship.quantityStages,
     stage: championship.stage,
     posterUrl: championship.posterUrl,

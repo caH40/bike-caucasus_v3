@@ -7,6 +7,7 @@ import type {
 } from '@/types/dto.types';
 import type {
   TChampionshipForRegisteredClient,
+  TRaceForForm,
   TRegisteredRiderFromDB,
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
@@ -126,10 +127,11 @@ export function dtoRegistrationsRider(
 }
 
 // ===================================================================================
-export function formatTRacesToClient(races: TRace[]) {
+export function formatTRacesToClient(races: TRace[]): TRaceForForm[] {
   return races.map((race) => {
+    const categories = String(race.categories);
     const registeredRiders = race.registeredRiders.map((rider) => String(rider));
-    return { ...race, registeredRiders };
+    return { ...race, registeredRiders, categories };
   });
 }
 

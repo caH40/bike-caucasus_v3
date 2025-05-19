@@ -2,6 +2,7 @@ import {
   TOrganizerForClient,
   TParentChampionshipForClient,
   TRaceClient,
+  TRaceForForm,
   TResultRaceFromDB,
   TStageDateDescription,
 } from './index.interface';
@@ -162,7 +163,7 @@ export type TDtoChampionship = Omit<
   stageDateDescription: TStageDateDescription[];
   createdAt: string;
   updatedAt: string;
-  races: TRaceClient[];
+  races: TRaceForForm[];
   categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & { _id: string })[];
 };
 

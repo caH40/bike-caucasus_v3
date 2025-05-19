@@ -39,7 +39,7 @@ export async function getChampionship({
     }
 
     const championshipService = new ChampionshipService();
-    const championship = await championshipService.getOneForEdit({ urlSlug });
+    const championship = await championshipService.getOne({ urlSlug });
 
     if (!championship.ok) {
       throw new Error('Ошибка при получении запрашиваемого Чемпионата');

@@ -627,10 +627,10 @@ export type TRaceClient = Omit<TRace, 'registeredRiders'> & {
 };
 
 export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders' | 'categories'> & {
-  trackGPXFile: File | null;
-  trackGPXUrl: string | null;
-  trackGPX?: TTrackGPXObj;
-  categories?: string; // _id конфига категорий.
+  trackGPXFile?: File | null;
+  trackGPXUrl?: string | null;
+  trackGPX: TTrackGPXObj;
+  categories: string; // _id конфига категорий.
   registeredRiders: string[];
 };
 
