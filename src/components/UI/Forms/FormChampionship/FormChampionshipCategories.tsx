@@ -12,7 +12,7 @@ import styles from '../Form.module.css';
 
 // types
 import type {
-  TCategoriesConfigsClient,
+  TCategoriesConfigsForm,
   TFormChampionshipCategoriesProps,
 } from '@/types/index.interface';
 import { useEffect } from 'react';
@@ -35,7 +35,7 @@ export default function FormChampionshipCategories({
     control,
     reset,
     formState: { errors },
-  } = useForm<{ categories: TCategoriesConfigsClient[] }>({
+  } = useForm<{ categories: TCategoriesConfigsForm[] }>({
     mode: 'all',
     defaultValues: {
       categories: categoriesConfigs,

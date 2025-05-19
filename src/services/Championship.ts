@@ -595,6 +595,7 @@ export class ChampionshipService {
     try {
       // Подключение к БД.
       await this.dbConnection();
+      console.log('started');
 
       const championshipsDB = await ChampionshipModel.find(
         {

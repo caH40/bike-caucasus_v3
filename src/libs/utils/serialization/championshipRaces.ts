@@ -15,7 +15,7 @@ type Params = {
  * @param dataForm - Данные формы, которые нужно сериализовать.
  * @returns Сериализованные данные в формате FormData.
  */
-export function serializationChampionship({
+export function serializationChampionshipRaces({
   dataForm,
   championshipId,
   organizerId,

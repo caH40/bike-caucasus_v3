@@ -88,6 +88,5 @@ export const raceInit: TRaceForForm = {
   trackGPXFile: null,
   trackGPXUrl: null,
   registeredRiders: [],
-  categories: DEFAULT_STANDARD_CATEGORIES,
   quantityRidersFinished: 0,
 };

@@ -8,6 +8,7 @@ import ChampionshipFormNavigation from '@/components/UI/Filters/ChampionshipForm
 import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampionshipMain';
 import { TCContainerChampionshipFormsProps } from '@/types/index.interface';
 import FormChampionshipCategories from '@/components/UI/Forms/FormChampionship/FormChampionshipCategories';
+import FormChampionshipRaces from '@/components/UI/Forms/FormChampionship/FormChampionshipRaces';
 
 /**
  *  Клиентский контейнер для скачивания документов с зарегистрированными участниками Чемпионата.
@@ -63,7 +64,16 @@ export default function CContainerChampionshipForms({
         setIsFormDirty={setIsFormDirty}
       />
     )) || <div>Не получены данные championshipForEdit или putCategories</div>,
-    2: <div>Races</div>,
+    2: (championshipForEdit && (
+      <FormChampionshipRaces
+        organizerId={organizer._id}
+        // putRaces={'putCategories'}
+        categoriesConfigs={championshipForEdit.categoriesConfigs}
+        races={championshipForEdit.races}
+        urlSlug={championshipForEdit.urlSlug}
+        setIsFormDirty={setIsFormDirty}
+      />
+    )) || <div>Не получены данные championshipForEdit</div>,
   };
 
   return (

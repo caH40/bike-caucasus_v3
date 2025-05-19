@@ -13,6 +13,7 @@ import styles from './BlockRaceAdd.module.css';
 
 // types
 import type { TBlockRaceAddProps, TRaceForForm } from '@/types/index.interface';
+import BoxSelectNew from '../BoxSelect/BoxSelectNew';
 
 const textValidation = new TextValidationService();
 
@@ -27,15 +28,8 @@ export default function BlockRaceAdd({
   control,
   isLoading,
   urlTracksForDel,
+  categories,
 }: TBlockRaceAddProps) {
-  // const [genderButtonNumber, setGenderButtonNumber] = useState<number>(0);
-
-  // // Выбор пола для добавления категорий
-  // const categoryProperty =
-  //   buttonsGender.find((btn) => btn.id === genderButtonNumber)?.name === 'male'
-  //     ? 'categoriesAgeMale'
-  //     : 'categoriesAgeFemale';
-
   // Добавление Заезда.
   const addRace = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
@@ -66,10 +60,11 @@ export default function BlockRaceAdd({
 
   const tooltip = { text: t.tooltips.raceBlock, id: 'raceBlock' };
 
+  const errorsBasePath = errors?.races?.[index];
+
   return (
     <div className={styles.wrapper}>
       <h3 className={styles.title}>
-        {' '}
         <div className={styles.box__info}>
           {`${t.titleBlockRaceAdd} №${race.number}`}
           {<IconInfo squareSize={20} tooltip={tooltip} />}
@@ -118,7 +113,7 @@ export default function BlockRaceAdd({
             },
             validate: textValidation.spaces,
           })}
-          validationText={errors?.races?.[index]?.name?.message || ''}
+          validationText={errorsBasePath?.name?.message || ''}
           tooltip={{ text: t.tooltips.nameRace, id: 'nameRace' }}
         />
 
@@ -138,8 +133,19 @@ export default function BlockRaceAdd({
               message: t.max.descriptionRace,
             },
           })}
-          validationText={errors?.races?.[index]?.description?.message || ''}
+          validationText={errorsBasePath?.description?.message || ''}
           tooltip={{ text: t.tooltips.descriptionRace, id: 'descriptionRace' }}
+        />
+
+        <BoxSelectNew
+          label={t.labels.categoriesConfig}
+          id="type-BoxSelectNew"
+          options={categories}
+          defaultValue={categories.find((c) => c.translation === 'Стандартный')?.name}
+          loading={isLoading}
+          register={register(`races.${index}.categories`, { required: t.required })}
+          validationText={errorsBasePath?.categories?.message || ''}
+          tooltip={{ text: t.tooltips.categoriesConfig, id: 'categories' }}
         />
 
         {/* Блок заполнения количества кругов */}
@@ -160,7 +166,7 @@ export default function BlockRaceAdd({
               message: t.max.laps,
             },
           })}
-          validationText={errors?.races?.[index]?.laps?.message || ''}
+          validationText={errorsBasePath?.laps?.message || ''}
         />
 
         {/* Блок заполнения длины дистанции в километрах */}
@@ -179,7 +185,7 @@ export default function BlockRaceAdd({
               message: t.max.distance,
             },
           })}
-          validationText={errors?.races?.[index]?.distance?.message || ''}
+          validationText={errorsBasePath?.distance?.message || ''}
         />
 
         {/* Блок заполнения общего набора высоты */}
@@ -197,7 +203,7 @@ export default function BlockRaceAdd({
               message: t.max.ascent,
             },
           })}
-          validationText={errors?.races?.[index]?.ascent?.message || ''}
+          validationText={errorsBasePath?.ascent?.message || ''}
         />
 
         {/* Блок загрузки GPX трека*/}
@@ -214,7 +220,7 @@ export default function BlockRaceAdd({
               resetData={false}
               isRequired={true}
               value={race.trackGPXUrl || t.not}
-              validationText={errors?.races?.[index]?.trackGPXFile?.message || ''}
+              validationText={errorsBasePath?.trackGPXFile?.message || ''}
               tooltip={{ text: t.tooltips.track, id: 'track' }}
             />
           )}

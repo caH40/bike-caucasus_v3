@@ -1,16 +1,16 @@
-// Небольшие утилиты для компоненты FormChampionship
+import { UseFormWatch } from 'react-hook-form';
 
 import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
+
+// types
 import { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import {
+  TClientCategoriesConfigs,
   TFormChampionshipCreate,
   TOptions,
-  TRaceClient,
   TRaceForForm,
 } from '@/types/index.interface';
-import { TCategoryAge } from '@/types/index.interface';
-import { UseFormWatch } from 'react-hook-form';
 
 type Params = {
   name: string;
@@ -24,7 +24,7 @@ type Params = {
 export function formateAndStripContent({ name, description }: Params) {
   const nameStripedHtmlTags = content.stripHtmlTags(name);
   const textStripedHtmlTags = content.stripHtmlTags(description);
-  
+
   const descriptionStripedHtmlTags = content.replaceCRLFtoBR(textStripedHtmlTags);
   const descriptionFormatted = content.replaceWithUrl(descriptionStripedHtmlTags);
 
@@ -35,26 +35,31 @@ export function formateAndStripContent({ name, description }: Params) {
 }
 
 /**
- * Инициализирует массив гонок для формы на основе данных о гонках.
- *
- * @param {TRace[] | undefined} races - Массив объектов гонок или undefined.
- * @returns {TRaceForForm[]} Массив объектов гонок, подготовленных для использования в форме.
+ * Преобразует массив конфигураций категорий в формат опций для селекта.
+ * @param categoriesConfigs - Массив конфигураций категорий.
+ * @returns Массив опций в формате для тега <select>.
  */
-export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
+export function getCategoriesSelectOptions(
+  categoriesConfigs: TClientCategoriesConfigs[]
+): TOptions[] {
+  return categoriesConfigs.map((c, index) => ({
+    id: index,
+    translation: c.name,
+    name: c._id,
+  }));
+}
+
+/**
+ * Инициализирует массив гонок для формы на основе данных о гонках.
+ */
+export function getRacesInit(races?: TRaceForForm[]): TRaceForForm[] {
   // Если гонки отсутствуют, возвращаем массив с одной инициализированной гонкой.
 
-  if (!races) {
+  if (!races || races.length === 0) {
     return [raceInit];
   }
   // Мапируем гонки в формат, подходящий для использования в форме.
   return races.map((race) => {
-    const categoriesAge = (categories: TCategoryAge[]) =>
-      categories.map((cat) => ({
-        min: String(cat.min),
-        max: String(cat.max),
-        name: cat.name ? cat.name : '',
-      }));
-
     return {
       number: race.number, // Номер гонки, инициализируется как 1.
       name: race.name, // Название гонки.
@@ -64,13 +69,10 @@ export function getRacesInit(races: TRaceClient[] | undefined): TRaceForForm[] {
       ascent: race.ascent, // Набор высоты в гонке.
       trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
       trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
-      trackGPXUrl: race.trackGPX.url, // URL для трека в формате GPX.
+      trackGPXUrl: race.trackGPX?.url || null, // URL для трека в формате GPX.
       registeredRiders: race.registeredRiders || [],
-      categoriesAge: race.categoriesAge,
-      categoriesSkillLevel: race.categoriesSkillLevel,
-      categoriesAgeFemale: categoriesAge(race.categoriesAgeFemale),
-      categoriesAgeMale: categoriesAge(race.categoriesAgeMale),
       quantityRidersFinished: race.quantityRidersFinished,
+      categories: race.categories,
     };
   });
 }

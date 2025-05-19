@@ -543,14 +543,6 @@ export type TCategoryAgeFromForm = {
   name: string; // Название категории (например, "М10-20").
 };
 
-export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders' | 'categories'> & {
-  trackGPXFile: File | null;
-  trackGPXUrl: string | null;
-  trackGPX?: TTrackGPXObj;
-  categories: Omit<TCategories, 'championship'>;
-  registeredRiders: string[];
-};
-
 export type TRaceForFormDeserialized = Omit<
   TRace,
   'trackGPX' | 'registeredRiders' | 'categories'
@@ -559,7 +551,7 @@ export type TRaceForFormDeserialized = Omit<
   trackGPXUrl: string | null;
   trackGPX?: TTrackGPXObj;
   categoriesId: string; // _id пакета категорий в БД.
-  registeredRiders: string[];
+  registeredRiders?: string[];
 };
 
 /**
@@ -632,6 +624,14 @@ export type TRegistrationRaceDataFromForm = {
 export type TRaceClient = Omit<TRace, 'registeredRiders'> & {
   registeredRiders: string[];
   // categories: (TCategoryAge & { gender: 'male' | 'female' })[];
+};
+
+export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders' | 'categories'> & {
+  trackGPXFile: File | null;
+  trackGPXUrl: string | null;
+  trackGPX?: TTrackGPXObj;
+  categories?: string; // _id конфига категорий.
+  registeredRiders: string[];
 };
 
 /**
@@ -881,25 +881,44 @@ export type TFormChampionshipProps = {
 export type TFormChampionshipCategoriesProps = {
   organizerId: string;
   putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
-  categoriesConfigs: TCategoriesConfigsClient[];
+  categoriesConfigs: TClientCategoriesConfigs[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
 };
 
 /**
- * Типы из формы.
+ * Пропсы для компонента FormChampionshipRaces.
+ */
+export type TFormChampionshipRacesProps = {
+  putRaces: (params: any) => Promise<ResponseServer<any>>;
+  races: TRaceForForm[];
+  organizerId: string;
+  categoriesConfigs: TClientCategoriesConfigs[];
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+  urlSlug: string;
+};
+
+/**
+ * Типы из формы (min,max могут быть как number так и string).
  */
 export type TAgeCategoryFromForm = { min: number | string; max: number | string; name: string };
 
 /**
- * Конфигурации категорий чемпионата на клиенте.
+ * Конфигурации категорий чемпионата для формы.
  */
-export type TCategoriesConfigsClient = Omit<TCategories, '_id' | 'championship' | 'age'> & {
+export type TCategoriesConfigsForm = Omit<TCategories, '_id' | 'championship' | 'age'> & {
   _id?: string;
   age: {
     female: TAgeCategoryFromForm[];
     male: TAgeCategoryFromForm[];
   };
+};
+
+/**
+ * Конфигурации категорий чемпионата на клиенте.
+ */
+export type TClientCategoriesConfigs = Omit<TCategories, '_id' | 'championship'> & {
+  _id: string; // Существует, так как это уже созданная конфигурация категорий.
 };
 
 export type TCContainerChampionshipFormsProps = {
@@ -951,20 +970,31 @@ export type TUseSubmitChampionshipCategoriesParams = {
 };
 
 /**
+ * Параметры для хука useSubmitChampionshipRaces.
+ */
+export type TUseSubmitChampionshipRacesParams = {
+  putRaces: (params: any) => Promise<ResponseServer<any>>;
+  organizerId: string;
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+  urlSlug: string;
+};
+
+/**
  * Пропсы для компонента BlockRaceAdd.
  */
 export type TBlockRaceAddProps = {
   race: TRaceForForm;
-  races: FieldArrayWithId<TFormChampionshipCreate, 'races', 'id'>[];
+  races: FieldArrayWithId<{ races: TRaceForForm[] }>[];
   index: number;
-  register: UseFormRegister<TFormChampionshipCreate>;
-  append: UseFieldArrayAppend<TFormChampionshipCreate, 'races'>;
+  register: UseFormRegister<{ races: TRaceForForm[] }>;
+  append: UseFieldArrayAppend<{ races: TRaceForForm[] }>;
   remove: UseFieldArrayRemove;
-  errors: FieldErrors<TFormChampionshipCreate>;
-  control: Control<TFormChampionshipCreate, any>;
+  errors: FieldErrors<{ races: TRaceForForm[] }>;
+  control: Control<{ races: TRaceForForm[] }, any>;
   isLoading: boolean;
   urlTracksForDel: MutableRefObject<string[]>;
   hideCategoryBlock?: boolean;
+  categories: TOptions[];
 };
 
 /**
@@ -1009,26 +1039,26 @@ export type TPutCategoriesParams = {
 export type TCategoriesSetProps = {
   categories: FieldArrayWithId<
     {
-      categories: TCategoriesConfigsClient[];
+      categories: TCategoriesConfigsForm[];
     },
     'categories',
     'id'
   >;
-  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
+  register: UseFormRegister<{ categories: TCategoriesConfigsForm[] }>;
   isDefault?: boolean; // Пакет категорий по умолчанию, или дополнительный.
   appendCategories: UseFieldArrayAppend<
     {
-      categories: TCategoriesConfigsClient[];
+      categories: TCategoriesConfigsForm[];
     },
     'categories'
   >;
   removeCategories: UseFieldArrayRemove;
-  control: Control<{ categories: TCategoriesConfigsClient[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
+  control: Control<{ categories: TCategoriesConfigsForm[] }>;
+  errors: FieldErrors<{ categories: TCategoriesConfigsForm[] }>;
   categoriesIndex: number;
 };
 
-export type TCategoriesFormType = { categories: TCategoriesConfigsClient[] };
+export type TCategoriesFormType = { categories: TCategoriesConfigsForm[] };
 /**
  * Пропсы для компонента AgeCategoryInputFields.
  */
@@ -1082,14 +1112,14 @@ export type TSkillLevelCategoryInputFieldsProps = Omit<
 export type TBlockCategoriesProps = {
   categories: FieldArrayWithId<
     {
-      categories: TCategoriesConfigsClient[];
+      categories: TCategoriesConfigsForm[];
     },
     'categories',
     'id'
   >;
-  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
-  control: Control<{ categories: TCategoriesConfigsClient[] }>;
+  register: UseFormRegister<{ categories: TCategoriesConfigsForm[] }>;
+  errors: FieldErrors<{ categories: TCategoriesConfigsForm[] }>;
+  control: Control<{ categories: TCategoriesConfigsForm[] }>;
   categoriesIndex: number;
 };
 
@@ -1097,9 +1127,9 @@ export type TBlockCategoriesProps = {
  * Пропсы для компонента BlockCategory.
  */
 export type TBlockCategoryProps = {
-  register: UseFormRegister<{ categories: TCategoriesConfigsClient[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsClient[] }>;
-  control: Control<{ categories: TCategoriesConfigsClient[] }>;
+  register: UseFormRegister<{ categories: TCategoriesConfigsForm[] }>;
+  errors: FieldErrors<{ categories: TCategoriesConfigsForm[] }>;
+  control: Control<{ categories: TCategoriesConfigsForm[] }>;
   categoriesIndex: number;
   fieldKey: 'age' | 'skillLevel';
 };

@@ -1,5 +1,5 @@
 import { useFieldArray, Control } from 'react-hook-form';
-import { TCategoriesConfigsClient } from '@/types/index.interface';
+import { TCategoriesConfigsForm } from '@/types/index.interface';
 
 /**
  * Хук для работы с полями категорий (например, возрастных или по скиллу),
@@ -13,7 +13,7 @@ export function useCategoryFieldsByGender({
   genderButtonNumber,
   fieldPathRoot,
 }: {
-  control: Control<{ categories: TCategoriesConfigsClient[] }>;
+  control: Control<{ categories: TCategoriesConfigsForm[] }>;
   categoriesIndex: number;
   genderButtonNumber: number;
   fieldPathRoot: `categories.${number}.age` | `categories.${number}.skillLevel`;
