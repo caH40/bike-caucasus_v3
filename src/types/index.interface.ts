@@ -637,7 +637,16 @@ export type TRaceForForm = Omit<
   trackGPXUrl?: string | null;
   trackGPX: TTrackGPXObj;
   categories: string; // _id конфига категорий.
-  registeredRiders?: string[];
+  registeredRiders: string[];
+};
+// FIXME: Разобраться с названиями TRaceForForm, TRaceForFormNew одна для запроса с клиента, другая для формы.
+export type TRaceForFormNew = Omit<
+  TRaceForForm,
+  '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories'
+> & {
+  _id?: string;
+  categories?: string;
+  trackGPX?: TTrackGPXObj;
 };
 
 /**
@@ -991,14 +1000,14 @@ export type TUseSubmitChampionshipRacesParams = {
  * Пропсы для компонента BlockRaceAdd.
  */
 export type TBlockRaceAddProps = {
-  race: TRaceForForm;
-  races: FieldArrayWithId<{ races: TRaceForForm[] }>[];
+  race: TRaceForFormNew;
+  races: FieldArrayWithId<{ races: TRaceForFormNew[] }>[];
   index: number;
-  register: UseFormRegister<{ races: TRaceForForm[] }>;
-  append: UseFieldArrayAppend<{ races: TRaceForForm[] }>;
+  register: UseFormRegister<{ races: TRaceForFormNew[] }>;
+  append: UseFieldArrayAppend<{ races: TRaceForFormNew[] }>;
   remove: UseFieldArrayRemove;
-  errors: FieldErrors<{ races: TRaceForForm[] }>;
-  control: Control<{ races: TRaceForForm[] }, any>;
+  errors: FieldErrors<{ races: TRaceForFormNew[] }>;
+  control: Control<{ races: TRaceForFormNew[] }, any>;
   isLoading: boolean;
   urlTracksForDel: MutableRefObject<string[]>;
   hideCategoryBlock?: boolean;
@@ -1151,7 +1160,7 @@ export type TDeserializedCategories = Omit<TCategories, '_id'> & { _id?: string 
 /**
  * Возвращаемые десериализованные данные заездов чемпионата из deserializeRaces.
  */
-export type TDeserializedRacesData = TRaceForForm & {
+export type TDeserializedRacesData = { races: TRaceForFormNew[] } & {
   urlTracksForDel: string[];
 } & {
   [key: string]: any;

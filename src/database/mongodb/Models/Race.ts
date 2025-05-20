@@ -19,6 +19,7 @@ const trackGPXSchema = new Schema(
 
 const RaceSchema = new Schema<TRaceDocument>({
   number: { type: Number, default: 1 }, // Порядковый номер.
+  championship: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   name: String, // Должно быть уникальным в рамках одного Соревнования/Этапа.
   description: String, // Краткие детали Заезда.
   laps: { type: Number, default: 1 }, // Количество кругов.

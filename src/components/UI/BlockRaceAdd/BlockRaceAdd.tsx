@@ -12,7 +12,7 @@ import t from '@/locales/ru/moderation/championship.json';
 import styles from './BlockRaceAdd.module.css';
 
 // types
-import type { TBlockRaceAddProps, TRaceForForm } from '@/types/index.interface';
+import type { TBlockRaceAddProps, TRaceForFormNew } from '@/types/index.interface';
 import BoxSelectNew from '../BoxSelect/BoxSelectNew';
 
 const textValidation = new TextValidationService();
@@ -37,7 +37,7 @@ export default function BlockRaceAdd({
     // Определение нового номера заезда на основе длины массива races
     const newNumber = raceLast ? raceLast + 1 : 1;
 
-    const newRace: TRaceForForm = {
+    const newRace: TRaceForFormNew = {
       ...raceInit,
       number: newNumber, // Установка номера нового заезда
     };
@@ -83,17 +83,15 @@ export default function BlockRaceAdd({
             />
           </button>
 
-          {race.number !== 1 && (
-            <button onClick={(e) => deleteRace(e)} className={styles.btn}>
-              <Image
-                width={26}
-                height={22}
-                src="/images/icons/delete-square.svg"
-                alt="Insert a link"
-                className={styles.icon__img}
-              />
-            </button>
-          )}
+          <button onClick={(e) => deleteRace(e)} className={styles.btn}>
+            <Image
+              width={26}
+              height={22}
+              src="/images/icons/delete-square.svg"
+              alt="Insert a link"
+              className={styles.icon__img}
+            />
+          </button>
         </div>
 
         {/* Блок ввода Названия */}

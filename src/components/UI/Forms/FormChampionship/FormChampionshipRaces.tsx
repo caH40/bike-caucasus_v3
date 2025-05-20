@@ -12,7 +12,7 @@ import t from '@/locales/ru/moderation/championship.json';
 import styles from '../Form.module.css';
 
 // types
-import type { TFormChampionshipRacesProps, TRaceForForm } from '@/types/index.interface';
+import type { TFormChampionshipRacesProps, TRaceForFormNew } from '@/types/index.interface';
 
 /**
  * Форма создания/редактирования заездов Чемпионата.
@@ -29,8 +29,6 @@ export default function FormChampionshipRaces({
 
   const urlTracksForDel = useRef<string[]>([]);
 
-  // console.log(parentChampionships);
-
   // Используем хук useForm из библиотеки react-hook-form для управления состоянием формы.
   const {
     register, // Функция для регистрации поля формы.
@@ -38,7 +36,7 @@ export default function FormChampionshipRaces({
     control, // Объект контроля для работы с динамическими полями (например, с массивами полей).
     reset, // Функция для сброса формы до значений по умолчанию.
     formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
-  } = useForm<{ races: TRaceForForm[] }>({
+  } = useForm<{ races: TRaceForFormNew[] }>({
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
     defaultValues: {
       races: getRacesInit(races),

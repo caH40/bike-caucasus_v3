@@ -10,6 +10,7 @@ import {
   TFormChampionshipCreate,
   TOptions,
   TRaceForForm,
+  TRaceForFormNew,
 } from '@/types/index.interface';
 
 type Params = {
@@ -52,7 +53,7 @@ export function getCategoriesSelectOptions(
 /**
  * Инициализирует массив гонок для формы на основе данных о гонках.
  */
-export function getRacesInit(races?: TRaceForForm[]): TRaceForForm[] {
+export function getRacesInit(races?: TRaceForForm[]): TRaceForFormNew[] {
   // Если гонки отсутствуют, возвращаем массив с одной инициализированной гонкой.
 
   if (!races || races.length === 0) {
@@ -61,6 +62,7 @@ export function getRacesInit(races?: TRaceForForm[]): TRaceForForm[] {
   // Мапируем гонки в формат, подходящий для использования в форме.
   return races.map((race) => {
     return {
+      _id: race._id, // Номер гонки, инициализируется как 1.
       number: race.number, // Номер гонки, инициализируется как 1.
       name: race.name, // Название гонки.
       laps: race.laps, // Количество кругов в гонке.
@@ -70,9 +72,9 @@ export function getRacesInit(races?: TRaceForForm[]): TRaceForForm[] {
       trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
       trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
       trackGPXUrl: race.trackGPX?.url || null, // URL для трека в формате GPX.
-      registeredRiders: race.registeredRiders || [],
       quantityRidersFinished: race.quantityRidersFinished,
       categories: race.categories,
+      championship: race.championship,
     };
   });
 }

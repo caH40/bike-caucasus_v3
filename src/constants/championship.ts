@@ -1,4 +1,4 @@
-import type { TOptions, TOptionsMap, TRaceForForm } from '@/types/index.interface';
+import type { TOptions, TOptionsMap, TRaceForFormNew } from '@/types/index.interface';
 
 /**
  * Тип Чемпионата.
@@ -77,16 +77,18 @@ export const DEFAULT_STANDARD_CATEGORIES = {
 /**
  * Начальные значения объекта Race (заезд) в Соревновании/Этапе.
  */
-export const raceInit: TRaceForForm = {
+export const raceInit: TRaceForFormNew = {
   number: 1,
   name: '',
   laps: 1,
   description: '',
   distance: 0,
   ascent: 0,
-  trackGPX: undefined,
+  _id: undefined, // При инициализации эти свойства не определены.
+  championship: undefined, // При инициализации эти свойства не определены.
+  categories: undefined, // При инициализации эти свойства не определены.
+  trackGPX: undefined, // При инициализации эти свойства не определены.
   trackGPXFile: null,
   trackGPXUrl: null,
-  registeredRiders: [],
   quantityRidersFinished: 0,
 };

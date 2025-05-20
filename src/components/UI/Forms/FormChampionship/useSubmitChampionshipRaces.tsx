@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { serializationChampionshipRaces } from '@/libs/utils/serialization/championshipRaces';
 import { useLoadingStore } from '@/store/loading';
-import { TRaceForForm, TUseSubmitChampionshipRacesParams } from '@/types/index.interface';
+import { TRaceForFormNew, TUseSubmitChampionshipRacesParams } from '@/types/index.interface';
 
 export const useSubmitChampionshipRaces = ({
   putRaces,
@@ -16,7 +16,7 @@ export const useSubmitChampionshipRaces = ({
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
-  const onSubmit = async (formData: { races: TRaceForForm[] }) => {
+  const onSubmit = async (formData: { races: TRaceForFormNew[] }) => {
     // Старт отображение статуса загрузки.
     setLoading(true);
 
