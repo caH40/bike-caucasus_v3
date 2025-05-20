@@ -62,7 +62,7 @@ export default function BlockCategories({
         />
       </div>
 
-      <TitleAndLine title={'Возрастные категории'} />
+      <TitleAndLine title={'Возрастные категории'} hSize={2} />
 
       <div className={styles.spacer}>
         <BlockCategory
@@ -74,7 +74,7 @@ export default function BlockCategories({
         />
       </div>
 
-      <TitleAndLine title={'Категории по уровню подготовки'} />
+      <TitleAndLine title={'Категории по уровню подготовки'} hSize={2} />
 
       <div className={styles.spacer}>
         <BlockCategory

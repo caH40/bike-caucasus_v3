@@ -72,8 +72,6 @@ export default function FormChampionshipRaces({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
-      <div className={styles.wrapper__block}></div>
-
       {/* Блок добавления Race Заездов (Дистанций)*/}
       {/* Заезд (дистанция) необходим только для страницы Одиночного Чемпионата или Этапа.
        В Серии и туре только общее описание */}

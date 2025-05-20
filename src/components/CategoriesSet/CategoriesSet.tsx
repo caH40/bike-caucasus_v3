@@ -57,6 +57,7 @@ function CategoriesSet({
             ? 'Редактирование конфигураций категорий'
             : 'Дополнительный пакет конфигураций категорий'
         }
+        hSize={2}
       />
 
       <div className={styles.block__icons}>
