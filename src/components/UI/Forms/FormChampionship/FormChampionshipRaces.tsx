@@ -57,9 +57,8 @@ export default function FormChampionshipRaces({
     organizerId,
     setIsFormDirty,
     urlSlug,
+    urlTracksForDel: urlTracksForDel.current,
   });
-
-  console.log(races);
 
   // Обновление состояние формы при обновлении данных races из пропсов.
   // FIXME: необходимы тесты, могут быть баги при непредвиденном запуске reset.

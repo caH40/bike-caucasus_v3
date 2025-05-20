@@ -11,23 +11,29 @@ export const useSubmitChampionshipRaces = ({
   organizerId,
   setIsFormDirty,
   urlSlug,
+  urlTracksForDel,
 }: TUseSubmitChampionshipRacesParams) => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
   const onSubmit = async (formData: { races: TRaceForForm[] }) => {
-    // console.log(formData.categories);
-
     // Старт отображение статуса загрузки.
     setLoading(true);
 
     // Сериализация данных в FormData перед отправкой на сервер.
-    const dataSerialized = serializationChampionshipRaces({ races: formData.races });
+    const dataSerialized = serializationChampionshipRaces({
+      dataForm: { races: formData.races },
+      urlTracksForDel,
+    });
+
+    for (const d of dataSerialized) {
+      console.log(d);
+    }
 
     // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
 
-    const response = await putRaces({ dataSerialized, organizerId, urlSlug });
-
+    // const response = await putRaces({ dataSerialized, organizerId, urlSlug });
+    const response = { ok: true, message: 'Тестирование' };
     // Завершение отображение статуса загрузки.
     setLoading(false);
 

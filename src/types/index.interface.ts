@@ -977,6 +977,7 @@ export type TUseSubmitChampionshipRacesParams = {
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
+  urlTracksForDel: string[];
 };
 
 /**
