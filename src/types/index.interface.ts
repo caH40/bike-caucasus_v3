@@ -496,12 +496,13 @@ export type TOrganizerForClient = Pick<
 };
 export type TChampionshipWithOrganizer = Omit<
   TChampionship,
-  'organizer' | 'categoriesConfigs'
+  'organizer' | 'categoriesConfigs' | 'races'
 > & {
   organizer: TOrganizerPublic;
   stageDateDescription: TStageDateDescription[];
   parentChampionship: TParentChampionship;
   categoriesConfigs: TCategories[];
+  races: TRace[];
 };
 export type TParentChampionship = Pick<TChampionship, '_id' | 'name' | 'stage' | 'type'>;
 export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { _id: string };
@@ -626,12 +627,17 @@ export type TRaceClient = Omit<TRace, 'registeredRiders'> & {
   // categories: (TCategoryAge & { gender: 'male' | 'female' })[];
 };
 
-export type TRaceForForm = Omit<TRace, 'trackGPX' | 'registeredRiders' | 'categories'> & {
+export type TRaceForForm = Omit<
+  TRace,
+  '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories'
+> & {
+  _id: string;
+  championship: string;
   trackGPXFile?: File | null;
   trackGPXUrl?: string | null;
   trackGPX: TTrackGPXObj;
   categories: string; // _id конфига категорий.
-  registeredRiders: string[];
+  registeredRiders?: string[];
 };
 
 /**
@@ -890,7 +896,7 @@ export type TFormChampionshipCategoriesProps = {
  * Пропсы для компонента FormChampionshipRaces.
  */
 export type TFormChampionshipRacesProps = {
-  putRaces: (params: any) => Promise<ResponseServer<any>>;
+  putRaces: (params: TPutRacesParams) => Promise<ResponseServer<any>>;
   races: TRaceForForm[];
   organizerId: string;
   categoriesConfigs: TClientCategoriesConfigs[];
@@ -934,6 +940,7 @@ export type TCContainerChampionshipFormsProps = {
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
   putCategories?: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  putRaces?: (params: TPutRacesParams) => Promise<ResponseServer<any>>;
 };
 
 /**
@@ -973,7 +980,7 @@ export type TUseSubmitChampionshipCategoriesParams = {
  * Параметры для хука useSubmitChampionshipRaces.
  */
 export type TUseSubmitChampionshipRacesParams = {
-  putRaces: (params: any) => Promise<ResponseServer<any>>;
+  putRaces: (params: TPutRacesParams) => Promise<ResponseServer<any>>;
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
@@ -1033,6 +1040,7 @@ export type TPutCategoriesParams = {
   organizerId: string;
   urlSlug: string;
 };
+export type TPutRacesParams = TPutCategoriesParams;
 
 /**
  * Пропсы компонента CategoriesSet/
@@ -1139,3 +1147,12 @@ export type TBlockCategoryProps = {
  * Функция для десериализации данных при изменении категорий Чемпионата
  */
 export type TDeserializedCategories = Omit<TCategories, '_id'> & { _id?: string };
+
+/**
+ * Возвращаемые десериализованные данные заездов чемпионата из deserializeRaces.
+ */
+export type TDeserializedRacesData = TRaceForForm & {
+  urlTracksForDel: string[];
+} & {
+  [key: string]: any;
+};

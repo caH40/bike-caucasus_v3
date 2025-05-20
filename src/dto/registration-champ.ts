@@ -129,9 +129,11 @@ export function dtoRegistrationsRider(
 // ===================================================================================
 export function formatTRacesToClient(races: TRace[]): TRaceForForm[] {
   return races.map((race) => {
+    const _id = String(race._id);
     const categories = String(race.categories);
     const registeredRiders = race.registeredRiders.map((rider) => String(rider));
-    return { ...race, registeredRiders, categories };
+
+    return { ...race, registeredRiders, categories, _id };
   });
 }
 

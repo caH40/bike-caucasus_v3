@@ -5,6 +5,7 @@ import {
   getToursAndSeries,
   putChampionship,
   putCategories,
+  putRaces,
 } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
@@ -39,7 +40,6 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
       </h2>
     );
   }
-  console.log(championship.data);
 
   // Проверка разрешения на редактирование.
   const responsePermission = await checkPermissionOrganizer({
@@ -60,6 +60,7 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
       <CContainerChampionshipForms
         putChampionship={putChampionship}
         putCategories={putCategories}
+        putRaces={putRaces}
         championshipForEdit={championship.data}
         parentChampionships={parentChampionships.data || []}
         organizer={organizer.data}

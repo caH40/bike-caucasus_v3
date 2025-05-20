@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import cn from 'classnames';
 

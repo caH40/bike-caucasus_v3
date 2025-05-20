@@ -9,7 +9,11 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
-import type { ResponseServer, TPutCategoriesParams } from '@/types/index.interface';
+import type {
+  ResponseServer,
+  TPutCategoriesParams,
+  TPutRacesParams,
+} from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 import { getOrganizerForModerate } from './organizer';
 import { PermissionsService } from '@/services/Permissions';
@@ -318,6 +322,60 @@ export async function putCategories({
     }
 
     const response = await championshipService.putCategories({
+      dataSerialized,
+      championshipId: data._id,
+    });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен обновление заездов для чемпионата.
+ */
+export async function putRaces({
+  dataSerialized,
+  urlSlug,
+  organizerId,
+}: TPutRacesParams): Promise<ResponseServer<null>> {
+  'use server';
+  try {
+    const session = await getServerSession(authOptions);
+
+    // Проверка авторизации и наличия idUserDB.
+    const creator = session?.user.idDB;
+    if (!creator) {
+      throw new Error('Нет авторизации, нет idDB!');
+    }
+
+    // Проверка наличия прав на редактирование категорий Чемпионата.
+    // Доступ разрешён, если у пользователя есть одно из разрешений из списка allowedPermissions.
+    const allowedPermissions = ['all', 'moderation.championship.create'];
+    const canEdit = session.user.role.permissions.some((p) => allowedPermissions.includes(p));
+    if (!canEdit) {
+      throw new Error('У вас нет прав для изменения заездов Чемпионата!');
+    }
+
+    const championshipService = new ChampionshipService();
+    const { data } = await championshipService.getOne({ urlSlug });
+
+    if (!data) {
+      throw new Error(
+        `Чемпионат с urlSlug:${urlSlug} не найден — невозможно сохранить изменения в категории!`
+      );
+    }
+
+    // Проверка, что редактируемый чемпионат действительно принадлежит организатору,
+    // от имени которого выполняется операция. Это предотвращает несанкционированное
+    // редактирование чемпионатов, принадлежащих другим организаторам.
+    if (data.organizer._id !== organizerId) {
+      throw new Error('У вас нет прав для изменения данного Чемпионата!');
+    }
+
+    const response = await championshipService.putRaces({
       dataSerialized,
       championshipId: data._id,
     });

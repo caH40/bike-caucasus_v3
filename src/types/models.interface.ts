@@ -309,7 +309,7 @@ export type TChampionship = {
   stage: number | null; // Номер этапа, если это этап.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
-  races: TRace[];
+  races: mongoose.Types.ObjectId[];
   posterUrl: string; // Постер для страницы Чемпионата.
   status: TChampionshipStatus; // Статус чемпионата.
   categoriesConfigs: mongoose.Types.ObjectId[];
@@ -341,6 +341,8 @@ export type TChampionshipStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancel
  * В последующем можно дублировать, для использования в другом Этапе/Соревновании.
  */
 export type TRace = {
+  _id: Types.ObjectId;
+  championship: Types.ObjectId; // _id чемпионата к которому принадлежит заезд.
   number: number; // Порядковый номер.
   name: string; // Должно быть уникальным в рамках одного Соревнования/Этапа.
   description: string; // Краткие детали Заезда.
@@ -352,19 +354,7 @@ export type TRace = {
   categories: Types.ObjectId; // _id Пакета категорий для заезда.
   quantityRidersFinished: number; // Общее количество финишировавших.
 };
-// export type TRace = {
-//   number: number; // Порядковый номер.
-//   name: string; // Должно быть уникальным в рамках одного Соревнования/Этапа.
-//   description: string; // Краткие детали Заезда.
-//   laps: number; // Количество кругов.
-//   distance: number; // Дистанция Заезда в километрах.
-//   ascent?: number; // Набор высоты на дистанции в метрах.
-//   trackGPX: TTrackGPXObj; // Трек для дистанции обязателен.
-//   registeredRiders: ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
-//   categoriesAgeFemale: TCategoryAge[]; // Женские возрастные категории.
-//   categoriesAgeMale: TCategoryAge[]; // Мужские возрастные категории.
-//   quantityRidersFinished: number; // Общее количество финишировавших.
-// };
+export type TRaceDocument = Omit<TRace, '_id'> & Document;
 
 /**
  * Тип схемы регистрация Райдера (User) на Заезд Чемпионата.

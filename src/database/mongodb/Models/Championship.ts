@@ -1,7 +1,5 @@
 import mongoose, { Schema, model, models, Model } from 'mongoose';
 
-import { RaceSchema } from './Schema/Race';
-
 // types
 import { TChampionshipDocument } from '@/types/models.interface';
 
@@ -37,12 +35,11 @@ const championshipSchema = new Schema<TChampionshipDocument>(
     },
     type: { type: String, default: 'single', required: true },
     bikeType: { type: String, default: 'road', required: true },
-    races: [{ type: RaceSchema, default: [] }],
+    races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Races', default: [] }],
     posterUrl: { type: String, default: null },
   },
   { timestamps: true }
 );
 
-// Создаем и экспортируем модель
 export const ChampionshipModel: Model<TChampionshipDocument> =
   models.Championship || model<TChampionshipDocument>('Championship', championshipSchema);

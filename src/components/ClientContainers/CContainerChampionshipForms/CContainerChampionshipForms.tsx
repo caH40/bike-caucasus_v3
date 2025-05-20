@@ -20,6 +20,7 @@ export default function CContainerChampionshipForms({
   championshipForEdit,
   putChampionship,
   putCategories,
+  putRaces,
 }: TCContainerChampionshipFormsProps) {
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
   const [isFormDirty, setIsFormDirty] = useState(false);
@@ -64,10 +65,10 @@ export default function CContainerChampionshipForms({
         setIsFormDirty={setIsFormDirty}
       />
     )) || <div>Не получены данные championshipForEdit или putCategories</div>,
-    2: (championshipForEdit && (
+    2: (championshipForEdit && putRaces && (
       <FormChampionshipRaces
         organizerId={organizer._id}
-        // putRaces={'putCategories'}
+        putRaces={putRaces}
         categoriesConfigs={championshipForEdit.categoriesConfigs}
         races={championshipForEdit.races}
         urlSlug={championshipForEdit.urlSlug}

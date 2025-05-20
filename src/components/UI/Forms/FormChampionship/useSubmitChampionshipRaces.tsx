@@ -26,14 +26,9 @@ export const useSubmitChampionshipRaces = ({
       urlTracksForDel,
     });
 
-    for (const d of dataSerialized) {
-      console.log(d);
-    }
+    // Вызывается серверный экшен.
+    const response = await putRaces({ dataSerialized, organizerId, urlSlug });
 
-    // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
-
-    // const response = await putRaces({ dataSerialized, organizerId, urlSlug });
-    const response = { ok: true, message: 'Тестирование' };
     // Завершение отображение статуса загрузки.
     setLoading(false);
 

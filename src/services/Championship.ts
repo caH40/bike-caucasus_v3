@@ -36,6 +36,7 @@ import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/typ
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
 import { deserializeCategories } from '@/libs/utils/deserialization/categories';
+import { deserializeRaces } from '@/libs/utils/deserialization/championshipRaces';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -91,6 +92,7 @@ export class ChampionshipService {
           select: parentChampionshipSelect,
         })
         .populate('categoriesConfigs')
+        .populate('races')
         .lean<TChampionshipWithOrganizer>();
 
       if (!championshipDB) {
@@ -381,6 +383,36 @@ export class ChampionshipService {
   }
 
   /**
+   * Метод обновления заездов в Чемпионате. Данные из формы с клиента.
+   */
+  public async putRaces({
+    dataSerialized,
+    championshipId,
+  }: {
+    dataSerialized: FormData;
+    championshipId: string;
+  }): Promise<ResponseServer<null>> {
+    try {
+      const deserializedData = deserializeRaces(dataSerialized);
+
+      console.log(deserializedData);
+
+      // Обработка данных Заездов (дистанций).
+      // const racesForSave = await this.handleRacesInPut({
+      //   races,
+      //   racesFromDB: championshipDB.races,
+      //   cloud,
+      //   urlTracksForDel,
+      // });
+
+      return { data: null, ok: true, message: 'Пакеты категорий успешно обновлены.' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
    * Обновления данных Чемпионата.
    */
   public async put({
@@ -403,7 +435,6 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
-        races,
         urlTracksForDel,
       } = deserializeChampionship(serializedFormData);
 
@@ -433,14 +464,6 @@ export class ChampionshipService {
           prefix: championshipDB.posterUrl.replace(fileNameFormUrl, '$1'),
         });
       }
-
-      // Обработка данных Заездов (дистанций).
-      const racesForSave = await this.handleRacesInPut({
-        races,
-        racesFromDB: championshipDB.races,
-        cloud,
-        urlTracksForDel,
-      });
 
       // Внимание! Добавлять соответствующие обновляемые свойства Чемпионата в ручную.
       const updateData: any = {
@@ -595,7 +618,6 @@ export class ChampionshipService {
     try {
       // Подключение к БД.
       await this.dbConnection();
-      console.log('started');
 
       const championshipsDB = await ChampionshipModel.find(
         {
