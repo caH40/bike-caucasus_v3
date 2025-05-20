@@ -83,15 +83,17 @@ export default function BlockRaceAdd({
             />
           </button>
 
-          <button onClick={(e) => deleteRace(e)} className={styles.btn}>
-            <Image
-              width={26}
-              height={22}
-              src="/images/icons/delete-square.svg"
-              alt="Insert a link"
-              className={styles.icon__img}
-            />
-          </button>
+          {races.length > 1 && (
+            <button onClick={(e) => deleteRace(e)} className={styles.btn}>
+              <Image
+                width={26}
+                height={22}
+                src="/images/icons/delete-square.svg"
+                alt="Insert a link"
+                className={styles.icon__img}
+              />
+            </button>
+          )}
         </div>
 
         {/* Блок ввода Названия */}

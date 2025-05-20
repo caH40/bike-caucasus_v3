@@ -438,15 +438,17 @@ export class ChampionshipService {
         }
 
         if (race._id) {
+          const updateDate = {
+            ...race,
+            championship: championshipId,
+            ...(trackGPX.url && { trackGPX }), // если trackGPX изменён, значит перезаписываем.
+          };
+
           // Обновляем существующий пакет по _id.
           await RaceModel.updateOne(
             { _id: race._id },
             {
-              $set: {
-                ...race,
-                championship: championshipId,
-                ...(trackGPX && { trackGPX }), // если trackGPX изменён, значит перезаписываем.
-              },
+              $set: updateDate,
             }
           );
           updatedIds.add(race._id); // Добавляем _id в список обновлённых.
@@ -455,7 +457,7 @@ export class ChampionshipService {
           const created = await RaceModel.create({
             ...race,
             championship: championshipId,
-            ...(trackGPX && { trackGPX }), // если trackGPX изменён, значит перезаписываем.
+            ...(trackGPX.url && { trackGPX }), // если trackGPX изменён, значит перезаписываем.
           });
           updatedIds.add(created._id.toString()); // Добавляем созданный _id.
         }

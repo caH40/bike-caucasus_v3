@@ -1,5 +1,5 @@
 'use client';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import cn from 'classnames';
 
@@ -60,15 +60,15 @@ export default function FormChampionshipRaces({
 
   // Обновление состояние формы при обновлении данных races из пропсов.
   // FIXME: необходимы тесты, могут быть баги при непредвиденном запуске reset.
-  // useEffect(() => {
-  //   if (races.length === 0) {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (races.length === 0) {
+      return;
+    }
 
-  //   if (races) {
-  //     reset({ races });
-  //   }
-  // }, [races, reset]);
+    if (races) {
+      reset({ races: getRacesInit(races) });
+    }
+  }, [races, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
