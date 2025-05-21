@@ -18,7 +18,7 @@ type Props = {
   status: TRaceRegistrationStatus;
   userIdDb: string | undefined;
   championshipId: string;
-  raceNumber: number;
+  raceId: string;
   showBtn?: boolean;
 };
 
@@ -29,7 +29,7 @@ export default function BlockRegRaceStatus({
   status,
   userIdDb,
   championshipId,
-  raceNumber,
+  raceId,
   showBtn,
 }: Props) {
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -54,7 +54,7 @@ export default function BlockRegRaceStatus({
 
     const res = await putRegistrationRiderChamp({
       championshipId,
-      raceNumber,
+      raceId,
       updates: { status: 'canceled' },
       riderId: idDB,
     });

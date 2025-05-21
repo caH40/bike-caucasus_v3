@@ -204,7 +204,7 @@ export class RegistrationChampService {
    *
    * @param {Object} params - Параметры для обновления регистрации.
    * @param {string} params.urlSlug - Динамический URL страницы чемпионата.
-   * @param {number} params.raceNumber - Номер заезда в чемпионате.
+   * @param {string} params.raceId - _id заезда в чемпионате.
    * @param {Object} params.updates - Объект с обновляемыми данными регистрации.
    * @param {TRaceRegistrationStatus} params.updates.status - Новый статус регистрации Райдера.
    *
@@ -213,12 +213,12 @@ export class RegistrationChampService {
    */
   public async put({
     championshipId,
-    raceNumber,
+    raceId,
     riderId,
     updates,
   }: {
     championshipId: string;
-    raceNumber: number;
+    raceId: string;
     riderId: string;
     updates: { status: TRaceRegistrationStatus; startNumber?: number | null };
   }): Promise<ResponseServer<null>> {
@@ -226,33 +226,23 @@ export class RegistrationChampService {
       // Подключение к БД.
       await this.dbConnection();
 
-      if (!raceNumber || !championshipId || !riderId) {
-        throw new Error('Получены не все данные для обновления Регистрации райдера на Заезд!');
-      }
-
-      // Проверка существования Чемпионата.
-      const champ = await ChampionshipModel.findOne(
-        { _id: championshipId, 'races.number': raceNumber },
-        { _id: true, races: true }
-      ).lean<{ _id: ObjectId }>();
-
-      if (!champ) {
-        throw new Error('Не найден Чемпионат с Заездом!');
-      }
+      const champ = await this.getChamp(championshipId);
 
       // При отмене регистрации выбранный ранее райдером стартовый номер освобождается.
       if (updates.status === 'canceled') {
         updates.startNumber = null;
       }
 
-      await RaceRegistrationModel.findOneAndUpdate(
-        {
-          championship: champ._id,
-          raceNumber,
-          rider: riderId,
-        },
+      const reg = await RaceRegistrationModel.findOneAndUpdate(
+        { race: raceId, rider: riderId },
         { $set: { ...updates } }
       );
+
+      if (!reg) {
+        throw new Error(
+          `Не найдена регистрация участника _id:${riderId} в заезде _id:${raceId} Чемпионата "${champ.name}" _id:${championshipId}`
+        );
+      }
 
       return {
         data: null,

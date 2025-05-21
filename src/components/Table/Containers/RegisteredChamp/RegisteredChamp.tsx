@@ -13,7 +13,6 @@ type Props = {
  */
 export default function ContainerTableRegisteredChamp({
   registeredRidersInRace,
-
   showFooter,
 }: Props) {
   return (

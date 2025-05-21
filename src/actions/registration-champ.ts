@@ -110,20 +110,24 @@ export async function getRegisteredRidersChamp({
  */
 export async function putRegistrationRiderChamp({
   championshipId,
-  raceNumber,
+  raceId,
   riderId,
   updates,
 }: {
   championshipId: string;
-  raceNumber: number;
+  raceId: string;
   riderId: string;
   updates: { status: TRaceRegistrationStatus };
 }): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
   'use server';
   try {
+    if (!raceId || !championshipId || !riderId) {
+      throw new Error('Получены не все данные для обновления Регистрации райдера на Заезд!');
+    }
+
     const response = await regService.put({
       championshipId,
-      raceNumber,
+      raceId,
       riderId,
       updates,
     });

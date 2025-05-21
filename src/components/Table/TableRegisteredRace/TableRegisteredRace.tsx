@@ -64,7 +64,7 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
         status={props.getValue()}
         userIdDb={props.row.original.rider._id}
         championshipId={props.row.original.championship}
-        raceNumber={props.row.original.raceNumber}
+        raceId={props.row.original.raceId}
       />
     ),
   },
