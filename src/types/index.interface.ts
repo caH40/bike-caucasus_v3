@@ -617,7 +617,7 @@ export type TProfileKey = keyof TProfileForRegistration;
  */
 export type TRegistrationRaceDataFromForm = {
   championshipId: string;
-  raceNumber: number;
+  raceId: string;
   startNumber: number;
   teamVariable: string;
 };
@@ -1164,4 +1164,21 @@ export type TDeserializedRacesData = { races: TRaceForFormNew[] } & {
   urlTracksForDel: string[];
 } & {
   [key: string]: any;
+};
+
+/**
+ * Параметры метода post класса RegistrationChampService.
+ */
+export type RegChampPostParams = TRegistrationRaceDataFromForm & { riderId: string };
+
+/**
+ * Параметры метода processReg класса RegistrationChampService.
+ */
+export type ProcessRegParams = {
+  raceIdWithCanceledReg: mongoose.Types.ObjectId | undefined;
+  championshipId: string;
+  riderId: string;
+  raceId: string;
+  startNumber: number;
+  teamVariable?: string;
 };

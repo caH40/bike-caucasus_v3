@@ -1,5 +1,10 @@
 import { ObjectId } from 'mongoose';
-import { TCategories, TChampionshipStatus, TRace } from './models.interface';
+import {
+  TCategories,
+  TChampionshipStatus,
+  TRace,
+  TRaceRegistrationStatus,
+} from './models.interface';
 import { Types } from 'mongoose';
 import { Document } from 'mongoose';
 
@@ -30,3 +35,9 @@ export type TDeleteChampionshipFromMongo = {
   _id: Types.ObjectId;
   categoriesConfigs: Types.ObjectId[];
 } & Document;
+
+export type TRegistrationStatusMongo = {
+  raceNumber: number;
+  status: TRaceRegistrationStatus;
+  race: { name: string; _id: Types.ObjectId };
+};

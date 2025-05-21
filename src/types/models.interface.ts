@@ -366,8 +366,8 @@ export type TRaceRegistrationDocument = TRaceRegistration & Document;
 export type TRaceRegistration = {
   _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
   championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
+  race: mongoose.Types.ObjectId; // Ссылка на заезд.
   categorySkillLevel: string | null; // Название выбранной категории скила, берётся из настроек Чемпионата. Если не указана, значит деление по возрасту.
-  raceNumber: number; // Номер заезда в Соревновании/Этапе.
   rider: mongoose.Types.ObjectId; // Ссылка на Юзера.
   startNumber: number; // Номер участника на старте.
   team?: mongoose.Types.ObjectId; // Ссылка на Команду

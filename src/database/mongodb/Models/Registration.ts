@@ -7,10 +7,10 @@ export type TPaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'free'
 export type TPaymentMethod = 'card' | 'paymentSystem' | 'cash';
 
 // Схема для участника заезда
-const RaceRegistrationSchema: Schema = new Schema(
+const RaceRegistrationSchema = new Schema<TRaceRegistrationDocument>(
   {
     championship: { type: Schema.Types.ObjectId, required: true, ref: 'Championship' },
-    raceNumber: { type: Number, required: true },
+    race: { type: Schema.Types.ObjectId, required: true, ref: 'Race' },
     rider: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
     startNumber: { type: Number },
     team: { type: Schema.Types.ObjectId, ref: 'Team', default: null },

@@ -13,11 +13,12 @@ import {
 import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
 import { User } from '@/database/mongodb/Models/User';
 import type {
+  ProcessRegParams,
+  RegChampPostParams,
   ResponseServer,
   TChampionshipForRegistered,
   TChampionshipForRegisteredClient,
   TRegisteredRiderFromDB,
-  TRegistrationRaceDataFromForm,
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
 import type { TRace, TRaceRegistrationStatus } from '@/types/models.interface';
@@ -26,6 +27,8 @@ import type {
   TRaceRegistrationDto,
   TRegistrationRiderDto,
 } from '@/types/dto.types';
+import { RaceModel } from '@/database/mongodb/Models/Race';
+import { TRegistrationStatusMongo } from '@/types/mongo.types';
 
 /**
  * Класс работы с сущностью Регистрация на Чемпионат.
@@ -46,118 +49,44 @@ export class RegistrationChampService {
    */
   public async post({
     championshipId,
-    raceNumber,
+    raceId,
     riderId,
     startNumber,
     teamVariable,
-  }: TRegistrationRaceDataFromForm & { riderId: string }): Promise<ResponseServer<null>> {
+  }: RegChampPostParams): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
       // Проверка существования Чемпионата и запрашиваемого заезда для регистрации.
-      const champ: { _id: ObjectId; name: string; races: TRace[] } | null =
-        await ChampionshipModel.findOne(
-          {
-            _id: championshipId,
-            'races.number': raceNumber,
-          },
-          { races: true, name: true }
-        );
+      const champ = await this.getChamp(championshipId);
 
-      if (!champ) {
-        throw new Error('Не найден Чемпионат с Заездом!');
-      }
-
-      // Проверка зарегистрирован ли уже регистрирующийся райдер в данном Соревновании/Этапе.
-      // Можно регистрироваться только в один заезд на Соревновании/Этапе.
-      const checkRegistrationStatus: {
-        raceNumber: number;
-        status: TRaceRegistrationStatus;
-      } | null = await RaceRegistrationModel.findOne(
-        {
-          championship: championshipId,
-          rider: riderId,
-        },
-        { _id: false, raceNumber: true, status: true }
-      ).lean();
-
-      if (checkRegistrationStatus && checkRegistrationStatus.status === 'registered') {
-        const raceName = champ.races.find(
-          (race) => race.number === checkRegistrationStatus.raceNumber
-        )?.name;
-        throw new Error(`Вы уже зарегистрированы в данном Чемпионате, в заезде: ${raceName}!`);
-      }
-
-      // Если статус был canceled, то производить обновление документа, а не создание
-      let needUpdateDocument = false;
-      if (checkRegistrationStatus?.status === 'canceled') {
-        needUpdateDocument = true;
-      }
-
-      // Проверка занят ли выбранный стартовый номер для заезда.
-      const checkStartNumber = await RaceRegistrationModel.findOne({
-        championship: championshipId,
-        startNumber,
-        raceNumber,
+      // Проверка зарегистрирован или был ли зарегистрирован данный участник в других заездах этого чемпионата. Если возвращается raceIdWithCanceledReg - райдер отменял регистрации, поэтому требуется обновление состояния, а не создание новой регистрации.
+      const raceIdWithCanceledReg = await this.checkRegistrationStatus({
+        championshipId,
+        riderId,
       });
 
-      if (checkStartNumber) {
-        throw new Error(`Стартовый номер: ${startNumber} уже занят!`);
-      }
+      // Проверка занят ли выбранный стартовый номер для заезда.
+      await this.checkStartNumber({ startNumber, raceId });
 
-      if (!needUpdateDocument) {
-        // Регистрация на выбранный Заезд Чемпионата.
-        await RaceRegistrationModel.create({
-          championship: championshipId,
-          rider: riderId,
-          raceNumber,
-          startNumber,
-          status: 'registered',
-          ...(teamVariable && { teamVariable }),
-        });
-      } else {
-        await RaceRegistrationModel.findOneAndUpdate(
-          {
-            championship: championshipId,
-            rider: riderId,
-          },
-          {
-            $set: {
-              startNumber,
-              raceNumber,
-              status: 'registered',
-              ...(teamVariable && { teamVariable }),
-            },
-          }
-        );
+      await this.processReg({
+        raceIdWithCanceledReg,
+        championshipId,
+        riderId,
+        raceId,
+        startNumber,
+        teamVariable,
+      });
 
-        // Удаление riderId из массива зарегистрированных, для дальнейшего обновления.
-        await ChampionshipModel.findByIdAndUpdate(
-          { _id: champ._id },
-          { $pull: { 'races.$[].registeredRiders': riderId } },
-          { new: true }
-        );
-      }
+      // Добавление _id Райдера в массив зарегистрированных в заезд.
+      await RaceModel.findByIdAndUpdate(raceId, { $addToSet: { registeredRiders: riderId } });
 
-      // Добавление _id Райдера в массив зарегистрированных в документ Чемпионата в соответствующий Заезд.
-      await ChampionshipModel.findByIdAndUpdate(
-        { _id: champ._id },
-        {
-          // Добавить riderId в массив registeredRiders заезда с указанным номером
-          $addToSet: {
-            'races.$[race].registeredRiders': riderId,
-          },
-        },
-        {
-          // Обновить все подходящие элементы в массиве races.
-          // race.number это свойство number в объекте race.
-          arrayFilters: [{ 'race.number': raceNumber }],
-        }
-      );
+      // Данные заезда для формирования ответа регистрирующемуся участнику.
+      const race = await this.getRace(raceId);
 
       const messageSuccess = `Вы зарегистрировались, Чемпионат: ${champ.name}, заезд: "${
-        champ.races.find((race) => race.number === raceNumber)?.name || '!нет названия!'
+        race.name || '!нет названия!'
       }", стартовый номер: ${startNumber}`;
 
       return {
@@ -534,7 +463,7 @@ export class RegistrationChampService {
   }> {
     // Подключение к БД осуществляется в методе в котором вызывается данный метод.
 
-    const champDB: TChampionshipForRegistered | null = await ChampionshipModel.findOne(
+    const champDB = await ChampionshipModel.findOne(
       {
         urlSlug,
       },
@@ -546,7 +475,7 @@ export class RegistrationChampService {
         startDate: true,
         endDate: true,
       }
-    ).lean();
+    ).lean<TChampionshipForRegistered>();
 
     if (!champDB) {
       throw new Error(
@@ -567,5 +496,133 @@ export class RegistrationChampService {
     };
 
     return { championship, races, championshipId: champDB._id };
+  }
+
+  /**
+   * Данные чемпионата для регистрации.
+   */
+  private async getChamp(_id: string): Promise<{ name: string }> {
+    const champ = await ChampionshipModel.findOne({ _id }, { name: true, _id: false }).lean<{
+      name: string;
+    }>();
+
+    if (!champ) {
+      throw new Error('Не найден Чемпионат!');
+    }
+    return champ;
+  }
+
+  /**
+   * Данные заезда для регистрации.
+   */
+  private async getRace(_id: string): Promise<TRace> {
+    const race = await RaceModel.findOne({ _id }).lean<TRace>();
+
+    if (!race) {
+      throw new Error('Не найден Заезд!');
+    }
+    return race;
+  }
+
+  /**
+   * Проверка зарегистрирован ли уже регистрирующийся райдер в данном Соревновании/Этапе.
+   * Можно регистрироваться только в один заезд на Соревновании/Этапе.
+   */
+  private async checkRegistrationStatus({
+    championshipId,
+    riderId,
+  }: {
+    championshipId: string;
+    riderId: string;
+  }): Promise<mongoose.Types.ObjectId | undefined> {
+    const registrationStatus = await RaceRegistrationModel.findOne(
+      {
+        championship: championshipId,
+        rider: riderId,
+        status: { $in: ['registered', 'canceled'] },
+      },
+      { _id: false, raceNumber: true, status: true }
+    )
+      .populate({ path: 'race', select: ['name'] })
+      .lean<TRegistrationStatusMongo>();
+
+    if (registrationStatus && registrationStatus.status === 'registered') {
+      throw new Error(
+        `Вы уже зарегистрированы в данном Чемпионате, в заезде: ${registrationStatus.race.name}!`
+      );
+    }
+
+    // Если документ найден и он и status !== 'registered', проверка, может участник отменял регистрацию.
+    // Необходимо производить обновление, а не создание документа регистрации.
+    if (registrationStatus && registrationStatus.status === 'canceled') {
+      return registrationStatus.race._id;
+    }
+  }
+
+  /**
+   * Проверка занят ли выбранный стартовый номер для заезда.
+   */
+  private async checkStartNumber({
+    raceId,
+    startNumber,
+  }: {
+    raceId: string;
+    startNumber: number;
+  }): Promise<void> {
+    const checkStartNumber = await RaceRegistrationModel.findOne(
+      {
+        raceId,
+        startNumber,
+      },
+      { _id: true }
+    ).lean();
+
+    if (checkStartNumber) {
+      throw new Error(`Стартовый номер: ${startNumber} уже занят!`);
+    }
+  }
+
+  /**
+   * Создание/обновление документа регистрации RaceRegistration.
+   */
+  private async processReg({
+    raceIdWithCanceledReg,
+    championshipId,
+    riderId,
+    raceId,
+    startNumber,
+    teamVariable,
+  }: ProcessRegParams): Promise<void> {
+    if (!raceIdWithCanceledReg) {
+      // Регистрация на выбранный Заезд Чемпионата.
+      await RaceRegistrationModel.create({
+        championship: championshipId,
+        rider: riderId,
+        raceId,
+        startNumber,
+        status: 'registered',
+        ...(teamVariable && { teamVariable }),
+      });
+    } else {
+      await RaceRegistrationModel.findOneAndUpdate(
+        {
+          championship: championshipId,
+          rider: riderId,
+        },
+        {
+          $set: {
+            startNumber,
+            raceId,
+            status: 'registered',
+            ...(teamVariable && { teamVariable }),
+          },
+        }
+      );
+
+      // Удаление riderId из массива зарегистрированных (status:'canceled'), для дальнейшего обновления.
+      await RaceModel.findByIdAndUpdate(raceIdWithCanceledReg, {
+        $pull: { registeredRiders: riderId },
+      });
+    }
   }
 }
