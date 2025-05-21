@@ -1,3 +1,5 @@
+import { TFormRaceRegistration, TRaceForForm } from '@/types/index.interface';
+
 export function getDefaultValue(
   value: string | null,
   type: 'city' | 'firstName' | 'lastName' | 'gender' | 'ageCategory'
@@ -74,4 +76,10 @@ export function validateRequiredFields(
     default:
       return { ok: false, message: 'не распознан тип проверочных данных' };
   }
+}
+
+export function initRegChampForm(races: TRaceForForm[]): TFormRaceRegistration {
+  const raceId = races.sort((a, b) => a.number - b.number)[0]._id;
+
+  return { raceId, teamVariable: '', startNumber: 1 };
 }

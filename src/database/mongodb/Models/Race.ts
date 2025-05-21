@@ -37,4 +37,4 @@ const RaceSchema = new Schema<TRaceDocument>({
   quantityRidersFinished: { type: Number, default: 0 },
 });
 
-export const RaceModel = models.Races || model<TRaceDocument>('Races', RaceSchema);
+export const RaceModel = models.Race || model<TRaceDocument>('Race', RaceSchema);

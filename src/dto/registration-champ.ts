@@ -29,7 +29,7 @@ export function dtoRegisteredRider(
   return {
     _id: riderRegistered._id.toString(),
     championship: riderRegistered.championship.toString(),
-    raceNumber: riderRegistered.raceNumber,
+    raceId: riderRegistered.race.toString(),
     rider: {
       _id: riderRegistered.rider._id.toString(),
       id: riderRegistered.rider.id,
@@ -148,23 +148,14 @@ export function dtoCheckRegisteredInChamp(
     return null;
   }
 
-  // Получение данных Заезда в котором зарегистрирован РАйдер.
-  const race = registeredInChamp.championship.races.find(
-    (race) => race.number === registeredInChamp.raceNumber
-  );
-
-  if (!race) {
-    return null;
-  }
-
   return {
     race: {
-      number: race.number,
-      name: race.name,
-      description: race.description,
-      laps: race.laps,
-      distance: race.distance,
-      ascent: race.ascent,
+      number: registeredInChamp.race.number,
+      name: registeredInChamp.race.name,
+      description: registeredInChamp.race.description,
+      laps: registeredInChamp.race.laps,
+      distance: registeredInChamp.race.distance,
+      ascent: registeredInChamp.race.ascent,
     },
     startNumber: registeredInChamp.startNumber,
   };

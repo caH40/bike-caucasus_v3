@@ -1,13 +1,13 @@
-import type { TOptions, TRaceClient } from '@/types/index.interface';
+import type { TOptions, TRaceForForm } from '@/types/index.interface';
 
 /**
  * Создание массива option для Select выбора Заезда.
  */
-export const createOptionsRaces = (races: TRaceClient[]): TOptions[] => {
+export const createOptionsRaces = (races: TRaceForForm[]): TOptions[] => {
   const options = races.map((race) => ({
     id: race.number,
     translation: race.name,
-    name: race.number.toString(),
+    name: race._id,
   }));
 
   return options;

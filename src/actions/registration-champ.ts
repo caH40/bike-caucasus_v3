@@ -28,7 +28,7 @@ const regService = new RegistrationChampService();
  */
 export async function registerForChampionship({
   championshipId,
-  raceNumber,
+  raceId,
   startNumber,
   teamVariable,
 }: TRegistrationRaceDataFromForm): Promise<ResponseServer<null>> {
@@ -44,7 +44,7 @@ export async function registerForChampionship({
 
     const response = await regService.post({
       championshipId,
-      raceNumber,
+      raceId,
       riderId,
       startNumber,
       teamVariable,
@@ -62,19 +62,12 @@ export async function registerForChampionship({
 /**
  * Экшен получение зарегистрированных Райдеров на Заезд Чемпионата.
  */
-export async function getRegisteredRidersRace({
-  championshipId,
-  raceNumber,
-}: {
-  championshipId: string;
-  raceNumber: number;
-}): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
+export async function getRegisteredRidersRace(
+  raceId: string
+): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
   'use server';
   try {
-    const response = await regService.getRidersRace({
-      championshipId,
-      raceNumber,
-    });
+    const response = await regService.getRidersRace(raceId);
 
     return response;
   } catch (error) {

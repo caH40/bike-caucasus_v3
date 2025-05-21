@@ -12,27 +12,25 @@ import { useLoadingStore } from '@/store/loading';
 import { registerForChampionship } from '@/actions/registration-champ';
 import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
-import { validateRequiredFields } from './utils';
+import { initRegChampForm, validateRequiredFields } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
-import { TProfileForRegistration, TProfileKey, TRaceClient } from '@/types/index.interface';
 import styles from '../Form.module.css';
 import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 
-type Props = {
-  races: TRaceClient[];
-  championshipId: string;
-  profile: TProfileForRegistration;
-};
-
-type TFormRaceRegistration = {
-  raceNumber: number;
-  startNumber: number;
-  teamVariable: string;
-};
+// types
+import {
+  TFormRaceRegistrationProps,
+  TFormRaceRegistration,
+  TProfileKey,
+} from '@/types/index.interface';
 
 const textValidation = new TextValidationService();
 
-export default function FormRaceRegistration({ championshipId, races, profile }: Props) {
+export default function FormRaceRegistration({
+  championshipId,
+  races,
+  profile,
+}: TFormRaceRegistrationProps) {
   const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
   const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -49,14 +47,11 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
     formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
   } = useForm<TFormRaceRegistration>({
     mode: 'all',
-    defaultValues: {
-      raceNumber: 1,
-      teamVariable: '',
-    },
+    defaultValues: initRegChampForm(races),
   });
 
-  // Отслеживание изменения свойства raceNumber в форме.
-  const raceNumber = watch('raceNumber');
+  // Отслеживание изменения свойства raceId в форме.
+  const raceId = watch('raceId');
 
   // Обновление массива свободных стартовых номеров.
   useEffect(() => {
@@ -69,7 +64,7 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
   }, [startNumberFree, setValue]);
 
   // Установка данных зарегистрированных райдеров в сторе, и генерация свободны стартовых номеров;
-  useRegisteredRiders(raceNumber, championshipId);
+  useRegisteredRiders(raceId);
 
   const onSubmit: SubmitHandler<TFormRaceRegistration> = async (dataForm) => {
     try {
@@ -86,7 +81,7 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
       toggleTrigger();
       const response = await registerForChampionship({
         championshipId,
-        raceNumber: +dataForm.raceNumber,
+        raceId: dataForm.raceId,
         startNumber: +dataForm.startNumber,
         teamVariable: dataForm.teamVariable,
       });
@@ -113,13 +108,13 @@ export default function FormRaceRegistration({ championshipId, races, profile }:
       <div className={styles.wrapper__inputs}>
         <BoxSelectNew
           label="Выбор заезда:*"
-          id="raceNumber"
+          id="raceId"
           options={createOptionsRaces(races)}
           loading={isLoading}
-          register={register('raceNumber', {
+          register={register('raceId', {
             required: 'Это обязательное поле для заполнения',
           })}
-          validationText={errors.raceNumber?.message || ''}
+          validationText={errors.raceId?.message || ''}
         />
         <BoxSelectNew
           label="Выбор стартового номера:*"

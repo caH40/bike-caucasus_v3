@@ -35,7 +35,7 @@ const championshipSchema = new Schema<TChampionshipDocument>(
     },
     type: { type: String, default: 'single', required: true },
     bikeType: { type: String, default: 'road', required: true },
-    races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Races', default: [] }],
+    races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Race', default: [] }],
     posterUrl: { type: String, default: null },
   },
   { timestamps: true }

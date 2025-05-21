@@ -103,22 +103,15 @@ export class RegistrationChampService {
   /**
    * Получение зарегистрированных Райдеров в Заезде (Race) Чемпионата.
    */
-  public async getRidersRace({
-    championshipId,
-    raceNumber,
-  }: {
-    championshipId: string;
-    raceNumber: number;
-  }): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
+  public async getRidersRace(
+    raceId: string
+  ): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
       const registeredRidersDb = await RaceRegistrationModel.find(
-        {
-          championship: championshipId,
-          raceNumber,
-        },
+        { race: raceId },
         { payment: false }
       )
         .populate({
@@ -144,7 +137,7 @@ export class RegistrationChampService {
       return {
         data: registeredRiders,
         ok: true,
-        message: `Вы зарегистрировались`,
+        message: `Зарегистрированные участники в заезде с _id: ${raceId}`,
       };
     } catch (error) {
       this.errorLogger(error);
@@ -358,7 +351,7 @@ export class RegistrationChampService {
   }
 
   /**
-   * Проверка активной регистрации райдера в запрашиваемом Чемпионате во всех заездах.
+   * Проверка активной регистрации ( status: 'registered') райдера в запрашиваемом Чемпионате.
    * Если есть регистрация, то возвращаются данные Заезда.
    * @param {Object} params - Параметры для запроса.
    * @param {string} params.riderId - Идентификатор райдера в БД.
@@ -382,7 +375,6 @@ export class RegistrationChampService {
         },
         {
           rider: true,
-          raceNumber: true,
           startNumber: true,
           status: true,
           createdAt: true,
@@ -393,7 +385,6 @@ export class RegistrationChampService {
           select: [
             'status',
             'name',
-            'races',
             'posterUrl',
             'startDate',
             'endDate',
@@ -401,8 +392,9 @@ export class RegistrationChampService {
             'type',
             'parentChampionship',
           ],
-          populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
+          populate: [{ path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] }],
         })
+        .populate('race')
         .lean<TRegistrationRiderFromDB>();
 
       const registeredInChampFromDto = dtoCheckRegisteredInChamp(registeredInChamp);
@@ -598,7 +590,7 @@ export class RegistrationChampService {
       await RaceRegistrationModel.create({
         championship: championshipId,
         rider: riderId,
-        raceId,
+        race: raceId,
         startNumber,
         status: 'registered',
         ...(teamVariable && { teamVariable }),
@@ -612,7 +604,7 @@ export class RegistrationChampService {
         {
           $set: {
             startNumber,
-            raceId,
+            race: raceId,
             status: 'registered',
             ...(teamVariable && { teamVariable }),
           },

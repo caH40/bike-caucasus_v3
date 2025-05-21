@@ -20,6 +20,7 @@ import {
   TNewsBlockInfo,
   TOrganizer,
   TRace,
+  TRaceRegistration,
   TRaceRegistrationStatus,
   TResultRace,
   TTrackGPXObj,
@@ -571,7 +572,7 @@ export type TStageDateDescription = {
 export type TRegisteredRiderFromDB = {
   _id: mongoose.Types.ObjectId;
   championship: mongoose.Types.ObjectId;
-  raceNumber: number;
+  race: mongoose.Types.ObjectId;
   raceName?: string;
   rider: TRider;
   teamVariable?: string;
@@ -652,8 +653,10 @@ export type TRaceForFormNew = Omit<
 /**
  * Данные по Регистрации Райдера в Чемпионате.
  */
-export type TRegistrationRiderFromDB = {
-  _id: mongoose.Types.ObjectId;
+export type TRegistrationRiderFromDB = Pick<
+  TRaceRegistration,
+  '_id' | 'rider' | 'startNumber' | 'status' | 'createdAt'
+> & {
   championship: {
     _id: mongoose.Types.ObjectId;
     name: string;
@@ -663,14 +666,9 @@ export type TRegistrationRiderFromDB = {
     endDate: Date;
     status: 'upcoming';
     type: TChampionshipTypes;
-    races: TRace[];
     posterUrl: string;
   };
-  rider: mongoose.Types.ObjectId;
-  raceNumber: number;
-  startNumber: number;
-  status: TRaceRegistrationStatus;
-  createdAt: Date;
+  race: TRace;
 };
 
 /**
@@ -1181,4 +1179,22 @@ export type ProcessRegParams = {
   raceId: string;
   startNumber: number;
   teamVariable?: string;
+};
+
+/**
+ * Форма FormRaceRegistration.
+ */
+export type TFormRaceRegistration = {
+  raceId: string;
+  startNumber: number;
+  teamVariable: string;
+};
+
+/**
+ * Пропсы компонента FormRaceRegistration.
+ */
+export type TFormRaceRegistrationProps = {
+  races: TRaceForForm[];
+  championshipId: string;
+  profile: TProfileForRegistration;
 };
