@@ -581,6 +581,7 @@ export type TRegisteredRiderFromDB = {
   createdAt: Date;
   updatedAt: Date;
 };
+
 export type TRider = {
   _id: mongoose.Types.ObjectId;
   id: number;

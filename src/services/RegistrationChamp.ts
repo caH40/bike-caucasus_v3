@@ -176,23 +176,7 @@ export class RegistrationChampService {
         },
         { payment: false }
       )
-        .populate({
-          path: 'rider',
-          select: [
-            'id',
-            'city',
-            'team',
-            'teamVariable',
-            'person.firstName',
-            'person.lastName',
-            'person.patronymic',
-            'person.birthday',
-            'person.gender',
-            'image',
-            'imageFromProvider',
-            'provider.image',
-          ],
-        })
+        .populate('rider')
         .lean<TRegisteredRiderFromDB[]>();
 
       const registeredRiders = dtoRegisteredRidersChamp({
@@ -461,13 +445,14 @@ export class RegistrationChampService {
       },
       {
         _id: true,
-        races: true,
         name: true,
         type: true,
         startDate: true,
         endDate: true,
       }
-    ).lean<TChampionshipForRegistered>();
+    )
+      .populate('races')
+      .lean<TChampionshipForRegistered>();
 
     if (!champDB) {
       throw new Error(

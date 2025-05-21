@@ -76,7 +76,9 @@ export function dtoRegisteredRidersChamp({
   const champRegistrationRiders = races.map((race) => ({
     raceNumber: race.number,
     raceName: race.name,
-    raceRegistrationRider: ridersAfterDto.filter((rider) => rider.raceNumber === race.number),
+    raceRegistrationRider: ridersAfterDto.filter(
+      (rider) => rider.raceId === race._id.toString()
+    ),
   }));
 
   return { championship, champRegistrationRiders };
