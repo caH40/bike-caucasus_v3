@@ -1,4 +1,4 @@
-import { ObjectId, Types } from 'mongoose';
+import { ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
 import { errorLogger } from '@/errors/error';
@@ -8,6 +8,19 @@ import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
 import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/championship';
+import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
+import { getNextSequenceValue } from './sequence';
+import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
+import { Cloud } from './cloud';
+import { fileNameFormUrl } from '@/constants/regex';
+import { getCurrentStatus } from '@/libs/utils/championship';
+import { RegistrationChampService } from './RegistrationChamp';
+import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
+import { CategoriesModel } from '@/database/mongodb/Models/Categories';
+import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
+
+// types
+import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
   ResponseServer,
   TChampionshipWithOrganizer,
@@ -18,23 +31,7 @@ import type {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
-  TTrackGPXObj,
 } from '@/types/models.interface';
-import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
-import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
-import { getNextSequenceValue } from './sequence';
-import { parseGPX } from '@/libs/utils/parse-gpx';
-import { getCoordStart } from '@/libs/utils/track';
-import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
-import { Cloud } from './cloud';
-import { fileNameFormUrl } from '@/constants/regex';
-import { getCurrentStatus } from '@/libs/utils/championship';
-import { RegistrationChampService } from './RegistrationChamp';
-import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
-import { CategoriesModel } from '@/database/mongodb/Models/Categories';
-import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
-import { deserializeRaces } from '@/libs/utils/deserialization/championshipRaces';
-import { RaceModel } from '@/database/mongodb/Models/Race';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -45,14 +42,7 @@ export class ChampionshipService {
   private dbConnection: () => Promise<void>;
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
-  private suffixTrackGpx: string;
-  private getCurrentStatus: ({
-    /* eslint-disable no-unused-vars */
-    status,
-    startDate,
-    endDate,
-  }: /* eslint-enable no-unused-vars */
-  {
+  private getCurrentStatus: (props: {
     status: TChampionshipStatus;
     startDate: Date;
     endDate: Date;
@@ -64,7 +54,6 @@ export class ChampionshipService {
     this.dbConnection = connectToMongo;
     this.saveFile = saveFile;
     this.suffixImagePoster = 'championship_image_poster-';
-    this.suffixTrackGpx = 'championship_track_gpx-';
     this.getCurrentStatus = getCurrentStatus;
   }
 
@@ -302,120 +291,6 @@ export class ChampionshipService {
       await championshipCreated.save();
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
-    } catch (error) {
-      this.errorLogger(error);
-      return this.handlerErrorDB(error);
-    }
-  }
-
-  /**
-   * Метод обновления заездов в Чемпионате. Данные из формы с клиента.
-   */
-  public async putRaces({
-    dataSerialized,
-    championshipId,
-  }: {
-    dataSerialized: FormData;
-    championshipId: string;
-  }): Promise<ResponseServer<null>> {
-    try {
-      const { races } = deserializeRaces(dataSerialized);
-
-      // url теков из облака, которые необходимо удалить.
-      const urlTracksForDel: string[] = [];
-
-      // Если у элемента массива races есть _id, значит найти и обновить данный документ Race
-      // Если нет _id, значит создать новый документ Race.
-      // Удалить существующие документы Race если их _id нет в элементах массива races.
-      const oldRaces = await RaceModel.find(
-        { championship: championshipId },
-        { _id: true, trackGPX: true }
-      ).lean<{ _id: Types.ObjectId; trackGPX: TTrackGPXObj }[]>();
-
-      // Сохраняем _id обновлённых пакетов.
-      const updatedIds = new Set<string>();
-
-      for (const race of races) {
-        let trackGPX = {} as TTrackGPXObj;
-        // Если race.trackGPXFile существует, значит трек изменялся.
-        if (race.trackGPXFile) {
-          // Сохранение GPX трека маршрута заезда (гонки) для Чемпионата.
-          const trackGPXUrl = await this.saveFile({
-            file: race.trackGPXFile as File,
-            type: 'GPX',
-            suffix: this.suffixTrackGpx,
-          });
-
-          // Добавляем старый url трека для последующего удаления, если это обновление заезда, а не создание.
-
-          if (race._id) {
-            const url = oldRaces.find((r) => String(r._id) === race._id)?.trackGPX?.url;
-            url && urlTracksForDel.push(url);
-          }
-
-          // Получаем файл GPX с облака, так как реализация через FileReader большая!
-          const gpxParsed = await parseGPX(trackGPXUrl);
-
-          const coordStart = getCoordStart(gpxParsed.gpx.trk[0].trkseg[0].trkpt[0]);
-
-          trackGPX = {
-            url: trackGPXUrl,
-            coordStart,
-          };
-        }
-
-        if (race._id) {
-          const updateDate = {
-            ...race,
-            championship: championshipId,
-            ...(trackGPX.url && { trackGPX }), // если trackGPX изменён, значит перезаписываем.
-          };
-
-          // Обновляем существующий пакет по _id.
-          await RaceModel.updateOne(
-            { _id: race._id },
-            {
-              $set: updateDate,
-            }
-          );
-          updatedIds.add(race._id); // Добавляем _id в список обновлённых.
-        } else {
-          // Создаём новый заезд, если _id нет.
-          const created = await RaceModel.create({
-            ...race,
-            championship: championshipId,
-            ...(trackGPX.url && { trackGPX }), // если trackGPX изменён, значит перезаписываем.
-          });
-          updatedIds.add(created._id.toString()); // Добавляем созданный _id.
-        }
-      }
-
-      // Обновление races в Чемпионате.
-      await ChampionshipModel.findOneAndUpdate({
-        _id: championshipId,
-        races: [...updatedIds],
-      });
-
-      // Удаляем те заезды, _id которых не было среди обновлённых.
-      const toDelete = oldRaces.filter((race) => !updatedIds.has(race._id.toString()));
-
-      if (toDelete.length > 0) {
-        await RaceModel.deleteMany({
-          _id: { $in: toDelete.map((c) => c._id) },
-        });
-
-        // Добавляем url трека для последующего удаления, удаленного заезда.
-        toDelete.forEach((r) => {
-          urlTracksForDel.push(r.trackGPX.url);
-        });
-      }
-
-      // Удаление файлов трека с облака, если были удалены блоки Заездов.
-      if (urlTracksForDel) {
-        this.deleteOldTracks(urlTracksForDel);
-      }
-
-      return { data: null, ok: true, message: 'Заезды успешно обновлены.' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
@@ -673,24 +548,6 @@ export class ChampionshipService {
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
-    }
-  }
-
-  /**
-   * Удаление теков из облака, которые были заменены в заезде, или которые были в удалённом заезде.
-   */
-  private async deleteOldTracks(urlTracksForDel: string[]): Promise<void> {
-    try {
-      // Экземпляр сервиса работы с Облаком
-      const cloud = new Cloud();
-      urlTracksForDel.forEach((url) => {
-        cloud.deleteFile({
-          prefix: url.replace(fileNameFormUrl, '$1'),
-        });
-      });
-    } catch (error) {
-      this.errorLogger(error);
-      this.handlerErrorDB(error);
     }
   }
 }

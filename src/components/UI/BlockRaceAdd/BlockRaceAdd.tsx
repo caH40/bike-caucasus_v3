@@ -65,10 +65,10 @@ export default function BlockRaceAdd({
       <TitleAndLine title={'Редактирование заезда'} hSize={2} />
 
       <h3 className={styles.title}>
-        <h3 className={styles.box__info}>
+        <div className={styles.box__info}>
           {`${t.titleBlockRaceAdd} №${race.number}`}
           {<IconInfo squareSize={20} tooltip={tooltip} />}
-        </h3>
+        </div>
       </h3>
 
       <div className={styles.block__icons}>

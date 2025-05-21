@@ -11,7 +11,7 @@ import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 import type { ResponseServer } from '@/types/index.interface';
 
 /**
- * Класс работы с сущностью Категории Чемпионата.
+ * Класс работы с сущностью Категории чемпионата.
  */
 export class ChampionshipCategories {
   private errorLogger;

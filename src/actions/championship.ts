@@ -3,11 +3,17 @@
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 
+import { getOrganizerForModerate } from './organizer';
+import { PermissionsService } from '@/services/Permissions';
+import { ChampionshipCategories } from '@/services/ChampionshipCategories';
+import { ChampionshipRaces } from '@/services/ChampionshipRaces';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { ChampionshipService } from '@/services/Championship';
+
+// types
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
   ResponseServer,
@@ -15,9 +21,6 @@ import type {
   TPutRacesParams,
 } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
-import { getOrganizerForModerate } from './organizer';
-import { PermissionsService } from '@/services/Permissions';
-import { ChampionshipCategories } from '@/services/ChampionshipCategories';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -362,6 +365,7 @@ export async function putRaces({
     }
 
     const championshipService = new ChampionshipService();
+    const racesService = new ChampionshipRaces();
     const { data } = await championshipService.getOne({ urlSlug });
 
     if (!data) {
@@ -377,7 +381,7 @@ export async function putRaces({
       throw new Error('У вас нет прав для изменения данного Чемпионата!');
     }
 
-    const response = await championshipService.putRaces({
+    const response = await racesService.updateAll({
       dataSerialized,
       championshipId: data._id,
     });
