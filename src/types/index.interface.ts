@@ -743,7 +743,7 @@ export type TResultRaceRiderDeserialized = Omit<
 > & {
   startNumber: number;
   yearBirthday: number;
-  raceNumber: number;
+  raceId: string;
   resultId?: string;
 };
 
@@ -849,7 +849,7 @@ export type TChampionshipForRegisteredClient = Omit<
 export type TProtocolRace = {
   protocol: TResultRaceDto[];
   categories: string[];
-  race: { name: string; number: number };
+  race: { name: string; _id: string };
 };
 
 /**

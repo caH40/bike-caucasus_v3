@@ -50,18 +50,13 @@ export async function postResultRaceRider({
  * Получение протокола Заезда Чемпионата и списка категорий в заезде.
  */
 export async function getProtocolRace({
-  championshipId,
-  raceNumber,
+  raceId,
 }: {
-  championshipId: string;
-  raceNumber: number;
+  raceId: string;
 }): Promise<ResponseServer<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
   try {
     const resultRaceService = new ResultRaceService();
-    const res = await resultRaceService.getProtocolRace({
-      championshipId,
-      raceNumber,
-    });
+    const res = await resultRaceService.getProtocolRace({ raceId });
 
     return res;
   } catch (error) {
@@ -116,16 +111,16 @@ export async function getProtocolsRaces({
  */
 export async function updateProtocolRace({
   championshipId,
-  raceNumber,
+  raceId,
 }: {
   championshipId: string;
-  raceNumber: number;
+  raceId: string;
 }): Promise<ResponseServer<null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.updateProtocolRace({
       championshipId,
-      raceNumber,
+      raceId,
     });
 
     return res;

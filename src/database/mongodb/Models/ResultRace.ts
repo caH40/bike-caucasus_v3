@@ -1,7 +1,7 @@
 import {
   TGapsInCategories,
   TQuantityRidersFinished,
-  TResultRace,
+  TResultRaceDocument,
 } from '@/types/models.interface';
 import { Schema, Model, models, model } from 'mongoose';
 
@@ -47,10 +47,10 @@ const GapsInCategoriesSchema = new Schema<TGapsInCategories>(
   { _id: false }
 );
 
-const ResultRaceSchema: Schema = new Schema<TResultRace>(
+const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
   {
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
-    raceNumber: { type: Number, required: true },
+    race: { type: Schema.Types.ObjectId, ref: 'Race', required: true },
     rider: { type: Schema.Types.ObjectId, ref: 'User' },
     profile: {
       firstName: { type: String, required: true },
@@ -103,5 +103,5 @@ const ResultRaceSchema: Schema = new Schema<TResultRace>(
 );
 
 // Модель для участника заезда
-export const ResultRaceModel: Model<TResultRace> =
+export const ResultRaceModel: Model<TResultRaceDocument> =
   models.ResultRace || model('ResultRace', ResultRaceSchema);

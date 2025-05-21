@@ -7,20 +7,15 @@ import Select from '../../Select/Select';
 
 type Props = {
   options: TOptions[];
-  raceNumber: string;
-  setRaceNumber: Dispatch<SetStateAction<string>>;
+  raceId: string;
+  setRaceId: Dispatch<SetStateAction<string>>;
   label: string;
 };
 
 /**
  * Форма выбора Заезда для добавления финишного протокола в него.
  */
-export default function FormSelectionRace({
-  label,
-  options,
-  raceNumber,
-  setRaceNumber,
-}: Props) {
+export default function FormSelectionRace({ label, options, raceId, setRaceId }: Props) {
   return (
     <form>
       <Select
@@ -28,8 +23,8 @@ export default function FormSelectionRace({
         id={'selectRaceNumber'}
         name={'selectRaceNumber'}
         options={options}
-        state={raceNumber}
-        setState={setRaceNumber}
+        state={raceId}
+        setState={setRaceId}
         disabledEmpty={true}
       />
     </form>

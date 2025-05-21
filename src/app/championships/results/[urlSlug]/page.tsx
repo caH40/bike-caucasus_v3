@@ -42,14 +42,17 @@ export default async function ChampionshipResults(props: Props) {
   const options: TOptions[] = championship.data.races.map((race) => ({
     id: race.number,
     translation: `Заезд №${race.number}: ${race.name}`,
-    name: String(race.number),
+    name: race._id,
   }));
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
         <TitleAndLine hSize={1} title={`Результаты «${championship.data.name}»`} />
-        <WrapperProtocolRace championship={championship.data} options={options} />
+        {/* Отображается только при наличии заезда(ов) */}
+        {championship.data.races.length > 0 && (
+          <WrapperProtocolRace championship={championship.data} options={options} />
+        )}
       </div>
 
       {/* левая боковая панель */}

@@ -17,11 +17,12 @@ import {
 } from '@/types/index.interface';
 import { TResultRaceRiderDto } from '@/types/dto.types';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
-import { TRace, TResultRaceDocument } from '@/types/models.interface';
+import { TRace, TResultRace, TResultRaceDocument } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
 import { processResults } from '@/libs/utils/results';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
+import { RaceModel } from '@/database/mongodb/Models/Race';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -126,21 +127,6 @@ export class ResultRaceService {
       // Подключение к БД.
       await this.dbConnection();
 
-      // Проверка существования Чемпионата с нужным заездом.
-      const champDB = await ChampionshipModel.findOne(
-        {
-          _id: dataDeserialized.championshipId,
-          'races.number': dataDeserialized.raceNumber,
-        },
-        { races: { $elemMatch: { number: dataDeserialized.raceNumber } }, name: true }
-      ).lean();
-
-      if (!champDB) {
-        throw new Error(
-          `Не найден чемпионат с _id:${dataDeserialized.championshipId} и заездом №${dataDeserialized.raceNumber} для добавления финишного результата!`
-        );
-      }
-
       // Проверка дублирование результата Райдера в Чемпионате заезда.
       // Проверка по id пользователя на сайте.
       let resultRaceDB = {} as { _id: ObjectId } | null;
@@ -150,15 +136,17 @@ export class ResultRaceService {
           {
             rider: dataDeserialized._id,
             championship: dataDeserialized.championshipId,
-            raceNumber: dataDeserialized.raceNumber,
+            raceId: dataDeserialized.raceId,
           },
           { _id: true }
         ).lean<{ _id: ObjectId }>();
       }
 
+      const race = await this.getRace(dataDeserialized.raceId);
+
       if (resultRaceDB?._id) {
         throw new Error(
-          `Результат райдера bcId:${dataDeserialized.id} существует в протоколе заезда №${dataDeserialized.raceNumber} "${champDB.name}"`
+          `Результат райдера bcId:${dataDeserialized.id} существует в протоколе заезда ${race.name}`
         );
       }
 
@@ -167,7 +155,7 @@ export class ResultRaceService {
         await ResultRaceModel.findOne(
           {
             championship: dataDeserialized.championshipId,
-            raceNumber: dataDeserialized.raceNumber,
+            raceNumber: dataDeserialized.raceId,
             startNumber: dataDeserialized.startNumber,
           },
           { 'profile.lastName': true, 'profile.firstName': true }
@@ -207,7 +195,7 @@ export class ResultRaceService {
       // Сохранение в БД результата райдера в Заезде Чемпионата.
       await ResultRaceModel.create({
         championship: dataDeserialized.championshipId,
-        raceNumber: dataDeserialized.raceNumber,
+        race: dataDeserialized.raceId,
         startNumber: dataDeserialized.startNumber,
         ...(riderDB && { rider: riderDB._id }),
         profile: {
@@ -227,7 +215,7 @@ export class ResultRaceService {
 
       await this.updateProtocolRace({
         championshipId: dataDeserialized.championshipId,
-        raceNumber: dataDeserialized.raceNumber,
+        raceId: dataDeserialized.raceId,
       });
 
       return {
@@ -245,44 +233,20 @@ export class ResultRaceService {
    * Получение протокола заезда чемпионата.
    */
   public async getProtocolRace({
-    championshipId,
-    raceNumber,
+    raceId,
   }: {
-    championshipId: string;
-    raceNumber: number;
+    raceId: string;
   }): Promise<ResponseServer<TProtocolRace | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
       // Проверка наличия Заезда Чемпионата в БД.
-      const champDB = await ChampionshipModel.findOne(
-        {
-          _id: championshipId,
-          'races.number': raceNumber,
-        },
-        { _id: true, name: true, races: true }
-      ).lean();
-
-      if (!champDB) {
-        throw new Error(
-          `Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber} для добавления финишного результата!`
-        );
-      }
-
-      // Данные заезда.
-      const raceCurrent = champDB.races.find((race) => race.number === raceNumber);
-      if (!raceCurrent) {
-        throw new Error(`Не найден заезд №${raceNumber} в чемпионате с _id:${championshipId}!`);
-      }
-      const race = { name: raceCurrent.name, number: raceCurrent.number };
+      const race = await this.getRace(raceId);
 
       // Получение результатов заезда raceNumber в чемпионате championshipId.
       const resultsRaceDB = await ResultRaceModel.find(
-        {
-          championship: championshipId,
-          raceNumber,
-        },
+        { race: raceId },
         { 'positions._id': false }
       )
         .populate({
@@ -309,7 +273,11 @@ export class ResultRaceService {
       const categoriesSorted = sortCategoriesString([...categoriesSet]);
 
       return {
-        data: { protocol: resultsSorted, categories: categoriesSorted, race },
+        data: {
+          protocol: resultsSorted,
+          categories: categoriesSorted,
+          race: { name: race.name, _id: raceId },
+        },
         ok: true,
         message: 'Протокол заезда Чемпионата',
       };
@@ -329,20 +297,20 @@ export class ResultRaceService {
    */
   public async updateProtocolRace({
     championshipId,
-    raceNumber,
+    raceId,
   }: {
     championshipId: string;
-    raceNumber: number;
+    raceId: string;
   }): Promise<ResponseServer<null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
 
       // Получение данных заезда.
-      const race = await this.getRace(championshipId, raceNumber);
+      const race = await this.getRace(raceId);
 
       // Получение результатов заезда.
-      const resultsRaceDB = await this.getResultsRace(championshipId, raceNumber);
+      const resultsRaceDB = await this.getResultsRace(raceId);
 
       // Получение категорий заезда.
       const categoriesDB = await this.getRaceCategories({
@@ -413,39 +381,27 @@ export class ResultRaceService {
   /**
    * Получает данные заезда по идентификатору чемпионата и номеру заезда.
    *
-   * @param {string} championshipId - Идентификатор чемпионата.
-   * @param {number} raceNumber - Номер заезда.
+   * @param {string} raceId - Идентификатор заезда.
    * @returns {Promise<TRace | null>} Данные заезда или null, если заезд не найден.
    */
-  private async getRace(championshipId: string, raceNumber: number): Promise<TRace> {
-    const racesInChampDB = await ChampionshipModel.findOne(
-      { _id: championshipId, 'races.number': raceNumber },
-      { races: { $elemMatch: { number: raceNumber } } }
-    ).lean();
+  private async getRace(raceId: string): Promise<TRace> {
+    const raceDB = await RaceModel.findOne({ _id: raceId }).lean<TRace>();
 
-    const race = racesInChampDB?.races[0];
-
-    if (!race) {
-      throw new Error(`Не найден чемпионат с _id:${championshipId} и заездом №${raceNumber}`);
+    if (!raceDB) {
+      throw new Error(`Не найден заезд с _id:${raceId}!`);
     }
 
-    return race;
+    return raceDB;
   }
 
   /**
    * Получает результаты заезда по идентификатору чемпионата и номеру заезда.
    *
-   * @param {string} championshipId - Идентификатор чемпионата.
-   * @param {number} raceNumber - Номер заезда.
-   * @returns {Promise<TResultRaceDocument[]>} Массив результатов заезда.
+   * @param {string} raceId - Идентификатор заезда.
+   * @returns {Promise<TResultRace[]>} Массив результатов заезда.
    */
-  private async getResultsRace(
-    championshipId: string,
-    raceNumber: number
-  ): Promise<TResultRaceDocument[]> {
-    return ResultRaceModel.find({ championship: championshipId, raceNumber }).lean<
-      TResultRaceDocument[]
-    >();
+  private async getResultsRace(raceId: string): Promise<TResultRace[]> {
+    return ResultRaceModel.find({ race: raceId }).lean<TResultRace[]>();
   }
 
   /**

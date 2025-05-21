@@ -389,7 +389,7 @@ export type TResultRaceDocument = TResultRace & Document;
 export type TResultRace = {
   _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
   championship: mongoose.Types.ObjectId; // Ссылка на чемпионат.
-  raceNumber: number; // Номер заезда в Соревновании/Этапе.
+  race: mongoose.Types.ObjectId; // Ссылка на заезд.
   rider?: mongoose.Types.ObjectId; // Ссылка на пользователя, есть он есть в БД.
   profile: TProfileRiderInProtocol;
   startNumber: number;

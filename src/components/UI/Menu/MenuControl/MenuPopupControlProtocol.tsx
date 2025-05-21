@@ -15,7 +15,7 @@ import IconRefresh from '@/components/Icons/IconRefresh';
 const cx = cn.bind(styles);
 
 type Props = {
-  raceInfo: { championshipId: string; championshipUrlSlug: string; raceNumber: number };
+  raceInfo: { championshipId: string; championshipUrlSlug: string; raceId: string };
 };
 
 // Роли для использования меню.
@@ -26,14 +26,14 @@ const permission = 'admin';
  */
 export default function MenuPopupControlProtocol({ raceInfo }: Props) {
   const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
-  const handlerUpdateProtocolRace = async (championshipId: string, raceNumber: number) => {
-    if (!championshipId || !raceNumber) {
+  const handlerUpdateProtocolRace = async (championshipId: string, raceId: string) => {
+    if (!championshipId || !raceId) {
       return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
     }
 
     const response = await updateProtocolRace({
       championshipId,
-      raceNumber,
+      raceId,
     });
 
     if (response.ok) {
@@ -49,7 +49,7 @@ export default function MenuPopupControlProtocol({ raceInfo }: Props) {
     {
       id: 0,
       name: 'Редактирование',
-      href: `/moderation/championship/protocol/${raceInfo.championshipUrlSlug}/${raceInfo.raceNumber}`,
+      href: `/moderation/championship/protocol/${raceInfo.championshipUrlSlug}/${raceInfo.raceId}`,
       permission,
       icon: IconEditOld,
       classes: [],
@@ -57,7 +57,7 @@ export default function MenuPopupControlProtocol({ raceInfo }: Props) {
     {
       id: 1,
       name: 'Обновление',
-      onClick: () => handlerUpdateProtocolRace(raceInfo.championshipId, raceInfo.raceNumber),
+      onClick: () => handlerUpdateProtocolRace(raceInfo.championshipId, raceInfo.raceId),
       permission,
       icon: IconRefresh,
       classes: [],

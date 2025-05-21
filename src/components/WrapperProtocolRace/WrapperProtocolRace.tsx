@@ -23,44 +23,42 @@ type Props = {
  * Обертка для клиентских компонентов страницы результаты Заезда Чемпионата.
  */
 export default function WrapperProtocolRace({ options, championship }: Props) {
-  const [raceNumber, setRaceNumber] = useState<string>('1');
+  const [raceId, setRaceId] = useState<string>(championship.races[0]._id);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
   // const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
   const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
-  const race = championship.races.find((race) => race.number === +raceNumber);
+  const race = championship.races.find((race) => race._id === raceId);
 
   // Получение финишного протокола из БД.
   useEffect(() => {
-    getProtocolRace({ championshipId: championship._id, raceNumber: +raceNumber }).then(
-      (res) => {
-        if (res.data) {
-          // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
-          setProtocol(res.data.protocol);
-          setCategories(res.data.categories);
-        }
+    getProtocolRace({ raceId }).then((res) => {
+      if (res.data) {
+        // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
+        setProtocol(res.data.protocol);
+        setCategories(res.data.categories);
       }
-    );
-  }, [raceNumber, championship._id, triggerResultTable]);
+    });
+  }, [raceId, championship._id, triggerResultTable]);
 
   const raceInfo = {
     championshipId: championship._id,
     championshipUrlSlug: championship.urlSlug,
-    raceNumber: +raceNumber,
+    raceId,
   };
 
   return (
     <div className={styles.wrapper}>
       <FormSelectionRace
         options={options}
-        raceNumber={raceNumber}
-        setRaceNumber={setRaceNumber}
+        raceId={raceId}
+        setRaceId={setRaceId}
         label={'Выбор заезда'}
       />
 
-      <BlockRaceInfo raceNumber={raceNumber} race={race} />
+      {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}
 
       <FilterRidersForAddResult
         activeIdBtn={activeIdBtn}
