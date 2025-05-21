@@ -149,6 +149,7 @@ export class ChampionshipService {
           select: parentChampionshipSelect,
         })
         .populate('categoriesConfigs')
+        .populate('races')
         .lean<TChampionshipWithOrganizer[]>();
 
       // Формирование данных для отображение Блока Этапов в карточке Чемпионата.

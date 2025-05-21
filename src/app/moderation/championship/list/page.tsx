@@ -10,7 +10,6 @@ import { getChampionships } from '@/actions/championship';
  */
 export default async function ChampionshipListPage() {
   const championships = await getChampionships({ forModeration: true });
-  // console.log(championships.data?.[0]);
 
   return (
     <>
