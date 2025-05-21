@@ -1,7 +1,6 @@
 import {
   TOrganizerForClient,
   TParentChampionshipForClient,
-  TRaceClient,
   TRaceForForm,
   TResultRaceFromDB,
   TStageDateDescription,
@@ -241,11 +240,10 @@ export type TRegistrationRiderDto = {
     endDate: Date;
     status: 'upcoming';
     type: TChampionshipTypes;
-    race: TRaceClient;
+    race: TRaceForForm;
     posterUrl: string;
   };
   parentChampionship: { name: string; urlSlug: string; type: TChampionshipTypes } | null;
-  raceNumber: number;
   startNumber: number;
   status: TRaceRegistrationStatus;
   createdAt: Date;

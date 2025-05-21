@@ -89,9 +89,7 @@ export function dtoRegisteredRidersChamp({
  */
 function dtoRegistrationRider(registration: TRegistrationRiderFromDB): TRegistrationRiderDto {
   // Получение race из объекта Чемпионата у которого raceNumber совпадает с raceNumber из Регистрации.
-  const race = formatTRacesToClient(registration.championship.races).find(
-    (race) => race.number === registration.raceNumber
-  );
+  const race = formatTRaceToClient(registration.race);
 
   if (!race) {
     throw new Error('Не найден raceNumber из регистрации в Races Чемпионата!');
@@ -112,7 +110,6 @@ function dtoRegistrationRider(registration: TRegistrationRiderFromDB): TRegistra
       posterUrl: registration.championship.posterUrl,
     },
     parentChampionship: registration.championship.parentChampionship,
-    raceNumber: registration.raceNumber,
     startNumber: registration.startNumber,
     status: registration.status,
     createdAt: registration.createdAt,
@@ -138,6 +135,14 @@ export function formatTRacesToClient(races: TRace[]): TRaceForForm[] {
 
     return { ...race, registeredRiders, categories, _id, championship };
   });
+}
+export function formatTRaceToClient(race: TRace): TRaceForForm {
+  const _id = String(race._id);
+  const categories = String(race.categories);
+  const championship = String(race.championship);
+  const registeredRiders = race.registeredRiders.map((rider) => String(rider));
+
+  return { ...race, registeredRiders, categories, _id, championship };
 }
 
 /**

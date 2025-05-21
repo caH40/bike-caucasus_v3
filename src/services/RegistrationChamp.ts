@@ -269,7 +269,7 @@ export class RegistrationChampService {
       // Подключение к БД.
       await this.dbConnection();
 
-      // Запрос для получения _id Rider.
+      // Проверка существования райдера в БД.
       const riderDB = await User.findOne({ id: riderId }, { _id: true }).lean<{
         _id: ObjectId;
       }>();
@@ -295,7 +295,6 @@ export class RegistrationChampService {
           select: [
             'status',
             'name',
-            'races',
             'posterUrl',
             'startDate',
             'endDate',
@@ -305,6 +304,7 @@ export class RegistrationChampService {
           ],
           populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
         })
+        .populate('race')
         .lean<TRegistrationRiderFromDB[]>();
 
       const registrationsFiltered = registrationsDb.filter(
