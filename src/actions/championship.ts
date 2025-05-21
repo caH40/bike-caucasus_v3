@@ -17,6 +17,7 @@ import type {
 import type { TChampionshipTypes } from '@/types/models.interface';
 import { getOrganizerForModerate } from './organizer';
 import { PermissionsService } from '@/services/Permissions';
+import { ChampionshipCategories } from '@/services/ChampionshipCategories';
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -306,6 +307,7 @@ export async function putCategories({
     }
 
     const championshipService = new ChampionshipService();
+    const categoriesService = new ChampionshipCategories();
     const { data } = await championshipService.getOne({ urlSlug });
 
     if (!data) {
@@ -321,7 +323,7 @@ export async function putCategories({
       throw new Error('У вас нет прав для изменения данного Чемпионата!');
     }
 
-    const response = await championshipService.putCategories({
+    const response = await categoriesService.updateAll({
       dataSerialized,
       championshipId: data._id,
     });
