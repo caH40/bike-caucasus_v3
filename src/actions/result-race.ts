@@ -83,12 +83,7 @@ export async function getProtocolsRaces({
     const resultRaceService = new ResultRaceService();
 
     const responseProtocols = await Promise.all(
-      data.races.map((race) =>
-        resultRaceService.getRaceProtocol({
-          championshipId: data._id,
-          raceNumber: race.number,
-        })
-      )
+      data.races.map((race) => resultRaceService.getRaceProtocol({ raceId: race._id }))
     );
 
     // Не используется filter и map так как не проходил проверку типизации при билдинге приложения!!!
@@ -118,7 +113,7 @@ export async function updateProtocolRace({
 }): Promise<ResponseServer<null>> {
   try {
     const resultRaceService = new ResultRaceService();
-    const res = await resultRaceService.updateProtocolRace({
+    const res = await resultRaceService.updateRaceProtocol({
       championshipId,
       raceId,
     });

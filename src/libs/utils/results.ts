@@ -1,14 +1,14 @@
 import { createStringCategoryAge } from './age-category';
 import { calculateAverageSpeed } from './championship';
 
-import { TResultRaceDocument } from '@/types/models.interface';
+import { TResultRace } from '@/types/models.interface';
 import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
 
 /**
  * Обрабатывает результаты заезда, обновляет счетчики и категории.
  *
  * @param {Object} params - Параметры для обработки результатов.
- * @param {TResultRaceDocument[]} params.results - Массив результатов заезда.
+ * @param {TResultRace[]} params.results - Массив результатов заезда.
  * @param {TRace} params.race - Данные заезда.
  */
 export function processResults({
@@ -16,11 +16,11 @@ export function processResults({
   categories,
   raceDistance,
 }: {
-  results: TResultRaceDocument[];
+  results: TResultRace[];
   categories: TGetRaceCategoriesFromMongo;
   raceDistance: number;
 }): {
-  resultsUpdated: TResultRaceDocument[];
+  resultsUpdated: TResultRace[];
   quantityRidersFinished: number;
 } {
   // Инициализация коллекции мест по категориям.
@@ -74,12 +74,12 @@ export function processResults({
 /**
  * Устанавливает позиции для результатов и обновляет счетчики в коллекциях категорий.
  *
- * @param {TResultRaceDocument} result - Результат заезда.
+ * @param {TResultRace} result - Результат заезда.
  * @param {Map<string, number>} categoriesInRace - Коллекция категорий и счетчиков.
  * @param {Map<string, number>} quantityRidersFinishedMap - Коллекция количества финишировавших в категориях.
  */
 export function setPositions(
-  result: TResultRaceDocument,
+  result: TResultRace,
   categoriesInRace: Map<string, number>,
   quantityRidersFinishedMap: Map<string, number>
 ) {
@@ -117,7 +117,7 @@ export function setPositions(
  * категории, присутствующих в `categoriesInRace`.
  *
  * @param {Object} params - Параметры для вычисления количества финишировавших.
- * @param {TResultRaceDocument[]} params.results - Массив результатов заезда.
+ * @param {TResultRace[]} params.results - Массив результатов заезда.
  * @param {Map<string, number>} params.categoriesInRace - Коллекция категорий и счетчиков.
  * @returns {Map<string, number>} Коллекция количества финишировавших в категориях.
  */
@@ -125,7 +125,7 @@ export function getQuantityRidersFinished({
   results,
   categoriesInRace,
 }: {
-  results: TResultRaceDocument[];
+  results: TResultRace[];
   categoriesInRace: Map<string, number>;
 }): Map<string, number> {
   const ridersInCategories = new Map<string, number>();
@@ -172,7 +172,7 @@ export function setGaps({
   results,
   categoriesInRace,
 }: {
-  results: TResultRaceDocument[];
+  results: TResultRace[];
   categoriesInRace: Map<string, number>;
 }) {
   const indexesInCategories: {
@@ -253,14 +253,13 @@ export function setGaps({
 
 /**
  * Рассчитывает временные гэпы.
- *
  * @param index Индекс текущего райдера.
  * @param leaderIndex Индекс лидера в категории.
  * @param prevIndex Индекс предыдущего райдера в категории.
  * @returns Объект с гэпами к лидеру и предыдущему райдеру.
  */
 function calculateGaps(
-  results: TResultRaceDocument[],
+  results: TResultRace[],
   index: number,
   leaderIndex: number,
   prevIndex: number

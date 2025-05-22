@@ -5,7 +5,6 @@ import { handlerErrorDB } from './mongodb/error';
 import { connectToMongo } from '@/database/mongodb/mongoose';
 import { deserializationResultRaceRider } from '@/libs/utils/deserialization/resultRaceRider';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
-import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { User as UserModel } from '@/database/mongodb/Models/User';
 import { dtoResultsRace, dtoResultsRaceRider, dtoResultRaceRider } from '@/dto/results-race';
 import {
@@ -17,7 +16,7 @@ import {
   TRiderRaceResultDB,
 } from '@/types/index.interface';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
-import { TRace, TResultRace, TResultRaceDocument } from '@/types/models.interface';
+import { TRace, TResultRace } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
 import { processResults } from '@/libs/utils/results';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
@@ -164,15 +163,72 @@ export class ResultRaceService {
         creator: creatorId,
       });
 
-      // await this.updateProtocolRace({
-      //   championshipId: dataDeserialized.championshipId,
-      //   raceId: dataDeserialized.raceId,
-      // });
+      await this.updateRaceProtocol({
+        championshipId: dataDeserialized.championshipId,
+        raceId: dataDeserialized.raceId,
+      });
 
       return {
         data: null,
         ok: true,
         message: `Результат райдера "${dataDeserialized.lastName} ${dataDeserialized.firstName}" добавлен в финишный протокол.`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Обновление данных результата.
+   */
+  public async update({ result }: { result: FormData }): Promise<ResponseServer<null>> {
+    try {
+      // Подключение к БД.
+      await this.dbConnection();
+
+      // Данные после десериализации.
+      const dataDeserialized = deserializationResultRaceRider(result);
+
+      // Получение обновляемого результата.
+      const resultDB = await ResultRaceModel.findOne({ _id: dataDeserialized.resultId });
+
+      if (!resultDB) {
+        throw new Error(`Не найден обновляемый результат с _id:${dataDeserialized.resultId}`);
+      }
+
+      // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
+      await this.isStartNumberTaken(dataDeserialized);
+
+      const query = {
+        profile: {
+          firstName: dataDeserialized.firstName,
+          lastName: dataDeserialized.lastName,
+          patronymic: dataDeserialized.patronymic || null,
+          team: dataDeserialized.team || null,
+          city: dataDeserialized.city,
+          yearBirthday: dataDeserialized.yearBirthday,
+          gender: dataDeserialized.gender,
+        },
+        startNumber: dataDeserialized.startNumber,
+        raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
+      };
+
+      const updateResult = await resultDB.updateOne({ $set: query });
+
+      // Обновление позиций, отставаний, средней скорости, возрастных категорий в протоколе.
+      await this.updateRaceProtocol({
+        championshipId: String(resultDB.championship),
+        raceId: resultDB.race.toString(),
+      });
+
+      const success = updateResult.modifiedCount > 0;
+      return {
+        data: null,
+        ok: success,
+        message: success
+          ? 'Обновлены данные результата райдера в протоколе'
+          : `Неизвестная ошибка при обновлении результата с _id:${dataDeserialized.resultId}`,
       };
     } catch (error) {
       this.errorLogger(error);
@@ -246,7 +302,7 @@ export class ResultRaceService {
    * @param {number} params.raceNumber - Номер заезда.
    * @returns {Promise<ResponseServer<null>>} Результат выполнения операции.
    */
-  public async updateProtocolRace({
+  public async updateRaceProtocol({
     championshipId,
     raceId,
   }: {
@@ -267,7 +323,7 @@ export class ResultRaceService {
       const categoriesDB = await this.getRaceCategories({
         championshipId,
         categoriesId: race.categories,
-        raceNumber,
+        raceId,
       });
 
       // Обработка данных.
@@ -281,11 +337,7 @@ export class ResultRaceService {
       await this.updateResults(resultsUpdated);
 
       // Обновление количества участников в коллекции Чемпионат в соответствующем заезде.
-      await this.updateQuantityFinishedRiders({
-        championshipId,
-        raceNumber,
-        quantityRidersFinished,
-      });
+      await this.updateQuantityFinishedRiders({ raceId, quantityRidersFinished });
 
       return {
         data: null,
@@ -303,20 +355,14 @@ export class ResultRaceService {
    *
    */
   private async updateQuantityFinishedRiders({
-    championshipId,
-    raceNumber,
+    raceId,
     quantityRidersFinished,
   }: {
-    championshipId: string;
-    raceNumber: number;
+    raceId: string;
     quantityRidersFinished: number;
   }): Promise<ResponseServer<null>> {
     try {
-      await ChampionshipModel.findOneAndUpdate(
-        { _id: championshipId, 'races.number': raceNumber },
-        // По фильтру 'races.number': raceNumber обновляет соответствующий элемент массива races
-        { $set: { 'races.$.quantityRidersFinished': quantityRidersFinished } }
-      );
+      await RaceModel.findOneAndUpdate({ _id: raceId }, { $set: { quantityRidersFinished } });
 
       return {
         data: null,
@@ -361,7 +407,7 @@ export class ResultRaceService {
    * @param {TResultRaceDocument[]} results - Массив результатов заезда.
    * @returns {Promise<void>} Обещание, которое разрешается, когда обновление завершено.
    */
-  private async updateResults(results: TResultRaceDocument[]): Promise<void> {
+  private async updateResults(results: TResultRace[]): Promise<void> {
     await Promise.all(
       results.map((result) =>
         ResultRaceModel.updateOne(
@@ -413,80 +459,6 @@ export class ResultRaceService {
   }
 
   /**
-   * Обновление данных результата.
-   */
-  public async update({ result }: { result: FormData }): Promise<ResponseServer<null>> {
-    try {
-      // Подключение к БД.
-      await this.dbConnection();
-
-      // Данные после десериализации.
-      const dataDeserialized = deserializationResultRaceRider(result);
-
-      // Получение обновляемого результата.
-      const resultDB = await ResultRaceModel.findOne({ _id: dataDeserialized.resultId });
-
-      if (!resultDB) {
-        throw new Error(`Не найден обновляемый результат с _id:${dataDeserialized.resultId}`);
-      }
-
-      // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
-      const checkNumberDB = await ResultRaceModel.findOne(
-        {
-          championship: resultDB.championship,
-          raceNumber: resultDB.raceNumber,
-          startNumber: dataDeserialized.startNumber,
-        },
-        { 'profile.lastName': true, 'profile.firstName': true }
-      ).lean<{
-        _id: ObjectId;
-        profile: { lastName: string; firstName: string };
-      }>();
-
-      // Проверка String(registrationDB._id) !== dataDeserialized._id) что номер принадлежит не райдеру которому изменяется результат.
-      if (checkNumberDB && String(checkNumberDB._id) !== dataDeserialized.resultId) {
-        throw new Error(
-          `Данный стартовый номер: ${dataDeserialized.startNumber} уже есть в протоколе у райдера: ${checkNumberDB.profile.lastName} ${checkNumberDB.profile.firstName}`
-        );
-      }
-
-      const query = {
-        profile: {
-          firstName: dataDeserialized.firstName,
-          lastName: dataDeserialized.lastName,
-          patronymic: dataDeserialized.patronymic || null,
-          team: dataDeserialized.team || null,
-          city: dataDeserialized.city,
-          yearBirthday: dataDeserialized.yearBirthday,
-          gender: dataDeserialized.gender,
-        },
-        startNumber: dataDeserialized.startNumber,
-        raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
-      };
-
-      const updateResult = await resultDB.updateOne({ $set: query });
-
-      // Обновление позиций, отставаний, средней скорости, возрастных категорий в протоколе.
-      await this.updateProtocolRace({
-        championshipId: String(resultDB.championship),
-        raceNumber: resultDB.raceNumber,
-      });
-
-      const success = updateResult.modifiedCount > 0;
-      return {
-        data: null,
-        ok: success,
-        message: success
-          ? 'Обновлены данные результата райдера в протоколе'
-          : `Неизвестная ошибка при обновлении результата с _id:${dataDeserialized.resultId}`,
-      };
-    } catch (error) {
-      this.errorLogger(error);
-      return this.handlerErrorDB(error);
-    }
-  }
-
-  /**
    * Проверка входных данных с клиента для создание финишного результата райдера в заезде.
    */
   private validateRaceResultData(data: TResultRaceRiderDeserialized) {
@@ -526,19 +498,22 @@ export class ResultRaceService {
    * Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
    */
   private async isStartNumberTaken(data: TResultRaceRiderDeserialized) {
-    const registrationDB: { profile: { lastName: string; firstName: string } } | null =
-      await ResultRaceModel.findOne(
-        {
-          championship: data.championshipId,
-          raceNumber: data.raceId,
-          startNumber: data.startNumber,
-        },
-        { 'profile.lastName': true, 'profile.firstName': true }
-      ).lean();
+    const res = await ResultRaceModel.findOne(
+      {
+        championship: data.championshipId,
+        raceNumber: data.raceId,
+        startNumber: data.startNumber,
+      },
+      { 'profile.lastName': true, 'profile.firstName': true }
+    ).lean<{
+      _id: ObjectId;
+      profile: { lastName: string; firstName: string };
+    }>();
 
-    if (registrationDB) {
+    // Проверка String(registrationDB._id) !== dataDeserialized._id) что номер принадлежит не райдеру которому изменяется результат.
+    if (res && String(res._id) !== data.resultId) {
       throw new Error(
-        `Данный стартовый номер: ${data.startNumber} уже есть в протоколе у райдера: ${registrationDB.profile.lastName} ${registrationDB.profile.firstName}`
+        `Данный стартовый номер: ${data.startNumber} уже есть в протоколе у райдера: ${res.profile.lastName} ${res.profile.firstName}`
       );
     }
   }
