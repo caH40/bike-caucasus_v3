@@ -59,7 +59,7 @@ export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegi
 /**
  * ДТО Зарегистрированных райдеров в Чемпионате во всех заездах.
  */
-export function dtoRegisteredRidersChamp({
+export function dtoRegisteredInChampRiders({
   riders,
   championship,
   races,
@@ -71,7 +71,10 @@ export function dtoRegisteredRidersChamp({
   champRegistrationRiders: TChampRegistrationRiderDto[];
   championship: TChampionshipForRegisteredClient;
 } {
-  const ridersAfterDto = riders.map((rider) => dtoRegisteredRider(rider));
+  const ridersAfterDto = dtoRegisteredRiders(riders);
+
+  console.log({ races });
+  console.log({ ridersAfterDto });
 
   const champRegistrationRiders = races.map((race) => ({
     raceNumber: race.number,

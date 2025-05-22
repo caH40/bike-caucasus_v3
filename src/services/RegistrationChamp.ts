@@ -7,7 +7,7 @@ import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import {
   dtoCheckRegisteredInChamp,
   dtoRegisteredRiders,
-  dtoRegisteredRidersChamp,
+  dtoRegisteredInChampRiders,
   dtoRegistrationsRider,
 } from '@/dto/registration-champ';
 import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
@@ -149,12 +149,12 @@ export class RegistrationChampService {
    * Получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах
    * или в конкретном заезде raceNumber.
    */
-  public async getRidersChamp({
+  public async getRegisteredInChampRiders({
     urlSlug,
-    raceNumber,
+    raceId,
   }: {
     urlSlug: string;
-    raceNumber?: number;
+    raceId?: string;
   }): Promise<
     ResponseServer<{
       champRegistrationRiders: TChampRegistrationRiderDto[];
@@ -167,7 +167,7 @@ export class RegistrationChampService {
 
       const { championship, races, championshipId } = await this.getChampionshipData({
         urlSlug,
-        raceNumber,
+        raceId,
       });
 
       const registeredRidersDb = await RaceRegistrationModel.find(
@@ -179,7 +179,7 @@ export class RegistrationChampService {
         .populate('rider')
         .lean<TRegisteredRiderFromDB[]>();
 
-      const registeredRiders = dtoRegisteredRidersChamp({
+      const registeredRiders = dtoRegisteredInChampRiders({
         riders: registeredRidersDb,
         championship,
         races,
@@ -413,15 +413,15 @@ export class RegistrationChampService {
 
   /**
    * Получение основных данных чемпионата (Этапа).
-   * Если raceNumber существует, значит получение необходимы данные только этого заезда.
-   * Если raceNumber === undefined значит необходимы данные всех заездов.
+   * Если raceId существует, значит получение необходимы данные только этого заезда.
+   * Если raceId === undefined значит необходимы данные всех заездов.
    */
   private async getChampionshipData({
     urlSlug,
-    raceNumber,
+    raceId,
   }: {
     urlSlug: string;
-    raceNumber?: number;
+    raceId?: string;
   }): Promise<{
     championship: TChampionshipForRegisteredClient;
     races: TRace[];
@@ -446,13 +446,13 @@ export class RegistrationChampService {
 
     if (!champDB) {
       throw new Error(
-        `Не найден чемпионат с urlSlug:"${urlSlug}" и заездом №${raceNumber} для добавления финишного результата!`
+        `Не найден чемпионат с urlSlug:"${urlSlug}" для добавления финишного результата!`
       );
     }
 
-    // Получение данных Заезда с raceNumber, или данных всех заездов.
-    const races = raceNumber
-      ? champDB.races.filter((race) => race.number === raceNumber)
+    // Получение данных Заезда с raceId, или данных всех заездов.
+    const races = raceId
+      ? champDB.races.filter((race) => race._id.toString() === raceId)
       : champDB.races;
 
     const championship: TChampionshipForRegisteredClient = {

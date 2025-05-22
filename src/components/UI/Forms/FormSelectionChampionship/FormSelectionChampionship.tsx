@@ -6,12 +6,21 @@ import { TOptions } from '@/types/index.interface';
 import SelectCustom from '../../SelectCustom/SelectCustom';
 import { useRouter } from 'next/navigation';
 
-type Props = { options: TOptions[] };
+type Props = {
+  options: TOptions[];
+  championshipsWithRacesIds: {
+    urlSlug: string;
+    races: string[];
+  }[];
+};
 
 /**
  * Форма выбора Чемпионата и переход для добавления финишного протокола в него.
  */
-export default function FormSelectionChampionship({ options }: Props) {
+export default function FormSelectionChampionship({
+  options,
+  championshipsWithRacesIds,
+}: Props) {
   const router = useRouter();
 
   const [urlSlug, setUrlSlug] = useState<string>('');
@@ -20,9 +29,14 @@ export default function FormSelectionChampionship({ options }: Props) {
     if (!urlSlug) {
       return;
     }
+    const raceId = championshipsWithRacesIds.find((champ) => champ.urlSlug === urlSlug)
+      ?.races[0];
 
-    router.push(`/moderation/championship/protocol/${urlSlug}/1`);
-  }, [urlSlug, router]);
+    if (!raceId) {
+      throw new Error('Не получен raceId!');
+    }
+    router.push(`/moderation/championship/protocol/${urlSlug}/${raceId}`);
+  }, [urlSlug, championshipsWithRacesIds, router]);
 
   return (
     <form>

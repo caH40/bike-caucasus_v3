@@ -248,7 +248,7 @@ export class ResultRaceService {
       // Проверка наличия Заезда Чемпионата в БД.
       const race = await this.getRace(raceId);
 
-      // Получение результатов заезда raceNumber в чемпионате championshipId.
+      // Получение результатов заезда raceId в чемпионате championshipId.
       const resultsRaceDB = await ResultRaceModel.find(
         { race: raceId },
         { 'positions._id': false }

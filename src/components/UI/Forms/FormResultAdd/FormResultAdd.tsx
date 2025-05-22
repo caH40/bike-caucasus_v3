@@ -27,7 +27,7 @@ type Props = {
     dataFromFormSerialized: FormData;
   }) => Promise<ResponseServer<void>>;
   championshipId: string;
-  raceNumber: string;
+  raceId: string;
   setTriggerResultTable: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -37,7 +37,7 @@ type Props = {
 export default function FormResultAdd({
   postResultRaceRider,
   registeredRiders,
-  raceNumber,
+  raceId,
   championshipId,
   setTriggerResultTable,
 }: Props) {
@@ -107,7 +107,7 @@ export default function FormResultAdd({
       ...dataFromForm.rider,
       timeDetailsInMilliseconds,
       startNumber: startNumber(),
-      raceNumber,
+      raceId,
       championshipId,
     });
 

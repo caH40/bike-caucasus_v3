@@ -11,7 +11,7 @@ import styles from '../../../layout.module.css';
 type Props = {
   params: Promise<{
     urlSlug: string;
-    raceNumber: string;
+    id: string;
   }>;
 };
 
@@ -21,10 +21,7 @@ type Props = {
 export default async function ProtocolRaceEditPage(props: Props) {
   const params = await props.params;
 
-  const {
-    urlSlug,
-    raceNumber
-  } = params;
+  const { urlSlug, id } = params;
 
   const [championship, organizer] = await Promise.all([
     getChampionship({ urlSlug, forModeration: true }),
@@ -58,10 +55,11 @@ export default async function ProtocolRaceEditPage(props: Props) {
     );
   }
 
+  // Опции для выбора заезда в котором редактируется финишный протокол.
   const options: TOptions[] = championship.data.races.map((race) => ({
     id: race.number,
     translation: `Заезд №${race.number}: ${race.name}`,
-    name: String(race.number),
+    name: String(race._id),
   }));
 
   return (
@@ -75,7 +73,7 @@ export default async function ProtocolRaceEditPage(props: Props) {
         postResultRaceRider={postResultRaceRider}
         options={options}
         championship={championship.data}
-        initialRaceNumber={raceNumber}
+        initialRaceId={id}
       />
     </>
   );

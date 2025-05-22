@@ -25,6 +25,12 @@ export default async function ChampionshipRaceForProtocolPage() {
     name: champ.urlSlug,
   }));
 
+  // Массив чемпионатов с _id заездов в нём.
+  const championshipsWithRacesIds = championships.data.map((champ) => ({
+    urlSlug: champ.urlSlug,
+    races: champ.races.map((race) => race._id),
+  }));
+
   return (
     <>
       <TitleAndLine
@@ -32,7 +38,10 @@ export default async function ChampionshipRaceForProtocolPage() {
         title="Выбор Чемпионата для работы с финишным протоколом"
         Icon={IconResults}
       />
-      <FormSelectionChampionship options={options} />
+      <FormSelectionChampionship
+        options={options}
+        championshipsWithRacesIds={championshipsWithRacesIds}
+      />
     </>
   );
 }

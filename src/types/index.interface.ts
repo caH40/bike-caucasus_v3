@@ -827,13 +827,11 @@ export interface TUserModeratedData {
 /**
  * Получение данных об чемпионате для таблицы зарегистрированных участников.
  */
-export type TChampionshipForRegistered = {
-  _id: mongoose.Types.ObjectId;
+export type TChampionshipForRegistered = Pick<
+  TChampionship,
+  '_id' | 'name' | 'type' | 'startDate' | 'endDate'
+> & {
   races: TRace[];
-  name: string;
-  type: TChampionshipTypes;
-  startDate: Date;
-  endDate: Date;
 };
 
 /**

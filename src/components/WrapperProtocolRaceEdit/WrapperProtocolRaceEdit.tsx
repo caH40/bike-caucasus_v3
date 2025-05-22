@@ -24,7 +24,7 @@ type Props = {
   }: {
     dataFromFormSerialized: FormData;
   }) => Promise<ResponseServer<void>>;
-  initialRaceNumber: string;
+  initialRaceId: string;
 };
 
 /**
@@ -34,20 +34,21 @@ export default function WrapperProtocolRaceEdit({
   options,
   championship,
   postResultRaceRider,
-  initialRaceNumber,
+  initialRaceId,
 }: Props) {
-  const [raceNumber, setRaceNumber] = useState<string>(initialRaceNumber);
+  const [raceId, setRaceId] = useState<string>(initialRaceId);
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
   const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
-  const race = championship.races.find((race) => race.number === +raceNumber);
+  const race = championship.races.find((race) => race._id === raceId);
+  console.log({ registeredRiders });
 
   // Получение зарегистрированных участников в Заезде из БД.
   useEffect(() => {
-    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceNumber: +raceNumber })
+    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceId })
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.message);
@@ -58,43 +59,41 @@ export default function WrapperProtocolRaceEdit({
         }
       })
       .catch((error) => toast.error(error.message));
-  }, [raceNumber, championship.urlSlug]);
+  }, [raceId, championship.urlSlug]);
 
   // Получение финишного протокола из БД.
   useEffect(() => {
-    getRaceProtocol({ championshipId: championship._id, raceNumber: +raceNumber }).then(
-      (res) => {
-        if (res.data) {
-          // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
-          setProtocol(res.data.protocol);
-          setCategories(res.data.categories);
-        }
+    getRaceProtocol({ raceId }).then((res) => {
+      if (res.data) {
+        // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
+        setProtocol(res.data.protocol);
+        setCategories(res.data.categories);
       }
-    );
-  }, [raceNumber, championship._id, triggerResultTable]);
+    });
+  }, [raceId, triggerResultTable]);
 
   const raceInfo = {
     championshipId: championship._id,
     championshipUrlSlug: championship.urlSlug,
-    raceNumber: +raceNumber,
+    raceId,
   };
 
   return (
     <div className={styles.wrapper}>
       <FormSelectionRace
         options={options}
-        raceNumber={raceNumber}
-        setRaceNumber={setRaceNumber}
+        raceId={raceId}
+        setRaceId={setRaceId}
         label={'Выбор заезда для добавления результатов:'}
       />
 
-      <BlockRaceInfo raceNumber={raceNumber} race={race} />
+      {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}
 
       <FormResultAdd
         postResultRaceRider={postResultRaceRider}
         registeredRiders={registeredRiders}
         championshipId={championship._id}
-        raceNumber={raceNumber}
+        raceId={raceId}
         setTriggerResultTable={setTriggerResultTable}
       />
 

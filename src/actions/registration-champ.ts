@@ -82,10 +82,10 @@ export async function getRegisteredRidersRace(
  */
 export async function getRegisteredRidersChamp({
   urlSlug,
-  raceNumber,
+  raceId,
 }: {
   urlSlug: string;
-  raceNumber?: number;
+  raceId?: string;
 }): Promise<
   ResponseServer<{
     champRegistrationRiders: TChampRegistrationRiderDto[];
@@ -93,9 +93,14 @@ export async function getRegisteredRidersChamp({
   } | null>
 > {
   try {
-    const response = await regService.getRidersChamp({
+    console.log({
       urlSlug,
-      raceNumber,
+      raceId,
+    });
+
+    const response = await regService.getRegisteredInChampRiders({
+      urlSlug,
+      raceId,
     });
 
     return response;
