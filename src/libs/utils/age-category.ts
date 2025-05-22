@@ -1,3 +1,4 @@
+import { MAX_ATHLETE_AGE } from '@/constants/category';
 import { AgeCategory } from '@/database/mongodb/Models/AgeCategory';
 import { errorLogger } from '@/errors/error';
 import { TCategoryAge } from '@/types/index.interface';
@@ -87,16 +88,18 @@ export function createStringCategoryAge({
     throw new Error(error);
   }
 
+  // Возраст в годах: текущий год - год рождения.
   const fullYear = new Date().getFullYear() - yearBirthday;
 
   // Проходим по каждой категории и проверяем, попадает ли возраст в диапазон.
   for (const category of categoriesAge) {
     if (fullYear >= category.min && fullYear <= category.max) {
-      const maxAge = 200; // Предположительно, максимальное значение 200 используется для открытых категорий.
-      if (category.max === maxAge) {
-        return `${gender}${category.min}+`; // Категория без верхнего предела.
+      if (category.max === MAX_ATHLETE_AGE) {
+        // Если название категории было задано, то возвращается оно.
+        // Категория без верхнего предела.
+        return category.name || `${gender}${category.min}+`;
       } else {
-        return `${gender}${category.min}-${category.max}`; // Категория с указанием диапазона.
+        return category.name || `${gender}${category.min}-${category.max}`; // Категория с указанием диапазона.
       }
     }
   }

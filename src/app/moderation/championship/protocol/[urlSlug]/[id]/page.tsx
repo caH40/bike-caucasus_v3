@@ -3,7 +3,7 @@ import IconResults from '@/components/Icons/IconResults';
 import { getChampionship } from '@/actions/championship';
 import { TOptions } from '@/types/index.interface';
 import WrapperProtocolRaceEdit from '@/components/WrapperProtocolRaceEdit/WrapperProtocolRaceEdit';
-import { postResultRaceRider } from '@/actions/result-race';
+import { postRiderRaceResult } from '@/actions/result-race';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../../../layout.module.css';
@@ -70,7 +70,7 @@ export default async function ProtocolRaceEditPage(props: Props) {
         Icon={IconResults}
       />
       <WrapperProtocolRaceEdit
-        postResultRaceRider={postResultRaceRider}
+        postRiderRaceResult={postRiderRaceResult}
         options={options}
         championship={championship.data}
         initialRaceId={id}

@@ -11,7 +11,10 @@ export function deserializationResultRaceRider(
   };
 
   for (const [key, value] of dataSerialized) {
-    if (
+    if (value === 'null') {
+      resultRaceRider[key] = null;
+      continue;
+    } else if (
       (key === 'timeDetailsInMilliseconds' ||
         key === 'startNumber' ||
         key === 'raceNumber' ||

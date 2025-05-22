@@ -16,7 +16,7 @@ import { ChampionshipService } from '@/services/Championship';
 /**
  * Сохранение результата райдера в Заезде Чемпионата.
  */
-export async function postResultRaceRider({
+export async function postRiderRaceResult({
   dataFromFormSerialized,
 }: {
   dataFromFormSerialized: FormData;

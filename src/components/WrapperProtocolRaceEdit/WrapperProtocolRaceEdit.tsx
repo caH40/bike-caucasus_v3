@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 type Props = {
   options: TOptions[];
   championship: TDtoChampionship;
-  postResultRaceRider: ({
+  postRiderRaceResult: ({
     // eslint-disable-next-line no-unused-vars
     dataFromFormSerialized,
   }: {
@@ -33,7 +33,7 @@ type Props = {
 export default function WrapperProtocolRaceEdit({
   options,
   championship,
-  postResultRaceRider,
+  postRiderRaceResult,
   initialRaceId,
 }: Props) {
   const [raceId, setRaceId] = useState<string>(initialRaceId);
@@ -44,7 +44,6 @@ export default function WrapperProtocolRaceEdit({
   const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
   const race = championship.races.find((race) => race._id === raceId);
-  console.log({ registeredRiders });
 
   // Получение зарегистрированных участников в Заезде из БД.
   useEffect(() => {
@@ -90,7 +89,7 @@ export default function WrapperProtocolRaceEdit({
       {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}
 
       <FormResultAdd
-        postResultRaceRider={postResultRaceRider}
+        postRiderRaceResult={postRiderRaceResult}
         registeredRiders={registeredRiders}
         championshipId={championship._id}
         raceId={raceId}

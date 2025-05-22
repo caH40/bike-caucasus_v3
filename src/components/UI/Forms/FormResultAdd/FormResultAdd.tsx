@@ -20,7 +20,7 @@ import { useResetFormAddResultRace } from '@/hooks/useResetFormAddResultRace';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
-  postResultRaceRider: ({
+  postRiderRaceResult: ({
     // eslint-disable-next-line no-unused-vars
     dataFromFormSerialized,
   }: {
@@ -35,7 +35,7 @@ type Props = {
  * Форма добавления результата райдера в Протокол заезда.
  */
 export default function FormResultAdd({
-  postResultRaceRider,
+  postRiderRaceResult,
   registeredRiders,
   raceId,
   championshipId,
@@ -109,10 +109,11 @@ export default function FormResultAdd({
       startNumber: startNumber(),
       raceId,
       championshipId,
+      categorySkillLevel: null,
     });
 
     setLoading(true);
-    const response = await postResultRaceRider({ dataFromFormSerialized: dataSerialized });
+    const response = await postRiderRaceResult({ dataFromFormSerialized: dataSerialized });
 
     setLoading(false);
 

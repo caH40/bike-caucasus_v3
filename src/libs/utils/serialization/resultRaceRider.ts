@@ -7,7 +7,7 @@ export function serializationResultRaceRider<T extends Record<string, unknown>>(
   const formData = new FormData();
 
   for (const [key, value] of Object.entries(dataFromForm)) {
-    if (value) {
+    if (value || value === null) {
       formData.set(key, String(value));
     }
   }

@@ -93,11 +93,6 @@ export async function getRegisteredRidersChamp({
   } | null>
 > {
   try {
-    console.log({
-      urlSlug,
-      raceId,
-    });
-
     const response = await regService.getRegisteredInChampRiders({
       urlSlug,
       raceId,

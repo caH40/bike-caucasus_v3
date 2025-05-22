@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
@@ -13,6 +13,7 @@ import {
   TGetRaceCategoriesParams,
   TProtocolRace,
   TResultRaceFromDB,
+  TResultRaceRiderDeserialized,
   TRiderRaceResultDB,
 } from '@/types/index.interface';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
@@ -118,83 +119,28 @@ export class ResultRaceService {
     try {
       const dataDeserialized = deserializationResultRaceRider(dataFromFormSerialized);
 
-      if (!dataDeserialized.lastName) {
-        throw new Error('Отсутствует фамилия');
-      } else if (!dataDeserialized.firstName) {
-        throw new Error('Отсутствует имя');
-      } else if (!dataDeserialized.yearBirthday || +dataDeserialized.yearBirthday === 0) {
-        throw new Error('Отсутствует год рождения');
-      } else if (!dataDeserialized.timeDetailsInMilliseconds) {
-        throw new Error('Отсутствует финишное время');
-      }
+      // Проверка входных данных.
+      this.validateRaceResultData(dataDeserialized);
 
       // Подключение к БД.
       await this.dbConnection();
 
-      // Проверка дублирование результата Райдера в Чемпионате заезда.
-      // Проверка по id пользователя на сайте.
-      let resultRaceDB = {} as { _id: ObjectId } | null;
-
-      if (dataDeserialized._id) {
-        resultRaceDB = await ResultRaceModel.findOne(
-          {
-            rider: dataDeserialized._id,
-            championship: dataDeserialized.championshipId,
-            raceId: dataDeserialized.raceId,
-          },
-          { _id: true }
-        ).lean<{ _id: ObjectId }>();
-      }
-
+      // Данные по заезду.
       const race = await this.getRace(dataDeserialized.raceId);
 
-      if (resultRaceDB?._id) {
-        throw new Error(
-          `Результат райдера bcId:${dataDeserialized.id} существует в протоколе заезда ${race.name}`
-        );
-      }
+      // Проверка дублирование результата Райдера в Чемпионате заезда.
+      await this.isRiderResultExists(dataDeserialized, race.name);
 
       // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
-      const registrationDB: { profile: { lastName: string; firstName: string } } | null =
-        await ResultRaceModel.findOne(
-          {
-            championship: dataDeserialized.championshipId,
-            raceNumber: dataDeserialized.raceId,
-            startNumber: dataDeserialized.startNumber,
-          },
-          { 'profile.lastName': true, 'profile.firstName': true }
-        ).lean();
+      await this.isStartNumberTaken(dataDeserialized);
 
-      let riderDB = {} as { _id: ObjectId } | null;
-      if (dataDeserialized.id) {
-        riderDB = await UserModel.findOne({ id: dataDeserialized.id }, { _id: true }).lean<{
-          _id: ObjectId;
-        }>();
-      }
+      // Получение _id участника, если у него есть профиль на сайте.
+      const riderDB = await UserModel.findOne({ id: dataDeserialized.id }, { _id: true }).lean<{
+        _id: ObjectId;
+      }>();
 
-      if (registrationDB) {
-        throw new Error(
-          `Данный стартовый номер: ${dataDeserialized.startNumber} уже есть в протоколе у райдера: ${registrationDB.profile.lastName} ${registrationDB.profile.firstName}`
-        );
-      }
-
-      const categoriesDB = await this.getRaceCategories({
-        championshipId: dataDeserialized.championshipId,
-        categoriesId: champDB.races[0].categories,
-        raceNumber: dataDeserialized.raceNumber,
-      });
-
-      // Присвоение возрастной категории
-      const categoriesAgeMale = categoriesDB.age.male;
-      const categoriesAgeFemale = categoriesDB.age.female;
-      const isFemale = dataDeserialized.gender === 'female';
-
-      // Создание название возрастной категории на основании возрастных рамок в которые попадает райдер.
-      const categoryAge = createStringCategoryAge({
-        yearBirthday: dataDeserialized.yearBirthday,
-        categoriesAge: isFemale ? categoriesAgeFemale : categoriesAgeMale,
-        gender: isFemale ? 'F' : 'M',
-      });
+      // Название возрастной категории в зависимости от возраста участника и категорий в заезде.
+      const categoryAge = await this.getAgeCategory(dataDeserialized, race.categories);
 
       // Сохранение в БД результата райдера в Заезде Чемпионата.
       await ResultRaceModel.create({
@@ -214,13 +160,14 @@ export class ResultRaceService {
         categoryAge,
         ...(dataDeserialized.id && { id: dataDeserialized.id }),
         raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
+        categorySkillLevel: dataDeserialized.categorySkillLevel,
         creator: creatorId,
       });
 
-      await this.updateProtocolRace({
-        championshipId: dataDeserialized.championshipId,
-        raceId: dataDeserialized.raceId,
-      });
+      // await this.updateProtocolRace({
+      //   championshipId: dataDeserialized.championshipId,
+      //   raceId: dataDeserialized.raceId,
+      // });
 
       return {
         data: null,
@@ -540,12 +487,69 @@ export class ResultRaceService {
   }
 
   /**
-   * Получение категорий для заезда raceNumber чемпионата championshipId.
+   * Проверка входных данных с клиента для создание финишного результата райдера в заезде.
+   */
+  private validateRaceResultData(data: TResultRaceRiderDeserialized) {
+    if (!data.lastName) {
+      throw new Error('Отсутствует фамилия');
+    } else if (!data.firstName) {
+      throw new Error('Отсутствует имя');
+    } else if (!data.yearBirthday || +data.yearBirthday === 0) {
+      throw new Error('Отсутствует год рождения');
+    } else if (!data.timeDetailsInMilliseconds) {
+      throw new Error('Отсутствует финишное время');
+    }
+  }
+
+  /**
+   * Проверка на наличие результата райдера в протоколе.
+   * Проверка осуществляется только среди зарегистрированных пользователей на сайте.
+   */
+  private async isRiderResultExists(data: TResultRaceRiderDeserialized, raceName: string) {
+    const resultRaceDB = await ResultRaceModel.findOne(
+      {
+        rider: data._id,
+        championship: data.championshipId,
+        race: data.raceId,
+      },
+      { _id: true }
+    ).lean<{ _id: ObjectId }>();
+
+    if (resultRaceDB) {
+      throw new Error(
+        `Результат райдера bcId:${data.id} существует в протоколе заезда ${raceName}`
+      );
+    }
+  }
+
+  /**
+   * Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
+   */
+  private async isStartNumberTaken(data: TResultRaceRiderDeserialized) {
+    const registrationDB: { profile: { lastName: string; firstName: string } } | null =
+      await ResultRaceModel.findOne(
+        {
+          championship: data.championshipId,
+          raceNumber: data.raceId,
+          startNumber: data.startNumber,
+        },
+        { 'profile.lastName': true, 'profile.firstName': true }
+      ).lean();
+
+    if (registrationDB) {
+      throw new Error(
+        `Данный стартовый номер: ${data.startNumber} уже есть в протоколе у райдера: ${registrationDB.profile.lastName} ${registrationDB.profile.firstName}`
+      );
+    }
+  }
+
+  /**
+   * Получение категорий для заезда raceId чемпионата championshipId.
    */
   private async getRaceCategories({
     championshipId,
     categoriesId,
-    raceNumber,
+    raceId,
   }: TGetRaceCategoriesParams): Promise<TGetRaceCategoriesFromMongo> {
     const categoriesDB = await CategoriesModel.findOne(
       { _id: categoriesId },
@@ -554,9 +558,35 @@ export class ResultRaceService {
 
     if (!categoriesDB) {
       throw new Error(
-        `Не найден пакет категорий для чемпионата ${championshipId} и заезда №${raceNumber}`
+        `Не найден пакет категорий для чемпионата _id: ${championshipId} и заезда _id: ${raceId}`
       );
     }
     return categoriesDB;
+  }
+
+  /**
+   * Получение возрастной категории в зависимости от возраста участника и от категорий в заезде.
+   */
+  private async getAgeCategory(
+    data: TResultRaceRiderDeserialized,
+    categoriesId: Types.ObjectId
+  ) {
+    const categoriesDB = await this.getRaceCategories({
+      championshipId: data.championshipId,
+      categoriesId,
+      raceId: data.raceId,
+    });
+
+    // Присвоение возрастной категории
+    const { male: categoriesAgeMale, female: categoriesAgeFemale } = categoriesDB.age;
+    const isFemale = data.gender === 'female';
+
+    // Создание название возрастной категории на основании возрастных рамок в которые попадает райдер.
+    // skillLevel категория приходит из клиента. Получения из регистрации или в процессе добавления результата.
+    return createStringCategoryAge({
+      yearBirthday: data.yearBirthday,
+      categoriesAge: isFemale ? categoriesAgeFemale : categoriesAgeMale,
+      gender: isFemale ? 'F' : 'M',
+    });
   }
 }

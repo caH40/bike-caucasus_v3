@@ -7,8 +7,10 @@ export function dtoResultRace(result: TResultRaceFromDB): TResultRaceDto {
   const createdAt = new Date(result.createdAt).getTime();
   const updatedAt = new Date(result.updatedAt).getTime();
   const championship = String(result.championship);
+  const race = result.race.toString();
   return {
     ...result,
+    race,
     _id,
     creator,
     championship,

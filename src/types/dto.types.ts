@@ -282,9 +282,10 @@ export type TProfileSimpleDto = {
  */
 export type TResultRaceDto = Omit<
   TResultRaceFromDB,
-  '_id' | 'creator' | 'createdAt' | 'updatedAt' | 'championship'
+  '_id' | 'creator' | 'createdAt' | 'updatedAt' | 'championship' | 'race'
 > & {
   _id: string;
+  race: string;
   creator: string;
   championship: string;
   createdAt: number;

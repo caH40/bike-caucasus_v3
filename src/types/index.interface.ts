@@ -700,6 +700,7 @@ export type TFormResultRace = {
     team?: string;
   };
   newStartNumber: number | string;
+  categorySkillLevel?: string | null;
   time: TTimeDetails;
 };
 // /**
@@ -727,6 +728,7 @@ export type TDataFromFormResultRace = {
   yearBirthday: string | number;
   raceNumber: string;
   championshipId: string;
+  categorySkillLevel: string | null;
 };
 
 // Данные из инпута приходят всегда как строка.
@@ -1036,7 +1038,7 @@ export type TCategorySkillLevel = {
 export type TGetRaceCategoriesParams = {
   championshipId: string;
   categoriesId: Types.ObjectId;
-  raceNumber: number;
+  raceId: string;
 };
 
 /**

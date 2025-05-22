@@ -1,3 +1,4 @@
+import { MAX_ATHLETE_AGE } from '@/constants/category';
 import { content } from '@/libs/utils/text';
 
 // types
@@ -6,8 +7,6 @@ import {
   TCategoryAge,
   TCategorySkillLevel,
 } from '@/types/index.interface';
-
-const AGE_MAX = 120; // Максимально допустимый возраст для спортсменов.
 
 type TFormattedNameParams = TCategoryAge & {
   letterForGender: string;
@@ -25,7 +24,7 @@ function getFormattedName({ min, max, name, letterForGender }: TFormattedNamePar
   const nameTrimmed = name.trim();
   const minNum = Number(min);
   const maxNum = Number(max);
-  const maxNotLimit = maxNum >= AGE_MAX;
+  const maxNotLimit = maxNum >= MAX_ATHLETE_AGE;
 
   if (nameTrimmed) {
     return nameTrimmed;
@@ -56,7 +55,7 @@ export function formatAgeCategories({
   // Преобразуем каждую категорию из формы в форматированную категорию.
   return ageCategories.map((category) => {
     const min = Number(category.min);
-    const max = category.max ? Number(category.max) : AGE_MAX;
+    const max = category.max ? Number(category.max) : MAX_ATHLETE_AGE;
 
     // Формируем объект категории с отформатированными значениями.
     return {
