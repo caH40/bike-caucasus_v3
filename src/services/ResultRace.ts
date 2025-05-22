@@ -13,9 +13,8 @@ import {
   TGetRaceCategoriesParams,
   TProtocolRace,
   TResultRaceFromDB,
-  TResultRaceRideFromDB,
+  TRiderRaceResultDB,
 } from '@/types/index.interface';
-import { TResultRaceRiderDto } from '@/types/dto.types';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
 import { TRace, TResultRace, TResultRaceDocument } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
@@ -23,6 +22,7 @@ import { processResults } from '@/libs/utils/results';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
 import { RaceModel } from '@/database/mongodb/Models/Race';
+import { TRiderRaceResultDto } from '@/types/dto.types';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -42,7 +42,7 @@ export class ResultRaceService {
     resultId,
   }: {
     resultId: string;
-  }): Promise<ResponseServer<TResultRaceRiderDto | null>> {
+  }): Promise<ResponseServer<TRiderRaceResultDto | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -52,7 +52,7 @@ export class ResultRaceService {
         { createdAt: false, updatedAt: false, creator: false }
       )
         .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
-        .lean<TResultRaceRideFromDB>();
+        .lean<TRiderRaceResultDB>();
 
       if (!resultDB) {
         throw new Error('Не найден обновляемый результат в БД!');
@@ -70,11 +70,11 @@ export class ResultRaceService {
   /**
    * Получение результатов райдера по riderId.
    */
-  public async getForRider({
+  public async getRiderRaceResults({
     riderId,
   }: {
     riderId: string;
-  }): Promise<ResponseServer<TResultRaceRiderDto[] | null>> {
+  }): Promise<ResponseServer<TRiderRaceResultDto[] | null>> {
     try {
       // Подключение к БД.
       await this.dbConnection();
@@ -89,8 +89,12 @@ export class ResultRaceService {
         { rider: userDB._id },
         { createdAt: false, updatedAt: false, creator: false }
       )
-        .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
-        .lean<TResultRaceRideFromDB[]>();
+        .populate({
+          path: 'championship',
+          select: ['name', 'urlSlug', 'endDate'],
+        })
+        .populate('race')
+        .lean<TRiderRaceResultDB[]>();
 
       const resultsRaceRiderAfterDto = dtoResultsRaceRider(resultsDB);
 
@@ -232,7 +236,7 @@ export class ResultRaceService {
   /**
    * Получение протокола заезда чемпионата.
    */
-  public async getProtocolRace({
+  public async getRaceProtocol({
     raceId,
   }: {
     raceId: string;

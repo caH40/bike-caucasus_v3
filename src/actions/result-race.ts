@@ -9,7 +9,7 @@ import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { ResultRaceService } from '@/services/ResultRace';
-import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
+import { TResultRaceDto, TRiderRaceResultDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
 import { ChampionshipService } from '@/services/Championship';
 
@@ -49,14 +49,14 @@ export async function postResultRaceRider({
 /**
  * Получение протокола Заезда Чемпионата и списка категорий в заезде.
  */
-export async function getProtocolRace({
+export async function getRaceProtocol({
   raceId,
 }: {
   raceId: string;
 }): Promise<ResponseServer<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
   try {
     const resultRaceService = new ResultRaceService();
-    const res = await resultRaceService.getProtocolRace({ raceId });
+    const res = await resultRaceService.getRaceProtocol({ raceId });
 
     return res;
   } catch (error) {
@@ -84,7 +84,7 @@ export async function getProtocolsRaces({
 
     const responseProtocols = await Promise.all(
       data.races.map((race) =>
-        resultRaceService.getProtocolRace({
+        resultRaceService.getRaceProtocol({
           championshipId: data._id,
           raceNumber: race.number,
         })
@@ -137,10 +137,10 @@ export async function getResultsRaceForRider({
   riderId,
 }: {
   riderId: string;
-}): Promise<ResponseServer<TResultRaceRiderDto[] | null>> {
+}): Promise<ResponseServer<TRiderRaceResultDto[] | null>> {
   try {
     const resultRaceService = new ResultRaceService();
-    const res = await resultRaceService.getForRider({
+    const res = await resultRaceService.getRiderRaceResults({
       riderId,
     });
 
@@ -158,7 +158,7 @@ export async function getResultRaceForRider({
   resultId,
 }: {
   resultId: string;
-}): Promise<ResponseServer<TResultRaceRiderDto | null>> {
+}): Promise<ResponseServer<TRiderRaceResultDto | null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.getOne({

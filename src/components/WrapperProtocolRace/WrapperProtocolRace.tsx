@@ -6,7 +6,7 @@ import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
 import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
 import FilterRidersForAddResult from '../UI/Filters/FilterRidersForAddResult/Filters';
-import { getProtocolRace } from '@/actions/result-race';
+import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { buttonsForProtocolRace } from '@/constants/buttons';
 import type { TOptions } from '@/types/index.interface';
@@ -34,7 +34,7 @@ export default function WrapperProtocolRace({ options, championship }: Props) {
 
   // Получение финишного протокола из БД.
   useEffect(() => {
-    getProtocolRace({ raceId }).then((res) => {
+    getRaceProtocol({ raceId }).then((res) => {
       if (res.data) {
         // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
         setProtocol(res.data.protocol);

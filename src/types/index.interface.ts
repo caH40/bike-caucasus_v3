@@ -777,11 +777,12 @@ export type TResultRaceFromDB = TResultRace & {
 /**
  * Данные результата райдера в заезде чемпионата для Профиля пользователя.
  */
-export type TResultRaceRideFromDB = Omit<
+export type TRiderRaceResultDB = Omit<
   TResultRace,
   'championship' | 'createdAt' | 'updatedAt' | 'creator' | 'rider'
 > & {
-  championship: Pick<TChampionship, 'name' | 'urlSlug' | 'races' | 'endDate'>;
+  championship: Pick<TChampionship, 'name' | 'urlSlug' | 'endDate'>;
+  race: TRace;
 };
 
 /**

@@ -10,7 +10,7 @@ import styles from './WrapperProtocolRaceEdit.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
-import { getProtocolRace } from '@/actions/result-race';
+import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { useResultsRace } from '@/store/results';
 import { toast } from 'sonner';
@@ -62,7 +62,7 @@ export default function WrapperProtocolRaceEdit({
 
   // Получение финишного протокола из БД.
   useEffect(() => {
-    getProtocolRace({ championshipId: championship._id, raceNumber: +raceNumber }).then(
+    getRaceProtocol({ championshipId: championship._id, raceNumber: +raceNumber }).then(
       (res) => {
         if (res.data) {
           // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.

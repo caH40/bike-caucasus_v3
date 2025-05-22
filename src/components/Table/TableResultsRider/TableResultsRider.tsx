@@ -12,7 +12,7 @@ import cn from 'classnames/bind';
 import Link from 'next/link';
 
 import { getDateTime } from '@/libs/utils/calendar';
-import { TResultRaceRiderDto } from '@/types/dto.types';
+import { TRiderRaceResultDto } from '@/types/dto.types';
 import IconPodium from '@/components/Icons/IconPodium';
 import IconChronometer from '@/components/Icons/IconChronometer';
 import IconSpeed from '@/components/Icons/IconSpeed';
@@ -27,11 +27,11 @@ import styles from '../TableCommon.module.css';
 const cx = cn.bind(styles);
 
 type Props = {
-  results: TResultRaceRiderDto[];
+  results: TRiderRaceResultDto[];
   docsOnPage?: number;
 };
 
-const columns: ColumnDef<TResultRaceRiderDto & { index: number }>[] = [
+const columns: ColumnDef<TRiderRaceResultDto & { index: number }>[] = [
   {
     header: '#',
     accessorKey: 'index',

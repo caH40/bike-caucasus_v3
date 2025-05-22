@@ -294,7 +294,7 @@ export type TResultRaceDto = Omit<
 /**
  * Данные DTO результата райдера в заезде чемпионата.
  */
-export type TResultRaceRiderDto = {
+export type TRiderRaceResultDto = {
   _id: string;
   profile: TProfileRiderInProtocol;
   startNumber: number;
@@ -317,8 +317,8 @@ export type TResultRaceRiderDto = {
     name: string;
     urlSlug: string;
     endDate: number;
-    race: Pick<TRace, 'ascent' | 'description' | 'distance' | 'laps' | 'name' | 'number'>;
   };
+  race: Pick<TRace, 'ascent' | 'description' | 'distance' | 'laps' | 'name' | 'number'>;
 };
 
 export type TToursAndSeriesDto = Omit<

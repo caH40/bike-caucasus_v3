@@ -1,5 +1,5 @@
-import { TResultRaceDto, TResultRaceRiderDto } from '@/types/dto.types';
-import { TResultRaceFromDB, TResultRaceRideFromDB } from '@/types/index.interface';
+import { TResultRaceDto, TRiderRaceResultDto } from '@/types/dto.types';
+import { TResultRaceFromDB, TRiderRaceResultDB } from '@/types/index.interface';
 
 export function dtoResultRace(result: TResultRaceFromDB): TResultRaceDto {
   const _id = String(result._id);
@@ -24,26 +24,16 @@ export function dtoResultsRace(results: TResultRaceFromDB[]): TResultRaceDto[] {
 /**
  * Дто данных результата райдера в соревновании для Профиля пользователя.
  */
-export function dtoResultRaceRider(result: TResultRaceRideFromDB): TResultRaceRiderDto {
-  const resultDto = {} as TResultRaceRiderDto;
-  // 'name', 'urlSlug', 'races'
-  const raceCurrent = result.championship.races.find(
-    (race) => (race.number = result.raceNumber)
-  );
-
-  if (!raceCurrent) {
-    throw new Error(
-      `Не найден заезд №${result.raceNumber} в Чемпионате ${result.championship.name}`
-    );
-  }
+export function dtoResultRaceRider(result: TRiderRaceResultDB): TRiderRaceResultDto {
+  const resultDto = {} as TRiderRaceResultDto;
 
   const raceFiltered = {
-    number: raceCurrent.number,
-    name: raceCurrent.name,
-    description: raceCurrent.description,
-    laps: raceCurrent.laps,
-    distance: raceCurrent.distance,
-    ascent: raceCurrent.ascent,
+    number: result.race.number,
+    name: result.race.name,
+    description: result.race.description,
+    laps: result.race.laps,
+    distance: result.race.distance,
+    ascent: result.race.ascent,
   };
 
   const championship = {
@@ -74,6 +64,6 @@ export function dtoResultRaceRider(result: TResultRaceRideFromDB): TResultRaceRi
 /**
  * Дто данных результатов райдера в соревнованиях для Профиля пользователя.
  */
-export function dtoResultsRaceRider(results: TResultRaceRideFromDB[]): TResultRaceRiderDto[] {
+export function dtoResultsRaceRider(results: TRiderRaceResultDB[]): TRiderRaceResultDto[] {
   return results.map((result) => dtoResultRaceRider(result));
 }
