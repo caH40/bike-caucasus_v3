@@ -9,6 +9,7 @@ import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 
 // types
 import type { ResponseServer } from '@/types/index.interface';
+import { RaceModel } from '@/database/mongodb/Models/Race';
 
 /**
  * Класс работы с сущностью Категории чемпионата.
@@ -46,9 +47,9 @@ export class ChampionshipCategories {
       // Проверка на дубликаты названий пакетов категорий.
       this.validateUniqueCategoryNames(categoriesConfigs);
 
-      // Получаем все существующие пакеты категорий (кроме 'default') для текущего чемпионата.
+      // Получаем все существующие пакеты категорий (кроме 'Стандартный') для текущего чемпионата.
       const oldCategories = await CategoriesModel.find(
-        { championship: championshipId, name: { $ne: 'default' } },
+        { championship: championshipId, name: { $ne: 'Стандартный' } },
         { _id: true }
       ).lean<{ _id: Types.ObjectId }[]>();
 
@@ -80,11 +81,17 @@ export class ChampionshipCategories {
       );
 
       // Удаляем те пакеты, _id которых не было среди обновлённых.
-      const toDelete = oldCategories.filter((cat) => !updatedIds.has(cat._id.toString()));
+      const toDelete = oldCategories
+        .filter((cat) => !updatedIds.has(cat._id.toString()))
+        .map((c) => c._id);
 
+      // Проверка на использование удаляемых пакетов категорий в заездах. При наличии таких заездов, замена удаляемых _id на _id стандартного пакета категорий.
+      await this.replaceDeletedCategoryConfigInRaces({ categoryIds: toDelete, championshipId });
+
+      // Удаление документов Categories из БД, которые были удалены на клиенте.
       if (toDelete.length > 0) {
         await CategoriesModel.deleteMany({
-          _id: { $in: toDelete.map((c) => c._id) },
+          _id: { $in: toDelete },
         });
       }
 
@@ -93,6 +100,35 @@ export class ChampionshipCategories {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Проверка на использование удаляемых пакетов категорий в заездах. При наличии таких заездов, замена удаляемых _id на _id стандартного пакета категорий.
+   */
+  private async replaceDeletedCategoryConfigInRaces({
+    categoryIds,
+    championshipId,
+  }: {
+    categoryIds: Types.ObjectId[];
+    championshipId: string;
+  }): Promise<void> {
+    // Получаем все существующие пакеты категорий (кроме 'Стандартный') для текущего чемпионата.
+    const defaultCategories = await CategoriesModel.findOne(
+      { championship: championshipId, name: 'Стандартный' },
+      { _id: true }
+    ).lean<{ _id: Types.ObjectId }>();
+
+    if (!defaultCategories) {
+      throw new Error(
+        `Не найдена стандартная конфигурация категорий для чемпионата _id: ${championshipId}`
+      );
+    }
+
+    // Обновление id конфигурации категорий во всех заезда данного чемпионата на "Стандартный", при удалении конфигурации категорий (categoryIds).
+    await RaceModel.updateMany(
+      { championship: championshipId, categories: { $in: categoryIds } },
+      { $set: { categories: defaultCategories._id } }
+    );
   }
 
   /**
