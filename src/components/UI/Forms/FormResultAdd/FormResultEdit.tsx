@@ -7,13 +7,13 @@ import Button from '../../Button/Button';
 import { millisecondsToTimeDetails, timeDetailsToMilliseconds } from '@/libs/utils/date';
 import { useLoadingStore } from '@/store/loading';
 import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
-import type { TResultRaceRiderDto } from '@/types/dto.types';
+import type { TRiderRaceResultDto } from '@/types/dto.types';
 import type { ResponseServer, TFormResultRace } from '@/types/index.interface';
 import styles from './FormResultAdd.module.css';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  result: TResultRaceRiderDto;
+  result: TRiderRaceResultDto;
   putResultRaceRider: ({
     // eslint-disable-next-line no-unused-vars
     result,

@@ -58,7 +58,7 @@ export default function ContainerDownloadRegistered({
             squareSize={24}
             getClick={() => handlerClickRegistered(race)}
             tooltip={{
-              id: `dlPdfRegistered-${race.raceNumber}`,
+              id: `dlPdfRegistered-${race.raceId}`,
               text: 'скачать pdf-файл',
             }}
           />
@@ -74,7 +74,7 @@ export default function ContainerDownloadRegistered({
             squareSize={24}
             getClick={() => handlerClickBlankProtocol(race)}
             tooltip={{
-              id: `dlPdfProtocol-${race.raceNumber}`,
+              id: `dlPdfProtocol-${race.raceId}`,
               text: 'скачать pdf-файл',
             }}
           />

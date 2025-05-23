@@ -17,7 +17,7 @@ export default function ContainerTableRegisteredRace() {
       <TableRegisteredRace
         registeredRidersInRace={{
           raceRegistrationRider: registeredRiders,
-          raceNumber: registeredRiders[0]?.raceNumber || 0,
+          raceId: registeredRiders[0]?.raceId,
           raceName: '',
         }}
         docsOnPage={10}

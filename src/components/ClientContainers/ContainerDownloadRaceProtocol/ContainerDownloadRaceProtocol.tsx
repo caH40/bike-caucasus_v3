@@ -40,7 +40,7 @@ export default function ContainerDownloadRaceProtocol({ championship, protocols 
             squareSize={24}
             getClick={() => handlerClickRegistered(protocol)}
             tooltip={{
-              id: `dlPdfProtocol-${protocol.race.number}`,
+              id: `dlPdfProtocol-${protocol.race._id}`,
               text: 'скачать pdf-файл',
             }}
           />

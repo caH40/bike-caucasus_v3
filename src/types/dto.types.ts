@@ -221,7 +221,7 @@ export type TRaceRegistrationRiderDto = {
  * Массив Заездов из Чемпионата с зарегистрированными райдерами.
  */
 export type TChampRegistrationRiderDto = {
-  raceNumber: number;
+  raceId: string;
   raceName: string;
   raceRegistrationRider: TRaceRegistrationDto[];
 };

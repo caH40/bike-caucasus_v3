@@ -7,11 +7,11 @@ import Wrapper from '../Wrapper/Wrapper';
 import styles from './BlockRaces.module.css';
 import ParamsRace from '../ParamsRace/ParamsRace';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
-import { TRaceClient } from '@/types/index.interface';
+import { TRaceForForm } from '@/types/index.interface';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 
 type Props = {
-  races: TRaceClient[];
+  races: TRaceForForm[];
   registrationData: {
     type: TChampionshipTypes;
     status: TChampionshipStatus;

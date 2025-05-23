@@ -1,11 +1,11 @@
 import IconParamsDistance from '../Icons/IconParamsDistance';
 import IconParamsAscent from '../Icons/IconParamsAscent';
 import IconParamsLap from '../Icons/IconParamsLap';
-import { TRaceClient } from '@/types/index.interface';
+import { TRaceForForm } from '@/types/index.interface';
 import styles from './ParamsRace.module.css';
 
 type Props = {
-  race: TRaceClient;
+  race: TRaceForForm;
 };
 
 // отображение блока основных параметров Эвента

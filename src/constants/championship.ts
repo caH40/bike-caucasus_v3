@@ -85,7 +85,6 @@ export const raceInit: TRaceForFormNew = {
   distance: 0,
   ascent: 0,
   _id: undefined, // При инициализации эти свойства не определены.
-  championship: undefined, // При инициализации эти свойства не определены.
   categories: undefined, // При инициализации эти свойства не определены.
   trackGPX: undefined, // При инициализации эти свойства не определены.
   trackGPXFile: null,

@@ -624,11 +624,6 @@ export type TRegistrationRaceDataFromForm = {
   teamVariable: string;
 };
 
-export type TRaceClient = Omit<TRace, 'registeredRiders'> & {
-  registeredRiders: string[];
-  // categories: (TCategoryAge & { gender: 'male' | 'female' })[];
-};
-
 export type TRaceForForm = Omit<
   TRace,
   '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories'

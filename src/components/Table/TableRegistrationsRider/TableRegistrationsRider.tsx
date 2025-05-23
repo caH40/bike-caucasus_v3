@@ -89,7 +89,7 @@ const columns: ColumnDef<TRegistrationRiderDto & { index: number }>[] = [
           props.row.original.userIdDbFromSession === props.row.original.riderId
         }
         championshipId={props.row.original.championship._id}
-        raceNumber={props.row.original.raceNumber}
+        raceId={props.row.original.raceId}
       />
     ),
   },
