@@ -452,7 +452,7 @@ export type InteractiveBlockProps = {
  * Метаданные GPS трэка после парсинга.
  */
 export type MetadataParsed = {
-  name: string; // Название трэка.
+  name: string | null; // Название трэка.
   time: Date | null; // Дата создания трэка.
   link: {
     href: string; // Сервис, на котором создан трэк.

@@ -19,7 +19,7 @@ export function useParseGPX(url: string) {
           }));
 
         const metadataParsed: MetadataParsed = {
-          name: data.gpx.metadata[0].name[0],
+          name: data.gpx.metadata[0].name ? data.gpx.metadata[0].name[0] : null,
           time: data.gpx.metadata[0].time ? new Date(data.gpx.metadata[0].time[0]) : null,
           link: data.gpx.metadata[0].link
             ? {
