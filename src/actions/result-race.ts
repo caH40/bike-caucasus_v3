@@ -68,7 +68,7 @@ export async function getRaceProtocol({
 /**
  * Получение всех протоколов Заездов Чемпионата и списка категорий в заезде.
  */
-export async function getProtocolsRaces({
+export async function getRaceProtocols({
   urlSlug,
 }: {
   urlSlug: string;

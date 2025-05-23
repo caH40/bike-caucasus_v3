@@ -1,17 +1,11 @@
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
-import { UserOptions } from 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 import '../fonts/base64/roboto-bold';
 import '../fonts/base64/roboto-regular';
 import { TRaceRegistrationDto } from '@/types/dto.types';
 import { getDateTime } from '../utils/calendar';
 import { registrationStatusMap } from '@/constants/championship';
-
-type jsPDFCustom = jsPDF & {
-  // eslint-disable-next-line no-unused-vars
-  autoTable: (options: UserOptions) => void;
-};
 
 type Params = {
   data: TRaceRegistrationDto[];
@@ -57,7 +51,7 @@ const columns = [
  *  Скачивание PDF файла таблицы.
  */
 export const getPdfRegistered = ({ data, subTitles }: Params) => {
-  const doc = new jsPDF() as jsPDFCustom;
+  const doc = new jsPDF();
 
   // Установка шрифта для заголовка
   doc.setFont('Roboto-Bold', 'normal');
@@ -127,21 +121,26 @@ export const getPdfRegistered = ({ data, subTitles }: Params) => {
   }
 
   // Добавляем таблицу в PDF
-  doc.autoTable({
+  autoTable(doc, {
     head: [headers],
     body: body,
     startY: startY, // Стартовая позиция по Y для таблицы.
     styles: {
       font: 'Roboto-Regular',
+      fontStyle: 'normal',
       fontSize: 10,
       lineColor: [150, 150, 150], // Цвет линий бордера (черный)
       lineWidth: 0.05, // Толщина линий бордера
     },
     headStyles: {
+      font: 'Roboto-Bold',
+      fontStyle: 'normal',
       fillColor: [49, 141, 44], // Цвет фона для заголовков.
       textColor: [0, 0, 0], // Цвет текста для заголовков.
     },
     bodyStyles: {
+      font: 'Roboto-Regular',
+      fontStyle: 'normal',
       textColor: [0, 0, 0], // Цвет текста для тела таблицы.
     },
     columnStyles: {

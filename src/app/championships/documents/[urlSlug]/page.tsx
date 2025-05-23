@@ -9,7 +9,7 @@ import ContainerDownloadRegistered from '@/components/ClientContainers/Container
 import styles from './ChampionshipDocuments.module.css';
 import ContainerDownloadRaceProtocol from '@/components/ClientContainers/ContainerDownloadRaceProtocol/ContainerDownloadRaceProtocol';
 
-import { getProtocolsRaces } from '@/actions/result-race';
+import { getRaceProtocols } from '@/actions/result-race';
 
 // Создание динамических meta данных.
 // export async function generateMetadata(props: Props): Promise<Metadata> {}
@@ -23,9 +23,7 @@ type Props = {
 export default async function ChampionshipDocuments(props: Props) {
   const params = await props.params;
 
-  const {
-    urlSlug
-  } = params;
+  const { urlSlug } = params;
 
   const registeredRidersChamp = await getRegisteredRidersChamp({ urlSlug });
 
@@ -33,7 +31,7 @@ export default async function ChampionshipDocuments(props: Props) {
     return <h2>{registeredRidersChamp.message}</h2>;
   }
 
-  const protocols = await getProtocolsRaces({ urlSlug });
+  const protocols = await getRaceProtocols({ urlSlug });
 
   const buttons = buttonsMenuChampionshipPage(urlSlug);
 

@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
-import { UserOptions } from 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
+// import { UserOptions } from 'jspdf-autotable';
 
 import '../fonts/base64/roboto-bold';
 import '../fonts/base64/roboto-regular';
@@ -9,10 +9,10 @@ import { formatTimeToStr } from '../utils/timer';
 import { GapTimeFormatter } from '../utils/gaptoseconds';
 import { replaceCategorySymbols } from '../utils/championship';
 
-type jsPDFCustom = jsPDF & {
-  // eslint-disable-next-line no-unused-vars
-  autoTable: (options: UserOptions) => void;
-};
+// type jsPDFCustom = jsPDF & {
+//   // eslint-disable-next-line no-unused-vars
+//   autoTable: (options: UserOptions) => void;
+// };
 
 type Params = {
   data: TProtocolRace;
@@ -66,7 +66,7 @@ export const getPdfProtocolRace = ({ data, subTitles }: Params) => {
 
   let startY = 24;
 
-  const doc = new jsPDF() as jsPDFCustom;
+  const doc = new jsPDF();
 
   doc.setFont('Roboto-Bold', 'normal');
   doc.setFontSize(18);
@@ -135,21 +135,26 @@ export const getPdfProtocolRace = ({ data, subTitles }: Params) => {
     doc.text(`Категория: ${replaceCategorySymbols(category, true)}`, 14, startY);
     startY += 3;
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [headers],
       body: body,
       startY: startY,
       styles: {
         font: 'Roboto-Regular',
+        fontStyle: 'normal',
         fontSize: 10,
         lineColor: [150, 150, 150],
         lineWidth: 0.05,
       },
       headStyles: {
+        font: 'Roboto-Bold',
+        fontStyle: 'normal',
         fillColor: [49, 141, 44],
         textColor: [0, 0, 0],
       },
       bodyStyles: {
+        font: 'Roboto-Regular',
+        fontStyle: 'normal',
         textColor: [0, 0, 0],
       },
       columnStyles: {
