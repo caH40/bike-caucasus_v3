@@ -15,8 +15,8 @@ import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship';
 import { RegistrationChampService } from './RegistrationChamp';
-import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
+import { RaceModel } from '@/database/mongodb/Models/Race';
 import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
 
 // types
@@ -31,7 +31,9 @@ import type {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TRace,
 } from '@/types/models.interface';
+import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -404,22 +406,35 @@ export class ChampionshipService {
       const regService = new RegistrationChampService();
       await regService.deleteMany({ champId: String(championshipDB._id) });
 
+      // Получение заездов для удаления gpx треков с облака.
+      const racesDB = await RaceModel.find({
+        championship: championshipDB._id,
+      }).lean<TRace[]>();
+
+      // Удаление всех заездов Чемпионата.
+      await RaceModel.deleteMany({ championship: championshipDB._id });
+
+      // Удаление всех конфигураций категорий Чемпионата.
+      await CategoriesModel.deleteMany({ championship: championshipDB._id });
+
       // Экземпляр сервиса работы с Облаком.
       const cloudService = new Cloud();
 
       // Удаление Постера с облака.
-      await cloudService.deleteFile({
-        prefix: championshipDB.posterUrl.replace(fileNameFormUrl, '$1'),
-      });
+      cloudService
+        .deleteFile({
+          prefix: championshipDB.posterUrl.replace(fileNameFormUrl, '$1'),
+        })
+        .catch((error) => this.errorLogger(error));
 
       // Удаление GPX трека с облака.
-      if (championshipDB.races) {
-        // без await, нет необходимости ждать результата выполнения каждого Промиса.
-        for (const race of championshipDB.races) {
-          cloudService.deleteFile({
+      // без await, нет необходимости ждать результата выполнения каждого Промиса.
+      for (const race of racesDB) {
+        cloudService
+          .deleteFile({
             prefix: race.trackGPX.url.replace(fileNameFormUrl, '$1'),
-          });
-        }
+          })
+          .catch((error) => this.errorLogger(error));
       }
 
       // Удаление пакетов категорий.
