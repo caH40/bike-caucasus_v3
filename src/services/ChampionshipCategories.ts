@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, UpdateQuery } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
@@ -10,6 +10,7 @@ import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 // types
 import type { ResponseServer } from '@/types/index.interface';
 import { RaceModel } from '@/database/mongodb/Models/Race';
+import { TCategories } from '@/types/models.interface';
 
 /**
  * Класс работы с сущностью Категории чемпионата.
@@ -42,6 +43,7 @@ export class ChampionshipCategories {
       // Подключение к БД.
       await this.dbConnection();
 
+      // Десериализованные данные с клиента.
       const categoriesConfigs = deserializeCategories(dataSerialized);
 
       // Проверка на дубликаты названий пакетов категорий.
@@ -59,10 +61,15 @@ export class ChampionshipCategories {
       for (const config of categoriesConfigs) {
         if (config._id) {
           // Обновляем существующий пакет по _id.
-          await CategoriesModel.updateOne(
-            { _id: config._id },
-            { $set: { ...config, championship: championshipId } }
-          );
+          const update: UpdateQuery<TCategories> = {
+            $set: { ...config, championship: championshipId },
+          };
+          // Если skillLevel === undefined, значит необходимо удалить из документа БД.
+          if (config.skillLevel === undefined) {
+            update.$unset = { skillLevel: '' };
+          }
+
+          await CategoriesModel.updateOne({ _id: config._id }, update);
           updatedIds.add(config._id); // Добавляем _id в список обновлённых.
         } else {
           // Создаём новый пакет, если _id нет.
