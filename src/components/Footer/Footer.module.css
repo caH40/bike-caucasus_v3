@@ -4,6 +4,7 @@
   font-weight: normal;
   letter-spacing: 0.08em;
   padding-top: 20px;
+  font-size: 13px;
 }
 .columns {
   display: flex;

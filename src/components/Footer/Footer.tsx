@@ -3,6 +3,7 @@ import Image from 'next/image';
 import LogoMain from '../UI/LogoMain/LogoMain';
 import styles from './Footer.module.css';
 import NavBarFooter from '../UI/NavBarFooter/NavBarFooter';
+import NavBarFooterPolice from '../UI/NavBarFooter/NavBarFooterPolice';
 
 const Footer = () => {
   return (
@@ -15,6 +16,11 @@ const Footer = () => {
         {/* Колонка карта сайта, ссылки на все страницы сайта */}
         <nav className={styles.block}>
           <NavBarFooter />
+        </nav>
+
+        {/* Колонка карта сайта, ссылки на все страницы сайта */}
+        <nav className={styles.block}>
+          <NavBarFooterPolice />
         </nav>
 
         {/* Колонка социальные сети */}

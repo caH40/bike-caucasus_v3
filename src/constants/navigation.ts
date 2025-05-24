@@ -102,6 +102,17 @@ export const navLinksFull = [
   // { id: 4, name: 'Джилы-Су', href: '/dzhilsu', permission: null },
 ];
 
+// навигация по страницам политике конфиденциальности.
+export const legalLinks = [
+  {
+    id: 0,
+    name: 'Политика конфиденциальности',
+    href: '/legal/privacy-policy',
+    permission: null,
+  },
+  { id: 1, name: 'Пользовательское соглашение', href: '/legal/terms-of-use', permission: null },
+];
+
 /**
  * Меню навигации для управления новостью в меню Popup.
  */
