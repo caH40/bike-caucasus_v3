@@ -1,0 +1,10 @@
+.wrapper {
+  padding: 0 10%;
+  color: var(--main-color-text);
+}
+/* ====================================================================== */
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 0 5%;
+  }
+}

@@ -1195,3 +1195,31 @@ export type TFormRaceRegistrationProps = {
   championshipId: string;
   profile: TProfileForRegistration;
 };
+
+export type TDocumentSectionContent = {
+  number?: string | number;
+  text: string;
+  term?: {
+    term: string;
+    definition: string;
+  }[];
+  list?: string[];
+  contentSecond?: {
+    number?: string | number;
+    text: string;
+  }[];
+};
+
+export type TDocumentSection = {
+  number?: string | number;
+  title?: string;
+  content: TDocumentSectionContent[];
+};
+
+export type TJsonDocument = {
+  application?: string;
+  applicationAffiliation?: string;
+  title: string;
+  lastUpdated?: string;
+  sections: TDocumentSection[];
+};

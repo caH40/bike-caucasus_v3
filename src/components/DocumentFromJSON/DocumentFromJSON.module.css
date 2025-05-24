@@ -1,0 +1,53 @@
+.wrapper {
+  font-size: 16px;
+  line-height: 1.5;
+}
+.wrapper__application {
+  text-align: right;
+  margin-bottom: 30px;
+}
+.title__application {
+  font-weight: 400;
+  font-size: 14px;
+}
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.updated {
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 20px;
+}
+.section {
+  margin-bottom: 30px;
+}
+.title__section {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.content__item {
+  margin-bottom: 15px;
+}
+.contentSecond__text {
+  margin: 0 0 10px 25px;
+}
+.list__term {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+.list__circle {
+  list-style: disc;
+  list-style-position: inside;
+  padding-left: 20px;
+}
+.item {
+  margin-bottom: 10px;
+}
+
+.term {
+  font-weight: bold;
+}
