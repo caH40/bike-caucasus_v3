@@ -1,0 +1,15 @@
+.line {
+  margin: 25px 0px;
+  padding: 0;
+  height: 3px;
+  border: none;
+  background: var(--main-bg-color);
+}
+.announcement {
+  font-size: 0.9rem;
+  padding: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--white-20);
+  margin-top: 1rem;
+}

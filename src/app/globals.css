@@ -13,6 +13,7 @@
   --btn-focus: #018a83;
 
   --link-color: rgb(98, 161, 255);
+  --link-color-dark: rgb(20, 94, 206);
 
   --tooltip-color: var(--main-color-dark);
   --tooltip-bg: var(--color-orange);
@@ -148,7 +149,8 @@ select {
   font-size: 1rem;
 }
 .link__news,
-.link {
+.link,
+.link-dark {
   text-decoration: underline;
   text-decoration-color: transparent;
   color: var(--link-color);
@@ -157,6 +159,13 @@ select {
 .link:hover {
   transition: all 0.3s;
   text-decoration-color: var(--link-color);
+}
+.link-dark {
+  color: var(--link-color-dark);
+}
+.link-dark:hover {
+  transition: all 0.3s;
+  text-decoration-color: var(--link-color-dark);
 }
 /* ====================================================================== */
 @media (max-width: 1920px) {

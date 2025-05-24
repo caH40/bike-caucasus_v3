@@ -12,7 +12,9 @@ import { errorHandlerClient } from '@/actions/error-handler';
 import Modal from '@/components/UI/Modal/Modal';
 import { parseError } from '@/errors/parse';
 import { useLoadingStore } from '@/store/loading';
+import { LegalNotice } from '@/components/LegalNotice/LegalNotice';
 
+import styles from './page.module.css';
 /**
  * Страница регистрации
  */
@@ -65,6 +67,10 @@ export default function RegistrationPage() {
       {!isCreatedUser && (
         <AuthBlock>
           <FormRegistration onSubmit={onSubmit} validationAll={validationAll} />
+
+          <div className={styles.announcement}>
+            <LegalNotice actionText="Нажимая кнопку «Регистрация»" />
+          </div>
         </AuthBlock>
       )}
     </>

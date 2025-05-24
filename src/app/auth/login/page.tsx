@@ -17,6 +17,7 @@ import t from '@/locales/ru/authorization.json';
 import styles from './page.module.css';
 import Button from '@/components/UI/Button/Button';
 import { useLoadingStore } from '@/store/loading';
+import { LegalNotice } from '@/components/LegalNotice/LegalNotice';
 
 const cx = classNames.bind(styles);
 /**
@@ -89,6 +90,10 @@ export default function LoginPage() {
           </div>
         )}
       </Transition>
+
+      <div className={styles.announcement}>
+        <LegalNotice actionText="Нажимая «Вход» или иконки сервисов аутентификации" />
+      </div>
 
       {/* блок информации */}
       {!showCredentials && <div className={styles.announcement}>{t.login.announcement}</div>}

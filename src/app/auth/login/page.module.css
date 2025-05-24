@@ -39,4 +39,5 @@
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   background-color: var(--white-20);
+  margin-top: 1rem;
 }
