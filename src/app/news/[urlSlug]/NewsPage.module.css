@@ -1,7 +1,7 @@
 .wrapper {
   display: grid;
   gap: 1rem 20px;
-  grid-template-columns: 1fr 468px;
+  grid-template-columns: 1fr 350px;
   letter-spacing: 0.08rem;
 }
 .wrapper__main {
