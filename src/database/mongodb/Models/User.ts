@@ -66,7 +66,7 @@ const userSchema = new Schema<IUserModel>(
       gender: { type: String, default: 'male' },
       bio: { type: String },
     },
-    preferences: { type: PreferencesSchema },
+    preferences: { type: PreferencesSchema, default: { showPatronymic: true } },
     city: { type: String },
     phone: { type: String },
     team: { type: TeamSchema, default: null },
