@@ -60,7 +60,7 @@
   },
   "max": {
     "quantityStages": "Не более 30 этапов!",
-    "nameChampionship": "Название не может быть больше 50 символов",
+    "nameChampionship": "Название не может быть больше 100 символов",
     "descriptionChampionship": "В описании не может быть больше 4000 символов",
     "nameCategories": "Не более 50 символов",
     "descriptionCategories": "Не более 100 символов",

@@ -214,7 +214,7 @@ export default function FormChampionshipMain({
             required: t.required,
             minLength: { value: 3, message: t.min.nameChampionship },
             maxLength: {
-              value: 50,
+              value: 100,
               message: t.max.nameChampionship,
             },
             validate: textValidation.spaces,
