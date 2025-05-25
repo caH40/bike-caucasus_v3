@@ -181,9 +181,8 @@ export class ChampionshipRaces {
     championshipId: string,
     updatedIds: Set<string>
   ): Promise<void> {
-    await ChampionshipModel.findOneAndUpdate({
-      _id: championshipId,
-      races: [...updatedIds],
+    await ChampionshipModel.findByIdAndUpdate(championshipId, {
+      $set: { races: [...updatedIds] },
     });
   }
 
