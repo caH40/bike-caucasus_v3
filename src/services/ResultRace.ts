@@ -477,7 +477,15 @@ export class ResultRaceService {
    * Проверка на наличие результата райдера в протоколе.
    * Проверка осуществляется только среди зарегистрированных пользователей на сайте.
    */
-  private async isRiderResultExists(data: TResultRaceRiderDeserialized, raceName: string) {
+  private async isRiderResultExists(
+    data: TResultRaceRiderDeserialized,
+    raceName: string
+  ): Promise<void> {
+    // Если data._id = undefined значит райдер не зарегистрирован на сайте.
+    if (!data._id) {
+      return;
+    }
+
     const resultRaceDB = await ResultRaceModel.findOne(
       {
         rider: data._id,
