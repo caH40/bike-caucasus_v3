@@ -294,13 +294,14 @@ export class UserService {
 
       // Формирование запроса для обновления профиля в базе данных.
       const query: any = {
-        'social.telegram': accountEdited.telegram,
-        'social.vk': accountEdited.vk,
-        'social.strava': accountEdited.strava,
-        'social.komoot': accountEdited.komoot,
-        'social.whatsapp': accountEdited.whatsapp,
-        'social.garminConnect': accountEdited.garminConnect,
+        'social.telegram': accountEdited.social.telegram,
+        'social.vk': accountEdited.social.vk,
+        'social.strava': accountEdited.social.strava,
+        'social.komoot': accountEdited.social.komoot,
+        'social.whatsapp': accountEdited.social.whatsapp,
+        'social.garminConnect': accountEdited.social.garminConnect,
         phone: accountEdited.phone,
+        'preferences.showPatronymic': accountEdited.preferences.showPatronymic,
       };
 
       // Обновление данных профиля в базе данных.

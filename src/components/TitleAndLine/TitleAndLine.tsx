@@ -28,7 +28,7 @@ export default function TitleAndLine({
   hideLine = false,
 }: Props): JSX.Element {
   return (
-    <>
+    <div className={styles.wrapper}>
       <div className={styles.box__title}>
         {Icon && (
           <div>
@@ -38,6 +38,6 @@ export default function TitleAndLine({
         {createElement(`h${hSize}`, { className: cx('title', `h${hSize}`) }, title)}
       </div>
       {!hideLine && <LineSeparator marginBottom={true} />}
-    </>
+    </div>
   );
 }

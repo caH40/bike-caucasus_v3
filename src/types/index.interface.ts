@@ -12,6 +12,7 @@ import type {
   UseFormReset,
 } from 'react-hook-form';
 import {
+  IUserModel,
   TCategories,
   TChampionship,
   TChampionshipStatus,
@@ -19,6 +20,7 @@ import {
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
+  TPerson,
   TRace,
   TRaceRegistration,
   TRaceRegistrationStatus,
@@ -31,6 +33,7 @@ import {
   TDtoChampionship,
   TDtoOrganizer,
   TResultRaceDto,
+  TRoleDto,
   TToursAndSeriesDto,
 } from './dto.types';
 
@@ -201,19 +204,10 @@ export type TFormOrganizerCreate = Omit<
 /**
  * Данные профиля (аккаунта) для изменения в account/details
  */
-export type TFormAccount = {
-  telegram?: string;
-  vk?: string;
-  youtube?: string;
-  komoot?: string;
-  strava?: string;
-  whatsapp?: string;
-  garminConnect?: string;
-  phone?: string;
-  role: string;
-  email: string;
-  id: number;
-};
+export type TFormAccount = Pick<
+  IUserModel,
+  'social' | 'preferences' | 'phone' | 'id' | 'email'
+> & { role: TRoleDto };
 
 /**
  * Данные profile из provider Yandex
@@ -1222,4 +1216,26 @@ export type TJsonDocument = {
   title: string;
   lastUpdated?: string;
   sections: TDocumentSection[];
+};
+
+/**
+ * Пропсы компонента-страницы. Получение params url.
+ */
+export type TPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+/**
+ * ФИО Пользователя.
+ */
+export type TUserFullName = Pick<TPerson, 'lastName' | 'firstName' | 'patronymic'>;
+
+/**
+ * Параметры для формирования отображаемого имени пользователя.
+ */
+export type TGetUserFullNameParams = {
+  person: TUserFullName;
+  showPatronymic?: boolean;
 };

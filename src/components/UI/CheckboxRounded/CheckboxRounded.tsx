@@ -6,15 +6,30 @@ type Props = {
   value: boolean;
   setValue: Dispatch<SetStateAction<boolean>>;
   id: string;
+  functional?: boolean; // Использовать функциональный вызов или прямое значение.
 };
 
 /**
  * Чекбокс в виде круглой кнопки.
  */
-export default function CheckboxRounded({ label, value, setValue, id }: Props) {
+export default function CheckboxRounded({
+  label,
+  value,
+  setValue,
+  id,
+  functional = true,
+}: Props) {
+  const handleToggle = () => {
+    if (functional) {
+      setValue((prev: boolean) => !prev);
+    } else {
+      setValue(!value);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
-      <div className={styles.checkbox} onClick={() => setValue((prev) => !prev)}>
+      <div className={styles.checkbox} onClick={() => handleToggle()}>
         <input
           className={styles.input}
           type={'checkbox'}

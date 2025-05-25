@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import MenuProfile from '@/components/UI/Menu/MenuProfile/MenuProfile';
 import BlockSocial from '@/components/BlockSocial/BlockSocial';
 
-import { getLogoProfile } from '@/libs/utils/profile';
+import { getLogoProfile, getUserFullName } from '@/libs/utils/profile';
 import { blurBase64 } from '@/libs/image';
 import { generateMetadataProfile } from '@/meta/meta';
 import { getRegistrationsRider } from '@/actions/registration-champ';
@@ -15,22 +15,17 @@ import { getResultsRaceForRider } from '@/actions/result-race';
 import TableResultsRider from '@/components/Table/TableResultsRider/TableResultsRider';
 import styles from './ProfilePage.module.css';
 import { getProfile } from '@/actions/user';
-
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+import { TPageProps } from '@/types/index.interface';
 
 // Создание динамических meta данных
-export async function generateMetadata(props: Props): Promise<Metadata> {
+export async function generateMetadata(props: TPageProps): Promise<Metadata> {
   return await generateMetadataProfile(props);
 }
 
 /**
  * Страница профиля пользователя.
  */
-export default async function ProfilePage(props: Props) {
+export default async function ProfilePage(props: TPageProps) {
   const params = await props.params;
 
   const { id } = params;
@@ -56,6 +51,8 @@ export default async function ProfilePage(props: Props) {
     getResultsRaceForRider({ riderId: id }),
   ]);
 
+  const fullName = getUserFullName({ person: profile.person });
+
   return (
     <div className={styles.wrapper}>
       <aside className={styles.wrapper__aside}>
@@ -63,7 +60,7 @@ export default async function ProfilePage(props: Props) {
           width={300}
           height={300}
           src={profileImage}
-          alt="vk"
+          alt={`Аватар пользователя ${fullName}`}
           className={styles.profile__image}
           priority={true}
           placeholder="blur"
@@ -71,9 +68,7 @@ export default async function ProfilePage(props: Props) {
         />
 
         <section className={styles.wrapper__details}>
-          <h1 className={styles.title}>{`${profile.person.lastName} ${
-            profile.person.firstName
-          }${profile.person.patronymic ? ' ' + profile.person.patronymic : ''}`}</h1>
+          <h1 className={styles.title}>{fullName}</h1>
           <dl className={styles.list}>
             <dt className={styles.desc__title}>Город</dt>
             <dd className={styles.desc__detail}>{profile.city ?? 'нет данных'}</dd>

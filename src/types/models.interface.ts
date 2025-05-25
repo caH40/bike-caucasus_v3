@@ -20,14 +20,7 @@ export type IUserModel = {
   emailConfirm: boolean; // через соцсети автоматически true
   image: string; // путь до картинки профиля
   imageFromProvider: boolean;
-  person: {
-    firstName: string;
-    patronymic: string;
-    lastName: string;
-    birthday: string;
-    gender: 'male' | 'female';
-    bio: string;
-  };
+  person: TPerson;
   city?: string;
   phone?: string;
   team?: {
@@ -35,23 +28,48 @@ export type IUserModel = {
     name: string;
   };
   role: ObjectId;
-  social: {
-    telegram?: string;
-    vk?: string;
-    youtube?: string;
-    komoot?: string;
-    strava?: string;
-    whatsapp?: string;
-    garminConnect?: string;
-  };
-  notification?: {
-    development: boolean; // Оповещение на email об изменениях на сайте.
-    events: boolean; // Оповещение на email об новых Эвентах.
-    news: boolean; // Оповещение на email о новостях.
-  };
+  social: TSocial;
+  preferences: TUserPreferences;
   createdAt: Date;
   updatedAt: Date;
 };
+export type TPerson = {
+  firstName: string;
+  patronymic: string;
+  lastName: string;
+  birthday: string;
+  gender: 'male' | 'female';
+  bio: string;
+};
+export type TSocial = {
+  telegram?: string;
+  vk?: string;
+  youtube?: string;
+  komoot?: string;
+  strava?: string;
+  whatsapp?: string;
+  garminConnect?: string;
+};
+export type TUserPreferences = {
+  showPatronymic?: boolean; // Отображать отчество при показе полного имени.
+  notification?: {
+    development: boolean; // Оповещения на email об изменениях на сайте.
+    events: boolean; // Оповещения на email о новых мероприятиях.
+    news: boolean; // Оповещения на email о новостях.
+  };
+  theme?: 'light' | 'dark'; // Тема интерфейса пользователя.
+  language?: string; // Язык интерфейса, например 'ru', 'en'.
+  privacy?: {
+    profileVisible: boolean; // Видимость профиля другим пользователям.
+    showEmail: boolean; // Отображать ли email публично.
+    showPhone: boolean; // Отображать ли телефон публично.
+  };
+  display?: {
+    showAvatars: boolean; // Показывать аватары пользователей.
+    itemsPerPage: number; // Количество элементов на странице в списках.
+  };
+};
+
 /**
  * Автор поста для публичного доступа, получаемый из модели User путем проекции документа при запросе из БД.
  */

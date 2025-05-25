@@ -1,16 +1,14 @@
 import Image from 'next/image';
 
-import type { TFormAccount } from '@/types/index.interface';
 import styles from './BlockSocial.module.css';
+import { TSocial } from '@/types/models.interface';
 
 type Props = {
   /**
    * Объект, содержащий ссылки на социальные сети.
    * Ключи объекта представляют названия социальных сетей, значения - соответствующие ссылки.
    */
-  social: Omit<TFormAccount, 'phone' | 'role' | 'email' | 'id'> & {
-    [key: string]: string | undefined;
-  };
+  social: TSocial;
 };
 
 /**
@@ -20,7 +18,7 @@ type Props = {
  */
 export default function BlockSocial({ social: socialObj }: Props): JSX.Element {
   // Создание массива для отрисовки и фильтрация пустых ссылок на социальные сети.
-  const socials = Object.keys(socialObj)
+  const socials = (Object.keys(socialObj) as (keyof TSocial)[])
     .map((key, index) => ({
       id: index,
       name: key,

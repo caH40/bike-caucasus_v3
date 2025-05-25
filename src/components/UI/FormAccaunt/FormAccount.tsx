@@ -1,6 +1,6 @@
 'use client';
 
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import Wrapper from '../../Wrapper/Wrapper';
 import BoxInput from '../BoxInput/BoxInput';
@@ -10,6 +10,8 @@ import { handlerResponse } from '@/libs/utils/response';
 import type { ResponseServer, TFormAccount } from '@/types/index.interface';
 import type { TUserDto } from '@/types/dto.types';
 import styles from './FormAccount.module.css';
+import CheckboxRounded from '../CheckboxRounded/CheckboxRounded';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   profile: TUserDto; // данные профиля из БД
@@ -27,8 +29,12 @@ export default function FormAccount({ profile, putAccount }: Props) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm<TFormAccount>({ mode: 'all' });
+  } = useForm<TFormAccount>({
+    mode: 'all',
+    defaultValues: profile,
+  });
 
   const onSubmit: SubmitHandler<TFormAccount> = async (dataForm) => {
     setLoading(true);
@@ -38,6 +44,7 @@ export default function FormAccount({ profile, putAccount }: Props) {
     handlerResponse(responseFromServer);
     setLoading(false);
   };
+
   return (
     <Wrapper title="Данные аккаунта">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -47,15 +54,15 @@ export default function FormAccount({ profile, putAccount }: Props) {
           id="telegram"
           autoComplete="offered"
           type="text"
-          defaultValue={profile.social.telegram ?? ''}
+          // defaultValue={profile.social.telegram ?? ''}
           loading={isLoading}
-          register={register('telegram', {
+          register={register('social.telegram', {
             pattern: {
               value: /^https:\/\/(?:t\.me|telegram\.me)\//,
               message: 'Ссылка должна начинаться с https://t.me',
             },
           })}
-          validationText={errors.telegram ? errors.telegram.message : ''}
+          validationText={errors.social?.telegram ? errors.social?.telegram.message : ''}
         />
 
         {/* поле ввода информации об аккаунте в vk.com */}
@@ -64,15 +71,15 @@ export default function FormAccount({ profile, putAccount }: Props) {
           id="vk"
           autoComplete="offered"
           type="text"
-          defaultValue={profile.social.vk ?? ''}
+          // defaultValue={profile.social.vk ?? ''}
           loading={isLoading}
-          register={register('vk', {
+          register={register('social.vk', {
             pattern: {
               value: /^https:\/\/(?:vk\.com)\//,
               message: 'Ссылка должна начинаться с https://vk.com/',
             },
           })}
-          validationText={errors.vk ? errors.vk.message : ''}
+          validationText={errors.social?.vk ? errors.social?.vk.message : ''}
         />
 
         {/* поле ввода информации об аккаунте в strava.com */}
@@ -81,15 +88,15 @@ export default function FormAccount({ profile, putAccount }: Props) {
           id="strava"
           autoComplete="offered"
           type="text"
-          defaultValue={profile.social.strava ?? ''}
+          // defaultValue={profile.social.strava ?? ''}
           loading={isLoading}
-          register={register('strava', {
+          register={register('social.strava', {
             pattern: {
               value: /^https:\/\/www\.strava\.com\/athletes\//,
               message: 'Ссылка должна начинаться с https://www.strava.com/athletes/',
             },
           })}
-          validationText={errors.strava ? errors.strava.message : ''}
+          validationText={errors.social?.strava ? errors.social?.strava.message : ''}
         />
 
         {/* поле ввода информации об ID на сайте bike-caucasus */}
@@ -123,6 +130,24 @@ export default function FormAccount({ profile, putAccount }: Props) {
           type="email"
           disabled={true}
           defaultValue={profile.email ?? 'не найден, обратитесь в поддержку!'}
+        />
+
+        <TitleAndLine hSize={2} title="Настройки" />
+
+        <Controller
+          name="preferences.showPatronymic"
+          control={control}
+          render={({ field }) => {
+            return (
+              <CheckboxRounded
+                id="showPatronymic"
+                label="Отображать отчество"
+                value={field.value ?? false}
+                setValue={field.onChange}
+                functional={false}
+              />
+            );
+          }}
         />
         <div className={styles.box__button}>
           <Button name="Сохранить" theme="green" loading={isLoading} />

@@ -32,7 +32,7 @@ export default function MenuProfile({ profileId }: Params) {
   const buttons: TMenuOnPage[] = [
     {
       id: 0,
-      name: 'Настройки',
+      name: 'Личный кабинет',
       classes: [],
       href: '/account/profile',
       isMyButton: true,

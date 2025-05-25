@@ -1,5 +1,6 @@
 import { IUserModel } from '@/types/models.interface';
 import { models, Schema, model } from 'mongoose';
+import { PreferencesSchema } from './Schema/UserPreferences';
 
 const TeamSchema = new Schema({
   id: { type: Number, require: true }, // id номер, присваиваемый автоматически при регистрации
@@ -65,6 +66,7 @@ const userSchema = new Schema<IUserModel>(
       gender: { type: String, default: 'male' },
       bio: { type: String },
     },
+    preferences: { type: PreferencesSchema },
     city: { type: String },
     phone: { type: String },
     team: { type: TeamSchema, default: null },
@@ -73,11 +75,6 @@ const userSchema = new Schema<IUserModel>(
 
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    notification: {
-      development: { type: Boolean, default: true },
-      events: { type: Boolean, default: true },
-      news: { type: Boolean, default: true },
-    },
   },
   { timestamps: true }
 );
