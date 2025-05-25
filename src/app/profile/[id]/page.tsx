@@ -51,7 +51,10 @@ export default async function ProfilePage(props: TPageProps) {
     getResultsRaceForRider({ riderId: id }),
   ]);
 
-  const fullName = getUserFullName({ person: profile.person });
+  const fullName = getUserFullName({
+    person: profile.person,
+    showPatronymic: profile.preferences.showPatronymic,
+  });
 
   return (
     <div className={styles.wrapper}>
