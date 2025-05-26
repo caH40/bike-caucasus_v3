@@ -2,7 +2,7 @@ import { ObjectId, Types } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { deserializationResultRaceRider } from '@/libs/utils/deserialization/resultRaceRider';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { User as UserModel } from '@/database/mongodb/Models/User';
@@ -30,12 +30,10 @@ import { TRiderRaceResultDto } from '@/types/dto.types';
 export class ResultRaceService {
   private errorLogger;
   private handlerErrorDB;
-  private dbConnection: () => Promise<void>;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
-    this.dbConnection = connectToMongo;
   }
 
   public async getOne({
@@ -44,9 +42,6 @@ export class ResultRaceService {
     resultId: string;
   }): Promise<ResponseServer<TRiderRaceResultDto | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const resultDB = await ResultRaceModel.findOne(
         { _id: resultId },
         { createdAt: false, updatedAt: false, creator: false }
@@ -76,9 +71,6 @@ export class ResultRaceService {
     riderId: string;
   }): Promise<ResponseServer<TRiderRaceResultDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const userDB = await UserModel.findOne({ id: riderId }, { _id: true });
 
       if (!userDB) {
@@ -120,9 +112,6 @@ export class ResultRaceService {
 
       // Проверка входных данных.
       this.validateRaceResultData(dataDeserialized);
-
-      // Подключение к БД.
-      await this.dbConnection();
 
       // Данные по заезду.
       const race = await this.getRace(dataDeserialized.raceId);
@@ -184,9 +173,6 @@ export class ResultRaceService {
    */
   public async update({ result }: { result: FormData }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Данные после десериализации.
       const dataDeserialized = deserializationResultRaceRider(result);
 
@@ -245,9 +231,6 @@ export class ResultRaceService {
     raceId: string;
   }): Promise<ResponseServer<TProtocolRace | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Проверка наличия Заезда Чемпионата в БД.
       const race = await this.getRace(raceId);
 
@@ -310,9 +293,6 @@ export class ResultRaceService {
     raceId: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Получение данных заезда.
       const race = await this.getRace(raceId);
 
@@ -434,9 +414,6 @@ export class ResultRaceService {
    */
   public async delete({ _id }: { _id: string }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Получение данных заезда.
       const resultDB = await ResultRaceModel.findOneAndDelete({ _id }, { profile: true });
       if (resultDB) {

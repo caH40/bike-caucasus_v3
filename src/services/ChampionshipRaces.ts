@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { parseGPX } from '@/libs/utils/parse-gpx';
@@ -22,14 +22,14 @@ import type { TTrackGPXObj } from '@/types/models.interface';
 export class ChampionshipRaces {
   private errorLogger;
   private handlerErrorDB;
-  private dbConnection: () => Promise<void>;
+
   private saveFile: (params: TSaveFile) => Promise<string>;
   private suffixTrackGpx: string;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
-    this.dbConnection = connectToMongo;
+
     this.saveFile = saveFile;
     this.suffixTrackGpx = 'championship_track_gpx-';
   }
@@ -45,7 +45,6 @@ export class ChampionshipRaces {
     championshipId: string;
   }): Promise<ResponseServer<null>> {
     try {
-      await this.dbConnection();
       const { races } = deserializeRaces(dataSerialized);
 
       const oldRaces = await this.getOldRaces(championshipId);

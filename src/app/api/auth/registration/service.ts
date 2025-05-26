@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '../../../../database/mongodb/Models/User';
-import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { mailService } from '@/services/mail/nodemailer';
 import { UserConfirm } from '@/database/mongodb/Models/User-confirm';
 import { getNextSequenceValue } from '@/services/sequence';
@@ -20,8 +19,6 @@ export async function postRegistrationService({
   email,
   password,
 }: Params): Promise<void> {
-  await connectToMongo();
-
   // проверка существует ли уже пользователь с таким email или username.
   const candidate = await User.findOne({
     // email, username сохраняется в нижний регистр.

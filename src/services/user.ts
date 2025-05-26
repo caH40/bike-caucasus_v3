@@ -1,6 +1,5 @@
 import { revalidatePath } from 'next/cache';
 
-import { connectToMongo } from '@/database/mongodb/mongoose';
 import { handlerDateForm } from '@/libs/utils/date';
 import { getGender } from '@/libs/utils/handler-data';
 import { Cloud } from './cloud';
@@ -30,12 +29,10 @@ type ParamsGetProfile = {
  * Запросы связанные с моделью User
  */
 export class UserService {
-  private dbConnection: () => Promise<void>;
   // eslint-disable-next-line no-unused-vars
   private errorLogger: (error: unknown) => Promise<void>;
 
   constructor() {
-    this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
   }
 
@@ -48,7 +45,6 @@ export class UserService {
   }: ParamsGetProfile): Promise<ResponseServer<TUserDto | TUserDtoPublic | null>> {
     try {
       // подключение к БД
-      await this.dbConnection();
 
       // Проверка, должен быть один из параметров: только id, или только idDB.
       if (!id === !idDB) {
@@ -108,7 +104,6 @@ export class UserService {
   async getProfiles(): Promise<ResponseServer<TUserDto[] | null>> {
     try {
       // Подключение к базе данных
-      await this.dbConnection();
 
       // Получение всех пользователей из базы данных и преобразование результата в простой объект JavaScript
       const usersDB = await User.find(
@@ -154,7 +149,6 @@ export class UserService {
   }): Promise<ResponseServer<null>> {
     try {
       // Подключение к базе данных
-      await this.dbConnection();
 
       const query = {
         role: user.roleId,
@@ -200,8 +194,6 @@ export class UserService {
       if (!profile.id) {
         throw new Error('Нет id пользователя');
       }
-      // Подключение к БД.
-      await this.dbConnection();
 
       // Сохранение изображения для профиля, если оно загружено.
       let imageUrlForSave = ''; // URL до изображении, сохраненного в облаке.
@@ -290,7 +282,6 @@ export class UserService {
       }
 
       // Подключение к базе данных.
-      await this.dbConnection();
 
       // Формирование запроса для обновления профиля в базе данных.
       const query: any = {
@@ -335,7 +326,6 @@ export class UserService {
       }
 
       // Подключение к базе данных.
-      await this.dbConnection();
 
       // Обновление данных профиля в базе данных.
       const usersDB: TProfileSimpleFromDB[] = await User.find(

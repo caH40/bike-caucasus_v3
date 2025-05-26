@@ -3,7 +3,7 @@ import slugify from 'slugify';
 
 import { Cloud } from './cloud';
 import { User } from '@/database/mongodb/Models/User';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { handlerErrorDB } from './mongodb/error';
 import { getNextSequenceValue } from './sequence';
 import { deserializeNewsCreate } from '@/libs/utils/deserialization/news';
@@ -25,12 +25,10 @@ import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.t
  * Сервис работы с новостями (News) в БД
  */
 export class News {
-  private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
 
   constructor() {
-    this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
     this.saveFile = saveFile;
   }
@@ -48,9 +46,6 @@ export class News {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
-
-      // Подключение к БД.
-      await this.dbConnection();
 
       // Создание slug из title для url страницы новости.
       const sequenceValue = await getNextSequenceValue('news');
@@ -123,9 +118,6 @@ export class News {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
-
-      // Подключение к БД.
-      await this.dbConnection();
 
       const newsDB = await NewsModel.findOne(
         { urlSlug: news.urlSlug },
@@ -270,9 +262,6 @@ export class News {
     }>
   > {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const newsDB = await NewsModel.find(query)
         .sort({ createdAt: -1 })
         .populate({
@@ -345,9 +334,6 @@ export class News {
     idUserDB: string | undefined;
   }): Promise<ResponseServer<null | TNewsGetOneDto>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const newsDB = await NewsModel.findOne({ urlSlug })
         .populate({
           path: 'author',
@@ -412,9 +398,6 @@ export class News {
     idUserDB: string | undefined;
   }): Promise<ResponseServer<null | TNewsInteractiveDto>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const newsDB = await NewsModel.findOne(
         { _id: idNews },
         { viewsCount: true, likesCount: true, _id: false }
@@ -465,8 +448,6 @@ export class News {
       if (!idNews) {
         throw new Error(`Не получена _id новости`);
       }
-      // Подключение к БД.
-      this.dbConnection();
 
       const newsDB = await NewsModel.findOneAndUpdate(
         { _id: idNews },
@@ -503,9 +484,6 @@ export class News {
     idNews: string;
   }): Promise<ResponseServer<any>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const userDB = await User.findOne({ _id: idUserDB });
       if (!userDB) {
         throw new Error(`Не найден пользователь с _id:${userDB}`);
@@ -544,9 +522,6 @@ export class News {
    */
   public async delete({ urlSlug }: { urlSlug: string; idUserDB: string }) {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const newsOneDB:
         | ({
             _id: ObjectId;

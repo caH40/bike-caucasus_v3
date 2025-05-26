@@ -5,16 +5,14 @@ import { TCommentDto } from '@/types/dto.types';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 import { TAuthorFromUser, TCommentDocument, TRoleModel } from '@/types/models.interface';
 import { dtoComment } from '@/dto/comment';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { User } from '@/database/mongodb/Models/User';
 import mongoose, { ObjectId } from 'mongoose';
 
 export class CommentService {
-  private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
   private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
   constructor() {
-    this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
   }
@@ -29,9 +27,6 @@ export class CommentService {
     idUserDB?: string;
   }): Promise<ResponseServer<TCommentDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Получение комментариев для поста.
       const commentsDB = await CommentModel.find({ document })
         .populate({
@@ -90,9 +85,6 @@ export class CommentService {
     };
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const userDb = await User.findOne({ _id: authorIdDB });
 
       if (!userDb) {
@@ -128,9 +120,6 @@ export class CommentService {
     idCommentForEdit: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const userDb = await User.findOne({ _id: authorIdDB }, { _id: true }).lean<{
         _id: ObjectId;
       }>();
@@ -174,9 +163,6 @@ export class CommentService {
     idComment: string;
   }): Promise<ResponseServer<any>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const userDB = await User.findOne({ _id: idUserDB });
       if (!userDB) {
         throw new Error(`Не найден пользователь с _id:${userDB}`);
@@ -224,9 +210,6 @@ export class CommentService {
     idComment: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
         .populate('role')
         .lean<{ role: TRoleModel; id: number }>();

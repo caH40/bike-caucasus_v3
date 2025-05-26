@@ -8,7 +8,6 @@ import VK from 'next-auth/providers/vk';
 
 import { User } from '@/Models/User';
 import { IUserModel, TRoleModel } from '@/types/models.interface';
-import { connectToMongo } from '../../../../database/mongodb/mongoose';
 import { getNextSequenceValue } from '@/services/sequence';
 import { getProviderProfileDto } from '@/libs/dto/provider';
 import { Role } from '@/database/mongodb/Models/Role';
@@ -45,7 +44,6 @@ export const authOptions: AuthOptions = {
         }
         const { username, password } = credentials;
 
-        await connectToMongo();
         const userDB = await User.findOne({
           'credentials.username': username.toLowerCase(),
         }).lean<IUserModel>();
@@ -78,7 +76,6 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account }) {
-      await connectToMongo();
       const userDB = await User.findOne({ email: token.email }, { role: true })
         .populate('role')
         .lean<{ role: Omit<TRoleModel, '_id'> }>();
@@ -114,7 +111,6 @@ export const authOptions: AuthOptions = {
         }
 
         // подключение к БД
-        await connectToMongo();
 
         // поиск пользователя с id и provider в БД
         const userWithIdAndProviderDB = await User.findOne({
@@ -205,7 +201,6 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        await connectToMongo();
         const userDB = await User.findOne(
           { email: token.email },
           {

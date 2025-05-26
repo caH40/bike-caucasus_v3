@@ -14,14 +14,17 @@ import { metadataHomePage } from '@/meta/meta';
 import './globals.css';
 
 import YandexMetrika from '@/components/YandexMetrika/YandexMetrika';
+import { connectToMongo } from '@/database/mongodb/mongoose';
 
 export const metadata: Metadata = metadataHomePage;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await connectToMongo();
+
   return (
     <html lang="ru">
       <body className={cn(roboto.className, montserrat_Alternates.variable, 'body')}>

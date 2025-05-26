@@ -2,7 +2,7 @@ import { Types, UpdateQuery } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { deserializeCategories } from '@/libs/utils/deserialization/categories';
@@ -18,12 +18,10 @@ import { TCategories } from '@/types/models.interface';
 export class ChampionshipCategories {
   private errorLogger;
   private handlerErrorDB;
-  private dbConnection: () => Promise<void>;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
-    this.dbConnection = connectToMongo;
   }
 
   /**
@@ -40,9 +38,6 @@ export class ChampionshipCategories {
     championshipId: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Десериализованные данные с клиента.
       const categoriesConfigs = deserializeCategories(dataSerialized);
 

@@ -2,7 +2,7 @@ import mongoose, { ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
 import { Trail as TrailModel } from '@/database/mongodb/Models/Trail';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { dtoTrail, dtoTrails } from '@/dto/trail';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
@@ -29,12 +29,10 @@ import { fileNameFormUrl } from '@/constants/regex';
  * Сервисы работы с велосипедными маршрутами.
  */
 export class Trail {
-  private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
   private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   constructor() {
-    this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.saveFile = saveFile;
@@ -51,9 +49,6 @@ export class Trail {
     idUserDB: string | undefined
   ): Promise<ResponseServer<TTrailDto | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Получаем информацию о маршруте из БД.
       const trailDB = await TrailModel.findOne({
         urlSlug,
@@ -119,9 +114,6 @@ export class Trail {
     idUserDB: string | undefined;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
         .populate('role')
         .lean<{ role: TRoleModel; id: number }>();
@@ -198,9 +190,6 @@ export class Trail {
     search?: string; // Ключевое слово по которому происходит поиск маршрутов.
   }): Promise<ResponseServer<TTrailDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Формирование строки для запроса маршрутов из БД.
       const query = {} as { bikeType?: string; region?: string; difficultyLevel?: string };
       if (bikeType) {
@@ -295,9 +284,6 @@ export class Trail {
     formData: FormData;
     author: string;
   }): Promise<ResponseServer<null>> {
-    // Подключение к БД.
-    await this.dbConnection();
-
     // Десериализация данных, полученных с клиента.
     const trail = deserializeTrailCreate(formData);
 
@@ -345,9 +331,6 @@ export class Trail {
     const stringRaw = `${sequenceValue}-${trail.region}-${trail.title}`;
     const urlSlug = slugify(stringRaw, { lower: true, strict: true });
 
-    // Подключение к БД.
-    await this.dbConnection();
-
     const response = await TrailModel.create({
       ...trail,
       hashtags,
@@ -379,9 +362,6 @@ export class Trail {
     idTrail: string;
   }): Promise<ResponseServer<any>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       // Проверка существует ли пользователь в БД с таким ID (может лишняя проверка)?
       const userDB = await User.findOne({ _id: idUserDB });
       if (!userDB) {
@@ -428,9 +408,6 @@ export class Trail {
     idUserDB: string | undefined;
   }): Promise<ResponseServer<null | TNewsInteractiveDto>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       const trailDB = await TrailModel.findOne(
         { _id: idTrail },
         { count: true, likedBy: true }
@@ -473,9 +450,6 @@ export class Trail {
    */
   public async put({ formData }: { formData: FormData }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      this.dbConnection();
-
       // Десериализация данных, полученных с клиента.
       const trail = deserializeTrailCreate(formData);
 

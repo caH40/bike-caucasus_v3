@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 import { PasswordReset } from '@/database/mongodb/Models/Password-reset';
 import { User } from '@/database/mongodb/Models/User';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { mailService } from '@/services/mail/nodemailer';
 import { type IUserModel } from '@/types/models.interface';
 
@@ -17,8 +17,6 @@ type Params = {
  * @param  userId - Идентификатор пользователя.
  */
 export async function createNewPasswordService({ password: newPassword, userId }: Params) {
-  await connectToMongo();
-
   // Хеширование нового пароля
   const salt = await bcrypt.genSalt(10);
   const passwordHashed = await bcrypt.hash(newPassword, salt);

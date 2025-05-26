@@ -2,7 +2,7 @@ import mongoose, { ObjectId } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import {
   dtoCheckRegisteredInChamp,
@@ -36,12 +36,10 @@ import { TRegistrationStatusMongo } from '@/types/mongo.types';
 export class RegistrationChampService {
   private errorLogger;
   private handlerErrorDB;
-  private dbConnection: () => Promise<void>;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
-    this.dbConnection = connectToMongo;
   }
 
   /**
@@ -55,9 +53,6 @@ export class RegistrationChampService {
     teamVariable,
   }: RegChampPostParams): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Проверка существования Чемпионата и запрашиваемого заезда для регистрации.
       const champ = await this.getChamp(championshipId);
 
@@ -107,9 +102,6 @@ export class RegistrationChampService {
     raceId: string
   ): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const registeredRidersDb = await RaceRegistrationModel.find(
         { race: raceId },
         { payment: false }
@@ -162,9 +154,6 @@ export class RegistrationChampService {
     } | null>
   > {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const { championship, races, championshipId } = await this.getChampionshipData({
         urlSlug,
         raceId,
@@ -223,9 +212,6 @@ export class RegistrationChampService {
     updates: { status: TRaceRegistrationStatus; startNumber?: number | null };
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const champ = await this.getChamp(championshipId);
 
       // При отмене регистрации выбранный ранее райдером стартовый номер освобождается.
@@ -266,9 +252,6 @@ export class RegistrationChampService {
     riderId: string;
   }): Promise<ResponseServer<TRegistrationRiderDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Проверка существования райдера в БД.
       const riderDB = await User.findOne({ id: riderId }, { _id: true }).lean<{
         _id: ObjectId;
@@ -338,9 +321,6 @@ export class RegistrationChampService {
     champId: string;
   }): Promise<ResponseServer<any | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const registeredInChamp = await RaceRegistrationModel.findOne(
         {
           rider: idRiderDB,
@@ -393,9 +373,6 @@ export class RegistrationChampService {
     champId: string;
   }): Promise<ResponseServer<any | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       await RaceRegistrationModel.findOneAndDelete({
         championship: champId,
       });

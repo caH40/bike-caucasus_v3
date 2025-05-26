@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { User } from '@/Models/User';
 import { PasswordReset } from '@/database/mongodb/Models/Password-reset';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { mailService } from '@/services/mail/nodemailer';
 import { type IUserModel } from '@/types/models.interface';
 
@@ -13,7 +13,6 @@ export async function resetPasswordService(email: string): Promise<{
   message: string;
   email: string;
 }> {
-  await connectToMongo();
   const userDB: IUserModel | null = await User.findOne({
     email,
     credentials: { $exists: true, $ne: null },

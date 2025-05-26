@@ -3,7 +3,7 @@ import slugify from 'slugify';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { saveFile } from './save-file';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
@@ -41,7 +41,6 @@ import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/typ
 export class ChampionshipService {
   private errorLogger;
   private handlerErrorDB;
-  private dbConnection: () => Promise<void>;
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
   private getCurrentStatus: (props: {
@@ -53,7 +52,6 @@ export class ChampionshipService {
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
-    this.dbConnection = connectToMongo;
     this.saveFile = saveFile;
     this.suffixImagePoster = 'championship_image_poster-';
     this.getCurrentStatus = getCurrentStatus;
@@ -68,9 +66,6 @@ export class ChampionshipService {
     urlSlug: string;
   }): Promise<ResponseServer<TDtoChampionship | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const championshipDB = await ChampionshipModel.findOne({ urlSlug })
         .populate({
           path: 'organizer',
@@ -109,9 +104,6 @@ export class ChampionshipService {
     needTypes?: TChampionshipTypes[];
   }): Promise<ResponseServer<TDtoChampionship[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       let query: any = { ...(needTypes && { type: needTypes }) };
 
       // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные Организатором userIdDB, или их модераторами userIdDB.
@@ -218,9 +210,6 @@ export class ChampionshipService {
     creator: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const {
         posterFile,
         name,
@@ -308,9 +297,6 @@ export class ChampionshipService {
     serializedFormData: FormData;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const {
         championshipId,
         posterFile,
@@ -380,9 +366,6 @@ export class ChampionshipService {
    */
   public async delete({ urlSlug }: { urlSlug: string }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const championshipDB: TDeleteChampionshipFromMongo | null =
         await ChampionshipModel.findOne(
           { urlSlug },
@@ -458,9 +441,6 @@ export class ChampionshipService {
    */
   public async updateStatusChampionship(): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const championshipsDB = await ChampionshipModel.find(
         {
           status: ['upcoming', 'ongoing'],
@@ -514,9 +494,6 @@ export class ChampionshipService {
     organizerId: string;
   }): Promise<ResponseServer<TToursAndSeriesDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const championshipsDB = await ChampionshipModel.find(
         {
           organizer: organizerId,

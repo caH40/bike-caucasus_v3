@@ -1,6 +1,5 @@
 import mongoose, { ObjectId } from 'mongoose';
 
-import { connectToMongo } from '@/database/mongodb/mongoose';
 import { errorLogger } from '@/errors/error';
 import { ResponseServer, TFormRole } from '@/types/index.interface';
 import { handlerErrorDB } from './mongodb/error';
@@ -18,12 +17,10 @@ import { Document } from 'mongoose';
  * Класс работы с разрешениями (доступами) к ресурсам сайта.
  */
 export class PermissionsService {
-  private dbConnection: () => Promise<void>;
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
   private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
 
   constructor() {
-    this.dbConnection = connectToMongo;
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
   }
@@ -39,8 +36,6 @@ export class PermissionsService {
     description: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
       const res = await PermissionModel.create({ name, description });
 
       if (!res) {
@@ -71,8 +66,6 @@ export class PermissionsService {
     description: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
       const res = await PermissionModel.findOneAndUpdate({ _id }, { $set: { description } });
 
       if (!res) {
@@ -95,8 +88,6 @@ export class PermissionsService {
    */
   public async getMany(): Promise<ResponseServer<TPermissionDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
       const permissionsDB = await PermissionModel.find().lean<TPermissionDocument[]>();
 
       return {
@@ -123,8 +114,6 @@ export class PermissionsService {
         throw new Error('Не передан _id Разрешения!');
       }
 
-      // Подключение к БД.
-      await this.dbConnection();
       const permissionDB = await PermissionModel.findOne({
         _id,
       }).lean<TPermissionDocument>();
@@ -153,8 +142,6 @@ export class PermissionsService {
       if (!mongoose.Types.ObjectId.isValid(_id)) {
         throw new Error(`Неверный формат _id: ${_id}`);
       }
-      // Подключение к БД.
-      await this.dbConnection();
 
       // Удаление Разрешения.
       const permissionDB = await PermissionModel.findOneAndDelete(
@@ -192,9 +179,6 @@ export class PermissionsService {
    */
   public async postRole({ newRole }: { newRole: TFormRole }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const checkedDuplicate = await RoleModel.findOne({ name: newRole.name }).lean();
 
       if (checkedDuplicate) {
@@ -223,9 +207,6 @@ export class PermissionsService {
    */
   public async getRole({ _id }: { _id: string }): Promise<ResponseServer<TRoleDto | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const roleDB = await RoleModel.findOne({ _id }).lean<TRoleModel>();
 
       if (!roleDB) {
@@ -249,9 +230,6 @@ export class PermissionsService {
    */
   public async getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const rolesDB = await RoleModel.find().lean<TRoleModel[]>();
 
       const rolesAfterDto = dtoRoles(rolesDB);
@@ -271,9 +249,6 @@ export class PermissionsService {
    */
   public async deleteRole({ _id }: { _id: string }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       // Получение id Роли User.
       const roleUser = await RoleModel.findOne({ name: 'user' }, { _id: true }).lean<{
         _id: ObjectId;
@@ -330,8 +305,6 @@ export class PermissionsService {
     roleEdited: TFormRole;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
       const res = await RoleModel.findOneAndUpdate(
         { _id: roleEdited._id },
         { $set: { description: roleEdited.description, permissions: roleEdited.permissions } }
@@ -368,9 +341,6 @@ export class PermissionsService {
     permission: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await connectToMongo();
-
       // Проверка, является ли модератор, удаляющий,редактирующий новость, администратором.
       const user = await UserModel.findOne({ _id: idUserDB }, { role: true })
         .populate({ path: 'role', select: ['permissions', 'name', '-_id'] })
@@ -429,9 +399,6 @@ export class PermissionsService {
     userIdDB: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await connectToMongo();
-
       const userDB = await UserModel.findOne({ _id: userIdDB }, { _id: false, role: true })
         .populate({ path: 'role', select: ['name', '-_id'] })
         .lean<{ role: { name: string } }>();

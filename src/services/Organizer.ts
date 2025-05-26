@@ -7,7 +7,7 @@ import { userPublicSelect } from '@/constants/populate';
 import type { TAuthorFromUser, TOrganizer } from '@/types/models.interface';
 import type { TDtoOrganizer } from '@/types/dto.types';
 import { deserializeOrganizer } from '@/libs/utils/deserialization/organizer';
-import { connectToMongo } from '@/database/mongodb/mongoose';
+
 import { saveFile } from './save-file';
 import { Cloud } from './cloud';
 import { getNextSequenceValue } from './sequence';
@@ -21,7 +21,7 @@ import { ObjectId } from 'mongoose';
 export class OrganizerService {
   private errorLogger;
   private handlerErrorDB;
-  private dbConnection: () => Promise<void>;
+
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
   private suffixImageLogo: string;
@@ -29,7 +29,7 @@ export class OrganizerService {
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
-    this.dbConnection = connectToMongo;
+
     this.saveFile = saveFile;
     this.suffixImagePoster = 'organizer_image_poster-';
     this.suffixImageLogo = 'organizer_image_logo-';
@@ -40,9 +40,6 @@ export class OrganizerService {
    */
   public async getMany(): Promise<ResponseServer<TDtoOrganizer[] | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const organizersDB = await OrganizerModel.find()
         .populate({
           path: 'creator',
@@ -68,9 +65,6 @@ export class OrganizerService {
     urlSlug: string;
   }): Promise<ResponseServer<TDtoOrganizer | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const organizerDB = await OrganizerModel.findOne({ urlSlug })
         .populate({
           path: 'creator',
@@ -100,9 +94,6 @@ export class OrganizerService {
     userIdDB: string;
   }): Promise<ResponseServer<{ urlSlug: string | null } | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const organizerDB = await OrganizerModel.findOne(
         { creator: userIdDB },
         { _id: true, urlSlug: true }
@@ -128,9 +119,6 @@ export class OrganizerService {
     userIdDB: string;
   }): Promise<ResponseServer<TDtoOrganizer | null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const organizerDB = await OrganizerModel.findOne({
         $or: [{ creator: userIdDB }, { moderators: userIdDB }],
       })
@@ -164,9 +152,6 @@ export class OrganizerService {
     creator: string;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const deserializedFormData = deserializeOrganizer(serializedFormData);
 
       // Проверка на дубликат имени Организатора.
@@ -224,9 +209,6 @@ export class OrganizerService {
     serializedFormData: FormData;
   }): Promise<ResponseServer<null>> {
     try {
-      // Подключение к БД.
-      await this.dbConnection();
-
       const deserializedFormData = deserializeOrganizer(serializedFormData);
 
       // Экземпляр сервиса работы с Облаком.
