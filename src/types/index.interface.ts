@@ -692,13 +692,6 @@ export type TFormResultRace = {
   categorySkillLevel?: string | null;
   time: TTimeDetails;
 };
-// /**
-//  * Данные формы для редактирования результата райдера в Заезде Чемпионата.
-//  */
-// export type TFormResultRaceEdit = Omit<
-//   TFormResultRace,
-//   'riderRegisteredInRace' | 'riderRegisteredSite'
-// > & { resultId: string; _id: string };
 
 /**
  * Данные формы отправляемые на сериализацию.
@@ -707,7 +700,7 @@ export type TDataFromFormResultRace = {
   city?: string;
   firstName: string;
   gender: 'male' | 'female';
-  id?: number;
+  id?: number; // id пользователя на сайте (1000 и т.д.).
   _id?: string;
   lastName: string;
   patronymic?: string;

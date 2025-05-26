@@ -1,4 +1,4 @@
-import { ObjectId, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
@@ -124,7 +124,7 @@ export class ResultRaceService {
 
       // Получение _id участника, если у него есть профиль на сайте.
       const riderDB = await UserModel.findOne({ id: dataDeserialized.id }, { _id: true }).lean<{
-        _id: ObjectId;
+        _id: Types.ObjectId;
       }>();
 
       // Название возрастной категории в зависимости от возраста участника и категорий в заезде.
@@ -470,7 +470,7 @@ export class ResultRaceService {
         race: data.raceId,
       },
       { _id: true }
-    ).lean<{ _id: ObjectId }>();
+    ).lean<{ _id: Types.ObjectId }>();
 
     if (resultRaceDB) {
       throw new Error(
@@ -486,17 +486,20 @@ export class ResultRaceService {
     const res = await ResultRaceModel.findOne(
       {
         championship: data.championshipId,
-        raceNumber: data.raceId,
+        race: data.raceId,
         startNumber: data.startNumber,
       },
-      { 'profile.lastName': true, 'profile.firstName': true }
-    ).lean<{
-      _id: ObjectId;
-      profile: { lastName: string; firstName: string };
-    }>();
+      { rider: true, 'profile.lastName': true, 'profile.firstName': true }
+    )
+      .populate({ path: 'rider', select: ['id'] })
+      .lean<{
+        _id: Types.ObjectId;
+        profile: { lastName: string; firstName: string };
+        rider: { id: number } | undefined;
+      }>();
 
-    // Проверка String(registrationDB._id) !== dataDeserialized._id) что номер принадлежит не райдеру которому изменяется результат.
-    if (res && String(res._id) !== data.resultId) {
+    // Проверка  (res.rider?.id && res.rider.id !== data.id) что номер принадлежит не райдеру которому изменяется результат.
+    if (res && res.rider?.id && res.rider.id !== data.id) {
       throw new Error(
         `Данный стартовый номер: ${data.startNumber} уже есть в протоколе у райдера: ${res.profile.lastName} ${res.profile.firstName}`
       );
