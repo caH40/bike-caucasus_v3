@@ -4,7 +4,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import cn from 'classnames';
 
-import { ResponseServer, TFormCalendar, TOptions } from '@/types/index.interface';
+import { ServerResponse, TFormCalendar, TOptions } from '@/types/index.interface';
 import { useLoadingStore } from '@/store/loading';
 import { TNewsGetOneDto } from '@/types/dto.types';
 import { handlerDateForm } from '@/libs/utils/date';
@@ -17,7 +17,7 @@ import { bikeTypes as optionsBikeTypes } from '@/constants/trail';
 
 type Props = {
   // eslint-disable-next-line no-unused-vars
-  fetchTrailCreated: (formData: FormData) => Promise<ResponseServer<null>>;
+  fetchTrailCreated: (formData: FormData) => Promise<ServerResponse<null>>;
   news:
     | {
         news: TNewsGetOneDto[];

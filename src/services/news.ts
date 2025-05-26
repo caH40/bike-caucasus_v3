@@ -18,7 +18,7 @@ import { getCurrentDocsOnPage } from '@/libs/utils/pagination';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 import { fileNameFormUrl } from '@/constants/regex';
 import type { TNews, TNewsBlockInfo } from '@/types/models.interface';
-import type { ResponseServer, TNewsCreateFromClient, TSaveFile } from '@/types/index.interface';
+import type { ServerResponse, TNewsCreateFromClient, TSaveFile } from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 
 /**
@@ -42,7 +42,7 @@ export class News {
   }: {
     formData: FormData;
     author: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
@@ -114,7 +114,7 @@ export class News {
   /**
    * Обновление отредактированной новости.
    */
-  public async put(formData: FormData): Promise<ResponseServer<null>> {
+  public async put(formData: FormData): Promise<ServerResponse<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
@@ -255,7 +255,7 @@ export class News {
     docsOnPage?: number;
     query?: Partial<{ [K in keyof TNewsGetOneDto]: TNewsGetOneDto[K] }>;
   }): Promise<
-    ResponseServer<null | {
+    ServerResponse<null | {
       news: TNewsGetOneDto[];
       currentPage: number;
       quantityPages: number;
@@ -332,7 +332,7 @@ export class News {
   }: {
     urlSlug: string;
     idUserDB: string | undefined;
-  }): Promise<ResponseServer<null | TNewsGetOneDto>> {
+  }): Promise<ServerResponse<null | TNewsGetOneDto>> {
     try {
       const newsDB = await NewsModel.findOne({ urlSlug })
         .populate({
@@ -396,7 +396,7 @@ export class News {
   }: {
     idNews: string;
     idUserDB: string | undefined;
-  }): Promise<ResponseServer<null | TNewsInteractiveDto>> {
+  }): Promise<ServerResponse<null | TNewsInteractiveDto>> {
     try {
       const newsDB = await NewsModel.findOne(
         { _id: idNews },
@@ -443,7 +443,7 @@ export class News {
     idNews,
   }: {
     idNews?: string | null;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       if (!idNews) {
         throw new Error(`Не получена _id новости`);
@@ -474,7 +474,7 @@ export class News {
    * @param {Object} params - Объект с параметрами.
    * @param {string} params.idUserDB - Идентификатор пользователя в базе данных.
    * @param {string} params.idNews - Идентификатор новости в базе данных.
-   * @returns {Promise<ResponseServer<any>>} - Результат операции учета лайка.
+   * @returns {Promise<ServerResponse<any>>} - Результат операции учета лайка.
    */
   public async countLike({
     idUserDB,
@@ -482,7 +482,7 @@ export class News {
   }: {
     idUserDB: string;
     idNews: string;
-  }): Promise<ResponseServer<any>> {
+  }): Promise<ServerResponse<any>> {
     try {
       const userDB = await User.findOne({ _id: idUserDB });
       if (!userDB) {

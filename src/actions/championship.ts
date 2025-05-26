@@ -16,7 +16,7 @@ import { ChampionshipService } from '@/services/Championship';
 // types
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
-  ResponseServer,
+  ServerResponse,
   TPutCategoriesParams,
   TPutRacesParams,
 } from '@/types/index.interface';
@@ -31,7 +31,7 @@ export async function getChampionship({
 }: {
   urlSlug: string;
   forModeration?: boolean;
-}): Promise<ResponseServer<TDtoChampionship | null>> {
+}): Promise<ServerResponse<TDtoChampionship | null>> {
   try {
     const session = await getServerSession(authOptions);
 
@@ -69,7 +69,7 @@ export async function getChampionships({
 }: {
   forModeration?: boolean;
   needTypes?: TChampionshipTypes[];
-}): Promise<ResponseServer<TDtoChampionship[] | null>> {
+}): Promise<ServerResponse<TDtoChampionship[] | null>> {
   try {
     const session = await getServerSession(authOptions);
     const userIdDB = session?.user.idDB;
@@ -109,7 +109,7 @@ export async function getChampionships({
  */
 export async function fetchChampionshipCreated(
   formData: FormData
-): Promise<ResponseServer<null>> {
+): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
 
@@ -144,7 +144,7 @@ export async function fetchChampionshipCreated(
 /**
  * Серверный экшен, удаления Чемпионата.
  */
-export async function deleteChampionship(urlSlug: string): Promise<ResponseServer<null>> {
+export async function deleteChampionship(urlSlug: string): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -207,7 +207,7 @@ export async function putChampionship({
 }: {
   dataSerialized: FormData;
   urlSlug: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -253,7 +253,7 @@ export async function getToursAndSeries({
   organizerId,
 }: {
   organizerId: string;
-}): Promise<ResponseServer<TToursAndSeriesDto[] | null>> {
+}): Promise<ServerResponse<TToursAndSeriesDto[] | null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -290,7 +290,7 @@ export async function putCategories({
   dataSerialized,
   urlSlug,
   organizerId,
-}: TPutCategoriesParams): Promise<ResponseServer<null>> {
+}: TPutCategoriesParams): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -345,7 +345,7 @@ export async function putRaces({
   dataSerialized,
   urlSlug,
   organizerId,
-}: TPutRacesParams): Promise<ResponseServer<null>> {
+}: TPutRacesParams): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

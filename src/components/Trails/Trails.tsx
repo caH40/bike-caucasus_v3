@@ -9,7 +9,7 @@ import { useLSTrailsInit } from '@/hooks/local_storage/useLSTrailsInit';
 import BlockFilterTrails from '../BlockFilterTrails/BlockFilterTrails';
 import TrailCard from '../TrailCard/TrailCard';
 import AdContainer from '../AdContainer/AdContainer';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from './Trails.module.css';
 
@@ -30,7 +30,7 @@ type Props = {
     region: string;
     difficultyLevel: string;
     search: string;
-  }) => Promise<ResponseServer<TTrailDto[] | null> | undefined>;
+  }) => Promise<ServerResponse<TTrailDto[] | null> | undefined>;
 };
 
 /**

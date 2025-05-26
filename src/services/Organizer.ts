@@ -1,6 +1,6 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { ResponseServer, TSaveFile } from '@/types/index.interface';
+import { ServerResponse, TSaveFile } from '@/types/index.interface';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { dtoCOrganizer, dtoCOrganizers } from '@/dto/organizer';
 import { userPublicSelect } from '@/constants/populate';
@@ -38,7 +38,7 @@ export class OrganizerService {
   /**
    * Получить всех Организаторов.
    */
-  public async getMany(): Promise<ResponseServer<TDtoOrganizer[] | null>> {
+  public async getMany(): Promise<ServerResponse<TDtoOrganizer[] | null>> {
     try {
       const organizersDB = await OrganizerModel.find()
         .populate({
@@ -63,7 +63,7 @@ export class OrganizerService {
     urlSlug,
   }: {
     urlSlug: string;
-  }): Promise<ResponseServer<TDtoOrganizer | null>> {
+  }): Promise<ServerResponse<TDtoOrganizer | null>> {
     try {
       const organizerDB = await OrganizerModel.findOne({ urlSlug })
         .populate({
@@ -92,7 +92,7 @@ export class OrganizerService {
     userIdDB,
   }: {
     userIdDB: string;
-  }): Promise<ResponseServer<{ urlSlug: string | null } | null>> {
+  }): Promise<ServerResponse<{ urlSlug: string | null } | null>> {
     try {
       const organizerDB = await OrganizerModel.findOne(
         { creator: userIdDB },
@@ -117,7 +117,7 @@ export class OrganizerService {
     userIdDB,
   }: {
     userIdDB: string;
-  }): Promise<ResponseServer<TDtoOrganizer | null>> {
+  }): Promise<ServerResponse<TDtoOrganizer | null>> {
     try {
       const organizerDB = await OrganizerModel.findOne({
         $or: [{ creator: userIdDB }, { moderators: userIdDB }],
@@ -150,7 +150,7 @@ export class OrganizerService {
   }: {
     serializedFormData: FormData;
     creator: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const deserializedFormData = deserializeOrganizer(serializedFormData);
 
@@ -207,7 +207,7 @@ export class OrganizerService {
     serializedFormData,
   }: {
     serializedFormData: FormData;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const deserializedFormData = deserializeOrganizer(serializedFormData);
 

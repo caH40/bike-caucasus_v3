@@ -4,7 +4,7 @@
 import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
-import { ResponseServer, TProtocolRace } from '@/types/index.interface';
+import { ServerResponse, TProtocolRace } from '@/types/index.interface';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
@@ -20,7 +20,7 @@ export async function postRiderRaceResult({
   dataFromFormSerialized,
 }: {
   dataFromFormSerialized: FormData;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
 
@@ -53,7 +53,7 @@ export async function getRaceProtocol({
   raceId,
 }: {
   raceId: string;
-}): Promise<ResponseServer<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
+}): Promise<ServerResponse<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.getRaceProtocol({ raceId });
@@ -72,7 +72,7 @@ export async function getRaceProtocols({
   urlSlug,
 }: {
   urlSlug: string;
-}): Promise<ResponseServer<TProtocolRace[] | null>> {
+}): Promise<ServerResponse<TProtocolRace[] | null>> {
   try {
     const championshipService = new ChampionshipService();
     const { data, message } = await championshipService.getOne({ urlSlug });
@@ -110,7 +110,7 @@ export async function updateProtocolRace({
 }: {
   championshipId: string;
   raceId: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.updateRaceProtocol({
@@ -132,7 +132,7 @@ export async function getResultsRaceForRider({
   riderId,
 }: {
   riderId: string;
-}): Promise<ResponseServer<TRiderRaceResultDto[] | null>> {
+}): Promise<ServerResponse<TRiderRaceResultDto[] | null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.getRiderRaceResults({
@@ -153,7 +153,7 @@ export async function getResultRaceForRider({
   resultId,
 }: {
   resultId: string;
-}): Promise<ResponseServer<TRiderRaceResultDto | null>> {
+}): Promise<ServerResponse<TRiderRaceResultDto | null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.getOne({
@@ -170,7 +170,7 @@ export async function getResultRaceForRider({
 /**
  * Удаление результата Заезда райдера из протокола.
  */
-export async function deleteResult({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+export async function deleteResult({ _id }: { _id: string }): Promise<ServerResponse<null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.delete({
@@ -191,7 +191,7 @@ export async function putResultRaceRider({
   result,
 }: {
   result: FormData;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.update({ result });

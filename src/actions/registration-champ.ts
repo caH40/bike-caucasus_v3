@@ -15,7 +15,7 @@ import type {
   TRegistrationRiderDto,
 } from '@/types/dto.types';
 import type {
-  ResponseServer,
+  ServerResponse,
   TChampionshipForRegisteredClient,
   TRegistrationRaceDataFromForm,
 } from '@/types/index.interface';
@@ -31,7 +31,7 @@ export async function registerForChampionship({
   raceId,
   startNumber,
   teamVariable,
-}: TRegistrationRaceDataFromForm): Promise<ResponseServer<null>> {
+}: TRegistrationRaceDataFromForm): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -64,7 +64,7 @@ export async function registerForChampionship({
  */
 export async function getRegisteredRidersRace(
   raceId: string
-): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
+): Promise<ServerResponse<TRaceRegistrationDto[] | null>> {
   'use server';
   try {
     const response = await regService.getRidersRace(raceId);
@@ -87,7 +87,7 @@ export async function getRegisteredRidersChamp({
   urlSlug: string;
   raceId?: string;
 }): Promise<
-  ResponseServer<{
+  ServerResponse<{
     champRegistrationRiders: TChampRegistrationRiderDto[];
     championship: TChampionshipForRegisteredClient;
   } | null>
@@ -118,7 +118,7 @@ export async function putRegistrationRiderChamp({
   raceId: string;
   riderId: string;
   updates: { status: TRaceRegistrationStatus };
-}): Promise<ResponseServer<TChampRegistrationRiderDto[] | null>> {
+}): Promise<ServerResponse<TChampRegistrationRiderDto[] | null>> {
   'use server';
   try {
     if (!raceId || !championshipId || !riderId) {
@@ -148,7 +148,7 @@ export async function getRegistrationsRider({
   riderId,
 }: {
   riderId: string;
-}): Promise<ResponseServer<TRegistrationRiderDto[] | null>> {
+}): Promise<ServerResponse<TRegistrationRiderDto[] | null>> {
   'use server';
   try {
     const registrationsRider = await regService.getCurrentRider({
@@ -172,7 +172,7 @@ export async function checkRegisteredInChamp({
 }: {
   idRiderDB: string | undefined;
   champId: string;
-}): Promise<ResponseServer<TCheckRegisteredInChampDto | null>> {
+}): Promise<ServerResponse<TCheckRegisteredInChampDto | null>> {
   'use server';
   try {
     if (!idRiderDB) {

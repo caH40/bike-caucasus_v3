@@ -14,12 +14,12 @@ import { optionsRegisterEmail } from '@/libs/utils/validatorService';
 import { useLoadingStore } from '@/store/loading';
 import { serializationOrganizer } from '@/libs/utils/serialization/organizer';
 import { TextValidationService } from '@/libs/utils/text';
-import type { ResponseServer, TFormOrganizerCreate } from '@/types/index.interface';
+import type { ServerResponse, TFormOrganizerCreate } from '@/types/index.interface';
 import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from '../Form.module.css';
 
 type Props = {
-  fetchOrganizerCreated?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  fetchOrganizerCreated?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
   fetchOrganizerEdited?: ({
     // eslint-disable-next-line no-unused-vars
     dataSerialized,
@@ -28,7 +28,7 @@ type Props = {
   }: {
     dataSerialized: FormData;
     organizerId: string;
-  }) => Promise<ResponseServer<any>>;
+  }) => Promise<ServerResponse<any>>;
   organizerForEdit?: TDtoOrganizer;
 };
 

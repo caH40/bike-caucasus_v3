@@ -4,7 +4,7 @@ import { PermissionsService } from '@/services/Permissions';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { parseError } from '@/errors/parse';
 import { TPermissionDto, TRoleDto } from '@/types/dto.types';
-import { ResponseServer, TFormRole } from '@/types/index.interface';
+import { ServerResponse, TFormRole } from '@/types/index.interface';
 import { revalidatePath } from 'next/cache';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { getServerSession } from 'next-auth';
@@ -59,7 +59,7 @@ export async function putPermission({
   _id: string;
   name: string;
   description: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const res = await permissionsService.put({ _id, name, description });
 
@@ -81,7 +81,7 @@ export async function postPermission({
 }: {
   name: string;
   description: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const res = await permissionsService.post({ name, description });
 
@@ -101,7 +101,7 @@ export async function deletePermission({
   _id,
 }: {
   _id: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const res = await permissionsService.delete({ _id });
 
@@ -121,7 +121,7 @@ export async function postRole({
   newRole,
 }: {
   newRole: TFormRole;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const res = await permissionsService.postRole({ newRole });
 
@@ -140,7 +140,7 @@ export async function getRole({
   _id,
 }: {
   _id: string;
-}): Promise<ResponseServer<TRoleDto | null>> {
+}): Promise<ServerResponse<TRoleDto | null>> {
   try {
     const res = await permissionsService.getRole({
       _id,
@@ -160,7 +160,7 @@ export async function getRole({
 /**
  * Серверный экшен получения всех Ролей пользователей на сайте.
  */
-export async function getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
+export async function getRoles(): Promise<ServerResponse<TRoleDto[] | null>> {
   try {
     const res = await permissionsService.getRoles();
 
@@ -178,7 +178,7 @@ export async function getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
 /**
  * Серверный экшен удаления Роли пользователя на сайте.
  */
-export async function deleteRole({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+export async function deleteRole({ _id }: { _id: string }): Promise<ServerResponse<null>> {
   try {
     const res = await permissionsService.deleteRole({ _id });
 
@@ -198,7 +198,7 @@ export async function putRole({
   roleEdited,
 }: {
   roleEdited: TFormRole;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const res = await permissionsService.putRole({ roleEdited });
 
@@ -220,7 +220,7 @@ export async function checkPermissionOrganizer({
 }: {
   organizerId: string;
   championshipId: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
     const userIdDB = session?.user.idDB;

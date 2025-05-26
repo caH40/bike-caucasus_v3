@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { errorHandlerClient } from '@/actions/error-handler';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { parseError } from '@/errors/parse';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import FormCalendar from '@/components/UI/Forms/FormCalendar/FormCalendar';
 import { getNews } from '@/actions/news';
@@ -12,7 +12,7 @@ import { CalendarService } from '@/services/Calendar';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconCalendar from '@/components/Icons/IconCalendar';
 
-async function fetchCalendarCreated(formData: FormData): Promise<ResponseServer<null>> {
+async function fetchCalendarCreated(formData: FormData): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

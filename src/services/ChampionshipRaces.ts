@@ -13,7 +13,7 @@ import { deserializeRaces } from '@/libs/utils/deserialization/championshipRaces
 import { RaceModel } from '@/database/mongodb/Models/Race';
 
 // types
-import type { ResponseServer, TSaveFile } from '@/types/index.interface';
+import type { ServerResponse, TSaveFile } from '@/types/index.interface';
 import type { TTrackGPXObj } from '@/types/models.interface';
 
 /**
@@ -43,7 +43,7 @@ export class ChampionshipRaces {
   }: {
     dataSerialized: FormData;
     championshipId: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const { races } = deserializeRaces(dataSerialized);
 

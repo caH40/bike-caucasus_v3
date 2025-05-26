@@ -5,7 +5,7 @@ import { errorHandlerClient } from './error-handler';
 import { UserService } from '@/services/user';
 import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
 import {
-  ResponseServer,
+  ServerResponse,
   TProfileForRegistration,
   TUserModeratedData,
 } from '@/types/index.interface';
@@ -24,7 +24,7 @@ export async function getProfile({
 }: {
   userId: number;
   isPrivate?: boolean;
-}): Promise<ResponseServer<TUserDto | TUserDtoPublic | null>> {
+}): Promise<ServerResponse<TUserDto | TUserDtoPublic | null>> {
   try {
     const { data: profile } = await userService.getProfile({ id: userId, isPrivate });
 
@@ -50,7 +50,7 @@ export async function putUserModeratedData({
   user,
 }: {
   user: TUserModeratedData;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
     const role = session?.user.role.name;
@@ -86,7 +86,7 @@ export async function getProfileForReg({
     const userService = new UserService();
     const res = (await userService.getProfile({
       idDB,
-    })) as ResponseServer<TUserDtoPublic | null>;
+    })) as ServerResponse<TUserDtoPublic | null>;
 
     if (!res.data) {
       throw new Error(res.message);
@@ -116,7 +116,7 @@ export async function findUsers({
   lastNameSearch,
 }: {
   lastNameSearch: string;
-}): Promise<ResponseServer<TProfileSimpleDto[] | null>> {
+}): Promise<ServerResponse<TProfileSimpleDto[] | null>> {
   try {
     // Минимальное количество символов для поиска.
     const minLength = 3;

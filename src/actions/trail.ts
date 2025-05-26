@@ -6,7 +6,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Trail } from '@/services/Trail';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import { errorLogger } from '@/errors/error';
 import { revalidatePath } from 'next/cache';
 import { TWeatherForecast } from '@/types/weather.types';
@@ -63,7 +63,7 @@ export async function getTrail(urlSlug: string): Promise<TTrailDto | null | unde
 /**
  * Получение данных маршрута с БД.
  */
-export async function deleteTrail(urlSlug: string): Promise<ResponseServer<null>> {
+export async function deleteTrail(urlSlug: string): Promise<ServerResponse<null>> {
   try {
     // Получаем текущую сессию пользователя с использованием next-auth.
     const session = await getServerSession(authOptions);
@@ -108,7 +108,7 @@ export async function deleteTrail(urlSlug: string): Promise<ResponseServer<null>
 /**
  * Установка/снятие лайка для маршрута.
  */
-export async function setLike(idDocument: string): Promise<ResponseServer<null>> {
+export async function setLike(idDocument: string): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
     const idUserDB = session?.user.idDB;
@@ -137,7 +137,7 @@ export async function setLike(idDocument: string): Promise<ResponseServer<null>>
  */
 export async function getInteractive(
   idDocument: string
-): Promise<ResponseServer<null> | ResponseServer<TNewsInteractiveDto>> {
+): Promise<ServerResponse<null> | ServerResponse<TNewsInteractiveDto>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -175,7 +175,7 @@ export async function getForecastWeather({
     const { lat, lon } = positionsParsed();
 
     const weatherService = new WeatherService();
-    const res: ResponseServer<TWeatherForecast | null> = await weatherService.getRaw({
+    const res: ServerResponse<TWeatherForecast | null> = await weatherService.getRaw({
       lat,
       lon,
       type: 'forecast',
@@ -194,7 +194,7 @@ export async function getForecastWeather({
 /**
  * Создание маршрута.
  */
-export async function postTrail(formData: FormData): Promise<ResponseServer<null>> {
+export async function postTrail(formData: FormData): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

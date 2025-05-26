@@ -10,7 +10,7 @@ import { errorLogger } from '@/errors/error';
 import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
 import { dtoGetUser, dtoGetUserPublic, dtoGetUsersSimplePublic } from '@/dto/user';
 import type {
-  ResponseServer,
+  ServerResponse,
   TFormAccount,
   TFormProfile,
   TProfileSimpleFromDB,
@@ -42,7 +42,7 @@ export class UserService {
     id,
     isPrivate = false,
     ageCategoryVersion = 'simple',
-  }: ParamsGetProfile): Promise<ResponseServer<TUserDto | TUserDtoPublic | null>> {
+  }: ParamsGetProfile): Promise<ServerResponse<TUserDto | TUserDtoPublic | null>> {
     try {
       // подключение к БД
 
@@ -101,7 +101,7 @@ export class UserService {
   /**
    * Получает все профили зарегистрированных пользователей.
    */
-  async getProfiles(): Promise<ResponseServer<TUserDto[] | null>> {
+  async getProfiles(): Promise<ServerResponse<TUserDto[] | null>> {
     try {
       // Подключение к базе данных
 
@@ -146,7 +146,7 @@ export class UserService {
     user,
   }: {
     user: TUserModeratedData;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       // Подключение к базе данных
 
@@ -182,7 +182,7 @@ export class UserService {
    * @param options.domainCloudName - Доменное имя облачного сервиса для формирования URL изображения.
    * @returns Объект с результатом операции или ошибкой.
    */
-  async putProfile(profileEdited: FormData): Promise<ResponseServer<null>> {
+  async putProfile(profileEdited: FormData): Promise<ServerResponse<null>> {
     try {
       const profile = {} as TFormProfile;
 
@@ -274,7 +274,7 @@ export class UserService {
    * @param accountEdited - Отредактированные данные аккаунта пользователя.
    * @returns Промис, содержащий информацию об успешном выполнении операции или об ошибке.
    */
-  public async putAccount(accountEdited: TFormAccount): Promise<ResponseServer<null>> {
+  public async putAccount(accountEdited: TFormAccount): Promise<ServerResponse<null>> {
     try {
       // Выбрасывается ошибка, если отсутствует идентификатор пользователя в профиле.
       if (!accountEdited.id) {
@@ -318,7 +318,7 @@ export class UserService {
    */
   public async findUsers(
     lastNameSearch: string
-  ): Promise<ResponseServer<TProfileSimpleDto[] | null>> {
+  ): Promise<ServerResponse<TProfileSimpleDto[] | null>> {
     try {
       // Выбрасывается ошибка, если отсутствует идентификатор пользователя в профиле.
       if (lastNameSearch?.length < 3) {

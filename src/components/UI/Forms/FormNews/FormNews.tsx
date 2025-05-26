@@ -16,14 +16,14 @@ import BoxInputSimple from '../../BoxInput/BoxInputSimple';
 import BoxTextareaSimple from '../../BoxTextarea/BoxTextareaSimple';
 import { formateAndStripContent } from './utils';
 import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
-import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
+import type { ServerResponse, TBlockInputInfo } from '@/types/index.interface';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import BlockUploadFile from '../../BlockUploadFile/BlockUploadFile';
 
 type Props = {
-  postNews?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  putNewsOne?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  postNews?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
+  putNewsOne?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
   newsForEdit?: TNewsGetOneDto & { posterOldUrl?: string | null };
 };
 

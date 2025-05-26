@@ -6,7 +6,7 @@ import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { CommentService } from '@/services/Comment';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import type { TCommentDto } from '@/types/dto.types';
 
@@ -73,7 +73,7 @@ export async function getComments({
   }
 }
 
-export async function setLike(idDocument: string): Promise<ResponseServer<null>> {
+export async function setLike(idDocument: string): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
     const idUserDB = session?.user.idDB;
@@ -102,7 +102,7 @@ export async function setLike(idDocument: string): Promise<ResponseServer<null>>
  * @param idDocument
  * @returns
  */
-export async function deleteComment(idComment: string): Promise<ResponseServer<null>> {
+export async function deleteComment(idComment: string): Promise<ServerResponse<null>> {
   try {
     const session = await getServerSession(authOptions);
     const idUserDB = session?.user.idDB;

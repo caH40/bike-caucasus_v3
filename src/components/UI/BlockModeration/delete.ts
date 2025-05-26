@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { deleteNews } from '@/actions/news';
 import { deleteTrail } from '@/actions/trail';
 import { translationForModeration } from '@/constants/texts';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { deleteChampionship } from '@/actions/championship';
 
 type Params = {
@@ -23,7 +23,7 @@ export const deleteItem = async ({ type, urlSlug }: Params) => {
   }
 
   try {
-    let res = {} as ResponseServer<null>;
+    let res = {} as ServerResponse<null>;
     switch (type) {
       case 'trails':
         res = await deleteTrail(urlSlug);

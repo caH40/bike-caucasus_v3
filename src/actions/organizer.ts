@@ -10,7 +10,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import type { TDtoOrganizer } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 
 /**
  * Получение данных организатора для публичного отображения.
@@ -19,7 +19,7 @@ export async function getOrganizer({
   urlSlug,
 }: {
   urlSlug: string;
-}): Promise<ResponseServer<TDtoOrganizer | null>> {
+}): Promise<ServerResponse<TDtoOrganizer | null>> {
   try {
     const organizerService = new OrganizerService();
     const res = await organizerService.getOne({ urlSlug });
@@ -34,7 +34,7 @@ export async function getOrganizer({
  * Проверка наличия Организатора у Пользователя.
  */
 export async function checkHasOrganizer(): Promise<
-  ResponseServer<{ urlSlug: string | null } | null>
+  ServerResponse<{ urlSlug: string | null } | null>
 > {
   try {
     const session = await getServerSession(authOptions);
@@ -69,7 +69,7 @@ export async function checkHasOrganizer(): Promise<
 /**
  * Получить Организатора по creatorId или id модератора для последующей модерации.
  */
-export async function getOrganizerForModerate(): Promise<ResponseServer<TDtoOrganizer | null>> {
+export async function getOrganizerForModerate(): Promise<ServerResponse<TDtoOrganizer | null>> {
   try {
     const session = await getServerSession(authOptions);
     const userIdDB = session?.user.idDB;
@@ -92,7 +92,7 @@ export async function getOrganizerForModerate(): Promise<ResponseServer<TDtoOrga
 /**
  * Получение Организаторов Чемпионатов.
  */
-export async function getOrganizers(): Promise<ResponseServer<TDtoOrganizer[] | null>> {
+export async function getOrganizers(): Promise<ServerResponse<TDtoOrganizer[] | null>> {
   try {
     const organizerService = new OrganizerService();
     const res = await organizerService.getMany();
@@ -113,7 +113,7 @@ export async function fetchOrganizerEdited({
 }: {
   dataSerialized: FormData;
   organizerId: string;
-}): Promise<ResponseServer<null>> {
+}): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -161,7 +161,7 @@ export async function fetchOrganizerEdited({
 /**
  * Экшен отправки созданной формы Организатора
  */
-export async function fetchOrganizerCreated(formData: FormData): Promise<ResponseServer<null>> {
+export async function fetchOrganizerCreated(formData: FormData): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import FormProfile from '@/components/UI/Forms/FormProfile/FormProfile';
 import { UserService } from '@/services/user';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import type { TUserDto } from '@/types/dto.types';
 import styles from './AccountProfilePage.module.css';
 
@@ -20,14 +20,14 @@ export default async function AccountProfilePage() {
   const profile = (await userService.getProfile({
     idDB: session.user.idDB,
     isPrivate: true,
-  })) as ResponseServer<TUserDto | null>;
+  })) as ServerResponse<TUserDto | null>;
 
   /**
    * Функция для обновления профиля пользователя.
    * @param dataFromClient Данные профиля пользователя.
    * @returns Результат операции обновления профиля.
    */
-  const putProfile = async (dataFromClient: FormData): Promise<ResponseServer<any>> => {
+  const putProfile = async (dataFromClient: FormData): Promise<ServerResponse<any>> => {
     'use server';
     const userService = new UserService();
     const response = await userService.putProfile(dataFromClient);

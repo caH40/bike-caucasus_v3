@@ -3,12 +3,12 @@ import ContainerTableUsers from '@/components/Table/Containers/Users/ContainerTa
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconUsers from '@/components/Icons/IconUsers';
 import type { TUserDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import styles from './UsersAdminPage.module.css';
 
 export const dynamic = 'force-dynamic';
 
-async function getUsers(): Promise<ResponseServer<TUserDto[] | null>> {
+async function getUsers(): Promise<ServerResponse<TUserDto[] | null>> {
   const userService = new UserService();
 
   const response = await userService.getProfiles();

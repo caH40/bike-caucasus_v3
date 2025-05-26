@@ -1,6 +1,6 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { TCommentDto } from '@/types/dto.types';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 import { TAuthorFromUser, TCommentDocument, TRoleModel } from '@/types/models.interface';
@@ -11,7 +11,7 @@ import mongoose, { ObjectId } from 'mongoose';
 
 export class CommentService {
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
-  private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
+  private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
@@ -25,7 +25,7 @@ export class CommentService {
   }: {
     document: { _id: string; type: 'news' | 'trail' };
     idUserDB?: string;
-  }): Promise<ResponseServer<TCommentDto[] | null>> {
+  }): Promise<ServerResponse<TCommentDto[] | null>> {
     try {
       // Получение комментариев для поста.
       const commentsDB = await CommentModel.find({ document })
@@ -83,7 +83,7 @@ export class CommentService {
       _id: string;
       type: 'news' | 'trail';
     };
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const userDb = await User.findOne({ _id: authorIdDB });
 
@@ -118,7 +118,7 @@ export class CommentService {
     authorIdDB: string;
     text: string;
     idCommentForEdit: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const userDb = await User.findOne({ _id: authorIdDB }, { _id: true }).lean<{
         _id: ObjectId;
@@ -161,7 +161,7 @@ export class CommentService {
   }: {
     idUserDB: string;
     idComment: string;
-  }): Promise<ResponseServer<any>> {
+  }): Promise<ServerResponse<any>> {
     try {
       const userDB = await User.findOne({ _id: idUserDB });
       if (!userDB) {
@@ -208,7 +208,7 @@ export class CommentService {
   }: {
     idUserDB: string | undefined;
     idComment: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
         .populate('role')

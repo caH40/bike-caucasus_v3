@@ -12,7 +12,7 @@ import {
 import { CloudConfig } from '@/configs/clouds';
 import { convertBytesTo } from '@/libs/utils/handler-data';
 import { errorLogger } from '@/errors/error';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 
 // название сконфигурированных облаков
 type Clouds = 'vk';
@@ -53,7 +53,7 @@ export class Cloud {
    * @param fileName название файла с расширением, по умолчанию берется из входного параметра file
    */
   public async postFile({ file, fileName }: { file: File; fileName?: string }): Promise<
-    ResponseServer<{
+    ServerResponse<{
       responseCloud: ResponseMetadata;
       file: { bucketName: string; endpointDomain: string };
     }>
@@ -106,7 +106,7 @@ export class Cloud {
     prefix,
   }: {
     prefix: string | undefined;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       // В большинстве случаях prefix:undefined нормальное поведение.
       // Для исключения большего количества if проверок в родительском коде.
@@ -146,7 +146,7 @@ export class Cloud {
    * @param prefix - Префикс (путь) к объектам, которые нужно удалить.
    * @returns Объект с информацией об успешном выполнении или ошибке удаления файлов.
    */
-  public async deleteFiles({ prefix }: { prefix: string }): Promise<ResponseServer<null>> {
+  public async deleteFiles({ prefix }: { prefix: string }): Promise<ServerResponse<null>> {
     try {
       // Создаем параметры запроса для получения списка объектов с заданным префиксом
       const params = {

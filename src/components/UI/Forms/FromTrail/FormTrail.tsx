@@ -22,13 +22,13 @@ import BoxSelectSimple from '../../BoxSelect/BoxSelectSimple';
 import { formateAndStripContent } from './utils';
 import { serializationTrailCreate } from '@/libs/utils/serialization/trail';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
-import type { ResponseServer, TBlockInputInfo } from '@/types/index.interface';
+import type { ServerResponse, TBlockInputInfo } from '@/types/index.interface';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 
 type Props = {
-  postTrail?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
-  putTrail?: (formData: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line no-unused-vars
+  postTrail?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
+  putTrail?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
   trailForEdit?: TTrailDto & { posterOldUrl?: string | null };
 };
 

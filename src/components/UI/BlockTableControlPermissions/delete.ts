@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 
 import { translationForModeration } from '@/constants/texts';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { deletePermission, deleteRole } from '@/actions/permissions';
 
 type Params = {
@@ -21,7 +21,7 @@ export const deleteItem = async ({ type, _id }: Params) => {
   }
 
   try {
-    let res = {} as ResponseServer<null>;
+    let res = {} as ServerResponse<null>;
     switch (type) {
       case 'permissions':
         res = await deletePermission({ _id });

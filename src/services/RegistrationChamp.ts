@@ -15,7 +15,7 @@ import { User } from '@/database/mongodb/Models/User';
 import type {
   ProcessRegParams,
   RegChampPostParams,
-  ResponseServer,
+  ServerResponse,
   TChampionshipForRegistered,
   TChampionshipForRegisteredClient,
   TRegisteredRiderFromDB,
@@ -51,7 +51,7 @@ export class RegistrationChampService {
     riderId,
     startNumber,
     teamVariable,
-  }: RegChampPostParams): Promise<ResponseServer<null>> {
+  }: RegChampPostParams): Promise<ServerResponse<null>> {
     try {
       // Проверка существования Чемпионата и запрашиваемого заезда для регистрации.
       const champ = await this.getChamp(championshipId);
@@ -100,7 +100,7 @@ export class RegistrationChampService {
    */
   public async getRidersRace(
     raceId: string
-  ): Promise<ResponseServer<TRaceRegistrationDto[] | null>> {
+  ): Promise<ServerResponse<TRaceRegistrationDto[] | null>> {
     try {
       const registeredRidersDb = await RaceRegistrationModel.find(
         { race: raceId },
@@ -148,7 +148,7 @@ export class RegistrationChampService {
     urlSlug: string;
     raceId?: string;
   }): Promise<
-    ResponseServer<{
+    ServerResponse<{
       champRegistrationRiders: TChampRegistrationRiderDto[];
       championship: TChampionshipForRegisteredClient;
     } | null>
@@ -197,7 +197,7 @@ export class RegistrationChampService {
    * @param {Object} params.updates - Объект с обновляемыми данными регистрации.
    * @param {TRaceRegistrationStatus} params.updates.status - Новый статус регистрации Райдера.
    *
-   * @returns {Promise<ResponseServer<null>>} Промис с результатом операции обновления.
+   * @returns {Promise<ServerResponse<null>>} Промис с результатом операции обновления.
    * @throws {Error} Если не удаётся найти чемпионат с заданным URL и номером заезда.
    */
   public async put({
@@ -210,7 +210,7 @@ export class RegistrationChampService {
     raceId: string;
     riderId: string;
     updates: { status: TRaceRegistrationStatus; startNumber?: number | null };
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const champ = await this.getChamp(championshipId);
 
@@ -250,7 +250,7 @@ export class RegistrationChampService {
     riderId,
   }: {
     riderId: string;
-  }): Promise<ResponseServer<TRegistrationRiderDto[] | null>> {
+  }): Promise<ServerResponse<TRegistrationRiderDto[] | null>> {
     try {
       // Проверка существования райдера в БД.
       const riderDB = await User.findOne({ id: riderId }, { _id: true }).lean<{
@@ -319,7 +319,7 @@ export class RegistrationChampService {
   }: {
     idRiderDB: string;
     champId: string;
-  }): Promise<ResponseServer<any | null>> {
+  }): Promise<ServerResponse<any | null>> {
     try {
       const registeredInChamp = await RaceRegistrationModel.findOne(
         {
@@ -371,7 +371,7 @@ export class RegistrationChampService {
     champId,
   }: {
     champId: string;
-  }): Promise<ResponseServer<any | null>> {
+  }): Promise<ServerResponse<any | null>> {
     try {
       await RaceRegistrationModel.findOneAndDelete({
         championship: champId,

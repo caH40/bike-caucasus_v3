@@ -11,7 +11,7 @@ import { saveFile } from './save-file';
 import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
 import type {
-  ResponseServer,
+  ServerResponse,
   TSaveFile,
   TTrailCreateFromClient,
 } from '@/types/index.interface';
@@ -30,7 +30,7 @@ import { fileNameFormUrl } from '@/constants/regex';
  */
 export class Trail {
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
-  private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
+  private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   constructor() {
     this.errorLogger = errorLogger;
@@ -47,7 +47,7 @@ export class Trail {
   public async getOne(
     urlSlug: string,
     idUserDB: string | undefined
-  ): Promise<ResponseServer<TTrailDto | null>> {
+  ): Promise<ServerResponse<TTrailDto | null>> {
     try {
       // Получаем информацию о маршруте из БД.
       const trailDB = await TrailModel.findOne({
@@ -112,7 +112,7 @@ export class Trail {
   }: {
     urlSlug: string;
     idUserDB: string | undefined;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
         .populate('role')
@@ -188,7 +188,7 @@ export class Trail {
     difficultyLevel?: string | null;
     idUserDB?: string;
     search?: string; // Ключевое слово по которому происходит поиск маршрутов.
-  }): Promise<ResponseServer<TTrailDto[] | null>> {
+  }): Promise<ServerResponse<TTrailDto[] | null>> {
     try {
       // Формирование строки для запроса маршрутов из БД.
       const query = {} as { bikeType?: string; region?: string; difficultyLevel?: string };
@@ -283,7 +283,7 @@ export class Trail {
   }: {
     formData: FormData;
     author: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     // Десериализация данных, полученных с клиента.
     const trail = deserializeTrailCreate(formData);
 
@@ -352,7 +352,7 @@ export class Trail {
    * @param {Object} params - Объект с параметрами.
    * @param {string} params.idUserDB - Идентификатор пользователя в базе данных.
    * @param {string} params.idNews - Идентификатор новости в базе данных.
-   * @returns {Promise<ResponseServer<any>>} - Результат операции учета лайка.
+   * @returns {Promise<ServerResponse<any>>} - Результат операции учета лайка.
    */
   public async countLike({
     idUserDB,
@@ -360,7 +360,7 @@ export class Trail {
   }: {
     idUserDB: string;
     idTrail: string;
-  }): Promise<ResponseServer<any>> {
+  }): Promise<ServerResponse<any>> {
     try {
       // Проверка существует ли пользователь в БД с таким ID (может лишняя проверка)?
       const userDB = await User.findOne({ _id: idUserDB });
@@ -406,7 +406,7 @@ export class Trail {
   }: {
     idTrail: string;
     idUserDB: string | undefined;
-  }): Promise<ResponseServer<null | TNewsInteractiveDto>> {
+  }): Promise<ServerResponse<null | TNewsInteractiveDto>> {
     try {
       const trailDB = await TrailModel.findOne(
         { _id: idTrail },
@@ -448,7 +448,7 @@ export class Trail {
   /**
    * Сервис получения данных для интерактивного блока маршрута idTrail.
    */
-  public async put({ formData }: { formData: FormData }): Promise<ResponseServer<null>> {
+  public async put({ formData }: { formData: FormData }): Promise<ServerResponse<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const trail = deserializeTrailCreate(formData);

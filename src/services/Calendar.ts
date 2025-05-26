@@ -3,7 +3,7 @@ import { dtoCalendarEvents } from '@/dto/calendar';
 import { errorLogger } from '@/errors/error';
 import { deserializeCalendarCreate } from '@/libs/utils/deserialization/calendar';
 import { TDtoCalendarEvents } from '@/types/dto.types';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { TCalendarEventDocument } from '@/types/models.interface';
 import { handlerErrorDB } from './mongodb/error';
 
@@ -36,7 +36,7 @@ export class CalendarService {
   /**
    * Получить все События из календаря.
    */
-  public async getMany(): Promise<ResponseServer<TDtoCalendarEvents[] | null>> {
+  public async getMany(): Promise<ServerResponse<TDtoCalendarEvents[] | null>> {
     try {
       const eventsDB = await CalendarEvent.find().lean<TCalendarEventDocument[]>();
 

@@ -8,7 +8,7 @@ import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { User as UserModel } from '@/database/mongodb/Models/User';
 import { dtoResultsRace, dtoResultsRaceRider, dtoResultRaceRider } from '@/dto/results-race';
 import {
-  ResponseServer,
+  ServerResponse,
   TGetRaceCategoriesParams,
   TProtocolRace,
   TResultRaceFromDB,
@@ -40,7 +40,7 @@ export class ResultRaceService {
     resultId,
   }: {
     resultId: string;
-  }): Promise<ResponseServer<TRiderRaceResultDto | null>> {
+  }): Promise<ServerResponse<TRiderRaceResultDto | null>> {
     try {
       const resultDB = await ResultRaceModel.findOne(
         { _id: resultId },
@@ -69,7 +69,7 @@ export class ResultRaceService {
     riderId,
   }: {
     riderId: string;
-  }): Promise<ResponseServer<TRiderRaceResultDto[] | null>> {
+  }): Promise<ServerResponse<TRiderRaceResultDto[] | null>> {
     try {
       const userDB = await UserModel.findOne({ id: riderId }, { _id: true });
 
@@ -106,7 +106,7 @@ export class ResultRaceService {
   }: {
     dataFromFormSerialized: FormData;
     creatorId: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const dataDeserialized = deserializationResultRaceRider(dataFromFormSerialized);
 
@@ -171,7 +171,7 @@ export class ResultRaceService {
   /**
    * Обновление данных результата.
    */
-  public async update({ result }: { result: FormData }): Promise<ResponseServer<null>> {
+  public async update({ result }: { result: FormData }): Promise<ServerResponse<null>> {
     try {
       // Данные после десериализации.
       const dataDeserialized = deserializationResultRaceRider(result);
@@ -229,7 +229,7 @@ export class ResultRaceService {
     raceId,
   }: {
     raceId: string;
-  }): Promise<ResponseServer<TProtocolRace | null>> {
+  }): Promise<ServerResponse<TProtocolRace | null>> {
     try {
       // Проверка наличия Заезда Чемпионата в БД.
       const race = await this.getRace(raceId);
@@ -283,7 +283,7 @@ export class ResultRaceService {
    * @param {Object} params - Параметры для обновления протокола заезда.
    * @param {string} params.championshipId - Идентификатор чемпионата.
    * @param {number} params.raceNumber - Номер заезда.
-   * @returns {Promise<ResponseServer<null>>} Результат выполнения операции.
+   * @returns {Promise<ServerResponse<null>>} Результат выполнения операции.
    */
   public async updateRaceProtocol({
     championshipId,
@@ -291,7 +291,7 @@ export class ResultRaceService {
   }: {
     championshipId: string;
     raceId: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       // Получение данных заезда.
       const race = await this.getRace(raceId);
@@ -340,7 +340,7 @@ export class ResultRaceService {
   }: {
     raceId: string;
     quantityRidersFinished: number;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       await RaceModel.findOneAndUpdate({ _id: raceId }, { $set: { quantityRidersFinished } });
 
@@ -412,7 +412,7 @@ export class ResultRaceService {
   /**
    * Удаление результата.
    */
-  public async delete({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+  public async delete({ _id }: { _id: string }): Promise<ServerResponse<null>> {
     try {
       // Получение данных заезда.
       const resultDB = await ResultRaceModel.findOneAndDelete({ _id }, { profile: true });

@@ -1,6 +1,6 @@
 'use client';
 
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import FormResultEdit from '../UI/Forms/FormResultAdd/FormResultEdit';
 import { TRiderRaceResultDto } from '@/types/dto.types';
 import styles from './WrapperResultRaceEdit.module.css';
@@ -12,7 +12,7 @@ type Props = {
     result,
   }: {
     result: FormData;
-  }) => Promise<ResponseServer<void>>;
+  }) => Promise<ServerResponse<void>>;
 };
 
 /**

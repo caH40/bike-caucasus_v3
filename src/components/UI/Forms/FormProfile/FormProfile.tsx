@@ -19,14 +19,14 @@ import Button from '../../Button/Button';
 import { handlerDateForm } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import type { TUserDto } from '@/types/dto.types';
-import type { ResponseServer, TFormProfile } from '@/types/index.interface';
+import type { ServerResponse, TFormProfile } from '@/types/index.interface';
 import { useLoadingStore } from '@/store/loading';
 import { handlerResponse } from '@/libs/utils/response';
 import styles from '../Form.module.css';
 
 type Props = {
   formData: TUserDto;
-  putProfile: (params: FormData) => Promise<ResponseServer<any>>; // eslint-disable-line
+  putProfile: (params: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line
   idUser: string;
 };
 

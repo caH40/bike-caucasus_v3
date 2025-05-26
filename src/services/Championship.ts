@@ -22,7 +22,7 @@ import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
 // types
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
-  ResponseServer,
+  ServerResponse,
   TChampionshipWithOrganizer,
   TSaveFile,
   TStageDateDescription,
@@ -64,7 +64,7 @@ export class ChampionshipService {
     urlSlug,
   }: {
     urlSlug: string;
-  }): Promise<ResponseServer<TDtoChampionship | null>> {
+  }): Promise<ServerResponse<TDtoChampionship | null>> {
     try {
       const championshipDB = await ChampionshipModel.findOne({ urlSlug })
         .populate({
@@ -102,7 +102,7 @@ export class ChampionshipService {
     userIdDB?: string;
     forModeration?: boolean;
     needTypes?: TChampionshipTypes[];
-  }): Promise<ResponseServer<TDtoChampionship[] | null>> {
+  }): Promise<ServerResponse<TDtoChampionship[] | null>> {
     try {
       let query: any = { ...(needTypes && { type: needTypes }) };
 
@@ -208,7 +208,7 @@ export class ChampionshipService {
   }: {
     serializedFormData: FormData;
     creator: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const {
         posterFile,
@@ -295,7 +295,7 @@ export class ChampionshipService {
     serializedFormData,
   }: {
     serializedFormData: FormData;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const {
         championshipId,
@@ -364,7 +364,7 @@ export class ChampionshipService {
   /**
    * Удаление Чемпионата.
    */
-  public async delete({ urlSlug }: { urlSlug: string }): Promise<ResponseServer<null>> {
+  public async delete({ urlSlug }: { urlSlug: string }): Promise<ServerResponse<null>> {
     try {
       const championshipDB: TDeleteChampionshipFromMongo | null =
         await ChampionshipModel.findOne(
@@ -439,7 +439,7 @@ export class ChampionshipService {
    * Скрипт запускает с периодичностью раз в сутки в 01:00.
    * И при создании или обновлении данных Чемпионата.
    */
-  public async updateStatusChampionship(): Promise<ResponseServer<null>> {
+  public async updateStatusChampionship(): Promise<ServerResponse<null>> {
     try {
       const championshipsDB = await ChampionshipModel.find(
         {
@@ -492,7 +492,7 @@ export class ChampionshipService {
     organizerId,
   }: {
     organizerId: string;
-  }): Promise<ResponseServer<TToursAndSeriesDto[] | null>> {
+  }): Promise<ServerResponse<TToursAndSeriesDto[] | null>> {
     try {
       const championshipsDB = await ChampionshipModel.find(
         {

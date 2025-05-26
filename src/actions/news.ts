@@ -7,7 +7,7 @@ import { News } from '@/services/news';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { PermissionsService } from '@/services/Permissions';
 
@@ -136,7 +136,7 @@ export const putNewsOne = async (formData: FormData) => {
 export async function getNews({ idUserDB, page, docsOnPage, query }: ParamsNews = {}) {
   try {
     const news = new News();
-    const response: ResponseServer<null | {
+    const response: ServerResponse<null | {
       news: TNewsGetOneDto[];
       currentPage: number;
       quantityPages: number;
@@ -157,7 +157,7 @@ export async function getNews({ idUserDB, page, docsOnPage, query }: ParamsNews 
   }
 }
 
-export async function setLike(idNews: string): Promise<ResponseServer<null>> {
+export async function setLike(idNews: string): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -187,7 +187,7 @@ export async function setLike(idNews: string): Promise<ResponseServer<null>> {
  */
 export async function getInteractive(
   idNews: string
-): Promise<ResponseServer<null> | ResponseServer<TNewsInteractiveDto>> {
+): Promise<ServerResponse<null> | ServerResponse<TNewsInteractiveDto>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -210,7 +210,7 @@ export async function getInteractive(
 /**
  * Серверный экшен, удаления новости.
  */
-export async function deleteNews(urlSlug: string): Promise<ResponseServer<null>> {
+export async function deleteNews(urlSlug: string): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);

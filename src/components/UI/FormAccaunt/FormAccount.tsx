@@ -7,7 +7,7 @@ import BoxInput from '../BoxInput/BoxInput';
 import Button from '../Button/Button';
 import { useLoadingStore } from '@/store/loading';
 import { handlerResponse } from '@/libs/utils/response';
-import type { ResponseServer, TFormAccount } from '@/types/index.interface';
+import type { ServerResponse, TFormAccount } from '@/types/index.interface';
 import type { TUserDto } from '@/types/dto.types';
 import styles from './FormAccount.module.css';
 import CheckboxRounded from '../CheckboxRounded/CheckboxRounded';
@@ -15,7 +15,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   profile: TUserDto; // данные профиля из БД
-  putAccount: (dataForm: TFormAccount) => Promise<ResponseServer<any>>; // eslint-disable-line
+  putAccount: (dataForm: TFormAccount) => Promise<ServerResponse<any>>; // eslint-disable-line
 };
 
 /**

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { ResponseServer, TOptions } from '@/types/index.interface';
+import { ServerResponse, TOptions } from '@/types/index.interface';
 import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
 import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
@@ -23,7 +23,7 @@ type Props = {
     dataFromFormSerialized,
   }: {
     dataFromFormSerialized: FormData;
-  }) => Promise<ResponseServer<void>>;
+  }) => Promise<ServerResponse<void>>;
   initialRaceId: string;
 };
 

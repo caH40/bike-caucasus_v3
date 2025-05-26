@@ -4,7 +4,7 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { dtoWeatherForecast } from '@/dto/weather';
-import { ResponseServer } from '@/types/index.interface';
+import { ServerResponse } from '@/types/index.interface';
 import { TWeatherForecast } from '@/types/weather.types';
 
 type PropsWeatherFromApi = {
@@ -29,7 +29,7 @@ export class WeatherService {
     lat,
     lon,
     type,
-  }: PropsWeatherFromApi): Promise<ResponseServer<TWeatherForecast | null>> {
+  }: PropsWeatherFromApi): Promise<ServerResponse<TWeatherForecast | null>> {
     const controller = new AbortController();
     const signal = controller.signal;
 

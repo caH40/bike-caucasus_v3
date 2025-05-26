@@ -13,7 +13,7 @@ import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import ContainerTablePermissionsForForm from '@/components/Table/Containers/Permissions/ContainerTablePermissionsForForm';
 import { usePermissionTable } from '@/store/permission-table';
 import { toast } from 'sonner';
-import { ResponseServer, TFormRole } from '@/types/index.interface';
+import { ServerResponse, TFormRole } from '@/types/index.interface';
 import { postRole } from '@/actions/permissions';
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +21,7 @@ type Params = {
   role?: TRoleDto;
   permissions: TPermissionDto[];
   // eslint-disable-next-line no-unused-vars
-  putRole?: ({ roleEdited }: { roleEdited: TFormRole }) => Promise<ResponseServer<null>>;
+  putRole?: ({ roleEdited }: { roleEdited: TFormRole }) => Promise<ServerResponse<null>>;
 };
 
 /**
@@ -70,7 +70,7 @@ export function FormRole({ role, permissions, putRole }: Params) {
       // Старт отображения спинера загрузки.
       setLoading(true);
 
-      let response = {} as ResponseServer<null>;
+      let response = {} as ServerResponse<null>;
 
       if (putRole && role) {
         response = await putRole({ roleEdited: { ...roleFromForm, _id: role._id } });

@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { useAddResultRace } from '@/hooks/useAddResultRace';
 import { TRaceRegistrationDto } from '@/types/dto.types';
-import { ResponseServer, TFormResultRace } from '@/types/index.interface';
+import { ServerResponse, TFormResultRace } from '@/types/index.interface';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 import BlockInputs from './BlockInputs/BlockInputs';
 import Button from '../../Button/Button';
@@ -25,7 +25,7 @@ type Props = {
     dataFromFormSerialized,
   }: {
     dataFromFormSerialized: FormData;
-  }) => Promise<ResponseServer<void>>;
+  }) => Promise<ServerResponse<void>>;
   championshipId: string;
   raceId: string;
   setTriggerResultTable: React.Dispatch<React.SetStateAction<boolean>>;

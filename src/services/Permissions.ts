@@ -1,7 +1,7 @@
 import mongoose, { ObjectId } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
-import { ResponseServer, TFormRole } from '@/types/index.interface';
+import { ServerResponse, TFormRole } from '@/types/index.interface';
 import { handlerErrorDB } from './mongodb/error';
 import { Permission as PermissionModel } from '@/database/mongodb/Models/Permission';
 import { dtoPermission, dtoPermissions, dtoRole, dtoRoles } from '@/dto/permissions';
@@ -18,7 +18,7 @@ import { Document } from 'mongoose';
  */
 export class PermissionsService {
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
-  private handlerErrorDB: (error: unknown) => ResponseServer<null>; // eslint-disable-line no-unused-vars
+  private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
 
   constructor() {
     this.errorLogger = errorLogger;
@@ -34,7 +34,7 @@ export class PermissionsService {
   }: {
     name: string;
     description: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const res = await PermissionModel.create({ name, description });
 
@@ -64,7 +64,7 @@ export class PermissionsService {
     _id: string;
     name: string;
     description: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const res = await PermissionModel.findOneAndUpdate({ _id }, { $set: { description } });
 
@@ -86,7 +86,7 @@ export class PermissionsService {
   /**
    * Получение всех разрешений.
    */
-  public async getMany(): Promise<ResponseServer<TPermissionDto[] | null>> {
+  public async getMany(): Promise<ServerResponse<TPermissionDto[] | null>> {
     try {
       const permissionsDB = await PermissionModel.find().lean<TPermissionDocument[]>();
 
@@ -108,7 +108,7 @@ export class PermissionsService {
     _id,
   }: {
     _id: string;
-  }): Promise<ResponseServer<TPermissionDto | null>> {
+  }): Promise<ServerResponse<TPermissionDto | null>> {
     try {
       if (!_id) {
         throw new Error('Не передан _id Разрешения!');
@@ -136,7 +136,7 @@ export class PermissionsService {
   /**
    * Удаление Разрешения с _id.
    */
-  public async delete({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+  public async delete({ _id }: { _id: string }): Promise<ServerResponse<null>> {
     try {
       // Проверка строки _id на валидность
       if (!mongoose.Types.ObjectId.isValid(_id)) {
@@ -177,7 +177,7 @@ export class PermissionsService {
   /**
    * Создание нового Роли.
    */
-  public async postRole({ newRole }: { newRole: TFormRole }): Promise<ResponseServer<null>> {
+  public async postRole({ newRole }: { newRole: TFormRole }): Promise<ServerResponse<null>> {
     try {
       const checkedDuplicate = await RoleModel.findOne({ name: newRole.name }).lean();
 
@@ -205,7 +205,7 @@ export class PermissionsService {
   /**
    * Получение Роли пользователей на сайте.
    */
-  public async getRole({ _id }: { _id: string }): Promise<ResponseServer<TRoleDto | null>> {
+  public async getRole({ _id }: { _id: string }): Promise<ServerResponse<TRoleDto | null>> {
     try {
       const roleDB = await RoleModel.findOne({ _id }).lean<TRoleModel>();
 
@@ -228,7 +228,7 @@ export class PermissionsService {
   /**
    * Получение всех Ролей пользователей на сайте.
    */
-  public async getRoles(): Promise<ResponseServer<TRoleDto[] | null>> {
+  public async getRoles(): Promise<ServerResponse<TRoleDto[] | null>> {
     try {
       const rolesDB = await RoleModel.find().lean<TRoleModel[]>();
 
@@ -247,7 +247,7 @@ export class PermissionsService {
   /**
    * Получение всех Ролей пользователей на сайте.
    */
-  public async deleteRole({ _id }: { _id: string }): Promise<ResponseServer<null>> {
+  public async deleteRole({ _id }: { _id: string }): Promise<ServerResponse<null>> {
     try {
       // Получение id Роли User.
       const roleUser = await RoleModel.findOne({ name: 'user' }, { _id: true }).lean<{
@@ -303,7 +303,7 @@ export class PermissionsService {
     roleEdited,
   }: {
     roleEdited: TFormRole;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const res = await RoleModel.findOneAndUpdate(
         { _id: roleEdited._id },
@@ -339,7 +339,7 @@ export class PermissionsService {
     urlSlug: string;
     idUserDB: string;
     permission: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       // Проверка, является ли модератор, удаляющий,редактирующий новость, администратором.
       const user = await UserModel.findOne({ _id: idUserDB }, { role: true })
@@ -397,7 +397,7 @@ export class PermissionsService {
     organizerId: string;
     championshipId: string;
     userIdDB: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       const userDB = await UserModel.findOne({ _id: userIdDB }, { _id: false, role: true })
         .populate({ path: 'role', select: ['name', '-_id'] })

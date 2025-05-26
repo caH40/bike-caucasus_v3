@@ -8,7 +8,7 @@ import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 
 // types
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TCategories } from '@/types/models.interface';
 
@@ -36,7 +36,7 @@ export class ChampionshipCategories {
   }: {
     dataSerialized: FormData;
     championshipId: string;
-  }): Promise<ResponseServer<null>> {
+  }): Promise<ServerResponse<null>> {
     try {
       // Десериализованные данные с клиента.
       const categoriesConfigs = deserializeCategories(dataSerialized);

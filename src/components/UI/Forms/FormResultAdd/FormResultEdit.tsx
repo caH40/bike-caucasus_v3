@@ -8,7 +8,7 @@ import { millisecondsToTimeDetails, timeDetailsToMilliseconds } from '@/libs/uti
 import { useLoadingStore } from '@/store/loading';
 import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 import type { TRiderRaceResultDto } from '@/types/dto.types';
-import type { ResponseServer, TFormResultRace } from '@/types/index.interface';
+import type { ServerResponse, TFormResultRace } from '@/types/index.interface';
 import styles from './FormResultAdd.module.css';
 import { useRouter } from 'next/navigation';
 
@@ -19,7 +19,7 @@ type Props = {
     result,
   }: {
     result: FormData;
-  }) => Promise<ResponseServer<void>>;
+  }) => Promise<ServerResponse<void>>;
 };
 
 /**

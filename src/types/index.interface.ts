@@ -237,7 +237,7 @@ export type ProfileProvider = {
 /**
  * Ответ с сервера.
  */
-export type ResponseServer<T> = {
+export type ServerResponse<T> = {
   data: T | null;
   ok: boolean;
   message: string;
@@ -856,14 +856,14 @@ export type TParamsProps = {
  */
 export type TFormChampionshipProps = {
   organizer: TDtoOrganizer;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
+  fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
   putChampionship?: ({
     dataSerialized,
     urlSlug,
   }: {
     dataSerialized: FormData;
     urlSlug: string;
-  }) => Promise<ResponseServer<any>>;
+  }) => Promise<ServerResponse<any>>;
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
@@ -877,7 +877,7 @@ export type TFormChampionshipProps = {
  */
 export type TFormChampionshipCategoriesProps = {
   organizerId: string;
-  putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  putCategories: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
   categoriesConfigs: TClientCategoriesConfigs[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
@@ -887,7 +887,7 @@ export type TFormChampionshipCategoriesProps = {
  * Пропсы для компонента FormChampionshipRaces.
  */
 export type TFormChampionshipRacesProps = {
-  putRaces: (params: TPutRacesParams) => Promise<ResponseServer<any>>;
+  putRaces: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
   races: TRaceForForm[];
   organizerId: string;
   categoriesConfigs: TClientCategoriesConfigs[];
@@ -920,18 +920,18 @@ export type TClientCategoriesConfigs = Omit<TCategories, '_id' | 'championship'>
 
 export type TCContainerChampionshipFormsProps = {
   organizer: TDtoOrganizer;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
+  fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
   putChampionship?: ({
     dataSerialized,
     urlSlug,
   }: {
     dataSerialized: FormData;
     urlSlug: string;
-  }) => Promise<ResponseServer<any>>;
+  }) => Promise<ServerResponse<any>>;
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
-  putCategories?: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
-  putRaces?: (params: TPutRacesParams) => Promise<ResponseServer<any>>;
+  putCategories?: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
+  putRaces?: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
 };
 
 /**
@@ -948,11 +948,11 @@ export type TUseSubmitChampionshipParams = {
   championshipForEdit?: TDtoChampionship;
   organizerId: any;
   urlTracksForDel: MutableRefObject<string[]>;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ResponseServer<any>>;
+  fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
   putChampionship?: (args: {
     dataSerialized: FormData;
     urlSlug: string;
-  }) => Promise<ResponseServer<any>>;
+  }) => Promise<ServerResponse<any>>;
   reset: UseFormReset<TFormChampionshipCreate>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
 };
@@ -961,7 +961,7 @@ export type TUseSubmitChampionshipParams = {
  * Параметры для хука useSubmitChampionshipCategories.
  */
 export type TUseSubmitChampionshipCategoriesParams = {
-  putCategories: (params: TPutCategoriesParams) => Promise<ResponseServer<any>>;
+  putCategories: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
@@ -971,7 +971,7 @@ export type TUseSubmitChampionshipCategoriesParams = {
  * Параметры для хука useSubmitChampionshipRaces.
  */
 export type TUseSubmitChampionshipRacesParams = {
-  putRaces: (params: TPutRacesParams) => Promise<ResponseServer<any>>;
+  putRaces: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;

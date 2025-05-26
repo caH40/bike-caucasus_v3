@@ -4,7 +4,7 @@ import { serviceGetErrorDto, serviceGetErrorsDto } from '@/dto/logs';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import type { TGetErrorsDto } from '@/types/dto.types';
-import type { ResponseServer, TLogsErrorParsed } from '@/types/index.interface';
+import type { ServerResponse, TLogsErrorParsed } from '@/types/index.interface';
 import type { TLogsErrorModel } from '@/types/models.interface';
 
 /**
@@ -27,7 +27,7 @@ export class Logger {
   /**
    * Получение логов ошибок.
    */
-  public async getErrors(): Promise<ResponseServer<TGetErrorsDto[] | null>> {
+  public async getErrors(): Promise<ServerResponse<TGetErrorsDto[] | null>> {
     try {
       const logsDB = await LogsError.find().lean<TLogsErrorModel[]>();
       logsDB.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -46,7 +46,7 @@ export class Logger {
   /**
    * Получение лога ошибки.
    */
-  public async getError(_id: string): Promise<ResponseServer<TGetErrorsDto | null>> {
+  public async getError(_id: string): Promise<ServerResponse<TGetErrorsDto | null>> {
     try {
       const logDB = await LogsError.findOne({ _id }).lean<TLogsErrorModel>();
 

@@ -5,7 +5,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconLog from '@/components/Icons/IconLog';
 import ContainerTableLogsError from '@/components/Table/Containers/LogsError/ContainerTableLogsError';
 import type { TGetErrorsDto } from '@/types/dto.types';
-import type { ResponseServer } from '@/types/index.interface';
+import type { ServerResponse } from '@/types/index.interface';
 import styles from './LogsErrorsPage.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * Получает список ошибок из логов.
  * @returns - Промис с данными логов ошибок или null в случае ошибки.
  */
-async function getLogsError(): Promise<ResponseServer<TGetErrorsDto[] | null>> {
+async function getLogsError(): Promise<ServerResponse<TGetErrorsDto[] | null>> {
   const logger = new Logger();
 
   const response = await logger.getErrors();
