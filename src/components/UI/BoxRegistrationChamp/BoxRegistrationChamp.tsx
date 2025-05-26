@@ -37,9 +37,11 @@ function getLinkConfig(
   switch (status) {
     case 'upcoming':
       return {
-        href: `/championships/registration/${urlSlugChamp}`,
+        href: isTourOrSeries
+          ? `/championships/${urlSlugChamp}`
+          : `/championships/registration/${urlSlugChamp}`,
         theme: 'green',
-        name: 'Регистрация',
+        name: isTourOrSeries ? 'Подробнее' : 'Регистрация',
         disabled: false,
       };
     case 'cancelled':

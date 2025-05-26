@@ -86,16 +86,18 @@ export default async function ChampionshipPage(props: Props) {
               <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
             </div>
 
-            <div className={styles.wrapper__races}>
-              <BlockRaces
-                races={championship.data.races}
-                registrationData={{
-                  type: championship.data.type,
-                  status: championship.data.status,
-                  urlSlugChamp: championship.data.urlSlug,
-                }}
-              />
-            </div>
+            {['single', 'stage'].includes(championship.data.type) && (
+              <div className={styles.wrapper__races}>
+                <BlockRaces
+                  races={championship.data.races}
+                  registrationData={{
+                    type: championship.data.type,
+                    status: championship.data.status,
+                    urlSlugChamp: championship.data.urlSlug,
+                  }}
+                />
+              </div>
+            )}
 
             {['series', 'tour'].includes(championship.data.type) && (
               <>

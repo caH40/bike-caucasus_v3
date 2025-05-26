@@ -8,6 +8,7 @@ type Props = {
   buttons: TOptions[];
   activeIdBtn: number;
   setActiveIdBtn: ((id: number) => void) | React.Dispatch<React.SetStateAction<number>>;
+  hiddenButtonNames: string[];
 };
 
 /**
@@ -17,15 +18,18 @@ export default function ChampionshipFormNavigation({
   activeIdBtn,
   setActiveIdBtn,
   buttons,
+  hiddenButtonNames,
 }: Props) {
+  const visibleButtons = buttons.filter((button) => !hiddenButtonNames.includes(button.name));
+
   return (
     <nav>
-      {buttons.map((button, index) => {
+      {visibleButtons.map((button, index) => {
         return (
           <ButtonForFilter
             key={button.id}
             id={button.id}
-            position={getPosition(index, buttons.length)}
+            position={getPosition(index, visibleButtons.length)}
             active={button.id === activeIdBtn}
             setActiveIdBtn={setActiveIdBtn}
           >

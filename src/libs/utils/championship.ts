@@ -1,4 +1,4 @@
-import { TChampionshipStatus } from '@/types/models.interface';
+import { TChampionshipStatus, TChampionshipTypes } from '@/types/models.interface';
 import { declineDays } from './decline';
 import { TStageDateDescription } from '@/types/index.interface';
 import { getFullDaysFromDates } from './calendar';
@@ -229,4 +229,18 @@ export function sortCategoriesString(categories: string[]): string[] {
     // Сравниваем числовые значения
     return parseInt(aNum) - parseInt(bNum);
   });
+}
+
+/**
+ * Получение массива названий кнопок навигации на странице редактирования чемпионата, которые необходимо скрыть, в зависимости от типа чемпионата.
+ */
+export function getHiddenButtonNamesForEditChamp(
+  type: TChampionshipTypes
+): ('races' | 'main' | 'categories')[] {
+  if (['series', 'tour'].includes(type)) {
+    return ['races'];
+  } else if (['stage'].includes(type)) {
+    return ['categories'];
+  }
+  return [];
 }

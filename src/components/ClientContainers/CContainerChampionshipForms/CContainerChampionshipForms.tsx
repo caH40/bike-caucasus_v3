@@ -9,6 +9,7 @@ import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampio
 import { TCContainerChampionshipFormsProps } from '@/types/index.interface';
 import FormChampionshipCategories from '@/components/UI/Forms/FormChampionship/FormChampionshipCategories';
 import FormChampionshipRaces from '@/components/UI/Forms/FormChampionship/FormChampionshipRaces';
+import { getHiddenButtonNamesForEditChamp } from '@/libs/utils/championship';
 
 /**
  *  Клиентский контейнер для скачивания документов с зарегистрированными участниками Чемпионата.
@@ -65,16 +66,18 @@ export default function CContainerChampionshipForms({
         setIsFormDirty={setIsFormDirty}
       />
     )) || <div>Не получены данные championshipForEdit или putCategories</div>,
-    2: (championshipForEdit && putRaces && (
-      <FormChampionshipRaces
-        organizerId={organizer._id}
-        putRaces={putRaces}
-        categoriesConfigs={championshipForEdit.categoriesConfigs}
-        races={championshipForEdit.races}
-        urlSlug={championshipForEdit.urlSlug}
-        setIsFormDirty={setIsFormDirty}
-      />
-    )) || <div>Не получены данные championshipForEdit</div>,
+    2: (championshipForEdit &&
+      putRaces &&
+      !['series', 'tour'].includes(championshipForEdit.type) && (
+        <FormChampionshipRaces
+          organizerId={organizer._id}
+          putRaces={putRaces}
+          categoriesConfigs={championshipForEdit.categoriesConfigs}
+          races={championshipForEdit.races}
+          urlSlug={championshipForEdit.urlSlug}
+          setIsFormDirty={setIsFormDirty}
+        />
+      )) || <div>Не получены данные championshipForEdit</div>,
   };
 
   return (
@@ -85,6 +88,7 @@ export default function CContainerChampionshipForms({
             buttons={championshipFormNavigationButtons}
             activeIdBtn={activeIdBtn}
             setActiveIdBtn={handleChangeTab}
+            hiddenButtonNames={getHiddenButtonNamesForEditChamp(championshipForEdit.type)}
           />
         </div>
       )}

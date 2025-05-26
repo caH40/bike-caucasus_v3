@@ -104,7 +104,8 @@ export function createStageNumbers(
   // Если не найден такой Тур или Серия, это ошибка.
   const parentChampionship = parentChampionships.find(
     (elm) =>
-      elm._id === (watch('parentChampionship')?._id || championshipForEdit?.parentChampionship)
+      elm._id ===
+      (watch('parentChampionship')?._id || championshipForEdit?.parentChampionship?._id)
   );
 
   if (!parentChampionship) {
