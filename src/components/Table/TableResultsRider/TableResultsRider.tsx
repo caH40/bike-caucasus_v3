@@ -92,7 +92,7 @@ const columns: ColumnDef<TRiderRaceResultDto & { index: number }>[] = [
     cell: (props: any) => {
       const urlSlug = props.row.original.championship.urlSlug;
       return (
-        <Link className="link__news" href={`/championships/${urlSlug}`}>
+        <Link className="link" href={`/championships/${urlSlug}`}>
           {props.getValue()}
         </Link>
       );

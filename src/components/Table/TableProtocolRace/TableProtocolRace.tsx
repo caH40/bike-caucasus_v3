@@ -114,11 +114,12 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         const rider = {
           firstName: data.profile.firstName,
           lastName: data.profile.lastName,
+          patronymic: data.profile.patronymic,
           image,
           id: data.rider?.id,
         };
 
-        return <TdRider rider={rider} />;
+        return <TdRider rider={rider} showPatronymic={true} />;
       },
     },
     {

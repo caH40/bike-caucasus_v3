@@ -42,7 +42,13 @@ const columns: ColumnDef<TUserDto>[] = [
         id: data.id,
       };
 
-      return <TdRider rider={rider} linkAdditional={`/admin/users/${data.id}`} />;
+      return (
+        <TdRider
+          rider={rider}
+          linkAdditional={`/admin/users/${data.id}`}
+          showPatronymic={true}
+        />
+      );
     },
     accessorFn: (row) => row.person.lastName, // Функция для доступа к значению lastName
     sortingFn: 'text', // Используем встроенную сортировку по тексту

@@ -42,7 +42,7 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
   {
     header: 'Участник',
     accessorKey: 'rider',
-    cell: (props: any) => <TdRider rider={props.getValue()} />,
+    cell: (props: any) => <TdRider rider={props.getValue()} showPatronymic={true} />,
   },
   {
     header: 'Команда',

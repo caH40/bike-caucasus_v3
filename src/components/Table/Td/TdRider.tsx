@@ -4,21 +4,28 @@ import cn from 'classnames/bind';
 import { blurBase64 } from '@/libs/image';
 import styles from './Td.module.css';
 import Link from 'next/link';
+import { getUserFullName } from '@/libs/utils/profile';
 
 type Props = {
   rider: {
     firstName: string;
     lastName: string;
+    patronymic?: string;
     image?: string;
     id?: string;
   };
   linkAdditional?: string;
+  showPatronymic?: boolean;
 };
 
 const cx = cn.bind(styles);
 
-function TdRider({ rider, linkAdditional }: Props) {
-  const riderName = `${rider.firstName} ${rider.lastName}`;
+function TdRider({ rider, showPatronymic, linkAdditional }: Props) {
+  const riderName = getUserFullName({
+    person: rider,
+    showPatronymic,
+  });
+
   const riderContent = (
     <div className={cx('rider')}>
       <div className={cx('rider__logo')}>

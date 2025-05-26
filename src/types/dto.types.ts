@@ -95,7 +95,7 @@ export type TUserDtoPublic = Omit<TUserDto, 'provider' | 'email' | 'person'> & {
   } | null;
   person: {
     firstName: string;
-    patronymic: string;
+    patronymic?: string;
     lastName: string;
     ageCategory: string | null; // birthday заменён на ageCategory
     gender: 'male' | 'female';

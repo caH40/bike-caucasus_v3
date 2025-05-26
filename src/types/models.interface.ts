@@ -35,7 +35,7 @@ export type IUserModel = {
 };
 export type TPerson = {
   firstName: string;
-  patronymic: string;
+  patronymic?: string;
   lastName: string;
   birthday: string;
   gender: 'male' | 'female';
