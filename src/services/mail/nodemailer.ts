@@ -65,7 +65,7 @@ export async function mailService(
     html = htmlRefreshPassword(date, username, password);
   }
 
-  const from = 'bikecaucasus@mail.ru';
+  const from = MAIL_USER;
   const to = email;
 
   const result = await transporter.sendMail({ from, to, subject, html });

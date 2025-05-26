@@ -23,7 +23,7 @@ export const PreferencesSchema = new Schema<TUserPreferences>(
   {
     showPatronymic: { type: Boolean, default: true }, // Отображать отчество.
     notification: { type: NotificationSchema }, // Настройки уведомлений.
-    theme: { type: String, enum: ['light', 'dark'], default: 'light' }, // Тема интерфейса.
+    theme: { type: String, enum: ['light', 'dark'], default: 'dark' }, // Тема интерфейса.
     language: { type: String, default: 'ru' }, // Язык интерфейса по умолчанию.
     privacy: { type: PrivacySchema, default: () => ({}) }, // Настройки приватности.
   },
