@@ -41,6 +41,7 @@
   --purple: #5c288a;
 
   --startNumber: darkcyan;
+  --femaleStartNumber: rgb(116, 0, 139);
 
   /* цвета типов велосипедов для фона */
   --bg-mtb: rgba(114, 39, 39, 0.6);

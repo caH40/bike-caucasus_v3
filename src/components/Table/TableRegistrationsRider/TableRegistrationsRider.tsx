@@ -12,7 +12,7 @@ import cn from 'classnames/bind';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import BlockStartNumber from '../Td/BlockStartNumber';
+import BlockStartNumber from '../../BlockStartNumber/BlockStartNumber';
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
 import { getDateTime } from '@/libs/utils/calendar';
 import { blurBase64 } from '@/libs/image';
@@ -75,7 +75,12 @@ const columns: ColumnDef<TRegistrationRiderDto & { index: number }>[] = [
   {
     header: 'Номер',
     accessorKey: 'startNumber',
-    cell: (props: any) => <BlockStartNumber startNumber={props.getValue()} />,
+    cell: (props: any) => (
+      <BlockStartNumber
+        startNumber={props.getValue()}
+        gender={props.row.original.rider.gender}
+      />
+    ),
   },
   {
     header: 'Статус',

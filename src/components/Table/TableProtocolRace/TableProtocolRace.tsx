@@ -25,7 +25,7 @@ import IconChronometer from '@/components/Icons/IconChronometer';
 import Medal from '../Td/Medal';
 import styles from '../TableCommon.module.css';
 import Time from '../Td/Time';
-import BlockStartNumber from '../Td/BlockStartNumber';
+import BlockStartNumber from '../../BlockStartNumber/BlockStartNumber';
 import TdGap from '@/components/GapInProtocol/GapInProtocol';
 import IconGapLeader from '@/components/Icons/IconGapLeader';
 import IconGapPrev from '@/components/Icons/IconGapPrev';
@@ -90,7 +90,12 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         />
       ),
       accessorKey: 'startNumber',
-      cell: (props: any) => <BlockStartNumber startNumber={props.getValue()} />,
+      cell: (props: any) => (
+        <BlockStartNumber
+          startNumber={props.getValue()}
+          gender={props.row.original.profile.gender}
+        />
+      ),
     },
     {
       header: () => (

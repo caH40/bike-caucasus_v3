@@ -12,7 +12,7 @@ import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
 import TdRider from '../Td/TdRider';
-import BlockStartNumber from '../Td/BlockStartNumber';
+import BlockStartNumber from '../../BlockStartNumber/BlockStartNumber';
 import BlockRegRaceStatus from '@/components/BlockRegRaceStatus/BlockRegRaceStatus';
 import { getDateTime } from '@/libs/utils/calendar';
 import type { TChampRegistrationRiderDto, TRaceRegistrationDto } from '@/types/dto.types';
@@ -36,7 +36,12 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
   {
     header: 'Номер',
     accessorKey: 'startNumber',
-    cell: (props: any) => <BlockStartNumber startNumber={props.getValue()} />,
+    cell: (props: any) => (
+      <BlockStartNumber
+        startNumber={props.getValue()}
+        gender={props.row.original.rider.gender}
+      />
+    ),
     sortUndefined: 'last', // Все неопределенные значения должны быть внизу.
   },
   {
