@@ -1,14 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 import { TChampionshipStatus, TChampionshipTypes } from '@/types/models.interface';
 import Wrapper from '../Wrapper/Wrapper';
-import styles from './BlockRaces.module.css';
 import ParamsRace from '../ParamsRace/ParamsRace';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
 import { TRaceForForm } from '@/types/index.interface';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
+import styles from './BlockRaces.module.css';
+import Spacer from '../Spacer/Spacer';
 
 type Props = {
   races: TRaceForForm[];
@@ -30,6 +32,19 @@ export default function BlockRaces({ races, registrationData }: Props) {
           <div className={styles.wrapper__race} key={race.number}>
             <h3 className={styles.title}>{`${race.number}. ${race.name}`}</h3>
             <p className={styles.description}>{race.description}</p>
+
+            {race.trackGPX.url && (
+              <Spacer margin="b-md">
+                <Link
+                  className={styles.link}
+                  target="blank"
+                  href={race.trackGPX.url}
+                  rel="noreferrer"
+                >
+                  Скачать GPX
+                </Link>
+              </Spacer>
+            )}
 
             <div className={styles.wrapper__params}>
               <ParamsRace race={race} />
