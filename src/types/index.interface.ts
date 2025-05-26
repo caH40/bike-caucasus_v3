@@ -1239,3 +1239,12 @@ export type TGetUserFullNameParams = {
   person: TUserFullName;
   showPatronymic?: boolean;
 };
+
+export type TChangeFrequency =
+  | 'always'
+  | 'hourly'
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'yearly'
+  | 'never';

@@ -4,6 +4,7 @@ import { MetadataRoute } from 'next';
 import { Trail } from '@/services/Trail';
 import { OrganizerService } from '@/services/Organizer';
 import { ChampionshipService } from '@/services/Championship';
+import { millisecondsInDay } from '@/constants/date';
 
 const host = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -31,10 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const championshipsSitemap = await generateSitemapChampionshipPages();
 
   // Генерация sitemap данных для страниц Регистрации на Чемпионат.
-  const championshipsRegistrationSitemap = await generateSitemapChampionshipRegistrationPages();
+  const championshipsRegistrationSitemap = await generateSitemapChampionshipPages(
+    'registration'
+  );
 
-  // Генерация sitemap данных для страниц зарегистрированных на Чемпионат.
-  const championshipsRegisteredSitemap = await generateSitemapChampionshipRegisteredPages();
+  // Генерация sitemap данных для страниц результатов на Чемпионата.
+  const championshipsResultsSitemap = await generateSitemapChampionshipPages('results');
 
   return [
     {
@@ -68,13 +71,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'hourly',
       priority: 0.9,
     },
-    ...profilesSitemap, // profile
-    ...newsSitemap, // news
-    ...trailsSitemap, // trails
-    ...organizersSitemap, // organizers
-    ...championshipsSitemap, // championship pages
-    ...championshipsRegistrationSitemap, // championship registration pages
-    ...championshipsRegisteredSitemap, // championship registered pages
+    ...profilesSitemap, // profile.
+    ...newsSitemap, // news.
+    ...trailsSitemap, // trails.
+    ...organizersSitemap, // organizers.
+    ...championshipsSitemap, // championship pages.
+    ...championshipsRegistrationSitemap, // championship registration pages.
+    ...championshipsResultsSitemap, // championship results pages.
   ];
 }
 
@@ -165,61 +168,26 @@ async function generateSitemapOrganizerPages(): Promise<MetadataRoute.Sitemap> {
 }
 
 /**
- * Генерирует sitemap данных для страниц Чемпионата /championships/[urlSlug]
+ * Генерирует sitemap данных для страниц Чемпионата /championships/[entity]/[urlSlug]
  */
-async function generateSitemapChampionshipPages(): Promise<MetadataRoute.Sitemap> {
+async function generateSitemapChampionshipPages(
+  entity?: 'registered' | 'results' | 'registration' | 'documents'
+): Promise<MetadataRoute.Sitemap> {
   try {
     const championshipService = new ChampionshipService();
     const championships = await championshipService.getMany({});
 
-    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => ({
-      url: `${host}/championships/${champ.urlSlug}`,
-      lastModified: new Date(champ.updatedAt).toISOString(),
-      changeFrequency: 'hourly',
-      priority: 0.9,
-    }));
+    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => {
+      const lastModified = new Date(champ.updatedAt);
+      const isOld = Date.now() >= lastModified.getTime() + millisecondsInDay;
 
-    return trailsSitemap;
-  } catch (error) {
-    return [];
-  }
-}
-
-/**
- * Генерирует sitemap данных для страниц Регистрации на Чемпионат /championships/registration/[urlSlug]
- */
-async function generateSitemapChampionshipRegistrationPages(): Promise<MetadataRoute.Sitemap> {
-  try {
-    const championshipService = new ChampionshipService();
-    const championships = await championshipService.getMany({});
-
-    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => ({
-      url: `${host}/championships/registration/${champ.urlSlug}`,
-      lastModified: new Date(champ.updatedAt).toISOString(),
-      changeFrequency: 'weekly',
-      priority: 0.2,
-    }));
-
-    return trailsSitemap;
-  } catch (error) {
-    return [];
-  }
-}
-
-/**
- * Генерирует sitemap данных для страниц зарегистрированных на Чемпионат /championships/registered/[urlSlug]
- */
-async function generateSitemapChampionshipRegisteredPages(): Promise<MetadataRoute.Sitemap> {
-  try {
-    const championshipService = new ChampionshipService();
-    const championships = await championshipService.getMany({});
-
-    const trailsSitemap: MetadataRoute.Sitemap = (championships.data || []).map((champ) => ({
-      url: `${host}/championships/registered/${champ.urlSlug}`,
-      lastModified: new Date(champ.updatedAt).toISOString(),
-      changeFrequency: 'weekly',
-      priority: 0.2,
-    }));
+      return {
+        url: `${host}/championships/${entity ? entity + '/' : ''}${champ.urlSlug}`,
+        lastModified: lastModified.toISOString(),
+        changeFrequency: isOld ? 'yearly' : 'hourly',
+        priority: isOld ? 0.1 : 1,
+      };
+    });
 
     return trailsSitemap;
   } catch (error) {
