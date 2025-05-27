@@ -1,5 +1,5 @@
 import mongoose, { model, models, Schema } from 'mongoose';
-import { TTRacePointsTableDocument } from '@/types/models.interface';
+import { TRacePointsTableDocument } from '@/types/models.interface';
 
 const RacePointsRuleSchema = new Schema(
   {
@@ -9,7 +9,7 @@ const RacePointsRuleSchema = new Schema(
   { _id: false }
 );
 
-const RacePointsTableSchema = new Schema<TTRacePointsTableDocument>(
+const RacePointsTableSchema = new Schema<TRacePointsTableDocument>(
   {
     name: { type: String, required: true },
     organizer: {
@@ -27,4 +27,4 @@ const RacePointsTableSchema = new Schema<TTRacePointsTableDocument>(
 
 export const RacePointsTableModel =
   models.RacePointsTable ||
-  model<TTRacePointsTableDocument>('RacePointsTable', RacePointsTableSchema);
+  model<TRacePointsTableDocument>('RacePointsTable', RacePointsTableSchema);
