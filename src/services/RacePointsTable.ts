@@ -11,7 +11,7 @@ import { racePointsTableDto } from '@/dto/race-points-table';
 /**
  * Класс работы с сущностью Таблицы начисления очков за заезд для серии заездов (Series).
  */
-export class RacePointsTable {
+export class RacePointsTableService {
   private errorLogger;
   private handlerErrorDB;
 
@@ -21,7 +21,7 @@ export class RacePointsTable {
   }
 
   /**
-   * Получение данных по очковой таблицы по _id - racePointsTableId.
+   * Получение данных по таблице начисления очков за этап серии по _id - racePointsTableId.
    */
   public async getOne({
     racePointsTableId,
@@ -39,12 +39,39 @@ export class RacePointsTable {
         );
       }
 
-      const racePointsAfterDto = racePointsTableDto(pTableDB);
+      const racePointsTableAfterDto = racePointsTableDto(pTableDB);
 
       return {
-        data: racePointsAfterDto,
+        data: racePointsTableAfterDto,
         ok: true,
         message: 'Данные таблицы начисления очков в заездах для Series',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение всех таблиц начисления очков за этап серии.
+   */
+  public async getAll({
+    organizerId,
+  }: {
+    organizerId?: string;
+  }): Promise<ServerResponse<TRacePointsTableDto[] | null>> {
+    try {
+      const query = organizerId ? { organizer: organizerId } : {};
+      const pTablesDB = await RacePointsTableModel.find(query).lean<TRacePointsTable[]>();
+
+      const racePointsTablesAfterDto = pTablesDB.map((pTable) => racePointsTableDto(pTable));
+
+      return {
+        data: racePointsTablesAfterDto,
+        ok: true,
+        message: organizerId
+          ? 'Таблицы начисления очков для указанного организатора.'
+          : 'Все таблицы начисления очков за этапы серии.',
       };
     } catch (error) {
       this.errorLogger(error);
