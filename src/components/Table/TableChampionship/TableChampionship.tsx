@@ -75,6 +75,11 @@ const columns: ColumnDef<TDtoChampionship & { index: number }>[] = [
     accessorKey: 'stage',
   },
   {
+    header: 'Название серии',
+    accessorKey: 'parentChampionship.name',
+    cell: (props: any) => props.getValue(),
+  },
+  {
     header: 'Тип велосипеда',
     accessorKey: 'bikeType',
     cell: (props: any) => (
