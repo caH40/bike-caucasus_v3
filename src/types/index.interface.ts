@@ -15,6 +15,7 @@ import {
   IUserModel,
   TCategories,
   TChampionship,
+  TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
   TLogsErrorModel,
@@ -1241,3 +1242,24 @@ export type TChangeFrequency =
   | 'monthly'
   | 'yearly'
   | 'never';
+
+/**
+ * Параметры для приватного метода addCategoryConfigsIds в классе ChampionshipService.
+ */
+export type TAddCategoryConfigsIdsParams = {
+  type: TChampionshipTypes;
+  parentChampionshipId: string | undefined;
+  championshipCreated: TChampionshipDocument;
+};
+/**
+ * Параметры для приватного метода addCategoryConfigsIds в классе ChampionshipService.
+ */
+export type TGetChampUrlSlugParams = {
+  champName: string;
+  parentChampionshipId: string | undefined;
+  type: TChampionshipTypes;
+};
+/**
+ * Возвращаемые значения приватного метода getParentChampionship в классе ChampionshipService.
+ */
+export type TGetParentChampionship = { categoriesConfigs: Types.ObjectId[]; urlSlug: string };

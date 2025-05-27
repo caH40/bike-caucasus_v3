@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import slugify from 'slugify';
 
 import { errorLogger } from '@/errors/error';
@@ -23,7 +23,10 @@ import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
   ServerResponse,
+  TAddCategoryConfigsIdsParams,
   TChampionshipWithOrganizer,
+  TGetChampUrlSlugParams,
+  TGetParentChampionship,
   TSaveFile,
   TStageDateDescription,
 } from '@/types/index.interface';
@@ -111,7 +114,7 @@ export class ChampionshipService {
         const organizer = await OrganizerModel.findOne(
           { $or: [{ creator: userIdDB }, { moderators: userIdDB }] },
           { _id: true }
-        ).lean<{ _id: ObjectId }>();
+        ).lean<{ _id: Types.ObjectId }>();
 
         if (!organizer) {
           throw new Error('У пользователя не создан Организатор!');
@@ -245,10 +248,11 @@ export class ChampionshipService {
       // Обработка данных Заездов (дистанций).
       // const racesForSave = await this.handleRacesInPost(races);
 
-      // Создание slug из name для url страницы Чемпионата.
-      const sequenceValue = await getNextSequenceValue('championship');
-      const stringRaw = `${sequenceValue}-${name}`;
-      const urlSlug = slugify(stringRaw, { lower: true, strict: true });
+      const urlSlug = await this.getUrlSlug({
+        type,
+        parentChampionshipId,
+        champName: name,
+      });
 
       const createData: any = {
         name,
@@ -269,17 +273,13 @@ export class ChampionshipService {
       };
 
       // Создаём новый чемпионат на основе входных данных.
-      const championshipCreated = await ChampionshipModel.create(createData);
+      const championshipCreated: TChampionshipDocument = await ChampionshipModel.create(
+        createData
+      );
 
-      // Создаём дефолтные категории и привязываем их к чемпионату.
-      const categoriesCreated = await CategoriesModel.create({
-        championship: championshipCreated._id,
-        ...DEFAULT_STANDARD_CATEGORIES,
-      });
+      await this.addCategoryConfigsIds({ championshipCreated, type, parentChampionshipId });
 
-      // Сохраняем ID созданных категорий в чемпионат (в поле categoriesConfigs).
-      championshipCreated.categoriesConfigs = [categoriesCreated._id];
-      await championshipCreated.save();
+      //
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
     } catch (error) {
@@ -448,7 +448,7 @@ export class ChampionshipService {
         { _id: true, status: true, startDate: true, endDate: true, urlSlug: true }
       ).lean<
         {
-          _id: ObjectId;
+          _id: Types.ObjectId;
           status: TChampionshipStatus;
           startDate: Date;
           endDate: Date;
@@ -541,5 +541,76 @@ export class ChampionshipService {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Добавление в чемпионат id конфигураций категорий.
+   */
+  private async addCategoryConfigsIds({
+    type,
+    parentChampionshipId,
+    championshipCreated,
+  }: TAddCategoryConfigsIdsParams): Promise<void> {
+    if (type === 'stage') {
+      // Для Этапа добавляется ids из родительского чемпионата.
+      const parentChamp = await this.getParentChampionship(parentChampionshipId);
+
+      championshipCreated.categoriesConfigs = parentChamp.categoriesConfigs;
+    } else {
+      // Создаём дефолтные категории и привязываем их к чемпионату.
+      const categoriesCreated = await CategoriesModel.create({
+        championship: championshipCreated._id,
+        ...DEFAULT_STANDARD_CATEGORIES,
+      });
+
+      // Сохраняем ID созданных категорий в чемпионат (в поле categoriesConfigs).
+      championshipCreated.categoriesConfigs = [categoriesCreated._id];
+    }
+    await championshipCreated.save();
+  }
+
+  /**
+   * Создание urlSlug чемпионата.
+   */
+  private async getUrlSlug({
+    type,
+    champName,
+    parentChampionshipId,
+  }: TGetChampUrlSlugParams): Promise<string> {
+    // urlSlug для этапа образуется путем конкатенации urlSlug родительского чемпионата и нормализованного названия этапа.
+    if (type === 'stage') {
+      const parentChamp = await this.getParentChampionship(parentChampionshipId);
+
+      const normalizedSlug = slugify(champName, { lower: true, strict: true });
+      return `${parentChamp.urlSlug}-${normalizedSlug}`;
+    }
+
+    const sequenceValue = await getNextSequenceValue('championship');
+    const stringRaw = `${sequenceValue}-${champName}`;
+
+    return slugify(stringRaw, { lower: true, strict: true });
+  }
+
+  /**
+   * Данные родительского чемпионата для этапа.
+   */
+  private async getParentChampionship(
+    parentChampionshipId: string | undefined
+  ): Promise<TGetParentChampionship> {
+    if (!parentChampionshipId) {
+      throw new Error('При создании Этапа не получен id родительского Чемпионата!');
+    }
+    const champDB = await ChampionshipModel.findOne(
+      { _id: parentChampionshipId },
+      { categoriesConfigs: true, urlSlug: true, _id: false }
+    ).lean<TGetParentChampionship>();
+
+    if (!champDB) {
+      throw new Error(
+        'Не найден родительский чемпионат для этапа при добавлении конфигураций категорий в Этап!'
+      );
+    }
+
+    return champDB;
   }
 }
