@@ -6,6 +6,7 @@ import { getChampionship } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import styles from '../../../layout.module.css';
 import { checkPermissionOrganizer } from '@/actions/permissions';
+import BlockMessage from '@/components/BlockMessage/BlockMessage';
 
 type Props = {
   params: Promise<{
@@ -14,14 +15,12 @@ type Props = {
 };
 
 /**
- * Страница редактирования финишного результата Заезда в Чемпионате.
+ * Страница редактирования финишного протокола Заезда в Чемпионате.
  */
-export default async function ResultRaceEditPage(props: Props) {
+export default async function EditFinishProtocolPage(props: Props) {
   const params = await props.params;
 
-  const {
-    resultId
-  } = params;
+  const { resultId } = params;
 
   const result = await getResultRaceForRider({ resultId });
 
@@ -44,6 +43,17 @@ export default async function ResultRaceEditPage(props: Props) {
       <h2 className={styles.error}>
         Не найден Организатор, перед созданием Чемпионата необходимо создать Организатора!
       </h2>
+    );
+  }
+
+  if (['series', 'tour'].includes(championship.data.type)) {
+    return (
+      <BlockMessage>
+        <h2 className={styles.error}>
+          В Серии или Туре нет финишных протоколов. Добавляйте финишный протокол в
+          соответствующих заездах этапов данного Чемпионата!
+        </h2>
+      </BlockMessage>
     );
   }
 

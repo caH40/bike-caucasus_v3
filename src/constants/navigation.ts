@@ -160,29 +160,33 @@ export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
 /**
  * Меню навигации для управления Чемпионатом в меню Popup.
  */
-export const getNavLinksChampionshipPopup = (urlSlug: string): TMenuOnPage[] => [
-  {
-    id: 0,
-    name: 'Редактирование',
-    href: `/moderation/championship/edit/${urlSlug}`,
-    permission: 'moderation.championship.edit',
-    icon: IconEditOld,
-    classes: [],
-  },
-  {
-    id: 1,
-    name: 'Финишные протоколы',
-    href: `/moderation/championship/protocol/${urlSlug}/1`, // По умолчанию открывается 1 Заезд.
-    permission: 'moderation.championship.protocol',
-    icon: IconEditOld,
-    classes: [],
-  },
-  {
-    id: 2,
-    name: 'Удаление',
-    onClick: () => deleteItem({ type: 'championship', urlSlug }),
-    permission: 'moderation.championship.delete',
-    icon: IconDelete,
-    classes: [],
-  },
-];
+export const getNavLinksChampionshipPopup = (
+  urlSlug: string,
+  hiddenItemNames: string[] = []
+): TMenuOnPage[] =>
+  [
+    {
+      id: 0,
+      name: 'Редактирование',
+      href: `/moderation/championship/edit/${urlSlug}`,
+      permission: 'moderation.championship.edit',
+      icon: IconEditOld,
+      classes: [],
+    },
+    {
+      id: 1,
+      name: 'Финишные протоколы',
+      href: `/moderation/championship/protocol/${urlSlug}/1`, // По умолчанию открывается 1 Заезд.
+      permission: 'moderation.championship.protocol',
+      icon: IconEditOld,
+      classes: [],
+    },
+    {
+      id: 2,
+      name: 'Удаление',
+      onClick: () => deleteItem({ type: 'championship', urlSlug }),
+      permission: 'moderation.championship.delete',
+      icon: IconDelete,
+      classes: [],
+    },
+  ].filter((item) => !hiddenItemNames.includes(item.name));

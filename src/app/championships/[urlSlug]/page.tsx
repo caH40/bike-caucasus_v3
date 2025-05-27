@@ -62,6 +62,11 @@ export default async function ChampionshipPage(props: Props) {
 
   const buttons = buttonsMenuChampionshipPage(urlSlug);
 
+  const hiddenItemNames =
+    championship.data && ['series', 'tour'].includes(championship.data.type)
+      ? ['Финишные протоколы']
+      : [];
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
@@ -76,6 +81,7 @@ export default async function ChampionshipPage(props: Props) {
                     getMenuItems={getNavLinksChampionshipPopup}
                     id={'#popup-control-menu-championship'}
                     messageTooltip="Управление Чемпионатом"
+                    hiddenItemNames={hiddenItemNames}
                   />
                 </div>
               </PermissionCheck>
