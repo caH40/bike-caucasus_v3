@@ -2,6 +2,7 @@ import { ObjectId } from 'mongoose';
 import {
   TCategories,
   TChampionshipStatus,
+  TChampionshipTypes,
   TRace,
   TRaceRegistrationStatus,
 } from './models.interface';
@@ -33,6 +34,7 @@ export type TDeleteChampionshipFromMongo = {
   posterUrl: string;
   races: TRace[];
   _id: Types.ObjectId;
+  type: TChampionshipTypes;
   categoriesConfigs: Types.ObjectId[];
 } & Document;
 

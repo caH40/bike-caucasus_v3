@@ -35,6 +35,7 @@ import type {
   TChampionshipStatus,
   TChampionshipTypes,
   TRace,
+  TTrackGPXObj,
 } from '@/types/models.interface';
 import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 
@@ -374,6 +375,7 @@ export class ChampionshipService {
             name: true,
             posterUrl: true,
             races: true,
+            type: true,
             categoriesConfigs: true,
           }
         );
@@ -397,8 +399,18 @@ export class ChampionshipService {
       // Удаление всех заездов Чемпионата.
       await RaceModel.deleteMany({ championship: championshipDB._id });
 
-      // Удаление всех конфигураций категорий Чемпионата.
-      await CategoriesModel.deleteMany({ championship: championshipDB._id });
+      // Удаление всех конфигураций категорий Чемпионата, только если это не Этап.
+      if (championshipDB.type !== 'stage') {
+        await CategoriesModel.deleteMany({ championship: championshipDB._id });
+      }
+
+      // Удаление всех этапов серии.
+      // Удаление из облака постеров этапов серии.
+      // Удаление всех заездов соответствующих этапов.
+      // Удаление из облака gps треков соответствующих заездов.
+      if (['series', 'tour'].includes(championshipDB.type)) {
+        await this.deleteStages(championshipDB._id);
+      }
 
       // Экземпляр сервиса работы с Облаком.
       const cloudService = new Cloud();
@@ -419,9 +431,6 @@ export class ChampionshipService {
           })
           .catch((error) => this.errorLogger(error));
       }
-
-      // Удаление пакетов категорий.
-      await CategoriesModel.deleteMany({ _id: championshipDB.categoriesConfigs });
 
       return {
         data: null,
@@ -612,5 +621,60 @@ export class ChampionshipService {
     }
 
     return champDB;
+  }
+
+  /**
+   * Удаление всех этапов и связанных с ними сущностей при удалении родительского чемпионата (series, tour).
+   */
+  private async deleteStages(championshipId: Types.ObjectId): Promise<void> {
+    try {
+      // Получение массива этапов с информацией о заездах в них.
+      const stagesDB = await ChampionshipModel.find(
+        { parentChampionship: championshipId },
+        { races: true, posterUrl: true }
+      )
+        .populate({ path: 'races', select: ['trackGPX', '-_id'] })
+        .lean<
+          { posterUrl: string; races: { trackGPX: TTrackGPXObj }[]; _id: Types.ObjectId }[]
+        >();
+
+      if (stagesDB.length === 0) {
+        return;
+      }
+
+      // Получение всех треков gps из заездов для удаления их из облака.
+      const gpsTracks = stagesDB.flatMap((stage) => stage.races.map((race) => race.trackGPX));
+
+      // Экземпляр сервиса работы с Облаком.
+      const cloudService = new Cloud();
+
+      // Удаление из облака gps треков соответствующих заездов.
+      await Promise.allSettled(
+        gpsTracks.map((gpsTrack) =>
+          cloudService.deleteFile({
+            prefix: gpsTrack.url.replace(fileNameFormUrl, '$1'),
+          })
+        )
+      );
+
+      // Удаление из облака постеров этапов серии.
+      await Promise.allSettled(
+        stagesDB.map(({posterUrl}) =>
+          cloudService.deleteFile({
+            prefix: posterUrl.replace(fileNameFormUrl, '$1'),
+          })
+        )
+      );
+
+      // Удаление всех этапов серии (тура).
+      await ChampionshipModel.deleteMany({ parentChampionship: championshipId });
+
+      // Удаление всех заездов Чемпионата.
+      const raceForDelIds = stagesDB.map((stage) => stage._id);
+
+      await RaceModel.deleteMany({ championship: { $in: raceForDelIds } });
+    } catch (error) {
+      this.errorLogger(error);
+    }
   }
 }
