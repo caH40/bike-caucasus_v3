@@ -78,12 +78,18 @@ export default async function Registration(props: Props) {
               {profile ? (
                 registeredInChamp.data ? (
                   <BlockRegistered registeredInChamp={registeredInChamp.data} />
-                ) : (
+                ) : championship.races.length > 0 ? (
                   <FormRaceRegistration
                     profile={profile}
                     championshipId={championship._id}
                     races={championship.races}
                   />
+                ) : (
+                  <BlockMessage>
+                    <h3 className={styles.error}>
+                      {'Не найдены заезды для данного Чемпионата!'}
+                    </h3>
+                  </BlockMessage>
                 )
               ) : (
                 <BlockMessage>
