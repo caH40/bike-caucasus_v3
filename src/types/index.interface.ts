@@ -23,6 +23,7 @@ import {
   TOrganizer,
   TPerson,
   TRace,
+  TRacePointsTable,
   TRaceRegistration,
   TRaceRegistrationStatus,
   TResultRace,
@@ -1263,3 +1264,11 @@ export type TGetChampUrlSlugParams = {
  * Возвращаемые значения приватного метода getParentChampionship в классе ChampionshipService.
  */
 export type TGetParentChampionship = { categoriesConfigs: Types.ObjectId[]; urlSlug: string };
+
+export type TRacePointsTableForm = Omit<
+  TRacePointsTable,
+  '_id' | 'organizer' | 'createdAt' | 'createdAt'
+> & {
+  _id?: string;
+  organizer: string;
+};

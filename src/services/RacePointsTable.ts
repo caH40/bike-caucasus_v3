@@ -2,7 +2,7 @@ import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 
 // types
-import type { ServerResponse } from '@/types/index.interface';
+import type { ServerResponse, TRacePointsTableForm } from '@/types/index.interface';
 import { RacePointsTableModel } from '@/database/mongodb/Models/RacePointsTable';
 import { TRacePointsTable } from '@/types/models.interface';
 import { TRacePointsTableDto } from '@/types/dto.types';
@@ -82,8 +82,12 @@ export class RacePointsTableService {
   /**
    * Создание очковой таблицы.
    */
-  public async create(): Promise<ServerResponse<null>> {
+  public async create(
+    racePointsTableForm: TRacePointsTableForm
+  ): Promise<ServerResponse<null>> {
     try {
+      await RacePointsTableModel.create(racePointsTableForm);
+
       return {
         data: null,
         ok: true,
@@ -98,12 +102,28 @@ export class RacePointsTableService {
   /**
    * Обновление очковой таблицы.
    */
-  public async update(): Promise<ServerResponse<null>> {
+  public async update(
+    racePointsTableForm: TRacePointsTableForm & { _id: string }
+  ): Promise<ServerResponse<null>> {
     try {
+      const { _id, ...updateFields } = racePointsTableForm;
+
+      const res = await RacePointsTableModel.findOneAndUpdate(
+        { _id },
+        { $set: updateFields },
+        { new: true }
+      ).lean<TRacePointsTable>();
+
+      if (!res) {
+        throw new Error(
+          `Не найдена таблица начисления очков с _id: ${racePointsTableForm._id}`
+        );
+      }
+
       return {
         data: null,
         ok: true,
-        message: 'Обновлены данные очковой таблицы',
+        message: `Обновлены данные таблицы очков "${res.name}".`,
       };
     } catch (error) {
       this.errorLogger(error);
@@ -120,10 +140,18 @@ export class RacePointsTableService {
     racePointsTableId: string;
   }): Promise<ServerResponse<null>> {
     try {
+      const res = await RacePointsTableModel.findByIdAndDelete(
+        racePointsTableId
+      ).lean<TRacePointsTable>();
+
+      if (!res) {
+        throw new Error(`Не найдена таблица начисления очков с _id: ${racePointsTableId}`);
+      }
+
       return {
         data: null,
         ok: true,
-        message: 'Удалена очковая таблица',
+        message: `Удалена таблица очков "${res.name}".`,
       };
     } catch (error) {
       this.errorLogger(error);
