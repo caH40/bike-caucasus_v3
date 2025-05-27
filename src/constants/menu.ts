@@ -15,8 +15,9 @@ import IconLog from '@/components/Icons/IconLog';
 import IconRole from '@/components/Icons/IconRole';
 import IconChampionship from '@/components/Icons/IconChampionship';
 import IconOrganizers from '@/components/Icons/IconOrganizers';
-import type { TMenuOnPage } from '@/types/index.interface';
 import IconResults from '@/components/Icons/IconResults';
+
+import type { TMenuOnPage } from '@/types/index.interface';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -299,5 +300,13 @@ export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
     href: '/moderation/championship/protocol',
     permission: 'moderation.championship.protocol',
     icon: IconResults,
+  },
+  {
+    id: 4,
+    name: 'Таблицы очков',
+    classes: [],
+    href: '/moderation/championship/points-tables',
+    permission: 'moderation.championship.protocol',
+    icon: IconChampionship,
   },
 ];
