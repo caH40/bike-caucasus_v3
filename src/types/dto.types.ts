@@ -18,6 +18,7 @@ import {
   TProfileRiderInProtocol,
   TQuantityRidersFinished,
   TRace,
+  TRacePointsTable,
   TRaceRegistrationStatus,
   TRoleModel,
   TTrail,
@@ -330,4 +331,14 @@ export type TToursAndSeriesDto = Omit<
   startDate: string;
   endDate: string;
   availableStage: number[];
+};
+
+export type TRacePointsTableDto = Omit<
+  TRacePointsTable,
+  '_id' | 'organizer' | 'createdAt' | 'updatedAt'
+> & {
+  _id: string;
+  organizer: string;
+  createdAt: string;
+  updatedAt: string;
 };

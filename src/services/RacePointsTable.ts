@@ -1,10 +1,12 @@
-import { Types } from 'mongoose';
-
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 
 // types
 import type { ServerResponse } from '@/types/index.interface';
+import { RacePointsTableModel } from '@/database/mongodb/Models/RacePointsTable';
+import { TRacePointsTable } from '@/types/models.interface';
+import { TRacePointsTableDto } from '@/types/dto.types';
+import { racePointsTableDto } from '@/dto/race-points-table';
 
 /**
  * Класс работы с сущностью Таблицы начисления очков за заезд для серии заездов (Series).
@@ -25,10 +27,22 @@ export class RacePointsTable {
     racePointsTableId,
   }: {
     racePointsTableId: string;
-  }): Promise<ServerResponse<null>> {
+  }): Promise<ServerResponse<TRacePointsTableDto | null>> {
     try {
+      const pTableDB = await RacePointsTableModel.findById(
+        racePointsTableId
+      ).lean<TRacePointsTable>();
+
+      if (!pTableDB) {
+        throw new Error(
+          `Не найдена таблица начисления очков за заезд с _id: ${racePointsTableId}`
+        );
+      }
+
+      const racePointsAfterDto = racePointsTableDto(pTableDB);
+
       return {
-        data: null,
+        data: racePointsAfterDto,
         ok: true,
         message: 'Данные таблицы начисления очков в заездах для Series',
       };

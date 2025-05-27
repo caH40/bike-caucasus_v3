@@ -491,7 +491,7 @@ export type TRacePointsRule = {
  */
 export type TRacePointsTableDocument = TRacePointsTable & Document;
 export type TRacePointsTable = {
-  _id?: Types.ObjectId; // Уникальный идентификатор таблицы (автоматически создаётся Mongoose).
+  _id: Types.ObjectId; // Уникальный идентификатор таблицы (автоматически создаётся Mongoose).
   name: string; // Название таблицы (например, "Zwift Power Standard").
   organizer: Types.ObjectId; // Ссылка на _id организатора, который создал эту таблицу.
   description?: string; // (Опционально) описание таблицы и принципов начисления очков.
