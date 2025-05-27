@@ -478,3 +478,26 @@ export type TCategories = {
     male: TCategorySkillLevel[]; // Мужские категории по уровню подготовки.
   };
 };
+
+/**
+ * Правило начисления очков за конкретное место.
+ */
+export type TRacePointsRule = {
+  place: number; // Место в финишном протоколе (1, 2, 3 и т.д.).
+  points: number; // Количество начисляемых очков за указанное место.
+};
+/**
+ * Таблица начисления очков, используемая организаторами гонок.
+ */
+export type TTRacePointsTableDocument = TRacePointsTable & Document;
+export type TRacePointsTable = {
+  _id?: Types.ObjectId; // Уникальный идентификатор таблицы (автоматически создаётся Mongoose).
+  name: string; // Название таблицы (например, "Zwift Power Standard").
+  organizer: Types.ObjectId; // Ссылка на _id организатора, который создал эту таблицу.
+  description?: string; // (Опционально) описание таблицы и принципов начисления очков.
+  rules: TRacePointsRule[]; // Массив правил начисления очков, в порядке мест.
+  fallbackPoints?: number; // Очки для всех мест, не указанных в rules
+  isDefault: boolean; // Если true — таблица доступна всем организаторам.
+  createdAt: Date; // Дата создания таблицы.
+  updatedAt: Date; // Дата последнего обновления таблицы.
+};
