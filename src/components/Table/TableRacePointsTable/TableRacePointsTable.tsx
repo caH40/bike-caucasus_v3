@@ -12,10 +12,10 @@ import cn from 'classnames/bind';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
 import styles from '../TableCommon.module.css';
-// import BlockTableControlRole from '@/components/UI/BlockTableControlPermissions/BlockTableControlRole';
 
 import { TRacePointsTableDto } from '@/types/dto.types';
 import { getDateTime } from '@/libs/utils/calendar';
+import BlockTableControlTableRacePointsTable from '@/components/UI/BlockTableControlTableRacePointsTable/BlockTableControlTableRacePointsTable';
 
 const cx = cn.bind(styles);
 
@@ -47,11 +47,16 @@ const columns: ColumnDef<TRacePointsTableDto & { index: number }, any>[] = [
     accessorKey: 'updatedAt',
     cell: (props: any) => getDateTime(new Date(props.getValue())).dateDDMMYYYY,
   },
-  // {
-  //   header: 'Модерация',
-  //   accessorKey: 'urlSlug',
-  //   cell: (props) => <BlockTableControlRole propsTable={props} />,
-  // },
+  {
+    header: 'Модерация',
+    accessorKey: '_id',
+    cell: (props) => (
+      <BlockTableControlTableRacePointsTable
+        _id={props.row.original._id}
+        name={props.row.original.name}
+      />
+    ),
+  },
 ];
 
 /**
