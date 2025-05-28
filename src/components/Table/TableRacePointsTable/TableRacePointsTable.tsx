@@ -10,64 +10,39 @@ import {
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
 
-import Pagination from '@/components/UI/Pagination/Pagination';
 import styles from '../TableCommon.module.css';
 
 import { TRacePointsTableDto } from '@/types/dto.types';
 import { getDateTime } from '@/libs/utils/calendar';
-import BlockTableControlTableRacePointsTable from '@/components/UI/BlockTableControlTableRacePointsTable/BlockTableControlTableRacePointsTable';
+import { TRacePointsRule } from '@/types/models.interface';
 
 const cx = cn.bind(styles);
 
 type Props = {
-  racePointsTables: TRacePointsTableDto[];
+  racePointsTable: TRacePointsTableDto;
   docsOnPage?: number;
 };
 
-const columns: ColumnDef<TRacePointsTableDto & { index: number }, any>[] = [
+const columns: ColumnDef<TRacePointsRule, any>[] = [
   {
-    header: '#',
-    accessorKey: 'index',
+    header: 'Место',
+    accessorKey: 'place',
   },
   {
-    header: 'Название',
-    accessorKey: 'name',
-  },
-  {
-    header: 'Описание',
-    accessorKey: 'description',
-  },
-  {
-    header: 'Дата создания',
-    accessorKey: 'createdAt',
-    cell: (props: any) => getDateTime(new Date(props.getValue())).dateDDMMYYYY,
-  },
-  {
-    header: 'Дата изменения',
-    accessorKey: 'updatedAt',
-    cell: (props: any) => getDateTime(new Date(props.getValue())).dateDDMMYYYY,
-  },
-  {
-    header: 'Модерация',
-    accessorKey: '_id',
-    cell: (props) => (
-      <BlockTableControlTableRacePointsTable
-        _id={props.row.original._id}
-        name={props.row.original.name}
-      />
-    ),
+    header: 'Количество очков',
+    accessorKey: 'points',
   },
 ];
 
 /**
  * Таблица созданных таблиц начисления очков за этап серии заездов.
  */
-export default function TableRacePointsTable({ racePointsTables, docsOnPage = 10 }: Props) {
+export default function TableRacePointsTable({ racePointsTable, docsOnPage = 100 }: Props) {
+  const { rules } = racePointsTable;
+
   const data = useMemo(() => {
-    return [...racePointsTables]
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((racePointsTable, index) => ({ ...racePointsTable, index: index + 1 }));
-  }, [racePointsTables]);
+    return [...rules].sort((a, b) => a.place - b.place);
+  }, [rules]);
 
   const table = useReactTable({
     data,
@@ -92,43 +67,65 @@ export default function TableRacePointsTable({ racePointsTables, docsOnPage = 10
       <div className={styles.wrapper__wide}>
         <table className={styles.table}>
           <caption className={styles.caption}>
-            <span>Таблицы с начисляемыми очками за места на этапах серии заездов</span>
+            <span>{racePointsTable.name}</span>
           </caption>
+
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={cx('trh')} key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th className={styles.th} key={header.id}>
+                  <th className={styles.th_center} key={header.id}>
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
+
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr className={cx('tr', 'tr-hover')} key={row.id}>
+              <tr className={cx('tr', 'tr__link', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <td className={styles.td} key={cell.id}>
+                  <td className={styles.td_center} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
             ))}
           </tbody>
+
+          <tfoot className={styles.footer}>
+            <tr>
+              <td colSpan={2}>
+                <dl className={styles.footerList}>
+                  <div className={styles.footerRow}>
+                    <dt className={styles.dt}>Описание:</dt>
+                    <dd className={styles.dd}>{racePointsTable.description}</dd>
+                  </div>
+                  <div className={styles.footerRow}>
+                    <dt className={styles.dt}>Создано:</dt>
+                    <dd className={styles.dd}>
+                      {getDateTime(new Date(racePointsTable.createdAt)).dateDDMMYYYY}
+                    </dd>
+                  </div>
+                  <div className={styles.footerRow}>
+                    <dt className={styles.dt}>Обновлено:</dt>
+                    <dd className={styles.dd}>
+                      {getDateTime(new Date(racePointsTable.updatedAt)).dateDDMMYYYY}
+                    </dd>
+                  </div>
+                  {racePointsTable.isDefault && (
+                    <div className={styles.footerRow}>
+                      <dt className={styles.dt}>По умолчанию:</dt>
+                      <dd className={styles.dd}>Да</dd>
+                    </div>
+                  )}
+                </dl>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
-
-      {/* Отображать, когда две страницы и более */}
-      {racePointsTables.length > docsOnPage && (
-        <Pagination
-          isFirstPage={!table.getCanPreviousPage()}
-          isLastPage={!table.getCanNextPage()}
-          quantityPages={table.getPageCount()}
-          page={table.getState().pagination.pageIndex}
-          setPage={table.setPageIndex}
-        />
-      )}
     </div>
   );
 }

@@ -5,7 +5,6 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 export default async function RacePointsTablesPage() {
   const racePointsTables = await getRacePointsTables();
-  console.log(racePointsTables);
 
   return (
     <>

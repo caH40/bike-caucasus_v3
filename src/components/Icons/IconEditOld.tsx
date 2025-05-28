@@ -24,7 +24,10 @@ export default function IconEditOld({
   };
   return (
     <div
-      onClick={getClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        getClick && getClick();
+      }}
       className={cx('box', {
         interactive: getClick,
         active: isActive,

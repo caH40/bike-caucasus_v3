@@ -1,15 +1,26 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
-import { TRacePointsTableDto } from '@/types/dto.types';
 import { lcRecordsOnPage } from '@/constants/local-storage';
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
+import TableModerateRacePointsTable from '../../TableModerateRacePointsTable/TableModerateRacePointsTable';
 import styles from './ContainerRacePointsTable.module.css';
+
+// types
+import { TRacePointsTableDto } from '@/types/dto.types';
 import TableRacePointsTable from '../../TableRacePointsTable/TableRacePointsTable';
+import Spacer from '@/components/Spacer/Spacer';
+import { TRacePointsTableAction } from '@/types/index.interface';
 
 type Props = {
   racePointsTables: TRacePointsTableDto[];
+};
+
+type RacePointsTableState = {
+  data: TRacePointsTableDto;
+  action: TRacePointsTableAction;
 };
 
 /**
@@ -19,6 +30,7 @@ export default function ContainerRacePointsTable({ racePointsTables }: Props) {
   // Строка поиска разрешения.
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
+  const [racePointsTable, setRacePointsTable] = useState<RacePointsTableState | null>(null);
   const isMounting = useRef(true);
 
   useEffect(() => {
@@ -36,6 +48,23 @@ export default function ContainerRacePointsTable({ racePointsTables }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
+  // Редактирование выбранной очковой таблицы.
+  const handleClick = (_id: string, action: TRacePointsTableAction) => {
+    if (!_id || _id === 'undefined') {
+      toast.error(`Не получен _id ${_id}!`);
+      return;
+    }
+
+    const data = racePointsTables.find((r) => r._id === _id);
+
+    if (!data) {
+      toast.error(`Не получены данные очковой таблицы с _id ${_id}!`);
+      return;
+    }
+
+    setRacePointsTable({ data, action });
+  };
+
   return (
     <>
       <div className={styles.block__filter}>
@@ -49,7 +78,21 @@ export default function ContainerRacePointsTable({ racePointsTables }: Props) {
       </div>
 
       {/* Таблица */}
-      <TableRacePointsTable racePointsTables={racePointsTables} docsOnPage={docsOnPage} />
+      <Spacer margin="b-lg">
+        <TableModerateRacePointsTable
+          racePointsTables={racePointsTables}
+          docsOnPage={docsOnPage}
+          handleClick={handleClick}
+        />
+      </Spacer>
+
+      {racePointsTable?.data && racePointsTable.action === 'view' && (
+        <div className={styles.points}>
+          <TableRacePointsTable racePointsTable={racePointsTable.data} />
+        </div>
+      )}
+
+      <div className={styles.form}></div>
     </>
   );
 }

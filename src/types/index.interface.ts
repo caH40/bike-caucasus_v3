@@ -1272,3 +1272,6 @@ export type TRacePointsTableForm = Omit<
   _id?: string;
   organizer: string;
 };
+
+export type TRacePointsTableAction = 'edit' | 'view' | 'create';
+export type THandleClickRacePointTable = (_id: string, action: TRacePointsTableAction) => void;
