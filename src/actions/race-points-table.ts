@@ -37,13 +37,19 @@ export async function getRacePointsTable({
  * Экшен получения всех таблиц начисления очков за этап серии, созданных организатором.
  * Если organizerId не передан, значит возвращаются все таблице из БД.
  */
-export async function getRacePointsTables(params?: {
-  organizerId?: string;
-}): Promise<ServerResponse<TRacePointsTableDto[] | null>> {
+export async function getRacePointsTables(): Promise<
+  ServerResponse<TRacePointsTableDto[] | null>
+> {
   try {
+    // Проверка, есть ли у пользователя разрешение на модерацию чемпионата.
+    const user = await checkUserAccess('moderation.championship');
+
+    // Проверка, является ли пользователь userIdDB организатором.
+    const organizer = await checkIsOrganizer(user.userIdDB);
+
     const racePointsTableService = new RacePointsTableService();
     const racePointsTables = await racePointsTableService.getAll({
-      organizerId: params?.organizerId,
+      organizerId: organizer._id,
     });
 
     if (!racePointsTables.ok) {

@@ -136,6 +136,10 @@ const paths = [
     permission: ['moderation.championship.protocol'],
   },
   {
+    path: '/moderation/championship/race-points-tables',
+    permission: ['moderation.championship'],
+  },
+  {
     path: '/moderation/organizer',
     permission: ['moderation.organizer'],
   },

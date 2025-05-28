@@ -305,8 +305,8 @@ export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
     id: 4,
     name: 'Таблицы очков',
     classes: [],
-    href: '/moderation/championship/points-tables',
-    permission: 'moderation.championship.protocol',
+    href: '/moderation/championship/race-points-tables',
+    permission: 'moderation.championship',
     icon: IconChampionship,
   },
 ];
