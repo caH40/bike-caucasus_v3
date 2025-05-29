@@ -94,38 +94,30 @@ export const authOptions: AuthOptions = {
 
     async signIn({ user, account, profile }) {
       try {
+        // eslint-disable-next-line no-console
         console.log({ user, account, profile });
 
-        // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
         if (!account || account.provider === 'credentials') {
           return true;
         }
 
-        const provider = account.provider;
-        let email = user.email;
-        if (provider === 'vk') {
-          email = email ?? (account.email as string | undefined);
-        }
+        const provider = account.provider.toLowerCase();
+        let email = user.email ?? (account.email as string | undefined);
 
-        // email обязателен !!!!!! добавить в информационное сообщение
-        if (!email) {
-          throw new Error('Не получен email с provider!');
-        }
+        // если email отсутствует — генерируем заглушку
+        const hasRealEmail = !!email;
+        email = email ?? `no-email-${provider}-${user.id}@noemail.local`;
 
-        // поиск пользователя с id и provider в БД
+        // Поиск пользователя по provider.id и provider.name
         const userWithIdAndProviderDB = await User.findOne({
           'provider.id': user.id,
           'provider.name': provider,
         });
 
-        // если не найден, то регистрация
         if (!userWithIdAndProviderDB) {
           const profileCur = getProviderProfileDto(profile, provider);
-
-          // Получение порядкового id профиля нового пользователя.
           const id = await getNextSequenceValue('user');
 
-          // Получение _id Роли пользователя с правами User.
           const roleUser: { _id: ObjectId } | null = await Role.findOne(
             { name: 'user' },
             { _id: true }
@@ -135,30 +127,32 @@ export const authOptions: AuthOptions = {
             throw new Error('Не найдена роль пользователя user для регистрации пользователя.');
           }
 
+          // Предотвращение дубликатов по email (если email "реальный")
+          if (hasRealEmail) {
+            const emailExists = await User.findOne({ email: email.toLowerCase() });
+            if (emailExists) {
+              throw new Error(
+                'email из провайдера уже используется другим пользователем. Возможно, вы входили через другой сервис.'
+              );
+            }
+          }
+
           const userNew = {
             id,
             provider: {
               id: user.id,
-              name: provider.toLocaleLowerCase(),
+              name: provider,
               image: user.image,
             },
-            email: email.toLocaleLowerCase(),
+            email: email.toLowerCase(),
             role: roleUser._id,
-            emailConfirm: true,
+            emailConfirm: hasRealEmail,
             person: {
               firstName: profileCur.firstName,
               lastName: profileCur.lastName,
               gender: profileCur.gender,
             },
           };
-
-          const emailExists = await User.findOne({ email });
-
-          if (emailExists) {
-            throw new Error(
-              'email из провайдера уже есть у другого пользователя. Вы могли входить на сайт через другого провайдера (соцсеть), где указан такой же email как у текущего.'
-            );
-          }
 
           const userCreated = await User.create(userNew);
 
@@ -169,25 +163,25 @@ export const authOptions: AuthOptions = {
           return true;
         }
 
-        // email из provider соответствует email User с БД
-        if (userWithIdAndProviderDB.email === email) {
+        // Если email совпадает — вход разрешён
+        if (userWithIdAndProviderDB.email === email.toLowerCase()) {
           return true;
         }
 
-        // проверка наличия email из provider у другого пользователя с БД
-        const userWithCurrentEmailDB = await User.findOne({ email: email });
+        // Проверка на дубликат email (если email реальный)
+        if (hasRealEmail) {
+          const userWithCurrentEmailDB = await User.findOne({ email: email.toLowerCase() });
+          if (userWithCurrentEmailDB) {
+            throw new Error(
+              'email из провайдера уже используется другим пользователем. Возможно, вы входили через другой сервис.'
+            );
+          }
 
-        // ошибка, email из провайдера уже у другого пользователя !!!!!!!!!!
-        if (userWithCurrentEmailDB) {
-          throw new Error(
-            'email из провайдера уже есть у другого пользователя. Вы могли входить на сайт через другого провайдера (соцсеть), где указан такой же email как у текущего.'
-          );
+          // email у пользователя с этим provider.id изменился — обновляем
+          userWithIdAndProviderDB.email = email.toLowerCase();
+          userWithIdAndProviderDB.emailConfirm = true;
+          await userWithIdAndProviderDB.save();
         }
-
-        // значит пользователь выполняющий аутентификацию изменил свой email у провайдера
-        // обновляем email в БД
-        userWithIdAndProviderDB.email = email;
-        await userWithIdAndProviderDB.save();
 
         return true;
       } catch (error) {
@@ -199,6 +193,112 @@ export const authOptions: AuthOptions = {
         return false;
       }
     },
+
+    // async signIn({ user, account, profile }) {
+    //   try {
+    //     // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
+    //     if (!account || account.provider === 'credentials') {
+    //       return true;
+    //     }
+
+    //     const provider = account.provider;
+    //     let email = user.email;
+    //     if (provider === 'vk') {
+    //       email = email ?? (account.email as string | undefined);
+    //     }
+
+    //     // email обязателен !!!!!! добавить в информационное сообщение
+    //     if (!email) {
+    //       throw new Error('Не получен email с provider!');
+    //     }
+
+    //     // поиск пользователя с id и provider в БД
+    //     const userWithIdAndProviderDB = await User.findOne({
+    //       'provider.id': user.id,
+    //       'provider.name': provider,
+    //     });
+
+    //     // если не найден, то регистрация
+    //     if (!userWithIdAndProviderDB) {
+    //       const profileCur = getProviderProfileDto(profile, provider);
+
+    //       // Получение порядкового id профиля нового пользователя.
+    //       const id = await getNextSequenceValue('user');
+
+    //       // Получение _id Роли пользователя с правами User.
+    //       const roleUser: { _id: ObjectId } | null = await Role.findOne(
+    //         { name: 'user' },
+    //         { _id: true }
+    //       );
+
+    //       if (!roleUser) {
+    //         throw new Error('Не найдена роль пользователя user для регистрации пользователя.');
+    //       }
+
+    //       const userNew = {
+    //         id,
+    //         provider: {
+    //           id: user.id,
+    //           name: provider.toLocaleLowerCase(),
+    //           image: user.image,
+    //         },
+    //         email: email.toLocaleLowerCase(),
+    //         role: roleUser._id,
+    //         emailConfirm: true,
+    //         person: {
+    //           firstName: profileCur.firstName,
+    //           lastName: profileCur.lastName,
+    //           gender: profileCur.gender,
+    //         },
+    //       };
+
+    //       const emailExists = await User.findOne({ email });
+
+    //       if (emailExists) {
+    //         throw new Error(
+    //           'email из провайдера уже есть у другого пользователя. Вы могли входить на сайт через другого провайдера (соцсеть), где указан такой же email как у текущего.'
+    //         );
+    //       }
+
+    //       const userCreated = await User.create(userNew);
+
+    //       if (!userCreated) {
+    //         throw new Error('Ошибка при создании нового пользователя в БД.');
+    //       }
+
+    //       return true;
+    //     }
+
+    //     // email из provider соответствует email User с БД
+    //     if (userWithIdAndProviderDB.email === email) {
+    //       return true;
+    //     }
+
+    //     // проверка наличия email из provider у другого пользователя с БД
+    //     const userWithCurrentEmailDB = await User.findOne({ email: email });
+
+    //     // ошибка, email из провайдера уже у другого пользователя !!!!!!!!!!
+    //     if (userWithCurrentEmailDB) {
+    //       throw new Error(
+    //         'email из провайдера уже есть у другого пользователя. Вы могли входить на сайт через другого провайдера (соцсеть), где указан такой же email как у текущего.'
+    //       );
+    //     }
+
+    //     // значит пользователь выполняющий аутентификацию изменил свой email у провайдера
+    //     // обновляем email в БД
+    //     userWithIdAndProviderDB.email = email;
+    //     await userWithIdAndProviderDB.save();
+
+    //     return true;
+    //   } catch (error) {
+    //     errorLogger(error); // eslint-disable-line
+    //     if (error instanceof Error) {
+    //       const encodedError = encodeURIComponent(error.message);
+    //       return `/auth/login/access-denied?error=${encodedError}`;
+    //     }
+    //     return false;
+    //   }
+    // },
     async session({ session, token }) {
       if (session.user) {
         const userDB = await User.findOne(
