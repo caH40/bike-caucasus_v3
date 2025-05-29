@@ -34,6 +34,7 @@ import mongoose, { Types } from 'mongoose';
 import {
   TDtoChampionship,
   TDtoOrganizer,
+  TRacePointsTableDto,
   TResultRaceDto,
   TRoleDto,
   TToursAndSeriesDto,
@@ -1267,11 +1268,22 @@ export type TGetParentChampionship = { categoriesConfigs: Types.ObjectId[]; urlS
 
 export type TRacePointsTableForm = Omit<
   TRacePointsTable,
-  '_id' | 'organizer' | 'createdAt' | 'createdAt'
+  '_id' | 'organizer' | 'createdAt' | 'createdAt' | 'rules'
 > & {
   _id?: string;
   organizer: string;
+  rules: {
+    place: number | string;
+    points: number | string;
+  }[];
 };
 
 export type TRacePointsTableAction = 'edit' | 'view' | 'create';
 export type THandleClickRacePointTable = (_id: string, action: TRacePointsTableAction) => void;
+
+export type TFormCRacePointsTableProps = {
+  racePointsTable?: TRacePointsTableDto;
+  putRacePointsTable: (params: TRacePointsTableForm) => Promise<ServerResponse<any>>;
+  setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+  organizerId: string;
+};

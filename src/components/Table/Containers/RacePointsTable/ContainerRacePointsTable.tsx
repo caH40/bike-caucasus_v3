@@ -13,9 +13,11 @@ import { TRacePointsTableDto } from '@/types/dto.types';
 import TableRacePointsTable from '../../TableRacePointsTable/TableRacePointsTable';
 import Spacer from '@/components/Spacer/Spacer';
 import { TRacePointsTableAction } from '@/types/index.interface';
+import FormRacePointsTable from '@/components/UI/Forms/FormRacePointsTable/FormRacePointsTable';
 
 type Props = {
   racePointsTables: TRacePointsTableDto[];
+  organizerId: string;
 };
 
 type RacePointsTableState = {
@@ -26,7 +28,7 @@ type RacePointsTableState = {
 /**
  * Блок для таблиц и их управления, что бы был один клиентский компонент.
  */
-export default function ContainerRacePointsTable({ racePointsTables }: Props) {
+export default function ContainerRacePointsTable({ racePointsTables, organizerId }: Props) {
   // Строка поиска разрешения.
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
@@ -92,7 +94,9 @@ export default function ContainerRacePointsTable({ racePointsTables }: Props) {
         </div>
       )}
 
-      <div className={styles.form}></div>
+      <div className={styles.form}>
+        <FormRacePointsTable organizerId={organizerId} />
+      </div>
     </>
   );
 }

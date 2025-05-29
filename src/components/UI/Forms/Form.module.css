@@ -73,6 +73,21 @@
 .error {
   color: var(--error);
 }
+.header__points {
+  display: flex;
+  margin-bottom: 5px;
+}
+.header__points > span {
+  text-align: center;
+  flex: 0 0 100px;
+}
+.control {
+  display: flex;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1rem 0;
+}
 /* ====================================================================== */
 @media (max-width: 768px) {
   .form__registration {

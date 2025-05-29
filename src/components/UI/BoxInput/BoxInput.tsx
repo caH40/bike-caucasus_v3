@@ -30,13 +30,16 @@ export default function BoxInput({
 
   return (
     <div className={styles.wrapper}>
-      <label className={styles.label} htmlFor={id}>
-        <div className={styles.box__info}>
-          {label}
-          {tooltip && <IconInfo squareSize={20} tooltip={tooltip} />}
-        </div>
-        <span className={styles.validate}>{validationText}</span>
-      </label>
+      {label && (
+        <label className={styles.label} htmlFor={id}>
+          <div className={styles.box__info}>
+            {label}
+            {tooltip && <IconInfo squareSize={20} tooltip={tooltip} />}
+          </div>
+          <span className={styles.validate}>{validationText}</span>
+        </label>
+      )}
+
       <div className={styles.wrapper__relative}>
         <input
           id={id}
