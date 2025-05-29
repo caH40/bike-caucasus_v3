@@ -2,20 +2,23 @@
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import Button from '../../Button/Button';
 import BoxInput from '../../BoxInput/BoxInput';
-import { createOptionsRaces } from '@/app/championships/registration/[urlSlug]/utils';
+import {
+  createCategoryOptions,
+  createOptionsRaces,
+} from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
 import { registerForChampionship } from '@/actions/registration-champ';
 import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import { initRegChampForm, validateRequiredFields } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
-import styles from '../Form.module.css';
 import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
+import styles from '../Form.module.css';
 
 // types
 import {
@@ -30,6 +33,7 @@ export default function FormRaceRegistration({
   championshipId,
   races,
   profile,
+  categoriesConfigs,
 }: TFormRaceRegistrationProps) {
   const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
   const isLoading = useLoadingStore((state) => state.isLoading);
@@ -39,12 +43,12 @@ export default function FormRaceRegistration({
   const startNumberFree = useRegistrationRace((state) => state.startNumberFree);
 
   const {
-    register, // Функция для регистрации поля формы.
-    handleSubmit, // Функция для обработки отправки формы.
-    reset, // Функция для сброса формы до значений по умолчанию.
+    register,
+    handleSubmit,
+    reset,
     watch,
     setValue,
-    formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
+    formState: { errors },
   } = useForm<TFormRaceRegistration>({
     mode: 'all',
     defaultValues: initRegChampForm(races),
@@ -84,6 +88,7 @@ export default function FormRaceRegistration({
         raceId: dataForm.raceId,
         startNumber: +dataForm.startNumber,
         teamVariable: dataForm.teamVariable,
+        categoryName: dataForm.categoryName,
       });
 
       // Завершение отображение статуса загрузки.
@@ -102,6 +107,18 @@ export default function FormRaceRegistration({
       }
     }
   };
+
+  // Формирования options для выбора категории райдера.
+  const categoryOptions = useMemo(() => {
+    const categoriesIdInRace = races.find((r) => r._id === raceId)?.categories;
+    const categories = categoriesConfigs.find((c) => c._id === categoriesIdInRace);
+
+    if (!categoriesIdInRace || !categories) {
+      return [{ id: 0, translation: 'Возрастная', name: 'Возрастная' }];
+    }
+
+    return createCategoryOptions(categories, profile.gender);
+  }, [races, categoriesConfigs, raceId, profile.gender]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form__registration}>
@@ -141,6 +158,17 @@ export default function FormRaceRegistration({
             validate: textValidation.spaces,
           })}
           validationText={errors.teamVariable?.message || ''}
+        />
+
+        <BoxSelectNew
+          label="Выбор категории:*"
+          id="categoryName"
+          options={categoryOptions}
+          loading={isLoading}
+          register={register('categoryName', {
+            required: 'Это обязательное поле для заполнения',
+          })}
+          validationText={errors.categoryName?.message || ''}
         />
       </div>
 

@@ -15,6 +15,7 @@ const RaceRegistrationSchema = new Schema<TRaceRegistrationDocument>(
     startNumber: { type: Number },
     team: { type: Schema.Types.ObjectId, ref: 'Team', default: null },
     teamVariable: { type: String, default: null },
+    categorySkillLevel: { type: String, default: null },
     status: {
       type: String,
       enum: ['registered', 'canceled', 'banned'],

@@ -83,6 +83,7 @@ export default async function Registration(props: Props) {
                     profile={profile}
                     championshipId={championship._id}
                     races={championship.races}
+                    categoriesConfigs={championship.categoriesConfigs}
                   />
                 ) : (
                   <BlockMessage>
@@ -94,9 +95,9 @@ export default async function Registration(props: Props) {
               ) : (
                 <BlockMessage>
                   <h3 className={styles.error}>
-                    Для регистрации в Чемпионатах необходимо зарегистрироваться на сайте, если
-                    вы еще не сделали этого. Если у вас уже есть учетная запись, пожалуйста,
-                    войдите в нее.
+                    Для участия в Чемпионатах требуется регистрация на сайте. Если у вас ещё нет
+                    учётной записи, необходимо её создать. При наличии аккаунта следует
+                    авторизоваться в системе.
                   </h3>
                 </BlockMessage>
               )}

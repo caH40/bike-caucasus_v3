@@ -619,6 +619,7 @@ export type TRegistrationRaceDataFromForm = {
   raceId: string;
   startNumber: number;
   teamVariable: string;
+  categoryName: string;
 };
 
 export type TRaceForForm = Omit<
@@ -1166,6 +1167,7 @@ export type ProcessRegParams = {
   raceId: string;
   startNumber: number;
   teamVariable?: string;
+  categoryName: string;
 };
 
 /**
@@ -1175,6 +1177,7 @@ export type TFormRaceRegistration = {
   raceId: string;
   startNumber: number;
   teamVariable: string;
+  categoryName: string;
 };
 
 /**
@@ -1184,6 +1187,9 @@ export type TFormRaceRegistrationProps = {
   races: TRaceForForm[];
   championshipId: string;
   profile: TProfileForRegistration;
+  categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & {
+    _id: string;
+  })[];
 };
 
 export type TDocumentSectionContent = {

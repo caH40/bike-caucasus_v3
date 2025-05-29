@@ -81,5 +81,5 @@ export function validateRequiredFields(
 export function initRegChampForm(races: TRaceForForm[]): TFormRaceRegistration {
   const raceId = races.sort((a, b) => a.number - b.number)[0]._id;
 
-  return { raceId, teamVariable: '', startNumber: 1 };
+  return { raceId, teamVariable: '', startNumber: 1, categoryName: 'Возрастная' };
 }

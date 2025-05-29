@@ -31,6 +31,7 @@ export async function registerForChampionship({
   raceId,
   startNumber,
   teamVariable,
+  categoryName,
 }: TRegistrationRaceDataFromForm): Promise<ServerResponse<null>> {
   'use server';
   try {
@@ -48,6 +49,7 @@ export async function registerForChampionship({
       riderId,
       startNumber,
       teamVariable,
+      categoryName,
     });
 
     revalidatePath('championships');

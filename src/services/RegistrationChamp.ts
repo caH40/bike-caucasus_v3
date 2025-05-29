@@ -29,6 +29,7 @@ import type {
 } from '@/types/dto.types';
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TRegistrationStatusMongo } from '@/types/mongo.types';
+import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
 
 /**
  * Класс работы с сущностью Регистрация на Чемпионат.
@@ -51,6 +52,7 @@ export class RegistrationChampService {
     riderId,
     startNumber,
     teamVariable,
+    categoryName,
   }: RegChampPostParams): Promise<ServerResponse<null>> {
     try {
       // Проверка существования Чемпионата и запрашиваемого заезда для регистрации.
@@ -72,6 +74,7 @@ export class RegistrationChampService {
         raceId,
         startNumber,
         teamVariable,
+        categoryName,
       });
 
       // Добавление _id Райдера в массив зарегистрированных в заезд.
@@ -536,7 +539,11 @@ export class RegistrationChampService {
     raceId,
     startNumber,
     teamVariable,
+    categoryName,
   }: ProcessRegParams): Promise<void> {
+    // Если название Возрастная, значит SkillLevel: null
+    const categorySkillLevel = categoryName === DEFAULT_AGE_NAME_CATEGORY ? null : categoryName;
+
     if (!raceIdWithCanceledReg) {
       // Регистрация на выбранный Заезд Чемпионата.
       await RaceRegistrationModel.create({
@@ -545,6 +552,7 @@ export class RegistrationChampService {
         race: raceId,
         startNumber,
         status: 'registered',
+        categorySkillLevel,
         ...(teamVariable && { teamVariable }),
       });
     } else {
@@ -558,6 +566,7 @@ export class RegistrationChampService {
             startNumber,
             race: raceId,
             status: 'registered',
+            categorySkillLevel,
             ...(teamVariable && { teamVariable }),
           },
         }

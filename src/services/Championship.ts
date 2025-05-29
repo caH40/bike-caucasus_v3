@@ -88,6 +88,7 @@ export class ChampionshipService {
       }
 
       const championship = dtoChampionship(championshipDB);
+
       return { data: championship, ok: true, message: 'Данные запрашиваемого Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
@@ -659,7 +660,7 @@ export class ChampionshipService {
 
       // Удаление из облака постеров этапов серии.
       await Promise.allSettled(
-        stagesDB.map(({posterUrl}) =>
+        stagesDB.map(({ posterUrl }) =>
           cloudService.deleteFile({
             prefix: posterUrl.replace(fileNameFormUrl, '$1'),
           })
