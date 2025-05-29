@@ -33,13 +33,24 @@ export async function checkUserAccess(
 /**
  * Проверка, является ли пользователь userIdDB организатором.
  */
-export async function checkIsOrganizer(userIdDB: string): Promise<{ _id: string }> {
+export async function checkIsOrganizer(
+  userIdDB: string,
+  organizerIdFromForm?: string
+): Promise<{ _id: string }> {
   const organizer = await Organizer.findOne({ creator: userIdDB }, { _id: true }).lean<{
     _id: Types.ObjectId;
   }>();
 
   if (!organizer) {
     throw new Error('Вы не являетесь Организатором Чемпионатов. Обратитесь в поддержку!');
+  }
+
+  if (organizerIdFromForm) {
+    if (organizerIdFromForm !== organizer._id.toString()) {
+      throw new Error(
+        '_id организатора из формы не совпадает с _id организатора, прошедшего авторизацию!'
+      );
+    }
   }
 
   return { _id: organizer._id.toString() };

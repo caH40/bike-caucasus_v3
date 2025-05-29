@@ -18,6 +18,11 @@ import { toast } from 'sonner';
 import AddRemoveSquareButtonGroup from '@/components/AddRemoveSquareButtonGroup/AddRemoveSquareButtonGroup';
 import AddRemoveSquareButton from '../../Buttons/AddRemoveSquareButton';
 
+const buttonNames: Record<'create' | 'edit', string> = {
+  create: 'Создать',
+  edit: 'Обновить',
+};
+
 /**
  * Форма создания/редактирования таблицы начисления очков за этапы серии заездов.
  */
@@ -41,7 +46,10 @@ export default function FormRacePointsTable({
     defaultValues: {
       _id: racePointsTable?._id,
       name: racePointsTable?.name ?? '',
-      organizer: organizerId,
+      organizer:
+        action === 'edit' && racePointsTable?.organizer
+          ? racePointsTable.organizer
+          : organizerId,
       description: racePointsTable?.description ?? '',
       rules: racePointsTable?.rules ?? [{ place: 1, points: 100 }],
       fallbackPoints: racePointsTable?.fallbackPoints ?? 0,
@@ -159,7 +167,7 @@ export default function FormRacePointsTable({
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
-        <Button name={t.btn.save} theme="green" loading={isLoading} />
+        <Button name={buttonNames[action]} theme="green" loading={isLoading} />
       </div>
     </form>
   );

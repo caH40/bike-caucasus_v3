@@ -30,6 +30,7 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
   const [racePointsTable, setRacePointsTable] = useState<RacePointsTableState | null>(null);
+  // eslint-disable-next-line no-unused-vars
   const [isFormDirty, setIsFormDirty] = useState(false);
   const isMounting = useRef(true);
 
@@ -106,16 +107,18 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
         </div>
       )}
 
-      {racePointsTable && racePointsTable.action === 'create' && (
-        <div className={styles.form}>
-          <FormRacePointsTable
-            organizerId={organizerId}
-            setIsFormDirty={setIsFormDirty}
-            action={'create'}
-            setRacePointsTable={setRacePointsTable}
-          />
-        </div>
-      )}
+      {racePointsTable &&
+        (racePointsTable.action === 'edit' || racePointsTable.action === 'create') && (
+          <div className={styles.form}>
+            <FormRacePointsTable
+              racePointsTable={racePointsTable.data}
+              organizerId={organizerId}
+              setIsFormDirty={setIsFormDirty}
+              action={racePointsTable.action}
+              setRacePointsTable={setRacePointsTable}
+            />
+          </div>
+        )}
     </>
   );
 }

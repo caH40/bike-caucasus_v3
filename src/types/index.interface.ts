@@ -1291,5 +1291,5 @@ export type TFormCRacePointsTableProps = {
   setRacePointsTable: Dispatch<SetStateAction<RacePointsTableState | null>>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   organizerId: string;
-  action: TRacePointsTableAction;
+  action: 'create' | 'edit';
 };

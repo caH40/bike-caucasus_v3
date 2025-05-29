@@ -11,7 +11,7 @@ import {
   TFormCRacePointsTableProps,
   TRacePointsTableForm,
 } from '@/types/index.interface';
-import { createRacePointsTable } from '@/actions/race-points-table';
+import { createRacePointsTable, updateRacePointsTable } from '@/actions/race-points-table';
 
 type Props = Omit<TFormCRacePointsTableProps, 'racePointsTable' | 'organizerId'>;
 
@@ -36,11 +36,15 @@ export const useSubmitRacePointsTable = ({
     switch (action) {
       case 'create':
         response = await createRacePointsTable(formData);
+        break;
 
+      case 'edit':
+        response = await updateRacePointsTable(formData);
         break;
 
       default:
         toast.error('Не получен валидный action для отправки формы на сервер!');
+        setLoading(false);
         return;
     }
 
