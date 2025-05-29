@@ -37,7 +37,7 @@ export function processResults({
     const categoryAge = createStringCategoryAge({
       yearBirthday: result.profile.yearBirthday,
       categoriesAge: isFemale ? categories.age.female : categories.age.male,
-      gender: isFemale ? 'F' : 'M',
+      gender: isFemale ? 'female' : 'male',
     });
 
     result.categoryAge = categoryAge;

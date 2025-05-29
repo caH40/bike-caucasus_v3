@@ -549,7 +549,7 @@ export class ResultRaceService {
     return createStringCategoryAge({
       yearBirthday: data.yearBirthday,
       categoriesAge: isFemale ? categoriesAgeFemale : categoriesAgeMale,
-      gender: isFemale ? 'F' : 'M',
+      gender: isFemale ? 'female' : 'male',
     });
   }
 }

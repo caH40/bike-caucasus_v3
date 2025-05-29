@@ -62,6 +62,10 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
     accessorKey: 'rider.yearBirthday',
   },
   {
+    header: 'Категория',
+    accessorKey: 'category',
+  },
+  {
     header: 'Статус',
     accessorKey: 'status',
     cell: (props: any) => (
@@ -88,6 +92,8 @@ export default function TableRegisteredRace({
   docsOnPage = 10,
   showFooter,
 }: Props) {
+  // console.log(registeredRidersInRace.raceRegistrationRider);
+
   const data = useMemo(() => {
     return [...registeredRidersInRace.raceRegistrationRider]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())

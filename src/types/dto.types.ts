@@ -199,6 +199,7 @@ export type TRaceRegistrationDto = {
   championship: string; // Ссылка _id нЧемпионат.
   raceId: string;
   rider: TRaceRegistrationRiderDto;
+  category: string; // Название возрастной или sillLevel категории.
   startNumber: number | undefined; // Номер участника на старте.
   status: TRaceRegistrationStatus; // Статус регистрации.
   createdAt: string; // Дата создания в формате ISO 8601.

@@ -37,7 +37,7 @@ export type TPerson = {
   firstName: string;
   patronymic?: string;
   lastName: string;
-  birthday: string;
+  birthday: Date;
   gender: 'male' | 'female';
   bio: string;
 };

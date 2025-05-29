@@ -25,7 +25,6 @@ import {
   TRace,
   TRacePointsTable,
   TRaceRegistration,
-  TRaceRegistrationStatus,
   TResultRace,
   TTrackGPXObj,
 } from './models.interface';
@@ -566,18 +565,21 @@ export type TStageDateDescription = {
 /**
  * Данные Зарегистрированного Райдера из БД.
  */
-export type TRegisteredRiderFromDB = {
-  _id: mongoose.Types.ObjectId;
-  championship: mongoose.Types.ObjectId;
-  race: mongoose.Types.ObjectId;
-  raceName?: string;
-  rider: TRider;
-  teamVariable?: string;
-  startNumber: number;
-  status: TRaceRegistrationStatus;
-  createdAt: Date;
-  updatedAt: Date;
+export type TRegisteredRiderFromDB = Omit<TRaceRegistration, 'rider'> & {
+  rider: IUserModel;
 };
+// export type TRegisteredRiderFromDB = {
+//   _id: mongoose.Types.ObjectId;
+//   championship: mongoose.Types.ObjectId;
+//   race: mongoose.Types.ObjectId;
+//   raceName?: string;
+//   rider: TRider;
+//   teamVariable?: string;
+//   startNumber: number;
+//   status: TRaceRegistrationStatus;
+//   createdAt: Date;
+//   updatedAt: Date;
+// };
 
 export type TRider = {
   _id: mongoose.Types.ObjectId;
@@ -586,7 +588,7 @@ export type TRider = {
     firstName: string;
     lastName: string;
     patronymic?: string;
-    gender: 'male' | 'female';
+    gender: TGender;
     birthday: Date;
   };
   provider: {
@@ -598,6 +600,8 @@ export type TRider = {
   city?: string;
 };
 
+export type TGender = 'male' | 'female';
+
 /**
  * Данные райдера, в частности для Регистрации на Чемпионат.
  */
@@ -606,7 +610,7 @@ export type TProfileForRegistration = {
   lastName: string | null;
   ageCategory: string | null;
   city: string | null;
-  gender: 'male' | 'female';
+  gender: TGender;
 };
 // Получаем ключи из TProfileForRegistration
 export type TProfileKey = keyof TProfileForRegistration;
@@ -688,7 +692,7 @@ export type TFormResultRace = {
     yearBirthday: number | string; // Год рождения.
     fullYears: number;
     fractionalYears: number;
-    gender: 'male' | 'female';
+    gender: TGender;
     city?: string;
     team?: string;
   };
@@ -703,7 +707,7 @@ export type TFormResultRace = {
 export type TDataFromFormResultRace = {
   city?: string;
   firstName: string;
-  gender: 'male' | 'female';
+  gender: TGender;
   id?: number; // id пользователя на сайте (1000 и т.д.).
   _id?: string;
   lastName: string;
@@ -745,7 +749,7 @@ export type TProfileSimpleFromDB = {
     lastName: string;
     patronymic?: string;
     birthday: Date;
-    gender: 'male' | 'female';
+    gender: TGender;
   };
   city?: string;
 };
@@ -793,7 +797,7 @@ export interface TFormModerateUser {
   lastName?: string;
   patronymic?: string;
   city?: string;
-  gender: 'male' | 'female';
+  gender: TGender;
   roleId: string;
 }
 
@@ -807,7 +811,7 @@ export interface TUserModeratedData {
     firstName?: string;
     lastName?: string;
     patronymic?: string;
-    gender: 'male' | 'female';
+    gender: TGender;
   };
   city?: string;
 }
@@ -819,8 +823,10 @@ export type TChampionshipForRegistered = Pick<
   TChampionship,
   '_id' | 'name' | 'type' | 'startDate' | 'endDate'
 > & {
-  races: TRace[];
+  races: TRaceWithCategories[];
 };
+
+export type TRaceWithCategories = Omit<TRace, 'categories'> & { categories: TCategories };
 
 /**
  * Получение данных об чемпионате для таблицы зарегистрированных участников.
@@ -1070,7 +1076,7 @@ export type TAgeCategoryInputFieldsProps = {
   register: UseFormRegister<TCategoriesFormType>;
 
   // Пол: male или female — нужен для метки
-  categoryProperty: 'male' | 'female';
+  categoryProperty: TGender;
 
   // Префикс пути до конкретной категории, например: "categories.0.age.male.0"
   fieldPathPrefix:

@@ -1,12 +1,12 @@
 import { MAX_ATHLETE_AGE } from '@/constants/category';
 import { AgeCategory } from '@/database/mongodb/Models/AgeCategory';
 import { errorLogger } from '@/errors/error';
-import { TCategoryAge } from '@/types/index.interface';
+import { TCategoryAge, TGender } from '@/types/index.interface';
 
 type Params = {
   birthday: Date | string;
   ageCategoryVersion: string;
-  gender?: 'male' | 'female';
+  gender?: TGender;
 };
 
 /**
@@ -73,7 +73,7 @@ export function createStringCategoryAge({
 }: {
   yearBirthday: number;
   categoriesAge: TCategoryAge[];
-  gender: 'M' | 'F';
+  gender: TGender;
 }): string {
   // Проверка валидности года рождения.
   if (!yearBirthday || +yearBirthday === 0) {
@@ -81,7 +81,7 @@ export function createStringCategoryAge({
   }
 
   const error = `Нет ${
-    gender === 'F' ? 'женской' : 'мужской'
+    gender === 'female' ? 'женской' : 'мужской'
   } возрастной категории для запрашиваемого года рождения: ${yearBirthday}. Добавьте соответствующую возрастную категорию в настройки Заезда.`;
 
   if (!categoriesAge) {
@@ -91,15 +91,20 @@ export function createStringCategoryAge({
   // Возраст в годах: текущий год - год рождения.
   const fullYear = new Date().getFullYear() - yearBirthday;
 
+  const shortGender: Record<TGender, 'M' | 'F'> = {
+    female: 'F',
+    male: 'M',
+  };
+
   // Проходим по каждой категории и проверяем, попадает ли возраст в диапазон.
   for (const category of categoriesAge) {
     if (fullYear >= category.min && fullYear <= category.max) {
       if (category.max === MAX_ATHLETE_AGE) {
         // Если название категории было задано, то возвращается оно.
         // Категория без верхнего предела.
-        return category.name || `${gender}${category.min}+`;
+        return category.name || `${shortGender[gender]}${category.min}+`;
       } else {
-        return category.name || `${gender}${category.min}-${category.max}`; // Категория с указанием диапазона.
+        return category.name || `${shortGender[gender]}${category.min}-${category.max}`; // Категория с указанием диапазона.
       }
     }
   }

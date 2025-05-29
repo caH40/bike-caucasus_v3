@@ -1,3 +1,4 @@
+import { createStringCategoryAge } from '@/libs/utils/age-category';
 import { getAgeDetails, getDateTime } from '@/libs/utils/calendar';
 import type {
   TChampRegistrationRiderDto,
@@ -6,26 +7,34 @@ import type {
   TRegistrationRiderDto,
 } from '@/types/dto.types';
 import type {
-  TChampionshipForRegisteredClient,
   TRaceForForm,
+  TRaceWithCategories,
   TRegisteredRiderFromDB,
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
-import { TRace } from '@/types/models.interface';
+import { TCategories, TRace } from '@/types/models.interface';
 
 /**
  * ДТО Зарегистрированного райдера в Заезде.
  */
 export function dtoRegisteredRider(
-  riderRegistered: TRegisteredRiderFromDB
+  riderRegistered: TRegisteredRiderFromDB,
+  categories: TCategories
 ): TRaceRegistrationDto {
   const age = getAgeDetails(new Date(riderRegistered.rider.person.birthday));
 
   const image = riderRegistered.rider.imageFromProvider
-    ? riderRegistered.rider.provider.image
+    ? riderRegistered.rider.provider?.image
     : riderRegistered.rider.image;
 
+  const gender = riderRegistered.rider.person.gender;
   const yearBirthday = getDateTime(riderRegistered.rider.person.birthday).year;
+
+  // Определение категории в регистрации.
+  const category: string = riderRegistered.categorySkillLevel
+    ? riderRegistered.categorySkillLevel
+    : createStringCategoryAge({ gender, yearBirthday, categoriesAge: categories.age[gender] });
+
   return {
     _id: riderRegistered._id.toString(),
     championship: riderRegistered.championship.toString(),
@@ -36,13 +45,14 @@ export function dtoRegisteredRider(
       firstName: riderRegistered.rider.person.firstName,
       lastName: riderRegistered.rider.person.lastName,
       patronymic: riderRegistered.rider.person.patronymic,
-      gender: riderRegistered.rider.person.gender,
+      gender,
       ...age,
       yearBirthday,
       team: riderRegistered.teamVariable,
       city: riderRegistered.rider.city,
       image,
     },
+    category,
     startNumber: riderRegistered.startNumber,
     status: riderRegistered.status,
     createdAt: riderRegistered.createdAt.toISOString(),
@@ -52,8 +62,11 @@ export function dtoRegisteredRider(
 /**
  * ДТО Зарегистрированных райдеров в Заезде.
  */
-export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegistrationDto[] {
-  return riders.map((rider) => dtoRegisteredRider(rider));
+export function dtoRegisteredRiders(
+  riders: TRegisteredRiderFromDB[],
+  categories: TCategories // Пакет категорий для заезда.
+): TRaceRegistrationDto[] {
+  return riders.map((rider) => dtoRegisteredRider(rider, categories));
 }
 
 /**
@@ -61,27 +74,22 @@ export function dtoRegisteredRiders(riders: TRegisteredRiderFromDB[]): TRaceRegi
  */
 export function dtoRegisteredInChampRiders({
   riders,
-  championship,
-  races,
+  race,
 }: {
   riders: TRegisteredRiderFromDB[];
-  championship: TChampionshipForRegisteredClient;
-  races: TRace[];
-}): {
-  champRegistrationRiders: TChampRegistrationRiderDto[];
-  championship: TChampionshipForRegisteredClient;
-} {
-  const ridersAfterDto = dtoRegisteredRiders(riders);
+  race: TRaceWithCategories;
+}): TChampRegistrationRiderDto {
+  const ridersAfterDto = dtoRegisteredRiders(riders, race.categories);
 
-  const champRegistrationRiders = races.map((race) => ({
+  const registeredRidersInRace = {
     raceId: race._id.toString(),
     raceName: race.name,
     raceRegistrationRider: ridersAfterDto.filter(
       (rider) => rider.raceId === race._id.toString()
     ),
-  }));
+  };
 
-  return { championship, champRegistrationRiders };
+  return registeredRidersInRace;
 }
 
 /**

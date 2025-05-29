@@ -18,10 +18,11 @@ import type {
   ServerResponse,
   TChampionshipForRegistered,
   TChampionshipForRegisteredClient,
+  TRaceWithCategories,
   TRegisteredRiderFromDB,
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
-import type { TRace, TRaceRegistrationStatus } from '@/types/models.interface';
+import type { TCategories, TRace, TRaceRegistrationStatus } from '@/types/models.interface';
 import type {
   TChampRegistrationRiderDto,
   TRaceRegistrationDto,
@@ -109,25 +110,18 @@ export class RegistrationChampService {
         { race: raceId },
         { payment: false }
       )
-        .populate({
-          path: 'rider',
-          select: [
-            'id',
-            'city',
-            'team',
-            'teamVariable',
-            'person.firstName',
-            'person.lastName',
-            'person.birthday',
-            'person.gender',
-            'image',
-            'imageFromProvider',
-            'provider.image',
-          ],
-        })
+        .populate('rider')
         .lean<TRegisteredRiderFromDB[]>();
 
-      const registeredRiders = dtoRegisteredRiders(registeredRidersDb);
+      const raceDb = await RaceModel.findOne({ _id: raceId }, { _id: false, categories: true })
+        .populate('categories')
+        .lean<{ categories: TCategories }>();
+
+      if (!raceDb) {
+        throw new Error(`Не найден заезд с _id: ${raceId}`);
+      }
+
+      const registeredRiders = dtoRegisteredRiders(registeredRidersDb, raceDb?.categories);
 
       return {
         data: registeredRiders,
@@ -142,7 +136,7 @@ export class RegistrationChampService {
 
   /**
    * Получение зарегистрированных Райдеров на Этап/Соревнования во всех Заездах
-   * или в конкретном заезде raceNumber.
+   * или в конкретном заезде raceId.
    */
   public async getRegisteredInChampRiders({
     urlSlug,
@@ -171,14 +165,18 @@ export class RegistrationChampService {
         .populate('rider')
         .lean<TRegisteredRiderFromDB[]>();
 
-      const registeredRiders = dtoRegisteredInChampRiders({
-        riders: registeredRidersDb,
-        championship,
-        races,
-      });
+      const registeredRiders = [] as TChampRegistrationRiderDto[];
+
+      for (const race of races) {
+        const registeredRidersInRace = dtoRegisteredInChampRiders({
+          riders: registeredRidersDb,
+          race,
+        });
+        registeredRiders.push(registeredRidersInRace);
+      }
 
       return {
-        data: registeredRiders,
+        data: { champRegistrationRiders: registeredRiders, championship },
         ok: true,
         message: `Зарегистрированные райдеры на Чемпионат Этапа/Соревнования`,
       };
@@ -404,7 +402,7 @@ export class RegistrationChampService {
     raceId?: string;
   }): Promise<{
     championship: TChampionshipForRegisteredClient;
-    races: TRace[];
+    races: TRaceWithCategories[];
     championshipId: mongoose.Types.ObjectId;
   }> {
     // Подключение к БД осуществляется в методе в котором вызывается данный метод.
@@ -421,7 +419,7 @@ export class RegistrationChampService {
         endDate: true,
       }
     )
-      .populate('races')
+      .populate({ path: 'races', populate: 'categories' })
       .lean<TChampionshipForRegistered>();
 
     if (!champDB) {
