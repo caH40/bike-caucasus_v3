@@ -3,37 +3,46 @@
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-import { serializationChampionshipCategories } from '@/libs/utils/serialization/championshipCategories';
 import { useLoadingStore } from '@/store/loading';
+
+// types
 import {
-  TCategoriesConfigsForm,
-  TUseSubmitChampionshipCategoriesParams,
+  ServerResponse,
+  TFormCRacePointsTableProps,
+  TRacePointsTableForm,
 } from '@/types/index.interface';
+import { createRacePointsTable } from '@/actions/race-points-table';
+
+type Props = Omit<TFormCRacePointsTableProps, 'racePointsTable' | 'organizerId'>;
 
 /**
  * Отправка формы таблицы начисления очков за этапы серии заездов.
  */
 export const useSubmitRacePointsTable = ({
-  putCategories,
-  organizerId,
+  action,
   setIsFormDirty,
-  urlSlug,
-}: TUseSubmitChampionshipCategoriesParams) => {
+  setRacePointsTable,
+}: Props) => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
-  const onSubmit = async (formData: { categories: TCategoriesConfigsForm[] }) => {
-    // console.log(formData.categories);
-
+  const onSubmit = async (formData: TRacePointsTableForm) => {
     // Старт отображение статуса загрузки.
     setLoading(true);
 
-    // Сериализация данных в FormData перед отправкой на сервер.
-    const dataSerialized = serializationChampionshipCategories(formData.categories);
-
     // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
+    let response = {} as ServerResponse<null>;
 
-    const response = await putCategories({ dataSerialized, organizerId, urlSlug });
+    switch (action) {
+      case 'create':
+        response = await createRacePointsTable(formData);
+
+        break;
+
+      default:
+        toast.error('Не получен валидный action для отправки формы на сервер!');
+        return;
+    }
 
     // Завершение отображение статуса загрузки.
     setLoading(false);
@@ -42,6 +51,8 @@ export const useSubmitRacePointsTable = ({
     if (response.ok) {
       toast.success(response.message);
       setIsFormDirty(false);
+
+      setRacePointsTable(null);
 
       // Обновляем родительский серверный компонент.
       router.refresh();

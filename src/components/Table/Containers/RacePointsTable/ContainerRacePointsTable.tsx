@@ -6,23 +6,20 @@ import { toast } from 'sonner';
 import { lcRecordsOnPage } from '@/constants/local-storage';
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
 import TableModerateRacePointsTable from '../../TableModerateRacePointsTable/TableModerateRacePointsTable';
+import FormRacePointsTable from '@/components/UI/Forms/FormRacePointsTable/FormRacePointsTable';
+import AddRemoveSquareButtonGroup from '@/components/AddRemoveSquareButtonGroup/AddRemoveSquareButtonGroup';
+import AddRemoveSquareButton from '@/components/UI/Buttons/AddRemoveSquareButton';
+import TableRacePointsTable from '../../TableRacePointsTable/TableRacePointsTable';
+import Spacer from '@/components/Spacer/Spacer';
 import styles from './ContainerRacePointsTable.module.css';
 
 // types
 import { TRacePointsTableDto } from '@/types/dto.types';
-import TableRacePointsTable from '../../TableRacePointsTable/TableRacePointsTable';
-import Spacer from '@/components/Spacer/Spacer';
-import { TRacePointsTableAction } from '@/types/index.interface';
-import FormRacePointsTable from '@/components/UI/Forms/FormRacePointsTable/FormRacePointsTable';
+import { RacePointsTableState, TRacePointsTableAction } from '@/types/index.interface';
 
 type Props = {
   racePointsTables: TRacePointsTableDto[];
   organizerId: string;
-};
-
-type RacePointsTableState = {
-  data: TRacePointsTableDto;
-  action: TRacePointsTableAction;
 };
 
 /**
@@ -33,6 +30,7 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
   const [search, setSearch] = useState('');
   const [docsOnPage, setDocsOnPage] = useState(5);
   const [racePointsTable, setRacePointsTable] = useState<RacePointsTableState | null>(null);
+  const [isFormDirty, setIsFormDirty] = useState(false);
   const isMounting = useRef(true);
 
   useEffect(() => {
@@ -51,7 +49,12 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
   }, [docsOnPage]);
 
   // Редактирование выбранной очковой таблицы.
-  const handleClick = (_id: string, action: TRacePointsTableAction) => {
+  const handleClick = (_id: string | null, action: TRacePointsTableAction) => {
+    if (_id === null && action === 'create') {
+      setRacePointsTable({ action });
+      return;
+    }
+
     if (!_id || _id === 'undefined') {
       toast.error(`Не получен _id ${_id}!`);
       return;
@@ -80,12 +83,21 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
       </div>
 
       {/* Таблица */}
-      <Spacer margin="b-lg">
+      <Spacer margin="b-md">
         <TableModerateRacePointsTable
           racePointsTables={racePointsTables}
           docsOnPage={docsOnPage}
           handleClick={handleClick}
         />
+      </Spacer>
+
+      <Spacer margin="b-lg">
+        <AddRemoveSquareButtonGroup label={'Добавить таблицу'}>
+          <AddRemoveSquareButton
+            action={'add'}
+            actionFunction={() => handleClick(null, 'create')}
+          />
+        </AddRemoveSquareButtonGroup>
       </Spacer>
 
       {racePointsTable?.data && racePointsTable.action === 'view' && (
@@ -94,9 +106,16 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
         </div>
       )}
 
-      <div className={styles.form}>
-        <FormRacePointsTable organizerId={organizerId} />
-      </div>
+      {racePointsTable && racePointsTable.action === 'create' && (
+        <div className={styles.form}>
+          <FormRacePointsTable
+            organizerId={organizerId}
+            setIsFormDirty={setIsFormDirty}
+            action={'create'}
+            setRacePointsTable={setRacePointsTable}
+          />
+        </div>
+      )}
     </>
   );
 }

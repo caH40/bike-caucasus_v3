@@ -23,9 +23,10 @@ import AddRemoveSquareButton from '../../Buttons/AddRemoveSquareButton';
  */
 export default function FormRacePointsTable({
   racePointsTable,
-  putRacePointsTable,
   setIsFormDirty,
   organizerId,
+  action,
+  setRacePointsTable,
 }: TFormCRacePointsTableProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
@@ -70,14 +71,11 @@ export default function FormRacePointsTable({
   };
 
   // Функция отправки формы редактирования категорий Чемпионата.
-  // const onSubmit = useSubmitRacePointsTable({
-  //   organizerId,
-  //   putRacePointsTable,
-  //   racePointsTableId,
-  //   setIsFormDirty,
-  // });
-
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = useSubmitRacePointsTable({
+    action,
+    setIsFormDirty,
+    setRacePointsTable,
+  });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>

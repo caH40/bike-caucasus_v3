@@ -1281,9 +1281,15 @@ export type TRacePointsTableForm = Omit<
 export type TRacePointsTableAction = 'edit' | 'view' | 'create';
 export type THandleClickRacePointTable = (_id: string, action: TRacePointsTableAction) => void;
 
+export type RacePointsTableState = {
+  data?: TRacePointsTableDto;
+  action: TRacePointsTableAction;
+};
+
 export type TFormCRacePointsTableProps = {
   racePointsTable?: TRacePointsTableDto;
-  putRacePointsTable: (params: TRacePointsTableForm) => Promise<ServerResponse<any>>;
+  setRacePointsTable: Dispatch<SetStateAction<RacePointsTableState | null>>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   organizerId: string;
+  action: TRacePointsTableAction;
 };
