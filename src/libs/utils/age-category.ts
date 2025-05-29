@@ -110,5 +110,5 @@ export function createStringCategoryAge({
   }
 
   // Если ни одна категория не подошла.
-  throw new Error(error);
+  return 'нет категории';
 }
