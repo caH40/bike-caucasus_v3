@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
+  getPaginationRowModel,
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
 import cn from 'classnames/bind';
@@ -23,12 +24,10 @@ type Props = {
   docsOnPage: number;
 };
 
-const columns: ColumnDef<TUserDto>[] = [
+const columns: ColumnDef<TUserDto & { tableId?: number }>[] = [
   {
     header: '#',
-    cell: (props) => {
-      return props.row.index + 1;
-    },
+    accessorKey: 'tableId',
   },
   {
     header: 'Участник',
@@ -78,7 +77,7 @@ const columns: ColumnDef<TUserDto>[] = [
 
 export default function TableUsersAdmin({ users, docsOnPage = 5 }: Props) {
   const data = useMemo(() => {
-    return [...users].map((user) => ({ ...user }));
+    return [...users].map((user, index) => ({ ...user, tableId: index + 1 }));
   }, [users]);
 
   const table = useReactTable({
@@ -86,11 +85,12 @@ export default function TableUsersAdmin({ users, docsOnPage = 5 }: Props) {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       sorting: [{ id: 'id', desc: false }],
       pagination: {
         pageIndex: 0, //custom initial page index.
-        pageSize: docsOnPage, //custom default page size.
+        pageSize: 10, //custom default page size.
       },
     },
   });
