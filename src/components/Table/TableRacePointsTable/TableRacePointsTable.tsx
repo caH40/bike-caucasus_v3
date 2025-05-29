@@ -84,7 +84,7 @@ export default function TableRacePointsTable({ racePointsTable, docsOnPage = 100
 
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr className={cx('tr', 'tr__link', 'tr-hover')} key={row.id}>
+              <tr className={cx('tr', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className={styles.td_center} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -92,6 +92,10 @@ export default function TableRacePointsTable({ racePointsTable, docsOnPage = 100
                 ))}
               </tr>
             ))}
+            <tr className={cx('tr', 'tr-hover')}>
+              <td className={styles.td_center}>Остальные</td>
+              <td className={styles.td_center}>{racePointsTable.fallbackPoints || 0}</td>
+            </tr>
           </tbody>
 
           <tfoot className={styles.footer}>

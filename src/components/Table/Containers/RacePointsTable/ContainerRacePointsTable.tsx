@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { lcRecordsOnPage } from '@/constants/local-storage';
-import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
 import TableModerateRacePointsTable from '../../TableModerateRacePointsTable/TableModerateRacePointsTable';
 import FormRacePointsTable from '@/components/UI/Forms/FormRacePointsTable/FormRacePointsTable';
 import AddRemoveSquareButtonGroup from '@/components/AddRemoveSquareButtonGroup/AddRemoveSquareButtonGroup';
@@ -26,28 +24,14 @@ type Props = {
  * Блок для таблиц и их управления, что бы был один клиентский компонент.
  */
 export default function ContainerRacePointsTable({ racePointsTables, organizerId }: Props) {
-  // Строка поиска разрешения.
-  const [search, setSearch] = useState('');
-  const [docsOnPage, setDocsOnPage] = useState(5);
   const [racePointsTable, setRacePointsTable] = useState<RacePointsTableState | null>(null);
   // eslint-disable-next-line no-unused-vars
   const [isFormDirty, setIsFormDirty] = useState(false);
-  const isMounting = useRef(true);
 
+  // Очистка контейнера при изменении входных данных (в частности после удаления таблицы).
   useEffect(() => {
-    const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
-    setDocsOnPage(initialDocsOnPage);
-  }, []);
-
-  useEffect(() => {
-    // Если происходит монтирование компонента, то не записывать данные в Локальное хранилище.
-    if (isMounting.current) {
-      isMounting.current = false;
-      return;
-    }
-
-    localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
-  }, [docsOnPage]);
+    setRacePointsTable(null);
+  }, [racePointsTables]);
 
   // Редактирование выбранной очковой таблицы.
   const handleClick = (_id: string | null, action: TRacePointsTableAction) => {
@@ -73,21 +57,11 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
 
   return (
     <>
-      <div className={styles.block__filter}>
-        <FilterBoxForTable
-          docsOnPage={docsOnPage}
-          setDocsOnPage={setDocsOnPage}
-          search={search}
-          setSearch={setSearch}
-          placeholder={'поиск'}
-        />
-      </div>
-
       {/* Таблица */}
       <Spacer margin="b-md">
         <TableModerateRacePointsTable
           racePointsTables={racePointsTables}
-          docsOnPage={docsOnPage}
+          docsOnPage={50}
           handleClick={handleClick}
         />
       </Spacer>

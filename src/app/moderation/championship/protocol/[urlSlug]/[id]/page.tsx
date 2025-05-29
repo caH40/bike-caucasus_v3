@@ -78,7 +78,7 @@ export default async function AddFinishProtocolPage(props: Props) {
     <>
       <TitleAndLine
         hSize={1}
-        title="Добавление результатов райдеров для протокола Заезда"
+        title={`Добавление результатов для чемпионата "${championship.data.name}"`}
         Icon={IconResults}
       />
       <WrapperProtocolRaceEdit

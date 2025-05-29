@@ -69,7 +69,11 @@ export default async function EditFinishProtocolPage(props: Props) {
 
   return (
     <>
-      <TitleAndLine hSize={1} title="Редактирование результата райдера" Icon={IconResults} />
+      <TitleAndLine
+        hSize={1}
+        title={`Редактирование результата райдера для чемпионата "${championship.data.name}"`}
+        Icon={IconResults}
+      />
       <WrapperResultRaceEdit result={result.data} putResultRaceRider={putResultRaceRider} />
     </>
   );
