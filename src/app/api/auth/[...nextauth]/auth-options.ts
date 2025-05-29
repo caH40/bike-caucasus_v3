@@ -94,6 +94,8 @@ export const authOptions: AuthOptions = {
 
     async signIn({ user, account, profile }) {
       try {
+        console.log({ user, account, profile });
+
         // если нет данных стороннего сервиса (account) или вход по логин/пароль, то выход из signIn()
         if (!account || account.provider === 'credentials') {
           return true;
@@ -109,8 +111,6 @@ export const authOptions: AuthOptions = {
         if (!email) {
           throw new Error('Не получен email с provider!');
         }
-
-        // подключение к БД
 
         // поиск пользователя с id и provider в БД
         const userWithIdAndProviderDB = await User.findOne({
