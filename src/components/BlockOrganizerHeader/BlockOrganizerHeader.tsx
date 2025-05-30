@@ -3,6 +3,7 @@ import Image from 'next/image';
 import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from './BlockOrganizerHeader.module.css';
 import { blurBase64 } from '@/libs/image';
+import { content } from '@/libs/utils/text';
 
 type Props = { organizer: TDtoOrganizer };
 
@@ -40,7 +41,10 @@ export default function BlockOrganizerHeader({ organizer }: Props) {
           <h1 className={styles.title}>{organizer.name}</h1>
         </div>
 
-        <div className={styles.description}>{organizer.description}</div>
+        <div
+          className={styles.description}
+          dangerouslySetInnerHTML={{ __html: content.replaceCRLFtoBR(organizer.description) }}
+        ></div>
       </section>
     </div>
   );

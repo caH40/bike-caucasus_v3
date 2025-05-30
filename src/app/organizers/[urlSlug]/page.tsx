@@ -26,22 +26,6 @@ type Props = {
   }>;
 };
 
-// export async function generateStaticParams() {
-//   const organizers = await getOrganizers();
-//   // Проверка наличия данных
-//   // if (!organizers.data) {
-//   //   return { paths: [], fallback: 'blocking' };
-//   // }
-//   if (!organizers.data) {
-//     throw new Error('Не получены данные страниц!');
-//   }
-
-//   return organizers.data.map((organizer) => ({
-//     urlSlug: organizer.urlSlug,
-//   }));
-
-// }
-
 export default async function OrganizerPage(props: Props) {
   const params = await props.params;
 
@@ -54,6 +38,7 @@ export default async function OrganizerPage(props: Props) {
       {organizer.data && (
         <>
           <BlockOrganizerHeader organizer={organizer.data} />
+
           <div className={styles.wrapper__contacts}>
             <BlockOrganizerContacts organizer={organizer.data.contactInfo} />
           </div>

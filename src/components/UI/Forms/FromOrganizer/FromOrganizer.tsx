@@ -13,7 +13,7 @@ import BlockUploadImage from '../../BlockUploadImage/BlockUploadImage';
 import { optionsRegisterEmail } from '@/libs/utils/validatorService';
 import { useLoadingStore } from '@/store/loading';
 import { serializationOrganizer } from '@/libs/utils/serialization/organizer';
-import { TextValidationService } from '@/libs/utils/text';
+import { content, TextValidationService } from '@/libs/utils/text';
 import type { ServerResponse, TFormOrganizerCreate } from '@/types/index.interface';
 import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from '../Form.module.css';
@@ -69,6 +69,8 @@ export default function FromOrganizer({
     const organizerId = organizerForEdit?._id;
     const posterUrl = organizerForEdit?.posterUrl;
     const logoUrl = organizerForEdit?.logoUrl;
+    dataForm.description = content.cleanText(dataForm.description);
+    dataForm.name = content.cleanText(dataForm.name);
     const dataSerialized = serializationOrganizer({
       dataForm,
       isEditing,
