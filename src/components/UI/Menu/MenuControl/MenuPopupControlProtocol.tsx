@@ -19,7 +19,7 @@ type Props = {
 };
 
 // Роли для использования меню.
-const permission = 'admin';
+const permission = 'moderation.championship.protocol';
 
 /**
  * Popup меню управления протоколом заезда в таблице результатов.
@@ -63,6 +63,7 @@ export default function MenuPopupControlProtocol({ raceInfo }: Props) {
       classes: [],
     },
   ];
+
   return (
     <PermissionCheck permission={permission}>
       <div className={styles.inner}>
