@@ -1,0 +1,23 @@
+.wrapper {
+  background-color: var(--black-50);
+  border-radius: 5px;
+  padding: 5px;
+  color: var(--color-orange);
+  padding: 3px 1rem;
+  max-width: 330px;
+  overflow: hidden;
+}
+.title__date {
+  font-size: 1.2em;
+}
+/* ====================================================================== */
+@media (max-width: 1300px) {
+  .title__date {
+    font-size: 1.1em;
+  }
+}
+@media (max-width: 992px) {
+  .title__date {
+    font-size: 1.1em;
+  }
+}

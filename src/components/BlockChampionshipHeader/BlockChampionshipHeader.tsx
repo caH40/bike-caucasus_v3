@@ -3,8 +3,8 @@ import Image from 'next/image';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './BlockChampionshipHeader.module.css';
 import { blurBase64 } from '@/libs/image';
-import { formatDateInterval } from '@/libs/utils/calendar';
 import { getH1Championship } from '@/app/championships/utils';
+import PeriodDates from '../PeriodDates/PeriodDates';
 
 type Props = { championship: TDtoChampionship };
 
@@ -38,12 +38,7 @@ export default function BlockChampionshipHeader({ championship }: Props) {
       </div>
 
       <div className={styles.box__date}>
-        <h3 className={styles.title__date}>
-          {formatDateInterval({
-            startDate: new Date(championship.startDate),
-            endDate: new Date(championship.endDate),
-          })}
-        </h3>
+        <PeriodDates startDate={championship.startDate} endDate={championship.endDate} />
       </div>
 
       <section className={styles.block__text}>

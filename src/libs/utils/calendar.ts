@@ -170,15 +170,16 @@ export function formatDateInterval({
 
   // Проверка, совпадают ли startDate и endDate с точностью до дня
   if (start.hasSame(end, 'day')) {
-    return start.toFormat('dd MMMM'); // Полный формат для одной даты
+    return start.toFormat('dd MMMM yyyy'); // Полный формат для одной даты
   }
+
   // Проверка, совпадают ли месяцы и годы
   else if (start.hasSame(end, 'month')) {
     return `${start.toFormat('dd')}-${end.toFormat('dd')} ${start.toFormat('MMMM yyyy')}`; // Формат дд-дд ммм
   }
   // Разные месяцы и годы
   else {
-    return `${start.toFormat('dd MMMM')} - ${end.toFormat('dd MMMM')}`;
+    return `${start.toFormat('dd MMMM')} - ${end.toFormat('dd MMMM yyyy')}`;
   }
 }
 
