@@ -23,6 +23,7 @@ import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TRiderRaceResultDto } from '@/types/dto.types';
+import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -130,6 +131,12 @@ export class ResultRaceService {
       // Название возрастной категории в зависимости от возраста участника и категорий в заезде.
       const categoryAge = await this.getAgeCategory(dataDeserialized, race.categories);
 
+      // Если название Возрастная, значит SkillLevel: null
+      const categorySkillLevel =
+        dataDeserialized.categoryName === DEFAULT_AGE_NAME_CATEGORY
+          ? null
+          : dataDeserialized.categoryName;
+
       // Сохранение в БД результата райдера в Заезде Чемпионата.
       await ResultRaceModel.create({
         championship: dataDeserialized.championshipId,
@@ -148,7 +155,7 @@ export class ResultRaceService {
         categoryAge,
         ...(dataDeserialized.id && { id: dataDeserialized.id }),
         raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
-        categorySkillLevel: dataDeserialized.categorySkillLevel,
+        categorySkillLevel,
         creator: creatorId,
       });
 
@@ -186,6 +193,12 @@ export class ResultRaceService {
       // Проверка занят или нет стартовый номер у райдера, результат которого вносится в протокол.
       await this.isStartNumberTaken(dataDeserialized);
 
+      // Если название Возрастная, значит SkillLevel: null
+      const categorySkillLevel =
+        dataDeserialized.categoryName === DEFAULT_AGE_NAME_CATEGORY
+          ? null
+          : dataDeserialized.categoryName;
+
       const query = {
         profile: {
           firstName: dataDeserialized.firstName,
@@ -196,6 +209,7 @@ export class ResultRaceService {
           yearBirthday: dataDeserialized.yearBirthday,
           gender: dataDeserialized.gender,
         },
+        categorySkillLevel,
         startNumber: dataDeserialized.startNumber,
         raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
       };

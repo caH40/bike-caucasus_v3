@@ -698,7 +698,7 @@ export type TFormResultRace = {
     team?: string;
   };
   newStartNumber: number | string;
-  categorySkillLevel?: string | null;
+  categoryName: string; // Название категории SkillLevel или "Возрастная";
   time: TTimeDetails;
 };
 
@@ -738,6 +738,7 @@ export type TResultRaceRiderDeserialized = Omit<
   yearBirthday: number;
   raceId: string;
   resultId?: string;
+  categoryName: string;
 };
 
 /**

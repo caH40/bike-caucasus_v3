@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { useAddResultRace } from '@/hooks/useAddResultRace';
 import { TRaceRegistrationDto } from '@/types/dto.types';
-import { ServerResponse, TFormResultRace } from '@/types/index.interface';
+import { ServerResponse, TFormResultRace, TGender, TOptions } from '@/types/index.interface';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 import BlockInputs from './BlockInputs/BlockInputs';
 import Button from '../../Button/Button';
@@ -15,8 +15,10 @@ import { serializationResultRaceRider } from '@/libs/utils/serialization/resultR
 import FilterRidersForAddResult from '../../Filters/FilterRidersForAddResult/Filters';
 import { buttonsForRiderRaceResult } from '@/constants/buttons';
 import BlockSearchRider from './BlockSearchRider/BlockSearchRider';
-import styles from './FormResultAdd.module.css';
 import { useResetFormAddResultRace } from '@/hooks/useResetFormAddResultRace';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
+import styles from './FormResultAdd.module.css';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -29,6 +31,7 @@ type Props = {
   championshipId: string;
   raceId: string;
   setTriggerResultTable: React.Dispatch<React.SetStateAction<boolean>>;
+  getCategoriesNameOptions: (gender: TGender) => TOptions[];
 };
 
 /**
@@ -40,6 +43,7 @@ export default function FormResultAdd({
   raceId,
   championshipId,
   setTriggerResultTable,
+  getCategoriesNameOptions,
 }: Props) {
   // const isLoading = useLoadingStore((state) => state.isLoading);
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -69,6 +73,14 @@ export default function FormResultAdd({
     },
   });
 
+  const gender = watch('rider.gender');
+
+  // Формирование options названий категорий.
+  const categoriesNameOptions = useMemo(
+    () => getCategoriesNameOptions(gender),
+    [gender, getCategoriesNameOptions]
+  );
+
   // Сброс формы при переключении кнопок выбора способа ввода данных.
   useResetFormAddResultRace({ setValue, activeIdBtn });
 
@@ -87,6 +99,8 @@ export default function FormResultAdd({
     registeredRiders,
     lastNameRegisteredInRace,
     setValue,
+    reset,
+    categorySkillLevelNames: categoriesNameOptions.map((c) => c.name),
   });
 
   // Обработка формы после нажатия кнопки "Отправить".
@@ -109,7 +123,7 @@ export default function FormResultAdd({
       startNumber: startNumber(),
       raceId,
       championshipId,
-      categorySkillLevel: null,
+      categoryName: dataFromForm.categoryName,
     });
 
     setLoading(true);
@@ -153,6 +167,19 @@ export default function FormResultAdd({
         errors={errors}
         startNumberRegisteredInRace={startNumberRegisteredInRace}
       />
+
+      <div>
+        <TitleAndLine hSize={3} title="Категория" />
+        <BoxSelectNew
+          label="Выбор категории:*"
+          id="categoryName"
+          options={categoriesNameOptions}
+          register={register('categoryName', {
+            required: 'Это обязательное поле для заполнения',
+          })}
+          validationText={errors.categoryName?.message || ''}
+        />
+      </div>
 
       {/* блок полей ввода финишного времени */}
       <BlockInputsTime register={register} errors={errors} />

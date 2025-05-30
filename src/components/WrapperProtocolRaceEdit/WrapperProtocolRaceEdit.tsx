@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { ServerResponse, TOptions } from '@/types/index.interface';
+import { ServerResponse, TGender, TOptions } from '@/types/index.interface';
 import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
 import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
@@ -14,6 +14,7 @@ import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { useResultsRace } from '@/store/results';
 import { toast } from 'sonner';
+import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
 
 type Props = {
   options: TOptions[];
@@ -77,6 +78,19 @@ export default function WrapperProtocolRaceEdit({
     raceId,
   };
 
+  const getCategoriesNameOptions = (gender: TGender) => {
+    const categoriesIdInRace = championship.races.find((r) => r._id === raceId)?.categories;
+    const categoriesConfig = championship.categoriesConfigs.find(
+      (c) => c._id === categoriesIdInRace
+    );
+
+    if (!categoriesIdInRace || !categoriesConfig) {
+      return [{ id: 0, translation: 'Возрастная', name: 'Возрастная' }];
+    }
+
+    return createCategoryOptions(categoriesConfig, gender);
+  };
+
   return (
     <div className={styles.wrapper}>
       <FormSelectionRace
@@ -94,6 +108,7 @@ export default function WrapperProtocolRaceEdit({
         championshipId={championship._id}
         raceId={raceId}
         setTriggerResultTable={setTriggerResultTable}
+        getCategoriesNameOptions={getCategoriesNameOptions}
       />
 
       <ContainerProtocolRace
