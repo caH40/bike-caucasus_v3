@@ -26,9 +26,10 @@ export default function FormSelectionChampionship({
   const [urlSlug, setUrlSlug] = useState<string>('');
 
   useEffect(() => {
-    if (!urlSlug) {
+    if (!urlSlug || urlSlug === 'нет фильтров') {
       return;
     }
+
     const raceId = championshipsWithRacesIds.find((champ) => champ.urlSlug === urlSlug)
       ?.races[0];
 

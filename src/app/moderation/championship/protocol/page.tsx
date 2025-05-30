@@ -19,7 +19,12 @@ export default async function ChampionshipRaceForProtocolPage() {
     );
   }
 
-  const options: TOptions[] = championships.data.map((champ, index) => ({
+  // Отображаются чемпионата которые идут или закончились.
+  const champWithRaces = championships.data.filter(
+    (champ) => champ.races.length > 0 && ['completed', 'ongoing'].includes(champ.status)
+  );
+
+  const options: TOptions[] = champWithRaces.map((champ, index) => ({
     id: index,
     translation: champ.name,
     name: champ.urlSlug,
