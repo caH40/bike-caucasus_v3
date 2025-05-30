@@ -323,6 +323,9 @@ export type TRiderRaceResultDto = {
     endDate: number;
   };
   race: Pick<TRace, 'ascent' | 'description' | 'distance' | 'laps' | 'name' | 'number'>;
+  categoriesConfig: Omit<TCategories, '_id' | 'championship'> & {
+    _id: string;
+  };
 };
 
 export type TToursAndSeriesDto = Omit<

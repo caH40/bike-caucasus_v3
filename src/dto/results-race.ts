@@ -1,5 +1,6 @@
 import { TResultRaceDto, TRiderRaceResultDto } from '@/types/dto.types';
 import { TResultRaceFromDB, TRiderRaceResultDB } from '@/types/index.interface';
+import { TCategories } from '@/types/models.interface';
 
 export function dtoResultRace(result: TResultRaceFromDB): TResultRaceDto {
   const _id = String(result._id);
@@ -26,8 +27,22 @@ export function dtoResultsRace(results: TResultRaceFromDB[]): TResultRaceDto[] {
 /**
  * Дто данных результата райдера в соревновании для Профиля пользователя.
  */
-export function dtoResultRaceRider(result: TRiderRaceResultDB): TRiderRaceResultDto {
+export function dtoResultRaceRider({
+  result,
+  categoriesConfig,
+}: {
+  result: TRiderRaceResultDB;
+  categoriesConfig?: TCategories;
+}): TRiderRaceResultDto {
   const resultDto = {} as TRiderRaceResultDto;
+
+  if (categoriesConfig) {
+    const categoriesId = categoriesConfig._id!.toString();
+    // eslint-disable-next-line no-unused-vars
+    const { championship, ...categoriesWithOutChamp } = categoriesConfig;
+
+    resultDto.categoriesConfig = { ...categoriesWithOutChamp, _id: categoriesId };
+  }
 
   const raceFiltered = {
     number: result.race.number,
@@ -67,5 +82,5 @@ export function dtoResultRaceRider(result: TRiderRaceResultDB): TRiderRaceResult
  * Дто данных результатов райдера в соревнованиях для Профиля пользователя.
  */
 export function dtoResultsRaceRider(results: TRiderRaceResultDB[]): TRiderRaceResultDto[] {
-  return results.map((result) => dtoResultRaceRider(result));
+  return results.map((result) => dtoResultRaceRider({ result }));
 }

@@ -16,7 +16,7 @@ import {
   TRiderRaceResultDB,
 } from '@/types/index.interface';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
-import { TRace, TResultRace } from '@/types/models.interface';
+import { TCategories, TRace, TResultRace } from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship';
 import { processResults } from '@/libs/utils/results';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
@@ -48,13 +48,25 @@ export class ResultRaceService {
         { createdAt: false, updatedAt: false, creator: false }
       )
         .populate({ path: 'championship', select: ['name', 'urlSlug', 'races', 'endDate'] })
+        .populate('race')
         .lean<TRiderRaceResultDB>();
 
       if (!resultDB) {
         throw new Error('Не найден обновляемый результат в БД!');
       }
 
-      const resultsRaceRiderAfterDto = dtoResultRaceRider(resultDB);
+      const categoriesDB = await CategoriesModel.findById(
+        resultDB.race.categories
+      ).lean<TCategories>();
+
+      if (!categoriesDB) {
+        throw new Error('Не найден конфигурация категорий для заезда!');
+      }
+
+      const resultsRaceRiderAfterDto = dtoResultRaceRider({
+        result: resultDB,
+        categoriesConfig: categoriesDB,
+      });
 
       return { data: resultsRaceRiderAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
     } catch (error) {

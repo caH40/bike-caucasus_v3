@@ -11,6 +11,11 @@ import type { TRiderRaceResultDto } from '@/types/dto.types';
 import type { ServerResponse, TFormResultRace } from '@/types/index.interface';
 import styles from './FormResultAdd.module.css';
 import { useRouter } from 'next/navigation';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
+import { useEffect, useMemo } from 'react';
+import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
+import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
 
 type Props = {
   result: TRiderRaceResultDto;
@@ -33,6 +38,7 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
     register,
     watch,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<TFormResultRace>({
     mode: 'all',
@@ -54,6 +60,29 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
 
   const startNumberRegisteredInRace = watch('newStartNumber');
 
+  const gender = watch('rider.gender');
+
+  // Формирование options названий категорий.
+  const categoriesNameOptions = useMemo(() => {
+    if (!result.categoriesConfig) {
+      return [{ id: 0, translation: 'Возрастная', name: 'Возрастная' }];
+    }
+
+    return createCategoryOptions(result.categoriesConfig, gender);
+  }, [gender, result.categoriesConfig]);
+
+  // Изменение поля categoryName.
+  useEffect(() => {
+    const categorySkillLevelNames = categoriesNameOptions.map((c) => c.name);
+
+    setValue(
+      'categoryName',
+      result.categorySkillLevel && categorySkillLevelNames.includes(result.categorySkillLevel)
+        ? result.categorySkillLevel
+        : DEFAULT_AGE_NAME_CATEGORY
+    );
+  }, [categoriesNameOptions, setValue, result.categorySkillLevel]);
+
   // Обработка формы после нажатия кнопки "Отправить".
   const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
     const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
@@ -64,6 +93,7 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
       ...dataFromForm.rider,
       startNumber: dataFromForm.newStartNumber,
       resultId: dataFromForm._id,
+      categoryName: dataFromForm.categoryName,
     });
 
     setLoading(true);
@@ -86,6 +116,19 @@ export default function FormResultEdit({ putResultRaceRider, result }: Props) {
         errors={errors}
         startNumberRegisteredInRace={+startNumberRegisteredInRace}
       />
+
+      <div>
+        <TitleAndLine hSize={3} title="Категория" />
+        <BoxSelectNew
+          label="Выбор категории:*"
+          id="categoryName"
+          options={categoriesNameOptions}
+          register={register('categoryName', {
+            required: 'Это обязательное поле для заполнения',
+          })}
+          validationText={errors.categoryName?.message || ''}
+        />
+      </div>
 
       {/* блок полей ввода финишного времени */}
       <BlockInputsTime register={register} errors={errors} />
