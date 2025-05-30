@@ -282,10 +282,16 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
           }}
         />
       ),
-      accessorKey: 'categoryAge',
-      cell: (props: any) => (
-        <span className={styles.nowrap}>{replaceCategorySymbols(props.getValue())}</span>
-      ),
+      accessorKey: 'categoryAge', // Не важно значение, так как данные берутся из origin.
+      cell: (props: any) => {
+        const row = props.row.original;
+
+        return row.categorySkillLevel ? (
+          row.categorySkillLevel
+        ) : (
+          <span className={styles.nowrap}>{replaceCategorySymbols(row.categoryAge)}</span>
+        );
+      },
       uniqueName: 'Категория',
     },
     {
