@@ -101,7 +101,7 @@ const columns: ColumnDef<TRegistrationRiderDto & { index: number }>[] = [
 ];
 
 /**
- * Таблица Чемпионатов.
+ * Таблица в каких заездах зарегистрирован пользователь.
  */
 export default function TableRegistrationsRider({
   registrationsRider,

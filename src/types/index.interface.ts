@@ -653,7 +653,7 @@ export type TRaceForFormNew = Omit<
  */
 export type TRegistrationRiderFromDB = Pick<
   TRaceRegistration,
-  '_id' | 'rider' | 'startNumber' | 'status' | 'createdAt'
+  '_id' | 'startNumber' | 'status' | 'createdAt'
 > & {
   championship: {
     _id: mongoose.Types.ObjectId;
@@ -667,6 +667,7 @@ export type TRegistrationRiderFromDB = Pick<
     posterUrl: string;
   };
   race: TRace;
+  rider: IUserModel;
 };
 
 /**

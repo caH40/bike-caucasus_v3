@@ -1,4 +1,5 @@
 import {
+  TGender,
   TOrganizerForClient,
   TParentChampionshipForClient,
   TRaceForForm,
@@ -233,7 +234,7 @@ export type TChampRegistrationRiderDto = {
  */
 export type TRegistrationRiderDto = {
   _id: string;
-  riderId: string;
+  rider: { gender: TGender };
   championship: {
     _id: string;
     name: string;

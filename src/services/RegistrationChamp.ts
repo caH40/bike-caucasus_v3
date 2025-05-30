@@ -8,7 +8,7 @@ import {
   dtoCheckRegisteredInChamp,
   dtoRegisteredRiders,
   dtoRegisteredInChampRiders,
-  dtoRegistrationsRider,
+  dtoRegistrationRider,
 } from '@/dto/registration-champ';
 import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
 import { User } from '@/database/mongodb/Models/User';
@@ -286,16 +286,19 @@ export class RegistrationChampService {
             'type',
             'parentChampionship',
           ],
-          populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type'] },
+          populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type', '-_id'] },
         })
         .populate('race')
+        .populate('rider')
         .lean<TRegistrationRiderFromDB[]>();
 
       const registrationsFiltered = registrationsDb.filter(
         (reg) => reg.championship && reg.championship.status === 'upcoming'
       );
 
-      const registrationsRiderAfterDto = dtoRegistrationsRider(registrationsFiltered);
+      const registrationsRiderAfterDto = registrationsFiltered.map((registration) =>
+        dtoRegistrationRider(registration)
+      );
 
       return {
         data: registrationsRiderAfterDto,

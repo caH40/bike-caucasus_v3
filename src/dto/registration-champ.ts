@@ -95,7 +95,9 @@ export function dtoRegisteredInChampRiders({
 /**
  * Дто данных по Регистрации Райдера в Чемпионате.
  */
-function dtoRegistrationRider(registration: TRegistrationRiderFromDB): TRegistrationRiderDto {
+export function dtoRegistrationRider(
+  registration: TRegistrationRiderFromDB
+): TRegistrationRiderDto {
   // Получение race из объекта Чемпионата у которого raceNumber совпадает с raceNumber из Регистрации.
   const race = formatTRaceToClient(registration.race);
 
@@ -105,7 +107,7 @@ function dtoRegistrationRider(registration: TRegistrationRiderFromDB): TRegistra
 
   return {
     _id: registration._id.toString(),
-    riderId: registration.rider.toString(),
+    rider: { gender: registration.rider.person.gender },
     championship: {
       _id: registration.championship._id.toString(),
       name: registration.championship.name,
@@ -124,16 +126,6 @@ function dtoRegistrationRider(registration: TRegistrationRiderFromDB): TRegistra
   };
 }
 
-/**
- * Дто данных по Регистраций (все регистрации) Райдера в Чемпионатах.
- */
-export function dtoRegistrationsRider(
-  registrations: TRegistrationRiderFromDB[]
-): TRegistrationRiderDto[] {
-  return registrations.map((registration) => dtoRegistrationRider(registration));
-}
-
-// ===================================================================================
 export function formatTRacesToClient(races: TRace[]): TRaceForForm[] {
   return races.map((race) => formatTRaceToClient(race));
 }
