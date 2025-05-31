@@ -21,7 +21,6 @@
 .box:not(.active):hover {
   background-color: var(--filter-bg-hover);
   transition: 0.2s;
-  /* box-shadow: 0 0 5px 4px var(--btn-bg-hover); */
 }
 .active {
   background-color: var(--btn-bg);
