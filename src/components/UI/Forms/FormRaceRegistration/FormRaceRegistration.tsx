@@ -1,16 +1,13 @@
 'use client';
 
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useEffect, useMemo } from 'react';
 
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import Button from '../../Button/Button';
 import BoxInput from '../../BoxInput/BoxInput';
-import {
-  createCategoryOptions,
-  createOptionsRaces,
-} from '@/app/championships/registration/[urlSlug]/utils';
+import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
 import { registerForChampionship } from '@/actions/registration-champ';
 import { useRegistrationRace } from '@/store/registration-race';
@@ -18,6 +15,7 @@ import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import { initRegChampForm, validateRequiredFields } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
 import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
+import RaceSelectButtons from '@/UI/RaceSelectButtons/RaceSelectButtons';
 import styles from '../Form.module.css';
 
 // types
@@ -47,6 +45,7 @@ export default function FormRaceRegistration({
     handleSubmit,
     reset,
     watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<TFormRaceRegistration>({
@@ -123,16 +122,24 @@ export default function FormRaceRegistration({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form__registration}>
       <div className={styles.wrapper__inputs}>
-        <BoxSelectNew
-          label="Выбор заезда:*"
-          id="raceId"
-          options={createOptionsRaces(races)}
-          loading={isLoading}
-          register={register('raceId', {
-            required: 'Это обязательное поле для заполнения',
-          })}
-          validationText={errors.raceId?.message || ''}
+        <Controller
+          name="raceId"
+          control={control}
+          rules={{ required: 'Это обязательное поле для заполнения' }}
+          render={({ field, fieldState }) => (
+            <RaceSelectButtons
+              races={races.map((r) => ({
+                name: r.name,
+                id: r._id,
+                description: r.description,
+              }))}
+              value={field.value}
+              onChange={field.onChange}
+              error={fieldState.error?.message}
+            />
+          )}
         />
+
         <BoxSelectNew
           label="Выбор стартового номера:*"
           id="startNumber"
