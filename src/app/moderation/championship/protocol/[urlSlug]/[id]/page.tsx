@@ -1,7 +1,7 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconResults from '@/components/Icons/IconResults';
 import { getChampionship } from '@/actions/championship';
-import { TOptions } from '@/types/index.interface';
+
 import WrapperProtocolRaceEdit from '@/components/WrapperProtocolRaceEdit/WrapperProtocolRaceEdit';
 import { postRiderRaceResult } from '@/actions/result-race';
 import { getOrganizerForModerate } from '@/actions/organizer';
@@ -67,13 +67,6 @@ export default async function AddFinishProtocolPage(props: Props) {
     );
   }
 
-  // Опции для выбора заезда в котором редактируется финишный протокол.
-  const options: TOptions[] = championship.data.races.map((race) => ({
-    id: race.number,
-    translation: `Заезд №${race.number}: ${race.name}`,
-    name: String(race._id),
-  }));
-
   return (
     <>
       <TitleAndLine
@@ -83,7 +76,6 @@ export default async function AddFinishProtocolPage(props: Props) {
       />
       <WrapperProtocolRaceEdit
         postRiderRaceResult={postRiderRaceResult}
-        options={options}
         championship={championship.data}
         initialRaceId={id}
       />

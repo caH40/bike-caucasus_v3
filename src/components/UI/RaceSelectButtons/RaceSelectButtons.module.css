@@ -6,20 +6,24 @@
   gap: 1rem;
 }
 .box {
-  flex: 1 1 100%;
+  flex: 1 1 140px;
+  max-width: 700px;
   padding: 1rem 2rem;
   cursor: pointer;
   border-radius: 0.5rem;
   border: 1px solid var(--line);
+  transition: 0.3s;
 }
 .box:focus {
   outline: none;
   box-shadow: 0 0 5px 4px var(--btn-bg-hover);
 }
-.box:hover {
-  box-shadow: 0 0 5px 4px var(--btn-bg-hover);
+.box:not(.active):hover {
+  background-color: var(--filter-bg-hover);
+  transition: 0.2s;
+  /* box-shadow: 0 0 5px 4px var(--btn-bg-hover); */
 }
-.box.active {
+.active {
   background-color: var(--btn-bg);
 }
 .name {
@@ -39,6 +43,10 @@
 }
 /* ====================================================================== */
 @media (max-width: 576px) {
+  .wrapper__races {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
   .box {
     padding: 1rem;
   }

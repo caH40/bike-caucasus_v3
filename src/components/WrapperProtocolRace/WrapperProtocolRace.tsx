@@ -4,25 +4,23 @@ import { useEffect, useState } from 'react';
 
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
-import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
 import FilterRidersForAddResult from '../UI/Filters/FilterRidersForAddResult/Filters';
 import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { buttonsForProtocolRace } from '@/constants/buttons';
-import type { TOptions } from '@/types/index.interface';
 import type { TDtoChampionship, TResultRaceDto } from '@/types/dto.types';
 import styles from './WrapperProtocolRace.module.css';
 import { useResultsRace } from '@/store/results';
+import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
 
 type Props = {
-  options: TOptions[];
   championship: TDtoChampionship;
 };
 
 /**
  * Обертка для клиентских компонентов страницы результаты Заезда Чемпионата.
  */
-export default function WrapperProtocolRace({ options, championship }: Props) {
+export default function WrapperProtocolRace({ championship }: Props) {
   const [raceId, setRaceId] = useState<string>(championship.races[0]._id);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -51,11 +49,14 @@ export default function WrapperProtocolRace({ options, championship }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <FormSelectionRace
-        options={options}
-        raceId={raceId}
-        setRaceId={setRaceId}
-        label={'Выбор заезда'}
+      <RaceSelectButtons
+        races={championship.races.map((r) => ({
+          name: r.name,
+          id: r._id,
+          description: r.description,
+        }))}
+        value={raceId}
+        onChange={(id) => setRaceId(id)}
       />
 
       {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}

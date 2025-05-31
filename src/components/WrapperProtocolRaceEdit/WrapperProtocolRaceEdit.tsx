@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { ServerResponse, TGender, TOptions } from '@/types/index.interface';
-import FormSelectionRace from '../UI/Forms/FormSelectionRace/FormSelectionRace';
+import { ServerResponse, TGender } from '@/types/index.interface';
 import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import styles from './WrapperProtocolRaceEdit.module.css';
@@ -15,9 +14,9 @@ import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { useResultsRace } from '@/store/results';
 import { toast } from 'sonner';
 import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
+import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
 
 type Props = {
-  options: TOptions[];
   championship: TDtoChampionship;
   postRiderRaceResult: ({
     // eslint-disable-next-line no-unused-vars
@@ -32,7 +31,6 @@ type Props = {
  * Обертка для клиентских компонентов страницы работы с финишным протоколом Заезда.
  */
 export default function WrapperProtocolRaceEdit({
-  options,
   championship,
   postRiderRaceResult,
   initialRaceId,
@@ -93,11 +91,14 @@ export default function WrapperProtocolRaceEdit({
 
   return (
     <div className={styles.wrapper}>
-      <FormSelectionRace
-        options={options}
-        raceId={raceId}
-        setRaceId={setRaceId}
-        label={'Выбор заезда для добавления результатов:'}
+      <RaceSelectButtons
+        races={championship.races.map((r) => ({
+          name: r.name,
+          id: r._id,
+          description: r.description,
+        }))}
+        value={raceId}
+        onChange={(id) => setRaceId(id)}
       />
 
       {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}
