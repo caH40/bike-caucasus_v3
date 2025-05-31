@@ -96,6 +96,7 @@ export async function getProfileForReg({
     const profile = {
       firstName: res.data.person.firstName || null,
       lastName: res.data.person.lastName || null,
+      patronymic: res.data.person.patronymic,
       ageCategory: res.data.person.ageCategory || null,
       city: res.data.city || null,
       gender,

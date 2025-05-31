@@ -610,6 +610,7 @@ export type TProfileForRegistration = {
   lastName: string | null;
   ageCategory: string | null;
   city: string | null;
+  patronymic?: string;
   gender: TGender;
 };
 // Получаем ключи из TProfileForRegistration

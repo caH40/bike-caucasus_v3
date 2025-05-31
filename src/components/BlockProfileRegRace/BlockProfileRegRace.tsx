@@ -4,32 +4,23 @@ import styles from './BlockProfileRegRace.module.css';
 
 type Props = {
   profile: TProfileForRegistration;
-  // firstName: string;
-  // lastName: string;
-  // gender: string;
-  // ageCategory: string;
-  // city: string;
 };
 
-export default function BlockProfileRegRace({
-  profile,
-}: // firstName,
-// lastName,
-// gender,
-// ageCategory,
-// city,
-Props) {
+export default function BlockProfileRegRace({ profile }: Props) {
   return (
     <section className={styles.wrapper}>
       <h3 className={styles.title}>Данные из профиля аккаунта:</h3>
       <dl className={styles.list}>
+        <dt className={styles.desc__title}>Фамилия</dt>
+        <dd className={styles.desc__detail}>{getDefaultValue(profile.lastName, 'lastName')}</dd>
+
         <dt className={styles.desc__title}>Имя</dt>
         <dd className={styles.desc__detail}>
           {getDefaultValue(profile.firstName, 'firstName')}
         </dd>
 
-        <dt className={styles.desc__title}>Фамилия</dt>
-        <dd className={styles.desc__detail}>{getDefaultValue(profile.lastName, 'lastName')}</dd>
+        <dt className={styles.desc__title}>Отчество</dt>
+        <dd className={styles.desc__detail}>{profile.patronymic}</dd>
 
         <dt className={styles.desc__title}>Возрастная категория</dt>
         <dd className={styles.desc__detail}>

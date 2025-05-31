@@ -30,7 +30,7 @@ export function getDefaultValue(
  */
 export function validateRequiredFields(
   value: string | undefined,
-  type: 'city' | 'firstName' | 'lastName' | 'gender' | 'ageCategory'
+  type: 'city' | 'firstName' | 'lastName' | 'gender' | 'ageCategory' | 'patronymic'
 ): { ok: boolean; message: string } {
   switch (type) {
     case 'firstName':
