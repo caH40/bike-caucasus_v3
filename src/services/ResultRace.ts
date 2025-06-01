@@ -280,18 +280,28 @@ export class ResultRaceService {
       );
 
       // Создание списка всех категорий в заезде (категории без результатов не учитываются).
-      const categoriesSet = new Set<string>();
+      // Берутся данные категорий из результатов, а не из конфигурации категорий заезда, что бы не отображать пустые таблицы, в которых нет результатов в данной категории.
+      const ageCategoriesSet = new Set<string>();
+      const skillLevelCategoriesSet = new Set<string>();
       for (const result of resultsAfterDto) {
-        categoriesSet.add(result.categoryAge);
+        // Если  есть skillLevel категория, то результат участвует только в skillLevel категоризации.
+        if (result.categorySkillLevel) {
+          skillLevelCategoriesSet.add(result.categorySkillLevel);
+        } else {
+          ageCategoriesSet.add(result.categoryAge);
+        }
       }
 
       // Сортируем категории по возрастанию года рождения.
-      const categoriesSorted = sortCategoriesString([...categoriesSet]);
+      const ageCategoriesSorted = sortCategoriesString([...ageCategoriesSet]);
 
       return {
         data: {
           protocol: resultsSorted,
-          categories: categoriesSorted,
+          categories: {
+            age: ageCategoriesSorted,
+            skillLevel: [...skillLevelCategoriesSet],
+          },
           race: { name: race.name, _id: raceId },
         },
         ok: true,

@@ -844,7 +844,7 @@ export type TChampionshipForRegisteredClient = Omit<
  */
 export type TProtocolRace = {
   protocol: TResultRaceDto[];
-  categories: string[];
+  categories: TCategoriesConfigNames;
   race: { name: string; _id: string };
 };
 
@@ -923,6 +923,11 @@ export type TCategoriesConfigsForm = Omit<TCategories, '_id' | 'championship' | 
     male: TAgeCategoryFromForm[];
   };
 };
+
+/**
+ * Списки названий категорий в заезде.
+ */
+export type TCategoriesConfigNames = { age: string[]; skillLevel: string[] };
 
 /**
  * Конфигурации категорий чемпионата на клиенте.

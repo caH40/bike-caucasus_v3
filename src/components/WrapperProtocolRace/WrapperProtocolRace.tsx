@@ -8,10 +8,13 @@ import FilterRidersForAddResult from '../UI/Filters/FilterRidersForAddResult/Fil
 import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship';
 import { buttonsForProtocolRace } from '@/constants/buttons';
-import type { TDtoChampionship, TResultRaceDto } from '@/types/dto.types';
-import styles from './WrapperProtocolRace.module.css';
 import { useResultsRace } from '@/store/results';
 import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
+import styles from './WrapperProtocolRace.module.css';
+
+// types
+import type { TDtoChampionship, TResultRaceDto } from '@/types/dto.types';
+import { TCategoriesConfigNames } from '@/types/index.interface';
 
 type Props = {
   championship: TDtoChampionship;
@@ -23,9 +26,11 @@ type Props = {
 export default function WrapperProtocolRace({ championship }: Props) {
   const [raceId, setRaceId] = useState<string>(championship.races[0]._id);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<TCategoriesConfigNames>({
+    age: [],
+    skillLevel: [],
+  });
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
-  // const [triggerResultTable, setTriggerResultTable] = useState<boolean>(false);
   const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
   const race = championship.races.find((race) => race._id === raceId);
@@ -34,7 +39,6 @@ export default function WrapperProtocolRace({ championship }: Props) {
   useEffect(() => {
     getRaceProtocol({ raceId }).then((res) => {
       if (res.data) {
-        // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
         setProtocol(res.data.protocol);
         setCategories(res.data.categories);
       }
@@ -45,6 +49,72 @@ export default function WrapperProtocolRace({ championship }: Props) {
     championshipId: championship._id,
     championshipUrlSlug: championship.urlSlug,
     raceId,
+  };
+
+  const raceProtocols: Record<number, JSX.Element[]> = {
+    0: [
+      <ContainerProtocolRace
+        key={'overall'}
+        protocol={protocol}
+        raceInfo={raceInfo}
+        hiddenColumnHeaders={[
+          'Место в абсолюте по полу',
+          'Место в категории',
+          'Отставания в категории',
+          'Отставания в общей женской категории',
+          '#',
+          'Модерация',
+        ]}
+        captionTitle="Общий протокол"
+      />,
+
+      <ContainerProtocolRace
+        key={'overallFemale'}
+        protocol={protocol.filter((result) => result.profile.gender === 'female')}
+        raceInfo={raceInfo}
+        hiddenColumnHeaders={[
+          'Место в абсолюте',
+          'Место в категории',
+          'Отставания в общем протоколе',
+          'Отставания в категории',
+          '#',
+          'Модерация',
+        ]}
+        captionTitle="Общий женский протокол"
+      />,
+    ],
+    1: categories.age.map((category) => (
+      <ContainerProtocolRace
+        key={category}
+        protocol={protocol.filter((result) => result.categoryAge === category)}
+        raceInfo={raceInfo}
+        hiddenColumnHeaders={[
+          'Место в абсолюте',
+          'Место в абсолюте по полу',
+          'Отставания в общем протоколе',
+          'Отставания в общей женской категории',
+          '#',
+          'Модерация',
+        ]}
+        captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+      />
+    )),
+    2: categories.skillLevel.map((category) => (
+      <ContainerProtocolRace
+        key={category}
+        protocol={protocol.filter((result) => result.categorySkillLevel === category)}
+        raceInfo={raceInfo}
+        hiddenColumnHeaders={[
+          'Место в абсолюте',
+          'Место в абсолюте по полу',
+          'Отставания в общем протоколе',
+          'Отставания в общей женской категории',
+          '#',
+          'Модерация',
+        ]}
+        captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+      />
+    )),
   };
 
   return (
@@ -61,60 +131,19 @@ export default function WrapperProtocolRace({ championship }: Props) {
 
       {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}
 
+      {/* Кнопки переключения между разными типами финишных протоколов по категориям */}
       <FilterRidersForAddResult
         activeIdBtn={activeIdBtn}
         setActiveIdBtn={setActiveIdBtn}
-        buttons={buttonsForProtocolRace}
+        buttons={
+          categories.skillLevel.length > 0
+            ? buttonsForProtocolRace
+            : buttonsForProtocolRace.slice(0, 2) // Удаляется кнопка skillLevel если нет категорий skillLevel.
+        }
       />
 
-      {activeIdBtn === 0 ? (
-        <>
-          <ContainerProtocolRace
-            protocol={protocol}
-            raceInfo={raceInfo}
-            hiddenColumnHeaders={[
-              'Место в абсолюте по полу',
-              'Место в категории',
-              'Отставания в категории',
-              'Отставания в общей женской категории',
-              '#',
-              'Модерация',
-            ]}
-            captionTitle="Общий протокол"
-          />
-
-          <ContainerProtocolRace
-            protocol={protocol.filter((result) => result.profile.gender === 'female')}
-            raceInfo={raceInfo}
-            hiddenColumnHeaders={[
-              'Место в абсолюте',
-              'Место в категории',
-              'Отставания в общем протоколе',
-              'Отставания в категории',
-              '#',
-              'Модерация',
-            ]}
-            captionTitle="Общий женский протокол"
-          />
-        </>
-      ) : (
-        categories.map((category) => (
-          <ContainerProtocolRace
-            key={category}
-            protocol={protocol.filter((result) => result.categoryAge === category)}
-            raceInfo={raceInfo}
-            hiddenColumnHeaders={[
-              'Место в абсолюте',
-              'Место в абсолюте по полу',
-              'Отставания в общем протоколе',
-              'Отставания в общей женской категории',
-              '#',
-              'Модерация',
-            ]}
-            captionTitle={`Категория ${replaceCategorySymbols(category)}`}
-          />
-        ))
-      )}
+      {/* Условная отрисовка компонента финишных протоколов в зависимости от активной кнопки фильтра */}
+      {raceProtocols[activeIdBtn]}
     </div>
   );
 }

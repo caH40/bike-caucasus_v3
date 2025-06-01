@@ -82,7 +82,7 @@ export const getPdfProtocolRace = ({ data, subTitles }: Params) => {
   startY += 2;
 
   // Формирование тела таблиц.
-  ['Общая', ...data.categories].forEach((category) => {
+  ['Общая', ...data.categories.age, ...data.categories.skillLevel].forEach((category) => {
     const protocolCurrent = data.protocol.filter((result) => {
       // Для общего протокола возвращаются все результаты.
       if (category === 'Общая') {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { ServerResponse, TGender } from '@/types/index.interface';
+import { ServerResponse, TCategoriesConfigNames, TGender } from '@/types/index.interface';
 import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import styles from './WrapperProtocolRaceEdit.module.css';
@@ -38,7 +38,10 @@ export default function WrapperProtocolRaceEdit({
   const [raceId, setRaceId] = useState<string>(initialRaceId);
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<TCategoriesConfigNames>({
+    age: [],
+    skillLevel: [],
+  });
   const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
   const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
@@ -125,10 +128,26 @@ export default function WrapperProtocolRaceEdit({
         captionTitle="Общий протокол"
       />
 
-      {categories.map((category) => (
+      {categories.age.map((category) => (
         <ContainerProtocolRace
           key={category}
           protocol={protocol.filter((result) => result.categoryAge === category)}
+          raceInfo={raceInfo}
+          hiddenColumnHeaders={[
+            'Место в абсолюте',
+            'Место в абсолюте по полу',
+            'Отставания в общем протоколе',
+            'Отставания в общей женской категории',
+            '#',
+          ]}
+          captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+        />
+      ))}
+
+      {categories.skillLevel.map((category) => (
+        <ContainerProtocolRace
+          key={category}
+          protocol={protocol.filter((result) => result.categorySkillLevel === category)}
           raceInfo={raceInfo}
           hiddenColumnHeaders={[
             'Место в абсолюте',

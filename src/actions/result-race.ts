@@ -9,7 +9,7 @@ import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { ResultRaceService } from '@/services/ResultRace';
-import { TResultRaceDto, TRiderRaceResultDto } from '@/types/dto.types';
+import { TRiderRaceResultDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
 import { ChampionshipService } from '@/services/Championship';
 
@@ -53,7 +53,7 @@ export async function getRaceProtocol({
   raceId,
 }: {
   raceId: string;
-}): Promise<ServerResponse<{ protocol: TResultRaceDto[]; categories: string[] } | null>> {
+}): Promise<ServerResponse<TProtocolRace | null>> {
   try {
     const resultRaceService = new ResultRaceService();
     const res = await resultRaceService.getRaceProtocol({ raceId });

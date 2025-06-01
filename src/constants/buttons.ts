@@ -14,7 +14,8 @@ export const buttonsForRiderRaceResult: TOptions[] = [
  */
 export const buttonsForProtocolRace: TOptions[] = [
   { id: 0, translation: 'Общие', name: 'overall' },
-  { id: 1, translation: 'Возрастные категории', name: 'age' },
+  { id: 1, translation: 'Возрастные', name: 'age' },
+  { id: 2, translation: 'Спецкатегории', name: 'skillLevel' },
 ];
 
 /**
