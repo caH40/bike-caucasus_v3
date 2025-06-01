@@ -74,7 +74,7 @@ export default function BlockCategories({
         />
       </div>
 
-      <TitleAndLine title={'Категории по уровню подготовки'} hSize={2} />
+      <TitleAndLine title={'Спецкатегории'} hSize={2} />
 
       <div className={styles.spacer}>
         <BlockCategory

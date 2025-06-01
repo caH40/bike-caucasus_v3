@@ -8,9 +8,10 @@ import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 
 // types
-import type { ServerResponse } from '@/types/index.interface';
+import type { ServerResponse, TDeserializedCategories, TGender } from '@/types/index.interface';
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TCategories } from '@/types/models.interface';
+import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
 
 /**
  * Класс работы с сущностью Категории чемпионата.
@@ -90,6 +91,11 @@ export class ChampionshipCategories {
       // Проверка на использование удаляемых пакетов категорий в заездах. При наличии таких заездов, замена удаляемых _id на _id стандартного пакета категорий.
       await this.replaceDeletedCategoryConfigInRaces({ categoryIds: toDelete, championshipId });
 
+      // Обнуление skillLevel категорий в регистрациях, названия которых изменились или были удалены в конфигурациях категорий.
+      for (const categoriesConfig of categoriesConfigs) {
+        await this.resetInvalidCategorySkillLevels(categoriesConfig);
+      }
+
       // Удаление документов Categories из БД, которые были удалены на клиенте.
       if (toDelete.length > 0) {
         await CategoriesModel.deleteMany({
@@ -101,6 +107,64 @@ export class ChampionshipCategories {
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Метод сбрасывает (null) категорию skillLevel у зарегистрированных участников заезда (если участник выбрал skillLevel категорию) при удалении или изменении названия skillLevel категории.
+   * Для male и female необходимо делать отдельную проверку, так как названия skillLevel для f,m могут совпадать.
+   */
+  private async resetInvalidCategorySkillLevels(
+    categories: TDeserializedCategories
+  ): Promise<void> {
+    try {
+      // Запрос на все заезды, которые используют данную конфигурацию категорий.
+      const racesDB = await RaceModel.find({ categories: categories._id }, { _id: true }).lean<
+        { _id: Types.ObjectId }[]
+      >();
+
+      // Создание массивов названий skillLevel для male, female
+      const maleSkillLevelNames: string[] =
+        categories.skillLevel?.male.map((c) => c.name) || [];
+      const femaleSkillLevelNames: string[] =
+        categories.skillLevel?.female.map((c) => c.name) || [];
+
+      if (maleSkillLevelNames.length === 0 && femaleSkillLevelNames.length === 0) {
+        return;
+      }
+
+      const RaceRegistrationDB = await RaceRegistrationModel.find(
+        {
+          race: { $in: racesDB.map(({ _id }) => _id) },
+          categorySkillLevel: { $exists: true, $ne: null },
+        },
+        { _id: true, rider: true, categorySkillLevel: true }
+      )
+        .populate({ path: 'rider', select: ['person.gender', '-_id'] })
+        .lean<
+          {
+            _id: Types.ObjectId;
+            rider: { person: { gender: TGender } };
+            categorySkillLevel: string;
+          }[]
+        >();
+
+      // Массив _id регистраций в которых необходимо установить categorySkillLevel: null.
+      const raceRegIds: Types.ObjectId[] = RaceRegistrationDB.filter((reg) => {
+        return reg.rider.person.gender === 'male'
+          ? !maleSkillLevelNames.includes(reg.categorySkillLevel)
+          : !femaleSkillLevelNames.includes(reg.categorySkillLevel);
+      }).map(({ _id }) => _id);
+
+      // Обнуление categorySkillLevel в регистрациях названия которых больше не существуют.
+      if (raceRegIds.length > 0) {
+        await RaceRegistrationModel.updateMany(
+          { _id: { $in: raceRegIds } },
+          { $set: { categorySkillLevel: null } }
+        );
+      }
+    } catch (error) {
+      this.errorLogger(error);
     }
   }
 
@@ -141,12 +205,12 @@ export class ChampionshipCategories {
     const names = new Set<string>();
 
     for (const config of categoriesConfigs) {
-      if (names.has(config.name)) {
+      if (names.has(config.name.toLowerCase())) {
         throw new Error(
           `Название пакета категорий должно быть уникальным. Дублируется название: "${config.name}"`
         );
       }
-      names.add(config.name);
+      names.add(config.name.toLowerCase());
     }
   }
 }

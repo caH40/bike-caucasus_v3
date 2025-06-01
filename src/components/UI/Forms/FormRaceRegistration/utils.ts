@@ -73,8 +73,9 @@ export function validateRequiredFields(
             message: 'Нет данных по возрасту, пожалуйста заполните данные в аккаунте!',
           };
 
+    // Остальные значения необязательные.
     default:
-      return { ok: false, message: 'не распознан тип проверочных данных' };
+      return { ok: true, message: 'ok' };
   }
 }
 
