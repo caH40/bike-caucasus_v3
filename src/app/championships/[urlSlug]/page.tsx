@@ -9,18 +9,16 @@ import { Metadata } from 'next';
 import { getChampionship, getChampionships } from '@/actions/championship';
 import { ChampionshipService } from '@/services/Championship';
 import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
-import { getNavLinksChampionshipPopup } from '@/constants/navigation';
 import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockChampionshipHeader';
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import PermissionCheck from '@/hoc/permission-check';
-import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 import BlockRaces from '@/components/BlockRaces/BlockRaces';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import { generateMetadataChampionship } from '@/meta/meta';
 import styles from './Championship.module.css';
+import ChampionshipMenuPopup from '@/components/UI/Menu/MenuControl/ChampionshipMenuPopup';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -73,18 +71,14 @@ export default async function ChampionshipPage(props: Props) {
         {championship.data && (
           <>
             <div className={styles.block__header}>
-              {/* popup меня управления чемпионатом */}
-              <PermissionCheck permission={'moderation.championship'}>
-                <div className={styles.ellipsis} id="popup-control-menu-championship">
-                  <MenuEllipsisControl
-                    urlSlug={championship.data.urlSlug}
-                    getMenuItems={getNavLinksChampionshipPopup}
-                    id={'#popup-control-menu-championship'}
-                    messageTooltip="Управление Чемпионатом"
-                    hiddenItemNames={hiddenItemNames}
-                  />
-                </div>
-              </PermissionCheck>
+              <div className={styles.ellipsis} id="popup-control-menu-championship">
+                {/* popup меня управления чемпионатом */}
+                <ChampionshipMenuPopup
+                  urlSlug={championship.data.urlSlug}
+                  raceId={championship.data.races[0]?._id}
+                  hiddenItemNames={hiddenItemNames}
+                />
+              </div>
               <BlockChampionshipHeader championship={championship.data} />
             </div>
 

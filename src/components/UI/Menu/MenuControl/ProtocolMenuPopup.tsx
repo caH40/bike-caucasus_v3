@@ -24,7 +24,7 @@ const permission = 'moderation.championship.protocol';
 /**
  * Popup меню управления протоколом заезда в таблице результатов.
  */
-export default function MenuPopupControlProtocol({ raceInfo }: Props) {
+export default function ProtocolMenuPopup({ raceInfo }: Props) {
   const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
   const handlerUpdateProtocolRace = async (championshipId: string, raceId: string) => {
     if (!championshipId || !raceId) {
@@ -48,7 +48,7 @@ export default function MenuPopupControlProtocol({ raceInfo }: Props) {
   const buttons = [
     {
       id: 0,
-      name: 'Редактирование',
+      name: 'Добавление',
       href: `/moderation/championship/protocol/${raceInfo.championshipUrlSlug}/${raceInfo.raceId}`,
       permission,
       icon: IconEditOld,

@@ -162,6 +162,7 @@ export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
  */
 export const getNavLinksChampionshipPopup = (
   urlSlug: string,
+  raceId: string,
   hiddenItemNames: string[] = []
 ): TMenuOnPage[] =>
   [
@@ -176,7 +177,7 @@ export const getNavLinksChampionshipPopup = (
     {
       id: 1,
       name: 'Финишные протоколы',
-      href: `/moderation/championship/protocol/${urlSlug}/1`, // По умолчанию открывается 1 Заезд.
+      href: `/moderation/championship/protocol/${urlSlug}/${raceId}`,
       permission: 'moderation.championship.protocol',
       icon: IconEditOld,
       classes: [],

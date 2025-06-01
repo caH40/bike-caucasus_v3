@@ -31,7 +31,7 @@ import IconGapLeader from '@/components/Icons/IconGapLeader';
 import IconGapPrev from '@/components/Icons/IconGapPrev';
 import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerationResult';
 import IconEditOld from '@/components/Icons/IconEditOld';
-import MenuPopupControlProtocol from '@/components/UI/Menu/MenuControl/MenuPopupControlProtocol';
+import ProtocolMenuPopup from '@/components/UI/Menu/MenuControl/ProtocolMenuPopup';
 
 const cx = cn.bind(styles);
 
@@ -362,7 +362,7 @@ export default function TableProtocolRace({
 
               {/* popup меня управления протоколом */}
               <div className={styles.menu__control}>
-                <MenuPopupControlProtocol raceInfo={raceInfo} />
+                <ProtocolMenuPopup raceInfo={raceInfo} />
               </div>
             </div>
           </caption>
