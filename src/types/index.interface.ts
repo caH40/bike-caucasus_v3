@@ -174,7 +174,7 @@ export type TFormProfile = {
   patronymic?: string;
   lastName: string;
   birthday?: string | Date;
-  gender: string;
+  gender: TGender;
   city?: string;
   phone?: string;
   bio?: string;

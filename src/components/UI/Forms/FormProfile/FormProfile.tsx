@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSession } from 'next-auth/react';
 
 import BoxInput from '../../BoxInput/BoxInput';
-import BoxSelect from '../../BoxSelect/BoxSelect';
 import Wrapper from '../../../Wrapper/Wrapper';
 import {
   validateBirthday,
@@ -23,6 +22,8 @@ import type { ServerResponse, TFormProfile } from '@/types/index.interface';
 import { useLoadingStore } from '@/store/loading';
 import { handlerResponse } from '@/libs/utils/response';
 import styles from '../Form.module.css';
+import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
+import { genderOptions } from '@/constants/other';
 
 type Props = {
   formData: TUserDto;
@@ -114,15 +115,14 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
           register={validatePatronymic(register)}
           validationText={errors.patronymic ? errors.patronymic.message : ''}
         />
-        <BoxSelect
+        <BoxSelectNew
           label="Пол:"
           id="gender-FormProfile"
-          autoComplete="offered"
-          type="text"
-          defaultValue={formData.person.patronymic || 'мужской'}
+          options={genderOptions}
+          defaultValue={formData.person.gender}
           loading={loading}
           register={register('gender')}
-          validationText={errors.gender ? errors.gender.message : ''}
+          validationText={errors.gender?.message || ''}
         />
         <BoxInput
           label="Дата рождения:*"

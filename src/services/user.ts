@@ -1,7 +1,6 @@
 import { revalidatePath } from 'next/cache';
 
 import { handlerDateForm } from '@/libs/utils/date';
-import { getGender } from '@/libs/utils/handler-data';
 import { Cloud } from './cloud';
 import { User } from '@/database/mongodb/Models/User';
 import { handlerErrorDB } from './mongodb/error';
@@ -229,9 +228,6 @@ export class UserService {
         imageUrlForSave = `https://${data.file.bucketName}.${data.file.endpointDomain}/${fileNameFull}`;
       }
 
-      // Получение значения пола в нужной форме.
-      const gender = getGender[profile.gender];
-
       // Преобразование даты рождения в ISO формат.
       const birthday = handlerDateForm.getIsoDate(profile.birthday);
 
@@ -241,7 +237,7 @@ export class UserService {
         'person.firstName': profile.firstName,
         'person.patronymic': profile.patronymic,
         'person.birthday': birthday,
-        'person.gender': gender,
+        'person.gender': profile.gender,
         'person.bio': profile.bio,
         city: profile.city,
         imageFromProvider: profile.imageFromProvider === 'true',
