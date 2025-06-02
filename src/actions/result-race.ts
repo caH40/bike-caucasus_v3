@@ -8,7 +8,7 @@ import { ServerResponse, TProtocolRace } from '@/types/index.interface';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
-import { ResultRaceService } from '@/services/ResultRace';
+import { RaceResultService } from '@/services/RaceResult';
 import { TRiderRaceResultDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
 import { ChampionshipService } from '@/services/Championship';
@@ -33,7 +33,7 @@ export async function postRiderRaceResult({
       throw new Error('У вас нет прав для добавления результата райдера в Заезде!');
     }
 
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.post({
       dataFromFormSerialized,
       creatorId: session.user.idDB,
@@ -55,7 +55,7 @@ export async function getRaceProtocol({
   raceId: string;
 }): Promise<ServerResponse<TProtocolRace | null>> {
   try {
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.getRaceProtocol({ raceId });
 
     return res;
@@ -80,7 +80,7 @@ export async function getRaceProtocols({
     if (!data) {
       throw new Error(message);
     }
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
 
     const responseProtocols = await Promise.all(
       data.races.map((race) => resultRaceService.getRaceProtocol({ raceId: race._id }))
@@ -112,7 +112,7 @@ export async function updateProtocolRace({
   raceId: string;
 }): Promise<ServerResponse<null>> {
   try {
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.updateRaceProtocol({
       championshipId,
       raceId,
@@ -134,7 +134,7 @@ export async function getResultsRaceForRider({
   riderId: string;
 }): Promise<ServerResponse<TRiderRaceResultDto[] | null>> {
   try {
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.getRiderRaceResults({
       riderId,
     });
@@ -155,7 +155,7 @@ export async function getResultRaceForRider({
   resultId: string;
 }): Promise<ServerResponse<TRiderRaceResultDto | null>> {
   try {
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.getOne({
       resultId,
     });
@@ -172,7 +172,7 @@ export async function getResultRaceForRider({
  */
 export async function deleteResult({ _id }: { _id: string }): Promise<ServerResponse<null>> {
   try {
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.delete({
       _id,
     });
@@ -193,7 +193,7 @@ export async function putResultRaceRider({
   result: FormData;
 }): Promise<ServerResponse<null>> {
   try {
-    const resultRaceService = new ResultRaceService();
+    const resultRaceService = new RaceResultService();
     const res = await resultRaceService.update({ result });
 
     if (res.ok) {

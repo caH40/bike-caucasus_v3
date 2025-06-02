@@ -1327,3 +1327,11 @@ export type TFormCRacePointsTableProps = {
   organizerId: string;
   action: 'create' | 'edit';
 };
+
+/**
+ * Входные параметры метода SetPoints класса RaceResultsService.
+ */
+export type TRaceResultsServiceSetPointsParams = {
+  championshipId: string;
+  results: TResultRace[]; // Все результаты заезда.
+};

@@ -11,12 +11,19 @@ import {
   ServerResponse,
   TGetRaceCategoriesParams,
   TProtocolRace,
+  TRaceResultsServiceSetPointsParams,
   TResultRaceFromDB,
   TResultRaceRiderDeserialized,
   TRiderRaceResultDB,
 } from '@/types/index.interface';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
-import { TCategories, TRace, TResultRace } from '@/types/models.interface';
+import {
+  TCategories,
+  TChampionshipTypes,
+  TRace,
+  TRacePointsTable,
+  TResultRace,
+} from '@/types/models.interface';
 import { sortCategoriesString } from '@/libs/utils/championship/championship';
 import { processResults } from '@/libs/utils/results';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
@@ -24,11 +31,12 @@ import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TRiderRaceResultDto } from '@/types/dto.types';
 import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
+import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
  */
-export class ResultRaceService {
+export class RaceResultService {
   private errorLogger;
   private handlerErrorDB;
 
@@ -349,6 +357,9 @@ export class ResultRaceService {
         raceDistance: race.distance,
       });
 
+      // Получение очков за этап в серии заездов или туре.
+      await this.setPoints({ championshipId, results: resultsUpdated });
+
       // Обновление позиций и прочих данных.
       await this.updateResults(resultsUpdated);
 
@@ -364,6 +375,52 @@ export class ResultRaceService {
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Установка очков в результат райдера в зависимости от его места.
+   */
+  private async setPoints({ championshipId, results }: TRaceResultsServiceSetPointsParams) {
+    const championshipDB = await ChampionshipModel.findById(championshipId, {
+      _id: false,
+      type: true,
+      parentChampionship: true,
+    }).lean<{ type: TChampionshipTypes; parentChampionship: Types.ObjectId | null }>();
+
+    // Очки начисляются в результаты этапа stage .
+    if (!championshipDB || championshipDB.type !== 'stage') {
+      return;
+    }
+
+    if (!championshipDB.parentChampionship) {
+      throw new Error('Не найден родительский чемпионат для данного Этапа!');
+    }
+
+    const parentChampionshipDB = await ChampionshipModel.findById(
+      championshipDB.parentChampionship,
+      {
+        _id: false,
+        racePointsTable: true,
+      }
+    )
+      .populate('racePointsTable')
+      .lean<{ racePointsTable: TRacePointsTable }>();
+
+    if (!parentChampionshipDB?.racePointsTable) {
+      throw new Error('Нет таблицы начисления очков за этап в настройках чемпионата!');
+    }
+
+    for (const result of results) {
+      // Обнуление очков.
+      result.points = { category: 0 };
+
+      const { rules, fallbackPoints } = parentChampionshipDB.racePointsTable;
+
+      result.points.category =
+        rules.find((rule) => rule.place === result.positions.category)?.points ??
+        fallbackPoints ??
+        0;
     }
   }
 
@@ -433,6 +490,7 @@ export class ResultRaceService {
               'positions.absolute': result.positions.absolute,
               'positions.absoluteGender': result.positions.absoluteGender,
               'positions.category': result.positions.category,
+              points: result.points,
               quantityRidersFinished: result.quantityRidersFinished,
               averageSpeed: result.averageSpeed,
               categoryAge: result.categoryAge,

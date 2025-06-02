@@ -47,6 +47,13 @@ const GapsInCategoriesSchema = new Schema<TGapsInCategories>(
   { _id: false }
 );
 
+const PointsSchema = new Schema(
+  {
+    category: { type: Number, default: 0 },
+  },
+  { _id: false }
+);
+
 const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
   {
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
@@ -82,7 +89,10 @@ const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
       },
     },
     gapsInCategories: GapsInCategoriesSchema,
-    points: { type: Schema.Types.Mixed }, // Используем Mixed для произвольного типа данных
+    points: {
+      type: PointsSchema,
+      default: { category: 0 },
+    },
     disqualification: {
       reason: { type: String }, // 'DNF' | 'DSQ' | 'DNS'
       comment: { type: String },
