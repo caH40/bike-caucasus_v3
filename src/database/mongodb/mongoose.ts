@@ -1,6 +1,9 @@
+'use server';
+
 import mongoose from 'mongoose';
 
 let isConnected = false;
+
 /**
  * Подключение к БД МонгоДБ
  */

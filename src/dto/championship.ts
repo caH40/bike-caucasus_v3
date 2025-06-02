@@ -8,6 +8,7 @@ import type {
 
 import { formatTRacesToClient } from './registration-champ';
 import { TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
+import { racePointsTableDto } from './race-points-table';
 
 /**
  * ДТО массива Чемпионатов.
@@ -63,7 +64,8 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     type: championship.type,
     categoriesConfigs: categories,
     bikeType: championship.bikeType,
-    racePointsTable: championship.racePointsTable,
+    racePointsTable:
+      championship.racePointsTable && racePointsTableDto(championship.racePointsTable),
     races: formatTRacesToClient(championship.races),
     startDate,
     endDate,

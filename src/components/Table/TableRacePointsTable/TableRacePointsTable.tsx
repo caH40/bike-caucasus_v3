@@ -21,6 +21,7 @@ const cx = cn.bind(styles);
 type Props = {
   racePointsTable: TRacePointsTableDto;
   docsOnPage?: number;
+  isPublic?: boolean;
 };
 
 const columns: ColumnDef<TRacePointsRule, any>[] = [
@@ -37,7 +38,11 @@ const columns: ColumnDef<TRacePointsRule, any>[] = [
 /**
  * Таблица созданных таблиц начисления очков за этап серии заездов.
  */
-export default function TableRacePointsTable({ racePointsTable, docsOnPage = 100 }: Props) {
+export default function TableRacePointsTable({
+  racePointsTable,
+  isPublic,
+  docsOnPage = 100,
+}: Props) {
   const { rules } = racePointsTable;
 
   const data = useMemo(() => {
@@ -102,27 +107,35 @@ export default function TableRacePointsTable({ racePointsTable, docsOnPage = 100
             <tr>
               <td colSpan={2}>
                 <dl className={styles.footerList}>
-                  <div className={styles.footerRow}>
-                    <dt className={styles.dt}>Описание:</dt>
-                    <dd className={styles.dd}>{racePointsTable.description}</dd>
-                  </div>
-                  <div className={styles.footerRow}>
-                    <dt className={styles.dt}>Создано:</dt>
-                    <dd className={styles.dd}>
-                      {getDateTime(new Date(racePointsTable.createdAt)).dateDDMMYYYY}
-                    </dd>
-                  </div>
-                  <div className={styles.footerRow}>
-                    <dt className={styles.dt}>Обновлено:</dt>
-                    <dd className={styles.dd}>
-                      {getDateTime(new Date(racePointsTable.updatedAt)).dateDDMMYYYY}
-                    </dd>
-                  </div>
-                  {racePointsTable.isDefault && (
+                  {racePointsTable.description && (
                     <div className={styles.footerRow}>
-                      <dt className={styles.dt}>По умолчанию:</dt>
-                      <dd className={styles.dd}>Да</dd>
+                      <dt className={styles.dt}>Описание:</dt>
+                      <dd className={styles.dd}>{racePointsTable.description}</dd>
                     </div>
+                  )}
+
+                  {/* Отображаются только при модерации таблицы */}
+                  {!isPublic && (
+                    <>
+                      <div className={styles.footerRow}>
+                        <dt className={styles.dt}>Создано:</dt>
+                        <dd className={styles.dd}>
+                          {getDateTime(new Date(racePointsTable.createdAt)).dateDDMMYYYY}
+                        </dd>
+                      </div>
+                      <div className={styles.footerRow}>
+                        <dt className={styles.dt}>Обновлено:</dt>
+                        <dd className={styles.dd}>
+                          {getDateTime(new Date(racePointsTable.updatedAt)).dateDDMMYYYY}
+                        </dd>
+                      </div>
+                      {racePointsTable.isDefault && (
+                        <div className={styles.footerRow}>
+                          <dt className={styles.dt}>По умолчанию:</dt>
+                          <dd className={styles.dd}>Да</dd>
+                        </div>
+                      )}
+                    </>
                   )}
                 </dl>
               </td>

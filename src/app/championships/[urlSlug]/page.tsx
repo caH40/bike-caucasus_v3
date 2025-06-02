@@ -19,6 +19,8 @@ import { generateMetadataChampionship } from '@/meta/meta';
 import ChampionshipMenuPopup from '@/components/UI/Menu/MenuControl/ChampionshipMenuPopup';
 import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
 import styles from './Championship.module.css';
+import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
+import TableRacePointsTable from '@/components/Table/TableRacePointsTable/TableRacePointsTable';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -70,6 +72,9 @@ export default async function ChampionshipPage(props: Props) {
     urlSlug,
   });
 
+  // Показывать блоки только для чемпионата типа Серия или Тур.
+  const showForSeriesOrTour = isChampionshipWithStages(championship.type);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
@@ -90,7 +95,7 @@ export default async function ChampionshipPage(props: Props) {
             <BlockOrganizerContacts organizer={championship.organizer.contactInfo} />
           </div>
 
-          {['single', 'stage'].includes(championship.type) && (
+          {showForSeriesOrTour && (
             <div className={styles.wrapper__races}>
               <BlockRaces
                 races={championship.races}
@@ -103,7 +108,7 @@ export default async function ChampionshipPage(props: Props) {
             </div>
           )}
 
-          {['series', 'tour'].includes(championship.type) && (
+          {showForSeriesOrTour && (
             <>
               <TitleAndLine hSize={2} title="Этапы" />
               <div className={styles.wrapper__cards}>
@@ -111,6 +116,16 @@ export default async function ChampionshipPage(props: Props) {
                   <ChampionshipCard championship={champ} key={champ._id} simple={true} />
                 ))}
               </div>
+
+              {championship.racePointsTable && (
+                <>
+                  <TitleAndLine hSize={2} title="Таблицы начисления очков за этапы" />
+                  <TableRacePointsTable
+                    racePointsTable={championship.racePointsTable}
+                    isPublic={true}
+                  />
+                </>
+              )}
             </>
           )}
         </>

@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import TableModerateRacePointsTable from '../../TableModerateRacePointsTable/TableModerateRacePointsTable';
+import TableModerationRacePointsTable from '../../TableModerationRacePointsTable/TableModerationRacePointsTable';
 import FormRacePointsTable from '@/components/UI/Forms/FormRacePointsTable/FormRacePointsTable';
 import AddRemoveSquareButtonGroup from '@/components/AddRemoveSquareButtonGroup/AddRemoveSquareButtonGroup';
 import AddRemoveSquareButton from '@/components/UI/Buttons/AddRemoveSquareButton';
 import TableRacePointsTable from '../../TableRacePointsTable/TableRacePointsTable';
 import Spacer from '@/components/Spacer/Spacer';
-import styles from './ContainerRacePointsTable.module.css';
+import styles from './ContainerModerationRacePointsTables.module.css';
 
 // types
 import { TRacePointsTableDto } from '@/types/dto.types';
@@ -21,9 +21,12 @@ type Props = {
 };
 
 /**
- * Блок для таблиц и их управления, что бы был один клиентский компонент.
+ * Блок для модерации очковых таблиц, что бы был один клиентский компонент.
  */
-export default function ContainerRacePointsTable({ racePointsTables, organizerId }: Props) {
+export default function ContainerModerationRacePointsTables({
+  racePointsTables,
+  organizerId,
+}: Props) {
   const [racePointsTable, setRacePointsTable] = useState<RacePointsTableState | null>(null);
   // eslint-disable-next-line no-unused-vars
   const [isFormDirty, setIsFormDirty] = useState(false);
@@ -59,7 +62,7 @@ export default function ContainerRacePointsTable({ racePointsTables, organizerId
     <>
       {/* Таблица */}
       <Spacer margin="b-md">
-        <TableModerateRacePointsTable
+        <TableModerationRacePointsTable
           racePointsTables={racePointsTables}
           docsOnPage={50}
           handleClick={handleClick}

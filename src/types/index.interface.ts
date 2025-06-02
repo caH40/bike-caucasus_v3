@@ -493,8 +493,9 @@ export type TOrganizerForClient = Pick<
 };
 export type TChampionshipWithOrganizer = Omit<
   TChampionship,
-  'organizer' | 'categoriesConfigs' | 'races'
+  'organizer' | 'categoriesConfigs' | 'races' | 'racePointsTable'
 > & {
+  racePointsTable: TRacePointsTable | null;
   organizer: TOrganizerPublic;
   stageDateDescription: TStageDateDescription[];
   parentChampionship: TParentChampionship;

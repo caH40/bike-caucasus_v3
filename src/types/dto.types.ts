@@ -155,10 +155,13 @@ export type TDtoChampionship = Omit<
   | 'parentChampionship'
   | 'races'
   | 'categoriesConfigs'
+  | 'categoriesConfigs'
+  | 'racePointsTable'
 > & {
   _id: string;
   organizer: TOrganizerForClient;
   parentChampionship?: TParentChampionshipForClient;
+  racePointsTable: TRacePointsTableDto | null;
   startDate: string;
   endDate: string;
   stageDateDescription: TStageDateDescription[];

@@ -4,19 +4,23 @@ import slugify from 'slugify';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 
-import { saveFile } from './save-file';
+import '@/database/mongodb/Models/RacePointsTable';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
+import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
+import { CategoriesModel } from '@/database/mongodb/Models/Categories';
+import { RaceModel } from '@/database/mongodb/Models/Race';
+
+import { saveFile } from './save-file';
+
 import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
 import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/championship';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
-import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { getCurrentStatus } from '@/libs/utils/championship/championship';
 import { RegistrationChampService } from './RegistrationChamp';
-import { CategoriesModel } from '@/database/mongodb/Models/Categories';
-import { RaceModel } from '@/database/mongodb/Models/Race';
+
 import { DEFAULT_STANDARD_CATEGORIES } from '@/constants/championship';
 
 // types
@@ -79,6 +83,7 @@ export class ChampionshipService {
           path: 'parentChampionship',
           select: parentChampionshipSelect,
         })
+        .populate('racePointsTable')
         .populate('categoriesConfigs')
         .populate('races')
         .lean<TChampionshipWithOrganizer>();
@@ -136,6 +141,7 @@ export class ChampionshipService {
           select: parentChampionshipSelect,
         })
         .populate('categoriesConfigs')
+        .populate('racePointsTable')
         .populate('races')
         .lean<TChampionshipWithOrganizer[]>();
 

@@ -69,7 +69,7 @@ function getColumns(
 /**
  * Таблица созданных таблиц начисления очков за этап серии заездов.
  */
-export default function TableModerateRacePointsTable({
+export default function TableModerationRacePointsTable({
   racePointsTables,
   handleClick,
   docsOnPage = 10,

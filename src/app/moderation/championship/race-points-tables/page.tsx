@@ -1,7 +1,7 @@
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { getRacePointsTables } from '@/actions/race-points-table';
 import IconChampionship from '@/components/Icons/IconChampionship';
-import ContainerRacePointsTable from '@/components/Table/Containers/RacePointsTable/ContainerRacePointsTable';
+import ContainerRacePointsTable from '@/components/Table/Containers/ModerationRacePointsTables/ContainerModerationRacePointsTables';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import t from '@/locales/ru/moderation/championship.json';
 
