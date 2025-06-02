@@ -512,13 +512,21 @@ export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { 
  */
 export type TFormChampionshipCreate = Omit<
   TChampionship,
-  '_id' | 'organizer' | 'startDate' | 'endDate' | 'status' | 'parentChampionship' | 'races'
+  | '_id'
+  | 'organizer'
+  | 'startDate'
+  | 'endDate'
+  | 'status'
+  | 'parentChampionship'
+  | 'races'
+  | 'racePointsTable'
 > & {
   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
   startDate: string;
   endDate: string;
   parentChampionship: { _id: string; name: string };
+  racePointsTable: string | null;
 };
 // export type TFormChampionshipCreate = Omit<
 //   TChampionship,
@@ -883,6 +891,7 @@ export type TFormChampionshipProps = {
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
+  racePointsTables: TRacePointsTableDto[];
 };
 
 /**
@@ -953,6 +962,7 @@ export type TCContainerChampionshipFormsProps = {
   parentChampionships: TToursAndSeriesDto[];
   putCategories?: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
   putRaces?: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
+  racePointsTables: TRacePointsTableDto[];
 };
 
 /**

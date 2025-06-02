@@ -36,6 +36,10 @@ export function serializationChampionshipMain({
   formData.set('startDate', dataForm.startDate);
   formData.set('endDate', dataForm.endDate);
 
+  if (dataForm.racePointsTable) {
+    formData.set('racePointsTable', dataForm.racePointsTable);
+  }
+
   // Тип устанавливается только при создании Чемпионата.
   if (!isEditing) {
     formData.set('type', dataForm.type);

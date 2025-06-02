@@ -29,6 +29,7 @@
     "quantityStages": "Количество Этапов:*",
     "parentChampionshipId": "Выберите Родительский Чемпионат для Этапа:*",
     "stage": "Порядковый номер Этапа:*",
+    "racePointsTable": "Таблица начисления очков за этапы:*",
     "nameChampionship": "Название должно быть уникальным:*",
     "categoriesName": "Название должно быть уникальным:*",
     "categoriesDescription": "Краткое описание:",

@@ -11,6 +11,7 @@ import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../ChampionshipEditPage.module.css';
 import CContainerChampionshipForms from '@/components/ClientContainers/CContainerChampionshipForms/CContainerChampionshipForms';
+import { getRacePointsTables } from '@/actions/race-points-table';
 
 type Props = {
   params: Promise<{
@@ -28,9 +29,10 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
 
   // Получение чемпионата для редактирования.
   // Проверка прав пользователя на редактирование Чемпионата и получение данных Организатора.
-  const [championship, organizer] = await Promise.all([
+  const [championship, organizer, racePointsTables] = await Promise.all([
     getChampionship({ urlSlug, forModeration: true }),
     getOrganizerForModerate(),
+    getRacePointsTables(),
   ]);
 
   if (!organizer.data || !championship.data) {
@@ -64,6 +66,7 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
         championshipForEdit={championship.data}
         parentChampionships={parentChampionships.data || []}
         organizer={organizer.data}
+        racePointsTables={racePointsTables?.data || []}
       />
     </>
   );

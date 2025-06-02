@@ -15,6 +15,11 @@ const championshipSchema = new Schema<TChampionshipDocument>(
     urlSlug: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'Organizer', required: true },
+    racePointsTable: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'RacePointsTable',
+      default: null,
+    },
     parentChampionship: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Championship',

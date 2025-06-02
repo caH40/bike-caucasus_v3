@@ -12,7 +12,7 @@ import { content, TextValidationService } from '@/libs/utils/text';
 import { getDateTime } from '@/libs/utils/calendar';
 import { championshipTypes } from '@/constants/championship';
 import { bikeTypes } from '@/constants/trail';
-import { createParentOptions, createStageNumbers } from './utils';
+import { createParentOptions, createRacePointsTableOptions, createStageNumbers } from './utils';
 import { validateEndDateNotBeforeStartDate } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import BoxInput from '../../BoxInput/BoxInput';
@@ -37,6 +37,7 @@ export default function FormChampionshipMain({
   championshipForEdit,
   parentChampionships,
   setIsFormDirty,
+  racePointsTables,
 }: TFormChampionshipProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
@@ -72,7 +73,7 @@ export default function FormChampionshipMain({
   const urlTracksForDel = useRef<string[]>([]);
 
   // Отображения блоков в зависимости от использования формы и вводимых значений.
-  const { showQuantityStage, showNumberStage } = useShowChampionshipForm({
+  const { showQuantityStage, showNumberStage, showRacePointsTable } = useShowChampionshipForm({
     typeInInput: watch('type'),
     typeInDB: championshipForEdit?.type,
     isCreatingForm: !championshipForEdit,
@@ -290,6 +291,18 @@ export default function FormChampionshipMain({
           })}
           validationText={errors.endDate ? errors.endDate.message : ''}
         />
+
+        {/* Отображение выбора очковой таблицы только в Серии или Туре. */}
+        {showRacePointsTable && (
+          <BoxSelectNew
+            label={t.labels.racePointsTable}
+            id="racePointsTable"
+            options={createRacePointsTableOptions(racePointsTables)}
+            loading={isLoading}
+            register={register('racePointsTable')}
+            validationText={errors.stage?.message || ''}
+          />
+        )}
 
         {/* Блок загрузки Главного изображения (обложки) */}
         <Controller

@@ -310,6 +310,7 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
+        racePointsTable,
       } = deserializeChampionship(serializedFormData);
 
       const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
@@ -346,6 +347,7 @@ export class ChampionshipService {
         startDate,
         endDate,
         bikeType,
+        racePointsTable: racePointsTable || null,
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
         ...(quantityStages && { quantityStages }),
         ...(parentChampionshipId && {

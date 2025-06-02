@@ -4,7 +4,7 @@ import { raceInit } from '@/constants/championship';
 import { content } from '@/libs/utils/text';
 
 // types
-import { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
+import { TDtoChampionship, TRacePointsTableDto, TToursAndSeriesDto } from '@/types/dto.types';
 import {
   TClientCategoriesConfigs,
   TFormChampionshipCreate,
@@ -84,6 +84,21 @@ export function getRacesInit(races?: TRaceForForm[]): TRaceForFormNew[] {
  */
 export function createParentOptions(parentChampionships: TToursAndSeriesDto[]): TOptions[] {
   const options = parentChampionships.map((elm, index) => ({
+    id: index,
+    translation: elm.name,
+    name: elm._id,
+  }));
+
+  return options;
+}
+
+/**
+ * Создание массива опция для SelectCustom выбора очковой таблицы для чемпионата.
+ */
+export function createRacePointsTableOptions(
+  racePointsTable: TRacePointsTableDto[]
+): TOptions[] {
+  const options = [...racePointsTable, { _id: '', name: 'Нет  таблиц' }].map((elm, index) => ({
     id: index,
     translation: elm.name,
     name: elm._id,
