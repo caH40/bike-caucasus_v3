@@ -26,6 +26,7 @@ import styles from '../Form.module.css';
 // types
 import type { TFormChampionshipCreate, TFormChampionshipProps } from '@/types/index.interface';
 import useParentChampionshipDates from '@/hooks/useParentChampionshipDates';
+import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
 
 /**
  * Форма создания/редактирования Чемпионата.
@@ -73,7 +74,7 @@ export default function FormChampionshipMain({
   const urlTracksForDel = useRef<string[]>([]);
 
   // Отображения блоков в зависимости от использования формы и вводимых значений.
-  const { showQuantityStage, showNumberStage, showRacePointsTable } = useShowChampionshipForm({
+  const { showQuantityStage, showNumberStage } = useShowChampionshipForm({
     typeInInput: watch('type'),
     typeInDB: championshipForEdit?.type,
     isCreatingForm: !championshipForEdit,
@@ -293,7 +294,7 @@ export default function FormChampionshipMain({
         />
 
         {/* Отображение выбора очковой таблицы только в Серии или Туре. */}
-        {showRacePointsTable && (
+        {isChampionshipWithStages(watch('type')) && (
           <BoxSelectNew
             label={t.labels.racePointsTable}
             id="racePointsTable"

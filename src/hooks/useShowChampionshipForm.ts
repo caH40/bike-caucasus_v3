@@ -32,11 +32,7 @@ export function useShowChampionshipForm({
 
   const showNumberStage = (isCreatingForm && isStageInForm) || isStage;
 
-  // Отображение выбора очковой таблицы только в Серии или Туре.
-  const showRacePointsTable = isSeriesOrTour;
-
   return {
-    showRacePointsTable,
     showTrackInput,
     showQuantityStage,
     showNumberStage,
