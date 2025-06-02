@@ -4,10 +4,11 @@ import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import ContainerTableRegisteredChamp from '@/components/Table/Containers/RegisteredChamp/RegisteredChamp';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import { generateMetadataChampRegistered } from '@/meta/meta';
 import styles from './ChampionshipRegistered.module.css';
+import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
+import { getChampionship } from '@/actions/championship';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -25,9 +26,22 @@ export default async function ChampionshipRegistered(props: Props) {
 
   const { urlSlug } = params;
 
-  const { data } = await getRegisteredRidersChamp({ urlSlug });
+  const [championship, { data }] = await Promise.all([
+    getChampionship({ urlSlug }),
+    getRegisteredRidersChamp({ urlSlug }),
+  ]);
 
-  const buttons = buttonsMenuChampionshipPage(urlSlug);
+  if (!championship.data) {
+    throw new Error(championship.message);
+  }
+
+  // Возвращает необходимые сущности для страниц чемпионата/
+  const { buttons } = getChampionshipPageData({
+    parentChampionshipUrlSlug: championship?.data?.parentChampionship?.urlSlug,
+    parentChampionshipType: championship?.data?.parentChampionship?.type,
+    urlSlug,
+  });
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>

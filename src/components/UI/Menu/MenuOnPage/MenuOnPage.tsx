@@ -53,7 +53,7 @@ export default function MenuOnPage({ buttons, buttonAdditional }: Props) {
       // Проверка, начинается ли текущий путь с href.
       // /championships добавлено как исключение.
       const isPrefixMatch =
-        currentPath.startsWith(button.href) && button.href !== '/championships';
+        currentPath.startsWith(button.href + '/') && button.href !== '/championships';
 
       // Учитываем корневой маршрут, чтобы он не активировал дочерние ссылки.
       const isActive = isExactMatch || isPrefixMatch;

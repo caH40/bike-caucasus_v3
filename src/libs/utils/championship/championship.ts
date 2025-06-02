@@ -1,7 +1,7 @@
 import { TChampionshipStatus, TChampionshipTypes } from '@/types/models.interface';
-import { declineDays } from './decline';
+import { declineDays } from '../decline';
 import { TStageDateDescription } from '@/types/index.interface';
-import { getFullDaysFromDates } from './calendar';
+import { getFullDaysFromDates } from '../calendar';
 import { TDtoChampionship } from '@/types/dto.types';
 
 type Stages = {
@@ -243,4 +243,11 @@ export function getHiddenButtonNamesForEditChamp(
     return ['categories'];
   }
   return [];
+}
+
+/**
+ * Является чемпионат туром или серией заездов.
+ */
+export function isChampionshipWithStages(type: TChampionshipTypes): boolean {
+  return ['series', 'tour'].includes(type);
 }

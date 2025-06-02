@@ -17,7 +17,7 @@ import {
 } from '@/types/index.interface';
 import { createStringCategoryAge } from '@/libs/utils/age-category';
 import { TCategories, TRace, TResultRace } from '@/types/models.interface';
-import { sortCategoriesString } from '@/libs/utils/championship';
+import { sortCategoriesString } from '@/libs/utils/championship/championship';
 import { processResults } from '@/libs/utils/results';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';

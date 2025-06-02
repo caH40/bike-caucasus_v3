@@ -8,7 +8,6 @@ import { Metadata } from 'next';
 
 import { getChampionship, getChampionships } from '@/actions/championship';
 import { ChampionshipService } from '@/services/Championship';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import BlockChampionshipHeader from '@/components/BlockChampionshipHeader/BlockChampionshipHeader';
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
@@ -17,8 +16,9 @@ import BlockRaces from '@/components/BlockRaces/BlockRaces';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import { generateMetadataChampionship } from '@/meta/meta';
-import styles from './Championship.module.css';
 import ChampionshipMenuPopup from '@/components/UI/Menu/MenuControl/ChampionshipMenuPopup';
+import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
+import styles from './Championship.module.css';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -35,22 +35,27 @@ export default async function ChampionshipPage(props: Props) {
 
   const { urlSlug } = params;
 
-  const [championship, championships] = await Promise.all([
-    getChampionship({ urlSlug }),
-    getChampionships({ needTypes: ['stage'] }),
-  ]);
+  const [{ data: championship, message: championshipMessage }, stagesResponse] =
+    await Promise.all([
+      getChampionship({ urlSlug }),
+      getChampionships({ needTypes: ['stage'] }),
+    ]);
 
+  // Обновление статуса чемпионата.
   const champService = new ChampionshipService();
   await champService.updateStatusChampionship();
 
   // !!! Продумать обработку или отображение ошибки.
-  if (!championships.ok) {
-    throw new Error(championships.message);
+  if (!stagesResponse.ok) {
+    throw new Error(stagesResponse.message);
+  }
+  if (!championship) {
+    throw new Error(championshipMessage);
   }
 
   // Проверка наличия данных Этапов и их сортировка по возрастанию.
-  const stages = championships.data
-    ? championships.data.toSorted((a, b) => {
+  const stages = stagesResponse.data
+    ? stagesResponse.data.toSorted((a, b) => {
         if (!a.stage || !b.stage) {
           return 0;
         }
@@ -58,59 +63,57 @@ export default async function ChampionshipPage(props: Props) {
       })
     : [];
 
-  const buttons = buttonsMenuChampionshipPage(urlSlug);
-
-  const hiddenItemNames =
-    championship.data && ['series', 'tour'].includes(championship.data.type)
-      ? ['Финишные протоколы']
-      : [];
+  // Возвращает необходимые сущности для страниц чемпионата/
+  const { hiddenItemNames, buttons } = getChampionshipPageData({
+    parentChampionshipUrlSlug: championship.parentChampionship?.urlSlug,
+    parentChampionshipType: championship.parentChampionship?.type,
+    urlSlug,
+  });
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        {championship.data && (
-          <>
-            <div className={styles.block__header}>
-              <div className={styles.ellipsis} id="popup-control-menu-championship">
-                {/* popup меня управления чемпионатом */}
-                <ChampionshipMenuPopup
-                  urlSlug={championship.data.urlSlug}
-                  raceId={championship.data.races[0]?._id}
-                  hiddenItemNames={hiddenItemNames}
-                />
-              </div>
-              <BlockChampionshipHeader championship={championship.data} />
+        <>
+          <div className={styles.block__header}>
+            <div className={styles.ellipsis} id="popup-control-menu-championship">
+              {/* popup меня управления чемпионатом */}
+              <ChampionshipMenuPopup
+                urlSlug={championship.urlSlug}
+                raceId={championship.races[0]?._id}
+                hiddenItemNames={hiddenItemNames}
+              />
             </div>
+            <BlockChampionshipHeader championship={championship} />
+          </div>
 
-            <div className={styles.wrapper__contacts}>
-              <BlockOrganizerContacts organizer={championship.data.organizer.contactInfo} />
+          <div className={styles.wrapper__contacts}>
+            <BlockOrganizerContacts organizer={championship.organizer.contactInfo} />
+          </div>
+
+          {['single', 'stage'].includes(championship.type) && (
+            <div className={styles.wrapper__races}>
+              <BlockRaces
+                races={championship.races}
+                registrationData={{
+                  type: championship.type,
+                  status: championship.status,
+                  urlSlugChamp: championship.urlSlug,
+                }}
+              />
             </div>
+          )}
 
-            {['single', 'stage'].includes(championship.data.type) && (
-              <div className={styles.wrapper__races}>
-                <BlockRaces
-                  races={championship.data.races}
-                  registrationData={{
-                    type: championship.data.type,
-                    status: championship.data.status,
-                    urlSlugChamp: championship.data.urlSlug,
-                  }}
-                />
+          {['series', 'tour'].includes(championship.type) && (
+            <>
+              <TitleAndLine hSize={2} title="Этапы" />
+              <div className={styles.wrapper__cards}>
+                {stages.map((champ) => (
+                  <ChampionshipCard championship={champ} key={champ._id} simple={true} />
+                ))}
               </div>
-            )}
-
-            {['series', 'tour'].includes(championship.data.type) && (
-              <>
-                <TitleAndLine hSize={2} title="Этапы" />
-                <div className={styles.wrapper__cards}>
-                  {stages.map((champ) => (
-                    <ChampionshipCard championship={champ} key={champ._id} simple={true} />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
-        )}
+            </>
+          )}
+        </>
       </div>
 
       {/* левая боковая панель */}

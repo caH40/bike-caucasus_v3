@@ -20,7 +20,7 @@ import IconRider from '@/components/Icons/IconRider';
 import IconCategory from '@/components/Icons/IconCategory';
 import IconHomePlace from '@/components/Icons/IconHomePlace';
 import { TResultRaceDto } from '@/types/dto.types';
-import { replaceCategorySymbols } from '@/libs/utils/championship';
+import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
 import IconChronometer from '@/components/Icons/IconChronometer';
 import Medal from '../Td/Medal';
 import styles from '../TableCommon.module.css';

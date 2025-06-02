@@ -1,5 +1,4 @@
 import { getServerSession } from 'next-auth';
-import { revalidatePath } from 'next/cache';
 
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormTrail from '@/components/UI/Forms/FromTrail/FormTrail';
@@ -17,7 +16,6 @@ type Props = {
  */
 export default async function TrailEditCurrentPage(props: Props) {
   const params = await props.params;
-  revalidatePath(`/`);
   const session = await getServerSession(authOptions);
 
   const author = session?.user.idDB;

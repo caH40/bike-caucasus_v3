@@ -5,7 +5,7 @@ import cn from 'classnames/bind';
 import { blurBase64 } from '@/libs/image';
 import { bikeTypesMap } from '@/constants/trail';
 import { championshipTypesMap } from '@/constants/championship';
-import { getStagesCompleted, getStatusString } from '@/libs/utils/championship';
+import { getStagesCompleted, getStatusString } from '@/libs/utils/championship/championship';
 import { formatDateInterval } from '@/libs/utils/calendar';
 import StagesBox from '../StagesBox/StagesBox';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';

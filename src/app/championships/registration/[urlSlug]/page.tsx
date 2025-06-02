@@ -5,17 +5,17 @@ import { getChampionship } from '@/actions/championship';
 import { getH1ForRegistration } from '../../utils';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+import { generateMetadataChampRegistration } from '@/meta/meta';
+import { checkRegisteredInChamp } from '@/actions/registration-champ';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import AdContainer from '@/components/AdContainer/AdContainer';
-import { generateMetadataChampRegistration } from '@/meta/meta';
 import BlockRegistered from '@/components/BlockRegistered/BlockRegistered';
-import { checkRegisteredInChamp } from '@/actions/registration-champ';
-import styles from './Registration.module.css';
 import BlockMessage from '@/components/BlockMessage/BlockMessage';
+import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
+import styles from './Registration.module.css';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -49,12 +49,18 @@ export default async function Registration(props: Props) {
     return <h2>Не получены данные с сервера о Чемпионате </h2>;
   }
 
+  // Возвращает необходимые сущности для страниц чемпионата/
+  const { buttons } = getChampionshipPageData({
+    parentChampionshipUrlSlug: championshipResponse?.data?.parentChampionship?.urlSlug,
+    parentChampionshipType: championshipResponse?.data?.parentChampionship?.type,
+    urlSlug,
+  });
+
   const registeredInChamp = await checkRegisteredInChamp({
     idRiderDB,
     champId: championship._id,
   });
 
-  const buttons = buttonsMenuChampionshipPage(urlSlug);
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>

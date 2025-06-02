@@ -6,7 +6,7 @@ import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
 import FilterRidersForAddResult from '../UI/Filters/FilterRidersForAddResult/Filters';
 import { getRaceProtocol } from '@/actions/result-race';
-import { replaceCategorySymbols } from '@/libs/utils/championship';
+import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
 import { buttonsForProtocolRace } from '@/constants/buttons';
 import { useResultsRace } from '@/store/results';
 import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';

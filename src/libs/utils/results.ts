@@ -1,5 +1,5 @@
 import { createStringCategoryAge } from './age-category';
-import { calculateAverageSpeed } from './championship';
+import { calculateAverageSpeed } from './championship/championship';
 
 import { TResultRace } from '@/types/models.interface';
 import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';

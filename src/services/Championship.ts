@@ -13,7 +13,7 @@ import { getNextSequenceValue } from './sequence';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
-import { getCurrentStatus } from '@/libs/utils/championship';
+import { getCurrentStatus } from '@/libs/utils/championship/championship';
 import { RegistrationChampService } from './RegistrationChamp';
 import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { RaceModel } from '@/database/mongodb/Models/Race';

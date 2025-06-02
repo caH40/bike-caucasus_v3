@@ -19,4 +19,4 @@ export const organizerSelect = ['_id', 'name', 'urlSlug', 'logoUrl', 'contactInf
 /**
  * Данные Родительского Чемпионата для Этапа.
  */
-export const parentChampionshipSelect = ['_id', 'name', 'stage', 'type'];
+export const parentChampionshipSelect = ['_id', 'name', 'stage', 'urlSlug', 'type'];

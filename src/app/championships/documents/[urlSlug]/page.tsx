@@ -3,13 +3,14 @@
 import AdContainer from '@/components/AdContainer/AdContainer';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
+
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerDownloadRegistered from '@/components/ClientContainers/ContainerDownloadRegistered/ContainerDownloadRegistered';
-import styles from './ChampionshipDocuments.module.css';
 import ContainerDownloadRaceProtocol from '@/components/ClientContainers/ContainerDownloadRaceProtocol/ContainerDownloadRaceProtocol';
-
 import { getRaceProtocols } from '@/actions/result-race';
+import { getChampionship } from '@/actions/championship';
+import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
+import styles from './ChampionshipDocuments.module.css';
 
 // Создание динамических meta данных.
 // export async function generateMetadata(props: Props): Promise<Metadata> {}
@@ -25,15 +26,26 @@ export default async function ChampionshipDocuments(props: Props) {
 
   const { urlSlug } = params;
 
-  const registeredRidersChamp = await getRegisteredRidersChamp({ urlSlug });
+  const [championship, registeredRidersChamp, protocols] = await Promise.all([
+    getChampionship({ urlSlug }),
+    getRegisteredRidersChamp({ urlSlug }),
+    getRaceProtocols({ urlSlug }),
+  ]);
 
   if (!registeredRidersChamp.data) {
     return <h2>{registeredRidersChamp.message}</h2>;
   }
 
-  const protocols = await getRaceProtocols({ urlSlug });
+  if (!championship.data) {
+    throw new Error(championship.message);
+  }
 
-  const buttons = buttonsMenuChampionshipPage(urlSlug);
+  // Возвращает необходимые сущности для страниц чемпионата/
+  const { buttons } = getChampionshipPageData({
+    parentChampionshipUrlSlug: championship?.data?.parentChampionship?.urlSlug,
+    parentChampionshipType: championship?.data?.parentChampionship?.type,
+    urlSlug,
+  });
 
   return (
     <div className={styles.wrapper}>

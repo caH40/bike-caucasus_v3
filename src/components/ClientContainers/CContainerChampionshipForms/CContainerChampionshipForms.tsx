@@ -9,7 +9,7 @@ import FormChampionship from '@/components/UI/Forms/FormChampionship/FormChampio
 import { TCContainerChampionshipFormsProps } from '@/types/index.interface';
 import FormChampionshipCategories from '@/components/UI/Forms/FormChampionship/FormChampionshipCategories';
 import FormChampionshipRaces from '@/components/UI/Forms/FormChampionship/FormChampionshipRaces';
-import { getHiddenButtonNamesForEditChamp } from '@/libs/utils/championship';
+import { getHiddenButtonNamesForEditChamp } from '@/libs/utils/championship/championship';
 
 /**
  *  Клиентский контейнер для скачивания документов с зарегистрированными участниками Чемпионата.

@@ -7,7 +7,7 @@ import '../fonts/base64/roboto-regular';
 import { TProtocolRace } from '@/types/index.interface';
 import { formatTimeToStr } from '../utils/timer';
 import { GapTimeFormatter } from '../utils/gaptoseconds';
-import { replaceCategorySymbols } from '../utils/championship';
+import { replaceCategorySymbols } from '../utils/championship/championship';
 
 // type jsPDFCustom = jsPDF & {
 //   // eslint-disable-next-line no-unused-vars

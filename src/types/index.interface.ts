@@ -501,7 +501,10 @@ export type TChampionshipWithOrganizer = Omit<
   categoriesConfigs: TCategories[];
   races: TRace[];
 };
-export type TParentChampionship = Pick<TChampionship, '_id' | 'name' | 'stage' | 'type'>;
+export type TParentChampionship = Pick<
+  TChampionship,
+  '_id' | 'name' | 'stage' | 'type' | 'urlSlug'
+>;
 export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { _id: string };
 
 /**

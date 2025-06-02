@@ -5,9 +5,9 @@ import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import WrapperProtocolRace from '@/components/WrapperProtocolRace/WrapperProtocolRace';
 import { generateMetadataResultsRace } from '@/meta/meta';
-import { buttonsMenuChampionshipPage } from '@/constants/menu-function';
 import { getChampionship } from '@/actions/championship';
 import styles from './ChampionshipResults.module.css';
+import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -25,8 +25,6 @@ export default async function ChampionshipResults(props: Props) {
 
   const { urlSlug } = params;
 
-  const buttons = buttonsMenuChampionshipPage(urlSlug);
-
   const championship = await getChampionship({ urlSlug });
 
   if (!championship.data) {
@@ -37,6 +35,13 @@ export default async function ChampionshipResults(props: Props) {
       </>
     );
   }
+
+  // Возвращает необходимые сущности для страниц чемпионата/
+  const { buttons } = getChampionshipPageData({
+    parentChampionshipUrlSlug: championship?.data?.parentChampionship?.urlSlug,
+    parentChampionshipType: championship?.data?.parentChampionship?.type,
+    urlSlug,
+  });
 
   return (
     <div className={styles.wrapper}>

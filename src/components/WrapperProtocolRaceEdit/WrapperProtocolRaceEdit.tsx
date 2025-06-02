@@ -10,7 +10,7 @@ import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
 import { getRaceProtocol } from '@/actions/result-race';
-import { replaceCategorySymbols } from '@/libs/utils/championship';
+import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
 import { useResultsRace } from '@/store/results';
 import { toast } from 'sonner';
 import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
