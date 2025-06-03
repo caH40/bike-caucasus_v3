@@ -413,15 +413,8 @@ export type TResultRace = {
   profile: TProfileRiderInProtocol;
   startNumber: number;
   raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
-  positions: {
-    category: number; // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
-    absolute: number; // Абсолютная категория.
-    absoluteGender: number; // Абсолютная категория с делением по полу муж/жен.
-    manual?: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
-  };
-  points: {
-    category: number; // Заработанные очки в заезде в возрастной или спецкатегории в зависимости, где райдер участвует.
-  };
+  positions: TPositions; // Занятые места во всех протоколах.
+  points: TPoints;
   disqualification?: TDisqualification; // Дисквалификация райдера в заезде.
   categoryAge: string; // Выставляется автоматически при запуске расчета.
   categorySkillLevel: string | null; // Выставляется вручную. Ручное деление по мастерству (Профики, элита, А ...). Если существует, значит деление по категориям согласно categorySkillLevel, а не по возрасту.
@@ -434,6 +427,16 @@ export type TResultRace = {
   createdAt: Date;
   updatedAt: Date;
 };
+export type TPositions = {
+  category: number; // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
+  absolute: number; // Абсолютная категория.
+  absoluteGender: number; // Абсолютная категория с делением по полу муж/жен.
+};
+export type TPoints = {
+  category: number; // Заработанные очки в заезде в возрастной или спецкатегории в зависимости, где райдер участвует.
+  absolute: number; // Начисление очков для абсолютного протокола.
+  absoluteGender: number; // Начисление очков для абсолютного протокола.
+};
 export type TQuantityRidersFinished = {
   category: number; // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
   absolute: number; // Абсолютная категория.
@@ -441,7 +444,7 @@ export type TQuantityRidersFinished = {
   absoluteGenderFemale: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
 };
 export type TDisqualification = {
-  reason: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
+  type: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
   comment?: string;
 };
 export type TProfileRiderInProtocol = {
@@ -503,4 +506,36 @@ export type TRacePointsTable = {
   isDefault: boolean; // Если true — таблица доступна всем организаторам.
   createdAt: Date; // Дата создания таблицы.
   updatedAt: Date; // Дата последнего обновления таблицы.
+};
+
+/**
+ * Тип, описывающий запись в генеральной классификации тура (Tour GC) для MongoDB.
+ * Хранит информацию о позиции райдера в серии заездов, общем времени, статусе дисквалификации
+ * и результатах по каждому этапу.
+ */
+export type TSeriesClassificationDocument = TSeriesClassification & Document;
+export type TSeriesClassification = {
+  _id: Types.ObjectId; // MongoDB ID (опционально, если документ ещё не создан).
+  championship: mongoose.Types.ObjectId; // Ссылка на чемпионат (Серия или Тур).
+  rider?: mongoose.Types.ObjectId; // Ссылка на пользователя, есть он есть в БД.
+  profile: TProfileRiderInProtocol;
+  positions: TPositions;
+  categoryAge: string;
+  categorySkillLevel: string | null; // Спецкатегории.
+  totalFinishPoints: TPoints | null; // Суммарные очки (для серии с подсчётом очков).
+  totalTimeInMilliseconds: number; // Общее время за все завершённые этапы (в миллисекундах).
+  completedStages: number; // Количество завершённых этапов.
+  disqualification: TDisqualification | null; // Статус дисквалификации.
+  team: Types.ObjectId | null; // Опционально: состав команды в рамках серии.
+  gapsInCategories: TGapsInCategories; // Финишные гэпы для категорий и для абсолюта.
+  stages: {
+    championshipId: mongoose.Types.ObjectId; // Ссылка на этап в БД.
+    order: number; // Порядковый номер этапа в туре.
+    name: string; // Название этапа.
+    urlSlug: string;
+    durationInMilliseconds: number | null; // Время прохождения этапа (в миллисекундах). null, если этап не был пройден.
+    points: TPoints | null; // Заработанные финишные очки за этап. null в Туре.
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
 };

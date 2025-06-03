@@ -413,7 +413,7 @@ export class RaceResultService {
 
     for (const result of results) {
       // Обнуление очков.
-      result.points = { category: 0 };
+      result.points = { category: 0, absolute: 0, absoluteGender: 0 };
 
       const { rules, fallbackPoints } = parentChampionshipDB.racePointsTable;
 

@@ -1,48 +1,21 @@
-import {
-  TGapsInCategories,
-  TQuantityRidersFinished,
-  TResultRaceDocument,
-} from '@/types/models.interface';
 import { Schema, Model, models, model } from 'mongoose';
+import { DisqualificationSchema } from './Schema/Disqualification';
+import { ProfileSchema } from './Schema/Profile';
+import { PositionsSchema } from './Schema/Positions';
+import { GapsInCategoriesSchema } from './Schema/GapsInCategories';
+
+// types
+import { TQuantityRidersFinished, TResultRaceDocument } from '@/types/models.interface';
 
 /**
  * Схема и модель для результата Райдера в заезде Чемпионата.
  */
-
-const PositionsSchema = new Schema(
-  {
-    category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
-    absolute: Number, // Абсолютная категория.
-    absoluteGender: Number, // Абсолютная категория с делением по полу муж/жен.
-    manual: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
-  },
-  { _id: false }
-);
-
 export const QuantityRidersFinishedSchema = new Schema<TQuantityRidersFinished>(
   {
     category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
     absolute: Number, // Абсолютная категория.
     absoluteGenderMale: Number, // Абсолютная категория с делением по полу муж/жен.
     absoluteGenderFemale: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
-  },
-  { _id: false }
-);
-
-const GapsInCategoriesSchema = new Schema<TGapsInCategories>(
-  {
-    category: { type: { toLeader: Number, toPrev: Number }, default: null, _id: false },
-    absolute: { type: { toLeader: Number, toPrev: Number }, default: null, _id: false },
-    absoluteGenderMale: {
-      type: { toLeader: Number, toPrev: Number },
-      default: null,
-      _id: false,
-    },
-    absoluteGenderFemale: {
-      type: { toLeader: Number, toPrev: Number },
-      default: null,
-      _id: false,
-    },
   },
   { _id: false }
 );
@@ -59,16 +32,7 @@ const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
     championship: { type: Schema.Types.ObjectId, ref: 'Championship', required: true },
     race: { type: Schema.Types.ObjectId, ref: 'Race', required: true },
     rider: { type: Schema.Types.ObjectId, ref: 'User' },
-    profile: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
-      patronymic: { type: String },
-      team: { type: String },
-      city: { type: String },
-      yearBirthday: { type: Number, required: true },
-      gender: { type: String, enum: ['male', 'female'], required: true },
-      _id: false,
-    },
+    profile: { type: ProfileSchema },
     startNumber: Number,
     raceTimeInMilliseconds: { type: Number, required: true }, // Без времени 0.
     positions: {
@@ -93,11 +57,7 @@ const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
       type: PointsSchema,
       default: { category: 0 },
     },
-    disqualification: {
-      reason: { type: String }, // 'DNF' | 'DSQ' | 'DNS'
-      comment: { type: String },
-      _id: false,
-    },
+    disqualification: { type: DisqualificationSchema, default: null },
     categoryAge: { type: String },
     categorySkillLevel: { type: String },
     averageSpeed: { type: Number },
