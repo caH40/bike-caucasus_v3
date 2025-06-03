@@ -1,3 +1,4 @@
+import { TGender } from '@/types/index.interface';
 import { createStringCategoryAge } from './age-category';
 import { calculateAverageSpeed } from './championship/championship';
 
@@ -40,8 +41,18 @@ export function processResults({
       gender: isFemale ? 'female' : 'male',
     });
 
+    // Добавление названий возрастных категорий в коллекцию счетчиков.
     result.categoryAge = categoryAge;
     categoriesInRace.set(categoryAge, 1);
+
+    // Добавление названий спецкатегорий в коллекцию счетчиков.
+    if (result.categorySkillLevel) {
+      const categorySkillLevelName = getSpecialCatName(
+        result.profile.gender,
+        result.categorySkillLevel
+      );
+      categoriesInRace.set(categorySkillLevelName, 1);
+    }
   }
 
   // Количество финишировавших в категориях.
@@ -85,8 +96,16 @@ export function setPositions(
 ) {
   const isFemale = result.profile.gender === 'female';
 
+  // Название категории для текущего результата: возрастная или skillLevel(с соответствующим префиксом gender).
+  const currentCategoryName = getCurrentCategoryName({
+    gender: result.profile.gender,
+    rawSkillLevelName: result.categorySkillLevel,
+    ageCategoryName: result.categoryAge,
+  });
+
+  // В каждый результат устанавливается общее количество финишировавших во всех категориях с абсолютными зачетами.
   result.quantityRidersFinished = {
-    category: quantityRidersFinishedMap.get(result.categoryAge) || 0,
+    category: quantityRidersFinishedMap.get(currentCategoryName) || 0,
     absolute: quantityRidersFinishedMap.get('absolute')!,
     absoluteGenderFemale: isFemale ? quantityRidersFinishedMap.get('absoluteFemale')! : 0,
     absoluteGenderMale: !isFemale ? quantityRidersFinishedMap.get('absoluteMale')! : 0,
@@ -103,10 +122,10 @@ export function setPositions(
     categoriesInRace.set('absoluteMale', result.positions.absoluteGender + 1);
   }
 
-  const positionAge = categoriesInRace.get(result.categoryAge);
-  if (positionAge) {
-    result.positions.category = positionAge;
-    categoriesInRace.set(result.categoryAge, positionAge + 1);
+  const positionInCategory = categoriesInRace.get(currentCategoryName);
+  if (positionInCategory) {
+    result.positions.category = positionInCategory;
+    categoriesInRace.set(currentCategoryName, positionInCategory + 1);
   }
 }
 
@@ -136,10 +155,22 @@ export function getQuantityRidersFinished({
   }
 
   return results.reduce((acc, cur) => {
-    // Проверка и обновление счетчика для возрастной категории.
-    if (ridersInCategories.has(cur.categoryAge)) {
+    // Проверка и обновление счетчика для возрастной категории. Если у результата есть categorySkillLevel, значит он засчитывается в другой счетчик.
+    if (ridersInCategories.has(cur.categoryAge) && !cur.categorySkillLevel) {
       const valueCategory = ridersInCategories.get(cur.categoryAge) || 0;
       ridersInCategories.set(cur.categoryAge, valueCategory + 1);
+    }
+
+    // Спецкатегории.
+    if (cur.categorySkillLevel) {
+      const categorySkillLevelName = getSpecialCatName(
+        cur.profile.gender,
+        cur.categorySkillLevel
+      );
+      if (ridersInCategories.has(categorySkillLevelName)) {
+        const valueCategory = ridersInCategories.get(categorySkillLevelName) || 0;
+        ridersInCategories.set(categorySkillLevelName, valueCategory + 1);
+      }
     }
 
     // Увеличение счетчика для женской категории.
@@ -160,6 +191,29 @@ export function getQuantityRidersFinished({
 
     return ridersInCategories;
   }, ridersInCategories);
+}
+
+/**
+ * Формирование название спецкатегории для счетчиков с учетом пола участника.
+ */
+function getSpecialCatName(gender: TGender, rawName: string): string {
+  return `${gender}__${rawName}`;
+}
+
+// Получение название категории для обрабатываемого результата.
+function getCurrentCategoryName({
+  gender,
+  rawSkillLevelName,
+  ageCategoryName,
+}: {
+  gender: TGender;
+  rawSkillLevelName: string | null;
+  ageCategoryName: string;
+}): string {
+  const categorySkillLevelName =
+    rawSkillLevelName && getSpecialCatName(gender, rawSkillLevelName);
+
+  return categorySkillLevelName ? categorySkillLevelName : ageCategoryName;
 }
 
 /**
@@ -186,8 +240,14 @@ export function setGaps({
 
   for (let index = 0; index < results.length; index++) {
     const result = results[index];
-    const categoryAge = result.categoryAge;
     const gender = result.profile.gender;
+
+    // Название категории для текущего результата: возрастная или skillLevel(с соответствующим префиксом gender).
+    const currentCategoryName = getCurrentCategoryName({
+      gender,
+      rawSkillLevelName: result.categorySkillLevel,
+      ageCategoryName: result.categoryAge,
+    });
 
     // Инициализация полей gapsInCategories.
     result.gapsInCategories = {
@@ -197,7 +257,7 @@ export function setGaps({
       absoluteGenderFemale: null,
     };
 
-    // 1. Расчет гэпов для абсолютного зачета.
+    // ============== 1. Расчет гэпов для абсолютного зачета. ==============
     if (index === 0) {
       // Лидер в абсолюте.
       indexesInCategories['absolute'].leader = index;
@@ -205,22 +265,23 @@ export function setGaps({
       result.gapsInCategories.absolute = calculateGaps(results, index, 0, index - 1);
     }
 
-    // 2. Расчет гэпов для возрастной категории.
-    const indexLeaderCategory = indexesInCategories[categoryAge].leader; // Индекс лидера в категории.
+    // ============== 2. Расчет гэпов для возрастной категории и спецкатегории. ==============
+    const indexLeaderCategory = indexesInCategories[currentCategoryName].leader; // Индекс лидера в категории.
     if (indexLeaderCategory === null) {
-      indexesInCategories[categoryAge].leader = index; // Лидер в категории.
-      indexesInCategories[categoryAge].prev = index; // Предыдущий в категории.
+      indexesInCategories[currentCategoryName].leader = index; // Лидер в категории.
+      indexesInCategories[currentCategoryName].prev = index; // Предыдущий в категории.
     } else {
       result.gapsInCategories.category = calculateGaps(
         results,
         index,
         indexLeaderCategory,
-        indexesInCategories[categoryAge].prev
+        indexesInCategories[currentCategoryName].prev
       );
-      indexesInCategories[categoryAge].prev = index; // Установка счетчика предыдущего райдера.
+
+      indexesInCategories[currentCategoryName].prev = index; // Установка счетчика предыдущего райдера.
     }
 
-    // 3. Расчет гэпов для пола.
+    // 4. Расчет гэпов для пола.
     if (gender === 'female') {
       if (indexesInCategories['absoluteFemale'].leader === null) {
         indexesInCategories['absoluteFemale'].leader = index; // Лидер среди женщин.

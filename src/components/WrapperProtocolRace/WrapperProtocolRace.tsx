@@ -86,7 +86,9 @@ export default function WrapperProtocolRace({ championship }: Props) {
     1: categories.age.map((category) => (
       <ContainerProtocolRace
         key={category}
-        protocol={protocol.filter((result) => result.categoryAge === category)}
+        protocol={protocol.filter(
+          (result) => result.categoryAge === category && !result.categorySkillLevel
+        )}
         raceInfo={raceInfo}
         hiddenColumnHeaders={[
           'Место в абсолюте',

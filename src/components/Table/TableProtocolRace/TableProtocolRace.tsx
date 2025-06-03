@@ -311,7 +311,7 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
   ];
 
 /**
- * Таблица логов ошибок, зафиксированных на сайте.
+ * Таблица финишных протоколов заездов.
  */
 export default function TableProtocolRace({
   protocol,
