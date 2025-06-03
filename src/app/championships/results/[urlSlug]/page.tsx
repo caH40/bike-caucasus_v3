@@ -8,6 +8,7 @@ import { generateMetadataResultsRace } from '@/meta/meta';
 import { getChampionship } from '@/actions/championship';
 import styles from './ChampionshipResults.module.css';
 import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
+import { getChampionshipPagesTitleName } from '@/libs/utils/championship/title';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -46,7 +47,10 @@ export default async function ChampionshipResults(props: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        <TitleAndLine hSize={1} title={`Результаты «${championship.data.name}»`} />
+        <TitleAndLine
+          hSize={1}
+          title={getChampionshipPagesTitleName(championship.data, 'Результаты')}
+        />
         {/* Отображается только при наличии заезда(ов) */}
         {championship.data.races.length > 0 && (
           <WrapperProtocolRace championship={championship.data} />
