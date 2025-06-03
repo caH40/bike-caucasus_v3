@@ -92,6 +92,17 @@ export default function WrapperProtocolRaceEdit({
     return createCategoryOptions(categoriesConfig, gender);
   };
 
+  // Скрываемые столбцы в протоколах категорий.
+  const hiddenColumnHeadersInCategoriesProtocol = [
+    'Место в абсолюте',
+    'Место в абсолюте по полу',
+    'Отставания в общем протоколе',
+    'Отставания в общей женской категории',
+    'Категория',
+    '#',
+    championship.type === 'stage' ? 'Пусто' : 'Очки',
+  ];
+
   return (
     <div className={styles.wrapper}>
       <RaceSelectButtons
@@ -124,6 +135,7 @@ export default function WrapperProtocolRaceEdit({
           'Отставания в категории',
           'Отставания в общей женской категории',
           '#',
+          'Очки',
         ]}
         captionTitle="Общий протокол"
       />
@@ -135,13 +147,7 @@ export default function WrapperProtocolRaceEdit({
             (result) => result.categoryAge === category && !result.categorySkillLevel
           )}
           raceInfo={raceInfo}
-          hiddenColumnHeaders={[
-            'Место в абсолюте',
-            'Место в абсолюте по полу',
-            'Отставания в общем протоколе',
-            'Отставания в общей женской категории',
-            '#',
-          ]}
+          hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
         />
       ))}
@@ -151,13 +157,7 @@ export default function WrapperProtocolRaceEdit({
           key={category}
           protocol={protocol.filter((result) => result.categorySkillLevel === category)}
           raceInfo={raceInfo}
-          hiddenColumnHeaders={[
-            'Место в абсолюте',
-            'Место в абсолюте по полу',
-            'Отставания в общем протоколе',
-            'Отставания в общей женской категории',
-            '#',
-          ]}
+          hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
         />
       ))}

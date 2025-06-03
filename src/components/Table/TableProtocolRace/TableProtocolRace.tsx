@@ -32,6 +32,7 @@ import IconGapPrev from '@/components/Icons/IconGapPrev';
 import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerationResult';
 import IconEditOld from '@/components/Icons/IconEditOld';
 import ProtocolMenuPopup from '@/components/UI/Menu/MenuControl/ProtocolMenuPopup';
+import IconNumber from '@/components/Icons/IconNumber';
 
 const cx = cn.bind(styles);
 
@@ -84,8 +85,8 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
     },
     {
       header: () => (
-        <IconStar
-          colors={{ default: '#d7d700' }}
+        <IconNumber
+          colors={{ default: 'darkcyan' }}
           tooltip={{ text: 'Стартовый номер', id: 'startNumberIcon' }}
         />
       ),
@@ -293,6 +294,20 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
         );
       },
       uniqueName: 'Категория',
+    },
+    {
+      header: () => (
+        <IconStar
+          colors={{ default: '#d7d700' }}
+          tooltip={{
+            text: 'Очки за заезд в категории',
+            id: 'points',
+          }}
+        />
+      ),
+      accessorKey: 'points.category',
+      cell: (props: any) => props.getValue(),
+      uniqueName: 'Очки',
     },
     {
       header: () => (

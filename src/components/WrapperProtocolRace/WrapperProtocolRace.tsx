@@ -51,6 +51,18 @@ export default function WrapperProtocolRace({ championship }: Props) {
     raceId,
   };
 
+  // Скрываемые столбцы в протоколах категорий.
+  const hiddenColumnHeadersInCategoriesProtocol = [
+    'Место в абсолюте',
+    'Место в абсолюте по полу',
+    'Отставания в общем протоколе',
+    'Отставания в общей женской категории',
+    'Категория',
+    '#',
+    'Модерация',
+    championship.type === 'stage' ? 'Пусто' : 'Очки',
+  ];
+
   const raceProtocols: Record<number, JSX.Element[]> = {
     0: [
       <ContainerProtocolRace
@@ -64,6 +76,7 @@ export default function WrapperProtocolRace({ championship }: Props) {
           'Отставания в общей женской категории',
           '#',
           'Модерация',
+          'Очки',
         ]}
         captionTitle="Общий протокол"
       />,
@@ -79,6 +92,7 @@ export default function WrapperProtocolRace({ championship }: Props) {
           'Отставания в категории',
           '#',
           'Модерация',
+          'Очки',
         ]}
         captionTitle="Общий женский протокол"
       />,
@@ -90,14 +104,7 @@ export default function WrapperProtocolRace({ championship }: Props) {
           (result) => result.categoryAge === category && !result.categorySkillLevel
         )}
         raceInfo={raceInfo}
-        hiddenColumnHeaders={[
-          'Место в абсолюте',
-          'Место в абсолюте по полу',
-          'Отставания в общем протоколе',
-          'Отставания в общей женской категории',
-          '#',
-          'Модерация',
-        ]}
+        hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
         captionTitle={`Категория ${replaceCategorySymbols(category)}`}
       />
     )),
@@ -106,14 +113,7 @@ export default function WrapperProtocolRace({ championship }: Props) {
         key={category}
         protocol={protocol.filter((result) => result.categorySkillLevel === category)}
         raceInfo={raceInfo}
-        hiddenColumnHeaders={[
-          'Место в абсолюте',
-          'Место в абсолюте по полу',
-          'Отставания в общем протоколе',
-          'Отставания в общей женской категории',
-          '#',
-          'Модерация',
-        ]}
+        hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
         captionTitle={`Категория ${replaceCategorySymbols(category)}`}
       />
     )),
