@@ -9,6 +9,7 @@ import { generateMetadataChampRegistered } from '@/meta/meta';
 import styles from './ChampionshipRegistered.module.css';
 import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
 import { getChampionship } from '@/actions/championship';
+import { getChampionshipPagesTitleName } from '../../utils';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -26,7 +27,7 @@ export default async function ChampionshipRegistered(props: Props) {
 
   const { urlSlug } = params;
 
-  const [championship, { data }] = await Promise.all([
+  const [championship, { data: registeredRiders }] = await Promise.all([
     getChampionship({ urlSlug }),
     getRegisteredRidersChamp({ urlSlug }),
   ]);
@@ -35,23 +36,31 @@ export default async function ChampionshipRegistered(props: Props) {
     throw new Error(championship.message);
   }
 
+  const { name, parentChampionship, type, stage } = championship.data;
+
   // Возвращает необходимые сущности для страниц чемпионата/
   const { buttons } = getChampionshipPageData({
-    parentChampionshipUrlSlug: championship?.data?.parentChampionship?.urlSlug,
-    parentChampionshipType: championship?.data?.parentChampionship?.type,
+    parentChampionshipUrlSlug: parentChampionship?.urlSlug,
+    parentChampionshipType: parentChampionship?.type,
     urlSlug,
   });
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.wrapper__main}>
-        {data && (
+        {registeredRiders && (
           <>
             <TitleAndLine
               hSize={1}
-              title={`Зарегистрированные участники: ${data.championship.name}`}
+              title={getChampionshipPagesTitleName({
+                name,
+                parentChampionship,
+                type,
+                stage,
+                pageName: 'Зарегистрированные участники на',
+              })}
             />
-            {data.champRegistrationRiders.map((race) => (
+            {registeredRiders.champRegistrationRiders.map((race) => (
               <div className={styles.wrapper__table} key={race.raceName}>
                 <ContainerTableRegisteredChamp
                   registeredRidersInRace={race}

@@ -8,7 +8,7 @@ import { generateMetadataResultsRace } from '@/meta/meta';
 import { getChampionship } from '@/actions/championship';
 import styles from './ChampionshipResults.module.css';
 import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
-import { getChampionshipPagesTitleName } from '@/libs/utils/championship/title';
+import { getChampionshipPagesTitleName } from '../../utils';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -49,7 +49,13 @@ export default async function ChampionshipResults(props: Props) {
       <div className={styles.wrapper__main}>
         <TitleAndLine
           hSize={1}
-          title={getChampionshipPagesTitleName(championship.data, 'Результаты')}
+          title={getChampionshipPagesTitleName({
+            name: championship.data.name,
+            parentChampionship: championship.data.parentChampionship,
+            type: championship.data.type,
+            stage: championship.data.stage,
+            pageName: 'Результаты',
+          })}
         />
         {/* Отображается только при наличии заезда(ов) */}
         {championship.data.races.length > 0 && (

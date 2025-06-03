@@ -11,6 +11,7 @@ import { getRaceProtocols } from '@/actions/result-race';
 import { getChampionship } from '@/actions/championship';
 import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
 import styles from './ChampionshipDocuments.module.css';
+import { getChampionshipPagesTitleName } from '../../utils';
 
 // Создание динамических meta данных.
 // export async function generateMetadata(props: Props): Promise<Metadata> {}
@@ -53,7 +54,13 @@ export default async function ChampionshipDocuments(props: Props) {
         <>
           <TitleAndLine
             hSize={1}
-            title={`Документы "${registeredRidersChamp.data.championship.name}"`}
+            title={getChampionshipPagesTitleName({
+              name: championship.data.name,
+              parentChampionship: championship.data.parentChampionship,
+              type: championship.data.type,
+              stage: championship.data.stage,
+              pageName: 'Документы по',
+            })}
           />
           <p className={styles.description}>
             На данной странице представлены документы для скачивания, включая стартовые и

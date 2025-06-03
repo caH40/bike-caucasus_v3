@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { Metadata } from 'next';
 
 import { getChampionship } from '@/actions/championship';
-import { getH1ForRegistration } from '../../utils';
+import { getChampionshipPagesTitleName } from '../../utils';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
 import { generateMetadataChampRegistration } from '@/meta/meta';
@@ -73,11 +73,12 @@ export default async function Registration(props: Props) {
             <div className={styles.spacer__form}>
               <TitleAndLine
                 hSize={1}
-                title={getH1ForRegistration({
+                title={getChampionshipPagesTitleName({
                   name: championship.name,
                   parentChampionship: championship.parentChampionship,
                   type: championship.type,
                   stage: championship.stage,
+                  pageName: 'Регистрация на',
                 })}
               />
 

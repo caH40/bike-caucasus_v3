@@ -5,36 +5,59 @@ import { getTimerLocal } from '@/libs/utils/date-local';
 import { TDtoChampionship } from '@/types/dto.types';
 import type { TParentChampionshipForClient } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
+
+type PageName =
+  | 'Регистрация на'
+  | 'Результаты'
+  | 'Зарегистрированные участники на'
+  | 'Документы по';
+
 /**
- * Формирование h1 для страницы Регистрации.
+ * Формирование названия страницы результатов Чемпионата.
  */
-export function getH1ForRegistration({
+export function getChampionshipPagesTitleName({
   name,
   parentChampionship,
   type,
   stage,
+  pageName,
 }: {
   name: string;
   parentChampionship?: TParentChampionshipForClient;
   type: TChampionshipTypes;
   stage: number | null;
-}) {
-  switch (type) {
-    case 'single': {
-      return `Регистрация на Чемпионат: ${name}`;
-    }
+  pageName: PageName;
+}): string {
+  const typeName: Record<'series' | 'tour', string> = {
+    series: 'серии заездов ',
+    tour: 'тура ',
+  };
 
-    default: {
-      // Если не поступили данные о Родительском чемпионате.
-      if (!parentChampionship) {
-        return `Регистрация на ${stage} Этап: "${name}"`;
-      }
+  const parentType = parentChampionship?.type;
+  const parentName = parentChampionship?.name;
 
-      return `Регистрация на ${stage} Этап: "${name}". ${
-        championshipTypesMap.get(parentChampionship.type)?.translation
-      } "${parentChampionship.name}"`;
-    }
+  let parentTypeText = '';
+  if (parentType === 'series' || parentType === 'tour') {
+    parentTypeText = typeName[parentType];
   }
+
+  const words: Record<PageName, { stage: string; champ: string }> = {
+    Результаты: { stage: 'Этапа', champ: 'Соревнования' },
+    'Регистрация на': { stage: 'Этап', champ: 'Соревнование' },
+    'Зарегистрированные участники на': { stage: 'Этап', champ: 'Соревнование' },
+    'Документы по': { stage: 'Этапу', champ: 'Соревнованию' },
+  };
+
+  const prefix: Record<TChampionshipTypes, string> = {
+    series: `Серии заездов «${name}»`,
+    tour: `Тура «${name}»`,
+    stage: `${words[pageName].stage} №${stage} «${name}» ${parentTypeText}${
+      parentName ? `«${parentName}»` : ''
+    }`,
+    single: `${words[pageName].champ} «${name}»`,
+  };
+
+  return `${pageName} ${prefix[type]}`;
 }
 
 /**
@@ -99,38 +122,6 @@ export function getDescriptionForRegistration({ champ }: { champ: TDtoChampionsh
 
 // ==============================================================================================
 // ==============================================================================================
-
-/**
- * Формирование h1 для страницы Зарегистрированные участники.
- */
-// export function getH1ForRegistered({
-//   name,
-//   parentChampionship,
-//   type,
-//   stage,
-// }: {
-//   name: string;
-//   parentChampionship?: TParentChampionshipForClient;
-//   type: TChampionshipTypes;
-//   stage: number | null;
-// }) {
-//   switch (type) {
-//     case 'single': {
-//       return `Зарегистрированные участники на велогонку: ${name}`;
-//     }
-
-//     default: {
-//       // Если не поступили данные о Родительском чемпионате.
-//       if (!parentChampionship) {
-//         return `Регистрация на ${stage} Этап: "${name}"`;
-//       }
-
-//       return `Регистрация на ${stage} Этап: "${name}". ${
-//         championshipTypesMap.get(parentChampionship.type)?.translation
-//       } "${parentChampionship.name}"`;
-//     }
-//   }
-// }
 
 /**
  * Формирование Title для страницы Зарегистрированные участники.
