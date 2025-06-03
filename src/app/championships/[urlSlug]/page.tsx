@@ -95,7 +95,7 @@ export default async function ChampionshipPage(props: Props) {
             <BlockOrganizerContacts organizer={championship.organizer.contactInfo} />
           </div>
 
-          {showForSeriesOrTour && (
+          {!showForSeriesOrTour && (
             <div className={styles.wrapper__races}>
               <BlockRaces
                 races={championship.races}

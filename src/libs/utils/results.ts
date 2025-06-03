@@ -30,8 +30,8 @@ export function processResults({
     ['absoluteFemale', 1],
   ]);
 
-  // Обновление данных результатов.
-  results.forEach((result) => {
+  // Определение и установка название categoryAge в результат.
+  for (const result of results) {
     const isFemale = result.profile.gender === 'female';
 
     const categoryAge = createStringCategoryAge({
@@ -42,7 +42,7 @@ export function processResults({
 
     result.categoryAge = categoryAge;
     categoriesInRace.set(categoryAge, 1);
-  });
+  }
 
   // Количество финишировавших в категориях.
   const quantityRidersFinishedMap = getQuantityRidersFinished({
