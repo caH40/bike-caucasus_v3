@@ -10,7 +10,7 @@ import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
 import { buttonsForProtocolRace } from '@/constants/buttons';
 import { useResultsRace } from '@/store/results';
 import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
-import styles from './WrapperProtocolRace.module.css';
+import styles from './RaceProtocolWrapper.module.css';
 
 // types
 import type { TDtoChampionship, TResultRaceDto } from '@/types/dto.types';
@@ -23,7 +23,7 @@ type Props = {
 /**
  * Обертка для клиентских компонентов страницы результаты Заезда Чемпионата.
  */
-export default function WrapperProtocolRace({ championship }: Props) {
+export default function RaceProtocolWrapper({ championship }: Props) {
   const [raceId, setRaceId] = useState<string>(championship.races[0]._id);
   const [protocol, setProtocol] = useState<TResultRaceDto[]>([]);
   const [categories, setCategories] = useState<TCategoriesConfigNames>({

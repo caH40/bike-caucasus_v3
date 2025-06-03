@@ -1,13 +1,15 @@
 import { Metadata } from 'next';
 
-import AdContainer from '@/components/AdContainer/AdContainer';
-import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
-import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import WrapperProtocolRace from '@/components/WrapperProtocolRace/WrapperProtocolRace';
 import { generateMetadataResultsRace } from '@/meta/meta';
 import { getChampionship } from '@/actions/championship';
-import styles from './ChampionshipResults.module.css';
+import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
+import AdContainer from '@/components/AdContainer/AdContainer';
+import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPageData';
+import ResultsPage from './ResultsPage';
+import SeriesResultsPage from './SeriesResultsPage';
+import styles from './ChampionshipResults.module.css';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getChampionshipPagesTitleName } from '../../utils';
 
 // Создание динамических meta данных
@@ -57,9 +59,10 @@ export default async function ChampionshipResults(props: Props) {
             pageName: 'Результаты',
           })}
         />
-        {/* Отображается только при наличии заезда(ов) */}
-        {championship.data.races.length > 0 && (
-          <WrapperProtocolRace championship={championship.data} />
+        {isChampionshipWithStages(championship.data.type) ? (
+          <SeriesResultsPage championship={championship.data} />
+        ) : (
+          <ResultsPage championship={championship.data} />
         )}
       </div>
 
