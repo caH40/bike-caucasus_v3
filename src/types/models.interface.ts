@@ -414,7 +414,7 @@ export type TResultRace = {
   startNumber: number;
   raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
   positions: TPositions; // Занятые места во всех протоколах.
-  points: TPoints;
+  points: TPoints | null;
   disqualification?: TDisqualification; // Дисквалификация райдера в заезде.
   categoryAge: string; // Выставляется автоматически при запуске расчета.
   categorySkillLevel: string | null; // Выставляется вручную. Ручное деление по мастерству (Профики, элита, А ...). Если существует, значит деление по категориям согласно categorySkillLevel, а не по возрасту.

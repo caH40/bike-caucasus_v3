@@ -6,6 +6,7 @@ import { GapsInCategoriesSchema } from './Schema/GapsInCategories';
 
 // types
 import { TQuantityRidersFinished, TResultRaceDocument } from '@/types/models.interface';
+import { PointsSchema } from './Schema/Points';
 
 /**
  * Схема и модель для результата Райдера в заезде Чемпионата.
@@ -16,13 +17,6 @@ export const QuantityRidersFinishedSchema = new Schema<TQuantityRidersFinished>(
     absolute: Number, // Абсолютная категория.
     absoluteGenderMale: Number, // Абсолютная категория с делением по полу муж/жен.
     absoluteGenderFemale: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
-  },
-  { _id: false }
-);
-
-const PointsSchema = new Schema(
-  {
-    category: { type: Number, default: 0 },
   },
   { _id: false }
 );
@@ -53,10 +47,7 @@ const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
       },
     },
     gapsInCategories: GapsInCategoriesSchema,
-    points: {
-      type: PointsSchema,
-      default: { category: 0 },
-    },
+    points: { type: PointsSchema, default: null },
     disqualification: { type: DisqualificationSchema, default: null },
     categoryAge: { type: String },
     categorySkillLevel: { type: String },

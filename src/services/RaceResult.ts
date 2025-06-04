@@ -417,10 +417,14 @@ export class RaceResultService {
 
       const { rules, fallbackPoints } = parentChampionshipDB.racePointsTable;
 
-      result.points.category =
-        rules.find((rule) => rule.place === result.positions.category)?.points ??
-        fallbackPoints ??
-        0;
+      const pointFields = ['category', 'absolute', 'absoluteGender'] as const;
+
+      for (const field of pointFields) {
+        result.points[field] =
+          rules.find((rule) => rule.place === result.positions[field])?.points ??
+          fallbackPoints ??
+          0;
+      }
     }
   }
 
@@ -475,7 +479,7 @@ export class RaceResultService {
   }
 
   /**
-   * Обновляет результаты в базе данных.
+   * Обновляет результаты с добавленными местами, очками, средней скоростью, отставаниями в базе данных.
    *
    * @param {TResultRaceDocument[]} results - Массив результатов заезда.
    * @returns {Promise<void>} Обещание, которое разрешается, когда обновление завершено.
@@ -495,7 +499,6 @@ export class RaceResultService {
               averageSpeed: result.averageSpeed,
               categoryAge: result.categoryAge,
               gapsInCategories: result.gapsInCategories,
-              // categorySkillLevel: result.categorySkillLevel,
             },
           }
         )
