@@ -5,6 +5,7 @@ import { ProfileSchema } from './Schema/Profile';
 import { PositionsSchema } from './Schema/Positions';
 import { GapsInCategoriesSchema } from './Schema/GapsInCategories';
 import { PointsSchema } from './Schema/Points';
+import { GCStageSchema } from './Schema/GCStageSchema';
 
 /**
  * Схема и модель для генеральной классификации серии или тура.
@@ -33,28 +34,7 @@ const GeneralClassificationSchema = new Schema<TGeneralClassificationDocument>(
     team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', default: null },
     gapsInCategories: { type: GapsInCategoriesSchema },
 
-    stages: [
-      {
-        championship: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Championship',
-        },
-        order: { type: Number, required: true },
-        name: { type: String, required: true },
-        urlSlug: { type: String, required: true },
-        durationInMilliseconds: { type: Number, default: null },
-        points: { type: PointsSchema, default: null },
-        positions: {
-          type: PositionsSchema,
-          default: {
-            category: 0,
-            absolute: 0,
-            absoluteGender: 0,
-          },
-        },
-      },
-    ],
+    stages: [GCStageSchema],
   },
   { timestamps: true }
 );

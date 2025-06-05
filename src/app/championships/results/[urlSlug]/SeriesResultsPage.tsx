@@ -10,7 +10,12 @@ type Props = {
  * Страница генеральных результатов (таблиц) Серий и Туров.
  */
 export default function SeriesResultsPage({ championship, generalClassification }: Props) {
-  console.log(generalClassification);
+  console.log(generalClassification[0]);
 
-  return <GeneralClassificationWrapper championship={championship} />;
+  return (
+    <GeneralClassificationWrapper
+      championship={championship}
+      generalClassification={generalClassification}
+    />
+  );
 }
