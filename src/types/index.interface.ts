@@ -18,6 +18,7 @@ import {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TGeneralClassification,
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
@@ -38,6 +39,7 @@ import {
   TRoleDto,
   TToursAndSeriesDto,
 } from './dto.types';
+import { TGCStagesResultsFromMongo, TGetStagesFromMongo } from './mongo.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -504,7 +506,7 @@ export type TChampionshipWithOrganizer = Omit<
 };
 export type TParentChampionship = Pick<
   TChampionship,
-  '_id' | 'name' | 'stage' | 'type' | 'urlSlug'
+  '_id' | 'name' | 'stageOrder' | 'type' | 'urlSlug'
 >;
 export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { _id: string };
 
@@ -568,7 +570,7 @@ export type TRaceForFormDeserialized = Omit<
  * Данные Этапа для формирования карточки Чемпионата.
  */
 export type TStageDateDescription = {
-  stage: number;
+  stageOrder: number;
   status: TChampionshipStatus;
   startDate: Date;
   endDate: Date;
@@ -1335,3 +1337,36 @@ export type TRaceResultsServiceSetPointsParams = {
   championshipId: string;
   results: TResultRace[]; // Все результаты заезда.
 };
+
+/**
+ * Входные параметры метода initGeneralClassificationResults класса GeneralClassificationService.
+ */
+export type TInitGeneralClassificationResultsParams = {
+  riderIds: Set<string>;
+  stagesResults: TGCStagesResultsFromMongo[];
+  stages: TGetStagesFromMongo[];
+};
+
+/**
+ * Объект инициализации ГК.
+ */
+export type TInitGeneralClassificationResults = Pick<
+  TGeneralClassification,
+  'championship' | 'profile' | 'categoryAge' | 'categorySkillLevel' | 'stages' | 'positions'
+> & { rider: string };
+/**
+ * Объект инициализации ГК.
+ */
+export type TGeneralClassificationResults = TInitGeneralClassificationResults &
+  Pick<
+    TGeneralClassification,
+    'disqualification' | 'completedStages' | 'totalFinishPoints' | 'totalTimeInMilliseconds'
+  >;
+
+// | 'gapsInCategories'
+//   | 'positions'
+
+export type TGeneralClassificationForSave = Omit<
+  TGeneralClassification,
+  '_id' | 'createdAt' | 'updatedAt'
+>;

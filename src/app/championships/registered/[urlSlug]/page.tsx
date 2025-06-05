@@ -36,7 +36,7 @@ export default async function ChampionshipRegistered(props: Props) {
     throw new Error(championship.message);
   }
 
-  const { name, parentChampionship, type, stage } = championship.data;
+  const { name, parentChampionship, type, stageOrder } = championship.data;
 
   // Возвращает необходимые сущности для страниц чемпионата/
   const { buttons } = getChampionshipPageData({
@@ -56,7 +56,7 @@ export default async function ChampionshipRegistered(props: Props) {
                 name,
                 parentChampionship,
                 type,
-                stage,
+                stageOrder,
                 pageName: 'Зарегистрированные участники на',
               })}
             />

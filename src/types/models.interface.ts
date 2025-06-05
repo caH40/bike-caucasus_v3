@@ -325,7 +325,8 @@ export type TChampionship = {
   quantityStages: number | null; // Количество этапов.
   parentChampionship: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
   racePointsTable: mongoose.Types.ObjectId | null; // Ссылка на таблицу начисления очков на этапах, если это родительский Чемпионат (series, tour)
-  stage: number | null; // Номер этапа, если это этап.
+  stageOrder: number | null; // Номер этапа, если это этап.
+  isCountedInGC: boolean; // Включать ли этап в генеральную классификацию.
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   races: mongoose.Types.ObjectId[];
@@ -513,21 +514,23 @@ export type TRacePointsTable = {
  * Хранит информацию о позиции райдера в серии заездов, общем времени, статусе дисквалификации
  * и результатах по каждому этапу.
  */
-export type TSeriesClassificationDocument = TSeriesClassification & Document;
-export type TSeriesClassification = {
+export type TGeneralClassificationDocument = TGeneralClassification & Document;
+export type TGeneralClassification = {
   _id: Types.ObjectId; // MongoDB ID (опционально, если документ ещё не создан).
   championship: mongoose.Types.ObjectId; // Ссылка на чемпионат (Серия или Тур).
   rider?: mongoose.Types.ObjectId; // Ссылка на пользователя, есть он есть в БД.
   profile: TProfileRiderInProtocol;
-  positions: TPositions;
   categoryAge: string;
   categorySkillLevel: string | null; // Спецкатегории.
-  totalFinishPoints: TPoints | null; // Суммарные очки (для серии с подсчётом очков).
-  totalTimeInMilliseconds: number; // Общее время за все завершённые этапы (в миллисекундах).
+  team: Types.ObjectId | null; // Опционально: состав команды в рамках серии.
+
+  // Расчетные данные:
   completedStages: number; // Количество завершённых этапов.
   disqualification: TDisqualification | null; // Статус дисквалификации.
-  team: Types.ObjectId | null; // Опционально: состав команды в рамках серии.
   gapsInCategories: TGapsInCategories; // Финишные гэпы для категорий и для абсолюта.
+  positions: TPositions; // Позиции райдера в протоколах в  генеральной классификации.
+  totalFinishPoints: TPoints | null; // Суммарные очки (для серии с подсчётом очков).
+  totalTimeInMilliseconds: number; // Общее время за все завершённые этапы (в миллисекундах).
   stages: {
     championshipId: mongoose.Types.ObjectId; // Ссылка на этап в БД.
     order: number; // Порядковый номер этапа в туре.
@@ -535,6 +538,7 @@ export type TSeriesClassification = {
     urlSlug: string;
     durationInMilliseconds: number | null; // Время прохождения этапа (в миллисекундах). null, если этап не был пройден.
     points: TPoints | null; // Заработанные финишные очки за этап. null в Туре.
+    positions: TPositions; // Места в разных протоколах на этапе.
   }[];
   createdAt: Date;
   updatedAt: Date;

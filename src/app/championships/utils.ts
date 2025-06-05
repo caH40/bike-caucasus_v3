@@ -19,13 +19,13 @@ export function getChampionshipPagesTitleName({
   name,
   parentChampionship,
   type,
-  stage,
+  stageOrder,
   pageName,
 }: {
   name: string;
   parentChampionship?: TParentChampionshipForClient;
   type: TChampionshipTypes;
-  stage: number | null;
+  stageOrder: number | null;
   pageName: PageName;
 }): string {
   const typeName: Record<'series' | 'tour', string> = {
@@ -51,7 +51,7 @@ export function getChampionshipPagesTitleName({
   const prefix: Record<TChampionshipTypes, string> = {
     series: `Серии заездов «${name}»`,
     tour: `Тура «${name}»`,
-    stage: `${words[pageName].stage} №${stage} «${name}» ${parentTypeText}${
+    stage: `${words[pageName].stage} №${stageOrder} «${name}» ${parentTypeText}${
       parentName ? `«${parentName}»` : ''
     }`,
     single: `${words[pageName].champ} «${name}»`,
@@ -74,12 +74,12 @@ export function getTitleForRegistration({ champ }: { champ: TDtoChampionship }) 
     default: {
       // Если не поступили данные о Родительском чемпионате.
       if (!champ.parentChampionship) {
-        return `Открыта регистрация на велогонку на ${champ.stage} Этап: "${
+        return `Открыта регистрация на велогонку на ${champ.stageOrder} Этап: "${
           champ.name
         }". Дата старта ${getDateTime(new Date(champ.startDate)).dateDDMMYYYY}`;
       }
 
-      return `Регистрируйтесь на велогонку на ${champ.stage} Этап: "${champ.name}". ${
+      return `Регистрируйтесь на велогонку на ${champ.stageOrder} Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}". Дата старта ${
         getDateTime(new Date(champ.startDate)).dateDDMMYYYY
@@ -102,14 +102,14 @@ export function getDescriptionForRegistration({ champ }: { champ: TDtoChampionsh
     default: {
       // Если не поступили данные о Родительском чемпионате.
       if (!champ.parentChampionship) {
-        return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
+        return `Регистрируйтесь на велогонку по велоспорту на ${champ.stageOrder} Этап: "${
           champ.name
         }". Дата старта ${
           getDateTime(new Date(champ.startDate)).dateDDMMYYYY
         } Присоединяйтесь к соревнованиям, испытайте себя!`;
       }
 
-      return `Регистрируйтесь на велогонку по велоспорту на ${champ.stage} Этап: "${
+      return `Регистрируйтесь на велогонку по велоспорту на ${champ.stageOrder} Этап: "${
         champ.name
       }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
         champ.parentChampionship.name
@@ -137,12 +137,12 @@ export function getTitleForRegistered({ champ }: { champ: TDtoChampionship }) {
     default: {
       // Если не поступили данные о Родительском чемпионате.
       if (!champ.parentChampionship) {
-        return `Зарегистрированные участники на велогонку на ${champ.stage} Этап: "${
+        return `Зарегистрированные участники на велогонку на ${champ.stageOrder} Этап: "${
           champ.name
         }". Стартует ${getDateTime(new Date(champ.startDate)).dateDDMMYYYY}`;
       }
 
-      return `Зарегистрированные участники на велогонку на ${champ.stage} Этап: "${
+      return `Зарегистрированные участники на велогонку на ${champ.stageOrder} Этап: "${
         champ.name
       }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
         champ.parentChampionship.name
@@ -168,14 +168,14 @@ export function getDescriptionForRegistered({ champ }: { champ: TDtoChampionship
       // Если не поступили данные о Родительском чемпионате.
       if (!champ.parentChampionship) {
         return `Зарегистрированные участники на велогонку по велоспорту на ${
-          champ.stage
+          champ.stageOrder
         } Этап: "${champ.name}". Дата старта ${
           getDateTime(new Date(champ.startDate)).dateDDMMYYYY
         } Тип велосипеда: ${bikeTypesMap.get(champ.bikeType)?.translation}!`;
       }
 
       return `Зарегистрированные участники на велогонку по велоспорту на ${
-        champ.stage
+        champ.stageOrder
       } Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}". Дата старта ${
@@ -195,12 +195,12 @@ export function getH1Championship({
   name,
   parentChampionship,
   type,
-  stage,
+  stageOrder,
 }: {
   name: string;
   parentChampionship?: TParentChampionshipForClient;
   type: TChampionshipTypes;
-  stage: number | null;
+  stageOrder: number | null;
 }) {
   switch (type) {
     case 'single': {
@@ -213,7 +213,7 @@ export function getH1Championship({
         return name;
       }
 
-      return `${stage} Этап: "${name}". ${
+      return `${stageOrder} Этап: "${name}". ${
         championshipTypesMap.get(parentChampionship.type)?.translation
       } "${parentChampionship.name}"`;
     }
@@ -238,7 +238,7 @@ export function getTitleChampionship({ champ }: { champ: TDtoChampionship }) {
         return messageNotForStage;
       }
 
-      return `Любительская велогонка ${champ.stage} Этапа: "${champ.name}". ${
+      return `Любительская велогонка ${champ.stageOrder} Этапа: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}"`;
     }
@@ -265,7 +265,7 @@ export function getDescriptionChampionship({ champ }: { champ: TDtoChampionship 
         return messageNotForStage;
       }
 
-      return `Примите участие в Чемпионате по велоспорту на ${champ.stage} Этапа: "${
+      return `Примите участие в Чемпионате по велоспорту на ${champ.stageOrder} Этапа: "${
         champ.name
       }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
         champ.parentChampionship.name
@@ -299,7 +299,7 @@ export function getTitleResultsRace({ champ }: { champ: TDtoChampionship }) {
         return messageNotForStage;
       }
 
-      return `Результаты велогонки ${champ.stage} Этап: "${champ.name}". ${
+      return `Результаты велогонки ${champ.stageOrder} Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}"`;
     }
@@ -326,7 +326,7 @@ export function getDescriptionResultsRace({ champ }: { champ: TDtoChampionship }
         return messageNotForStage;
       }
 
-      return `Финишные протоколы велогонки ${champ.stage} Этап: "${champ.name}". ${
+      return `Финишные протоколы велогонки ${champ.stageOrder} Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}"`;
     }

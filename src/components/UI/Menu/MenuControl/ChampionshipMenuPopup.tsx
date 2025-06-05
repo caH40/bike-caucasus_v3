@@ -13,6 +13,7 @@ const cx = cn.bind(styles);
 
 type Props = {
   urlSlug: string;
+  championshipId: string;
   raceId: string;
   hiddenItemNames: string[];
 };
@@ -23,11 +24,23 @@ const permission = 'moderation.championship.protocol';
 /**
  * Popup меню управления протоколом заезда в таблице результатов.
  */
-export default function ChampionshipMenuPopup({ urlSlug, raceId, hiddenItemNames }: Props) {
+export default function ChampionshipMenuPopup({
+  urlSlug,
+  raceId,
+  hiddenItemNames,
+  championshipId,
+}: Props) {
   return (
     <PermissionCheck permission={permission}>
       <div className={styles.inner}>
-        <MenuControl buttons={getNavLinksChampionshipPopup(urlSlug, raceId, hiddenItemNames)} />
+        <MenuControl
+          buttons={getNavLinksChampionshipPopup(
+            urlSlug,
+            raceId,
+            championshipId,
+            hiddenItemNames
+          )}
+        />
         <Tooltip
           anchorSelect={'popup-control-menu-championship'}
           place="top"

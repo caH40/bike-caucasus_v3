@@ -6,9 +6,11 @@ import IconChampionship from '@/components/Icons/IconChampionship';
 import IconDelete from '@/components/Icons/IconDelete';
 import IconEditOld from '@/components/Icons/IconEditOld';
 import IconOrganizers from '@/components/Icons/IconOrganizers';
+import IconRefresh from '@/components/Icons/IconRefresh';
 import IconUser from '@/components/Icons/IconUser';
 import IconWrench from '@/components/Icons/IconWrench';
 import { deleteItem } from '@/components/UI/BlockModeration/delete';
+import { upsertItem } from '@/components/UI/BlockModeration/upsert';
 import type { TMenuOnPage, TMenuPopup } from '@/types/index.interface';
 
 /**
@@ -163,6 +165,7 @@ export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
 export const getNavLinksChampionshipPopup = (
   urlSlug: string,
   raceId: string,
+  championshipId: string,
   hiddenItemNames: string[] = []
 ): TMenuOnPage[] =>
   [
@@ -188,6 +191,14 @@ export const getNavLinksChampionshipPopup = (
       onClick: () => deleteItem({ type: 'championship', urlSlug }),
       permission: 'moderation.championship.delete',
       icon: IconDelete,
+      classes: [],
+    },
+    {
+      id: 3,
+      name: 'Обновление данных генеральной классификации',
+      onClick: () => upsertItem(championshipId),
+      permission: 'moderation.championship',
+      icon: IconRefresh,
       classes: [],
     },
   ].filter((item) => !hiddenItemNames.includes(item.name));

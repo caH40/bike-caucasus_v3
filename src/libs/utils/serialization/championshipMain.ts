@@ -51,8 +51,8 @@ export function serializationChampionshipMain({
   }
 
   // Номер Этапа у Этапа.
-  if (dataForm.stage) {
-    formData.set('stage', String(dataForm.stage));
+  if (dataForm.stageOrder) {
+    formData.set('stage', String(dataForm.stageOrder));
   }
 
   formData.set('bikeType', dataForm.bikeType);

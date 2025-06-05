@@ -77,7 +77,7 @@ export default async function Registration(props: Props) {
                   name: championship.name,
                   parentChampionship: championship.parentChampionship,
                   type: championship.type,
-                  stage: championship.stage,
+                  stageOrder: championship.stageOrder,
                   pageName: 'Регистрация на',
                 })}
               />

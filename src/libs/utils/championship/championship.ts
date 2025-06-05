@@ -36,7 +36,7 @@ function getStatusStagesString({ stages }: Stages): string {
   const ongoingStage = stages.find((stage) => stage.status === 'ongoing');
 
   if (ongoingStage) {
-    return `Проводится сегодня ${ongoingStage.stage} Этап`;
+    return `Проводится сегодня ${ongoingStage.stageOrder} Этап`;
   }
 
   const upcomingStage = stages.find((stage) => stage.status === 'upcoming');
@@ -55,9 +55,9 @@ function getStatusStagesString({ stages }: Stages): string {
 
   const remainingDaysString = declineDays(fullDaysFromToday);
   if (fullDaysFromToday === 1) {
-    return `Завтра старт ${upcomingStage.stage} Этапа`;
+    return `Завтра старт ${upcomingStage.stageOrder} Этапа`;
   }
-  return `${upcomingStage.stage} Этап через: ${remainingDaysString}`;
+  return `${upcomingStage.stageOrder} Этап через: ${remainingDaysString}`;
 }
 
 /**

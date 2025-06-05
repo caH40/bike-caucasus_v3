@@ -24,7 +24,7 @@ export default function StagesBox({ stages }: Props) {
             end: length > 1 && index === length - 1,
             [stage.status]: [stage.status],
           })}
-          key={stage.stage}
+          key={stage.stageOrder}
         />
       ))}
     </div>

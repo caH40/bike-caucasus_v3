@@ -134,11 +134,11 @@ export function createStageNumbers(
   }));
 
   // Добавление текущего номера Этапа в Общий массив всех Свободных номеров Этапов в Серии или Туре.
-  if (championshipForEdit?.stage) {
+  if (championshipForEdit?.stageOrder) {
     options.push({
-      id: championshipForEdit?.stage,
-      translation: String(championshipForEdit?.stage),
-      name: String(championshipForEdit?.stage),
+      id: championshipForEdit?.stageOrder,
+      translation: String(championshipForEdit?.stageOrder),
+      name: String(championshipForEdit?.stageOrder),
     });
     options.sort((a, b) => +a.name - +b.name);
   }

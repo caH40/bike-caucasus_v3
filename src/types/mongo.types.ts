@@ -1,10 +1,12 @@
 import { ObjectId } from 'mongoose';
 import {
   TCategories,
+  TChampionship,
   TChampionshipStatus,
   TChampionshipTypes,
   TRace,
   TRaceRegistrationStatus,
+  TResultRace,
 } from './models.interface';
 import { Types } from 'mongoose';
 import { Document } from 'mongoose';
@@ -43,3 +45,37 @@ export type TRegistrationStatusMongo = {
   status: TRaceRegistrationStatus;
   race: { name: string; _id: Types.ObjectId };
 };
+
+/**
+ * Данные этапов серии (тура) parentChampionship.
+ */
+export type TGetStagesFromMongo = Pick<
+  TChampionship,
+  '_id' | 'name' | 'urlSlug' | 'isCountedInGC'
+> & {
+  parentChampionship: Types.ObjectId;
+  stageOrder: number;
+  races: {
+    _id: Types.ObjectId;
+    name: string;
+    categories: Types.ObjectId;
+  };
+};
+
+/**
+ * Результаты этапов для генеральной классификации из БД.
+ */
+export type TGCStagesResultsFromMongo = Pick<
+  TResultRace,
+  | '_id'
+  | 'championship' // _id этапа
+  | 'raceTimeInMilliseconds'
+  | 'race'
+  | 'rider'
+  | 'profile'
+  | 'positions'
+  | 'points'
+  | 'disqualification'
+  | 'categoryAge'
+  | 'categorySkillLevel'
+>;

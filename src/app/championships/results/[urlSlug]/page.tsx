@@ -55,7 +55,7 @@ export default async function ChampionshipResults(props: Props) {
             name: championship.data.name,
             parentChampionship: championship.data.parentChampionship,
             type: championship.data.type,
-            stage: championship.data.stage,
+            stageOrder: championship.data.stageOrder,
             pageName: 'Результаты',
           })}
         />

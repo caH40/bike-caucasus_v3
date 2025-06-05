@@ -50,7 +50,9 @@ export default function ChampionshipCard({ championship, simple }: Props) {
 
           <Link href={`/championships/${championship.urlSlug}`} className={styles.link}>
             <h2 className={styles.title}>
-              {simple ? `Этап ${championship.stage}: ${championship.name}` : championship.name}
+              {simple
+                ? `Этап ${championship.stageOrder}: ${championship.name}`
+                : championship.name}
             </h2>
           </Link>
         </div>

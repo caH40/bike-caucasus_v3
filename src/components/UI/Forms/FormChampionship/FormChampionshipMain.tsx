@@ -194,13 +194,15 @@ export default function FormChampionshipMain({
             label={t.labels.stage}
             id="stage"
             options={stageNumbers}
-            defaultValue={championshipForEdit?.stage ? String(championshipForEdit.stage) : '1'}
+            defaultValue={
+              championshipForEdit?.stageOrder ? String(championshipForEdit.stageOrder) : '1'
+            }
             loading={isLoading}
-            register={register('stage', {
+            register={register('stageOrder', {
               ...(!championshipForEdit ? { required: t.required } : {}),
             })}
             disabled={!stageNumbers.length}
-            validationText={errors.stage ? errors.stage.message : ''}
+            validationText={errors.stageOrder ? errors.stageOrder.message : ''}
           />
         )}
 
@@ -301,7 +303,7 @@ export default function FormChampionshipMain({
             options={createRacePointsTableOptions(racePointsTables)}
             loading={isLoading}
             register={register('racePointsTable')}
-            validationText={errors.stage?.message || ''}
+            validationText={errors.racePointsTable?.message || ''}
           />
         )}
 

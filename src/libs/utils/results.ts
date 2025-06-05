@@ -196,12 +196,12 @@ export function getQuantityRidersFinished({
 /**
  * Формирование название спецкатегории для счетчиков с учетом пола участника.
  */
-function getSpecialCatName(gender: TGender, rawName: string): string {
+export function getSpecialCatName(gender: TGender, rawName: string): string {
   return `${gender}__${rawName}`;
 }
 
 // Получение название категории для обрабатываемого результата.
-function getCurrentCategoryName({
+export function getCurrentCategoryName({
   gender,
   rawSkillLevelName,
   ageCategoryName,

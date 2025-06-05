@@ -29,7 +29,7 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       { type: mongoose.Schema.Types.ObjectId, ref: 'Categories', required: true },
     ],
     quantityStages: { type: Number, default: null },
-    stage: { type: Number, default: null },
+    stageOrder: { type: Number, default: null },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     status: {
@@ -38,6 +38,7 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       default: 'upcoming',
       required: true,
     },
+    isCountedInGC: { type: Boolean, default: true },
     type: { type: String, default: 'single', required: true },
     bikeType: { type: String, default: 'road', required: true },
     races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Race', default: [] }],

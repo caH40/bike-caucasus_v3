@@ -58,10 +58,10 @@ export default async function ChampionshipPage(props: Props) {
   // Проверка наличия данных Этапов и их сортировка по возрастанию.
   const stages = stagesResponse.data
     ? stagesResponse.data.toSorted((a, b) => {
-        if (!a.stage || !b.stage) {
+        if (!a.stageOrder || !b.stageOrder) {
           return 0;
         }
-        return a.stage - b.stage;
+        return a.stageOrder - b.stageOrder;
       })
     : [];
 
@@ -85,6 +85,7 @@ export default async function ChampionshipPage(props: Props) {
               <ChampionshipMenuPopup
                 urlSlug={championship.urlSlug}
                 raceId={championship.races[0]?._id}
+                championshipId={championship._id}
                 hiddenItemNames={hiddenItemNames}
               />
             </div>

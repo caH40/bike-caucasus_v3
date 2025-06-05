@@ -153,13 +153,13 @@ export class ChampionshipService {
         if (champ.type === 'tour' || champ.type === 'series') {
           stages = await ChampionshipModel.find(
             { parentChampionship: champ._id },
-            { stage: true, status: true, startDate: true, endDate: true, _id: false }
+            { stageOrder: true, status: true, startDate: true, endDate: true, _id: false }
           ).lean<TStageDateDescription[]>();
-          stages.sort((a, b) => a.stage - b.stage);
+          stages.sort((a, b) => a.stageOrder - b.stageOrder);
         } else {
           stages = [
             {
-              stage: 1,
+              stageOrder: 1,
               status: champ.status,
               startDate: champ.startDate,
               endDate: champ.endDate,
@@ -530,7 +530,7 @@ export class ChampionshipService {
           continue;
         }
 
-        const stageNumbersDB: { stage: number | null }[] = await ChampionshipModel.find(
+        const stageNumbersDB: { stageOrder: number | null }[] = await ChampionshipModel.find(
           {
             parentChampionship: camp._id,
           },
@@ -540,7 +540,7 @@ export class ChampionshipService {
         const availableStage: number[] = [];
 
         for (let stage = 1; stage < camp.quantityStages + 1; stage++) {
-          const isOccupiedStage = stageNumbersDB.find((elm) => elm.stage === stage);
+          const isOccupiedStage = stageNumbersDB.find((elm) => elm.stageOrder === stage);
 
           // Занятый номер Этапа не добавляется в возвращаемый массив.
           if (!isOccupiedStage) {

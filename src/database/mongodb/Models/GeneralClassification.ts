@@ -1,4 +1,4 @@
-import { TSeriesClassificationDocument } from '@/types/models.interface';
+import { TGeneralClassificationDocument } from '@/types/models.interface';
 import mongoose, { Schema, model, models } from 'mongoose';
 import { DisqualificationSchema } from './Schema/Disqualification';
 import { ProfileSchema } from './Schema/Profile';
@@ -6,7 +6,10 @@ import { PositionsSchema } from './Schema/Positions';
 import { GapsInCategoriesSchema } from './Schema/GapsInCategories';
 import { PointsSchema } from './Schema/Points';
 
-const SeriesClassificationSchema = new Schema<TSeriesClassificationDocument>(
+/**
+ * Схема и модель для генеральной классификации серии или тура.
+ */
+const GeneralClassificationSchema = new Schema<TGeneralClassificationDocument>(
   {
     championship: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Championship' },
     rider: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -42,12 +45,20 @@ const SeriesClassificationSchema = new Schema<TSeriesClassificationDocument>(
         urlSlug: { type: String, required: true },
         durationInMilliseconds: { type: Number, default: null },
         points: { type: PointsSchema, default: null },
+        positions: {
+          type: PositionsSchema,
+          default: {
+            category: 0,
+            absolute: 0,
+            absoluteGender: 0,
+          },
+        },
       },
     ],
   },
   { timestamps: true }
 );
 
-export const SeriesClassificationModel =
-  models.SeriesClassification ||
-  model<TSeriesClassificationDocument>('SeriesClassification', SeriesClassificationSchema);
+export const GeneralClassificationModel =
+  models.GeneralClassification ||
+  model<TGeneralClassificationDocument>('GeneralClassification', GeneralClassificationSchema);
