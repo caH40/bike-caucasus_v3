@@ -2,11 +2,14 @@
 
 import { TGeneralClassificationDto } from '@/types/dto.types';
 import TableGeneralClassification from '../../TableGeneralClassification/TableGeneralClassification';
+import { TCategoriesEntity, TStagesForGCTableHeader } from '@/types/index.interface';
 
 type Props = {
   generalClassification: TGeneralClassificationDto[];
   captionTitle: string; // Название таблицы.
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
+  stages: TStagesForGCTableHeader[];
+  categoryEntity: TCategoriesEntity;
 };
 
 /**
@@ -16,6 +19,8 @@ export default function ContainerForGeneralClassification({
   generalClassification,
   hiddenColumnHeaders,
   captionTitle,
+  stages,
+  categoryEntity,
 }: Props) {
   return (
     <>
@@ -23,7 +28,9 @@ export default function ContainerForGeneralClassification({
       <TableGeneralClassification
         generalClassification={generalClassification}
         captionTitle={captionTitle}
+        stages={stages}
         hiddenColumnHeaders={hiddenColumnHeaders}
+        categoryEntity={categoryEntity}
       />
     </>
   );

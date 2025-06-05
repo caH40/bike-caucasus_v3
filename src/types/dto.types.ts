@@ -359,8 +359,14 @@ export type TGeneralClassificationDto = Omit<
 > & {
   _id: string;
   championship: string;
-  rider?: string;
+  rider: {
+    id: number;
+    image?: string;
+    provider?: { image?: string };
+    imageFromProvider: boolean;
+  };
   createdAt: string;
   updatedAt: string;
-  stages: (Omit<TStageInGC, 'championship'> & { championship: string })[];
+  stages: TStageClient[];
 };
+export type TStageClient = Omit<TStageInGC, 'championship'> & { championship: string };

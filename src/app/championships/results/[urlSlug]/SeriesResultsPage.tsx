@@ -1,21 +1,14 @@
 import GeneralClassificationWrapper from '@/components/GeneralClassificationWrapper/GeneralClassificationWrapper';
-import { TDtoChampionship, TGeneralClassificationDto } from '@/types/dto.types';
+
+import { TGetOneGeneralClassificationService } from '@/types/index.interface';
 
 type Props = {
-  championship: TDtoChampionship;
-  generalClassification: TGeneralClassificationDto[];
+  gcFromServer: TGetOneGeneralClassificationService;
 };
 
 /**
  * Страница генеральных результатов (таблиц) Серий и Туров.
  */
-export default function SeriesResultsPage({ championship, generalClassification }: Props) {
-  console.log(generalClassification[0]);
-
-  return (
-    <GeneralClassificationWrapper
-      championship={championship}
-      generalClassification={generalClassification}
-    />
-  );
+export default function SeriesResultsPage({ gcFromServer }: Props) {
+  return <GeneralClassificationWrapper gcFromServer={gcFromServer} />;
 }

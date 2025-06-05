@@ -29,7 +29,7 @@ export default async function ChampionshipResults(props: Props) {
 
   const { urlSlug } = params;
 
-  const [championship, generalClassification] = await Promise.all([
+  const [championship, gcFromServer] = await Promise.all([
     getChampionship({ urlSlug }),
     getOneGeneralClassification({ urlSlug }),
   ]);
@@ -64,12 +64,7 @@ export default async function ChampionshipResults(props: Props) {
           })}
         />
         {isChampionshipWithStages(championship.data.type) ? (
-          generalClassification.data && (
-            <SeriesResultsPage
-              championship={championship.data}
-              generalClassification={generalClassification.data}
-            />
-          )
+          gcFromServer.data && <SeriesResultsPage gcFromServer={gcFromServer.data} />
         ) : (
           <ResultsPage championship={championship.data} />
         )}

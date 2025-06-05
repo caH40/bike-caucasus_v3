@@ -6,19 +6,24 @@ import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 
 // types
-import { TGCStagesResultsFromMongo, TGetStagesFromMongo } from '@/types/mongo.types';
+import {
+  TGCStagesResultsFromMongo,
+  TGetOneGeneralClassificationFromMongo,
+  TGetStagesFromMongo,
+} from '@/types/mongo.types';
 import {
   ServerResponse,
   TGeneralClassificationResults,
+  TGetOneGeneralClassificationService,
   TInitGeneralClassificationResults,
   TInitGeneralClassificationResultsParams,
+  TStagesForGCTableHeader,
 } from '@/types/index.interface';
-import { TChampionshipTypes, TGeneralClassification, TPoints } from '@/types/models.interface';
+import { TChampionshipTypes, TPoints } from '@/types/models.interface';
 import { getCurrentCategoryName } from '@/libs/utils/results';
 import { createCategoriesInRace, setGCPositions } from '@/libs/utils/gc-results';
 import { GeneralClassificationModel } from '@/database/mongodb/Models/GeneralClassification';
 import { generalClassificationDto } from '@/dto/general-classification';
-import { TGeneralClassificationDto } from '@/types/dto.types';
 
 /**
  * Класс работы с генеральной классификацией серии заездов и туров.
@@ -39,19 +44,36 @@ export class GeneralClassificationService {
     urlSlug,
   }: {
     urlSlug: string;
-  }): Promise<ServerResponse<TGeneralClassificationDto[] | null>> {
+  }): Promise<ServerResponse<TGetOneGeneralClassificationService | null>> {
     try {
       // Данные чемпионата.
       const champ = await this.getChampionship({ urlSlug });
 
       const gcsDB = await GeneralClassificationModel.find({
         championship: champ._id,
-      }).lean<TGeneralClassification[]>();
+      })
+        .populate({
+          path: 'rider',
+          select: ['id', 'image', 'imageFromProvider', 'provider.image', '-_id'],
+        })
+        .lean<TGetOneGeneralClassificationFromMongo[]>();
 
       const gcAfterDto = gcsDB.map((gc) => generalClassificationDto(gc));
 
+      // Получение всех этапов серии.
+      const stages = await this.getStates(champ._id);
+
+      const stagesForHeader: TStagesForGCTableHeader[] = stages
+        .map((s) => ({
+          _id: s._id.toString(),
+          name: s.name,
+          urlSlug: s.urlSlug,
+          stageOrder: s.stageOrder,
+        }))
+        .sort((a, b) => a.stageOrder - b.stageOrder);
+
       return {
-        data: gcAfterDto,
+        data: { generalClassification: gcAfterDto, stages: stagesForHeader },
         ok: true,
         message: 'Генеральная классификация Серии заездов.',
       };
@@ -291,7 +313,9 @@ export class GeneralClassificationService {
    * Получение этапов серии (тура).
    * @param championshipId - _id родительского чемпионата для запрашиваемых этапов.
    */
-  private async getStates(championshipId: string): Promise<TGetStagesFromMongo[]> {
+  private async getStates(
+    championshipId: string | Types.ObjectId
+  ): Promise<TGetStagesFromMongo[]> {
     // Получение всех этапов серии.
     const stagesDB = await ChampionshipModel.find(
       { parentChampionship: championshipId, stageOrder: { $exists: true } },

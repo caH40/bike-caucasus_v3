@@ -4,6 +4,7 @@ import {
   TChampionship,
   TChampionshipStatus,
   TChampionshipTypes,
+  TGeneralClassification,
   TRace,
   TRaceRegistrationStatus,
   TResultRace,
@@ -79,3 +80,12 @@ export type TGCStagesResultsFromMongo = Pick<
   | 'categoryAge'
   | 'categorySkillLevel'
 >;
+
+export type TGetOneGeneralClassificationFromMongo = Omit<TGeneralClassification, 'rider'> & {
+  rider: {
+    id: number;
+    image?: string;
+    provider?: { image?: string };
+    imageFromProvider: boolean;
+  };
+};

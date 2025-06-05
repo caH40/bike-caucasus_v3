@@ -1,17 +1,17 @@
+// types
 import { TGeneralClassificationDto } from '@/types/dto.types';
-import { TGeneralClassification } from '@/types/models.interface';
+import { TGetOneGeneralClassificationFromMongo } from '@/types/mongo.types';
 
 /**
  * ДТО генеральной классификации райдера.
  */
 export function generalClassificationDto(
-  gc: TGeneralClassification
+  gc: TGetOneGeneralClassificationFromMongo
 ): TGeneralClassificationDto {
   return {
     ...gc,
     _id: gc._id.toString(),
     championship: gc.championship.toString(),
-    rider: gc.rider && gc.rider.toString(),
     createdAt: gc.createdAt.toISOString(),
     updatedAt: gc.updatedAt.toISOString(),
     stages: gc.stages.map((g) => ({

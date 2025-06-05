@@ -6,8 +6,7 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 
 // types
-import { ServerResponse } from '@/types/index.interface';
-import { TGeneralClassificationDto } from '@/types/dto.types';
+import { ServerResponse, TGetOneGeneralClassificationService } from '@/types/index.interface';
 
 /**
  * Экшен создания/обновления генеральной классификации.
@@ -37,7 +36,7 @@ export async function getOneGeneralClassification({
   urlSlug,
 }: {
   urlSlug: string;
-}): Promise<ServerResponse<TGeneralClassificationDto[] | null>> {
+}): Promise<ServerResponse<TGetOneGeneralClassificationService | null>> {
   try {
     const gcService = new GeneralClassificationService();
     const gcResponse = await gcService.getOne({ urlSlug });

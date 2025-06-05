@@ -34,6 +34,7 @@ import mongoose, { Types } from 'mongoose';
 import {
   TDtoChampionship,
   TDtoOrganizer,
+  TGeneralClassificationDto,
   TRacePointsTableDto,
   TResultRaceDto,
   TRoleDto,
@@ -1364,3 +1365,17 @@ export type TGeneralClassificationResults = TInitGeneralClassificationResults &
   >;
 
 // | 'gapsInCategories'
+
+export type TStagesForGCTableHeader = {
+  _id: string;
+  name: string;
+  urlSlug: string;
+  stageOrder: number;
+};
+
+export type TGetOneGeneralClassificationService = {
+  generalClassification: TGeneralClassificationDto[];
+  stages: TStagesForGCTableHeader[];
+};
+
+export type TCategoriesEntity = 'category' | 'absolute' | 'absoluteGender';
