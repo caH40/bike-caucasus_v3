@@ -13,6 +13,7 @@ import {
   TChampionship,
   TChampionshipTypes,
   TDisqualification,
+  TGeneralClassification,
   TLogsErrorModel,
   TNewsBlockInfo,
   TOrganizer,
@@ -22,6 +23,7 @@ import {
   TRacePointsTable,
   TRaceRegistrationStatus,
   TRoleModel,
+  TStageInGC,
   TTrail,
 } from './models.interface';
 import { TGetToursAndSeriesFromMongo } from './mongo.types';
@@ -349,4 +351,16 @@ export type TRacePointsTableDto = Omit<
   organizer: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type TGeneralClassificationDto = Omit<
+  TGeneralClassification,
+  '_id' | 'championship' | 'rider' | 'createdAt' | 'updatedAt' | 'stages'
+> & {
+  _id: string;
+  championship: string;
+  rider?: string;
+  createdAt: string;
+  updatedAt: string;
+  stages: (Omit<TStageInGC, 'championship'> & { championship: string })[];
 };

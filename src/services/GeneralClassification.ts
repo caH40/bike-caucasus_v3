@@ -13,10 +13,12 @@ import {
   TInitGeneralClassificationResults,
   TInitGeneralClassificationResultsParams,
 } from '@/types/index.interface';
-import { TChampionshipTypes, TPoints } from '@/types/models.interface';
+import { TChampionshipTypes, TGeneralClassification, TPoints } from '@/types/models.interface';
 import { getCurrentCategoryName } from '@/libs/utils/results';
 import { createCategoriesInRace, setGCPositions } from '@/libs/utils/gc-results';
 import { GeneralClassificationModel } from '@/database/mongodb/Models/GeneralClassification';
+import { generalClassificationDto } from '@/dto/general-classification';
+import { TGeneralClassificationDto } from '@/types/dto.types';
 
 /**
  * Класс работы с генеральной классификацией серии заездов и туров.
@@ -33,22 +35,31 @@ export class GeneralClassificationService {
   /**
    * Получение данных генеральной классификацией по _id родительского чемпионата - championshipId.
    */
-  // public async getOne({
-  //   championshipId,
-  // }: {
-  //   championshipId: string;
-  // }): Promise<ServerResponse<null>> {
-  //   try {
-  //     return {
-  //       data: null,
-  //       ok: true,
-  //       message: 'Данные таблицы начисления очков в заездах для Series',
-  //     };
-  //   } catch (error) {
-  //     this.errorLogger(error);
-  //     return this.handlerErrorDB(error);
-  //   }
-  // }
+  public async getOne({
+    urlSlug,
+  }: {
+    urlSlug: string;
+  }): Promise<ServerResponse<TGeneralClassificationDto[] | null>> {
+    try {
+      // Данные чемпионата.
+      const champ = await this.getChampionship({ urlSlug });
+
+      const gcsDB = await GeneralClassificationModel.find({
+        championship: champ._id,
+      }).lean<TGeneralClassification[]>();
+
+      const gcAfterDto = gcsDB.map((gc) => generalClassificationDto(gc));
+
+      return {
+        data: gcAfterDto,
+        ok: true,
+        message: 'Генеральная классификация Серии заездов.',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
 
   /**
    *  Создание или обновление генеральной классификацией по _id родительского чемпионата - championshipId.
@@ -59,14 +70,8 @@ export class GeneralClassificationService {
     championshipId: string;
   }): Promise<ServerResponse<null>> {
     try {
-      const champDB = await ChampionshipModel.findById(championshipId, { type: true }).lean<{
-        _id: Types.ObjectId;
-        type: TChampionshipTypes;
-      }>();
-
-      if (!champDB) {
-        throw new Error(`Не найден чемпионат с _id: ${championshipId}`);
-      }
+      // Данные чемпионата.
+      // const champ = await this.getChampionship({ championshipId });
 
       // Получение всех этапов серии.
       const stages = await this.getStates(championshipId);
@@ -268,7 +273,7 @@ export class GeneralClassificationService {
 
         // Данные по этапам пушатся в массив gc.stages.
         riderGc.stages.push({
-          championshipId: stage._id,
+          championship: stage._id,
           order: stage.stageOrder,
           urlSlug: stage.urlSlug,
           name: stage.name,
@@ -336,5 +341,36 @@ export class GeneralClassificationService {
     ).lean<TGCStagesResultsFromMongo[]>();
 
     return resultsDB;
+  }
+
+  private async getChampionship({
+    championshipId,
+    urlSlug,
+  }: {
+    championshipId?: string;
+    urlSlug?: string;
+  }): Promise<{
+    _id: Types.ObjectId;
+    type: TChampionshipTypes;
+  }> {
+    if (!championshipId && !urlSlug) {
+      throw new Error('Не передан championshipId или urlSlug для запроса данных чемпионата!');
+    }
+
+    const query = {
+      ...(urlSlug && { urlSlug }),
+      ...(championshipId && { _id: championshipId }),
+    };
+
+    const champDB = await ChampionshipModel.findOne(query, { type: true }).lean<{
+      _id: Types.ObjectId;
+      type: TChampionshipTypes;
+    }>();
+
+    if (!champDB) {
+      throw new Error(`Не найден чемпионат по параметрам: ${JSON.stringify(query)}`);
+    }
+
+    return champDB;
   }
 }

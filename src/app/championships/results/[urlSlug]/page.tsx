@@ -11,6 +11,7 @@ import SeriesResultsPage from './SeriesResultsPage';
 import styles from './ChampionshipResults.module.css';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { getChampionshipPagesTitleName } from '../../utils';
+import { getOneGeneralClassification } from '@/actions/gc';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -28,7 +29,10 @@ export default async function ChampionshipResults(props: Props) {
 
   const { urlSlug } = params;
 
-  const championship = await getChampionship({ urlSlug });
+  const [championship, generalClassification] = await Promise.all([
+    getChampionship({ urlSlug }),
+    getOneGeneralClassification({ urlSlug }),
+  ]);
 
   if (!championship.data) {
     return (
@@ -60,7 +64,12 @@ export default async function ChampionshipResults(props: Props) {
           })}
         />
         {isChampionshipWithStages(championship.data.type) ? (
-          <SeriesResultsPage championship={championship.data} />
+          generalClassification.data && (
+            <SeriesResultsPage
+              championship={championship.data}
+              generalClassification={generalClassification.data}
+            />
+          )
         ) : (
           <ResultsPage championship={championship.data} />
         )}

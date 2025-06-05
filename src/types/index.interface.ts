@@ -1364,9 +1364,3 @@ export type TGeneralClassificationResults = TInitGeneralClassificationResults &
   >;
 
 // | 'gapsInCategories'
-//   | 'positions'
-
-export type TGeneralClassificationForSave = Omit<
-  TGeneralClassification,
-  '_id' | 'createdAt' | 'updatedAt'
->;

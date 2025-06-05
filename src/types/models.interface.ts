@@ -531,15 +531,17 @@ export type TGeneralClassification = {
   positions: TPositions; // Позиции райдера в протоколах в  генеральной классификации.
   totalFinishPoints: TPoints | null; // Суммарные очки (для серии с подсчётом очков).
   totalTimeInMilliseconds: number; // Общее время за все завершённые этапы (в миллисекундах).
-  stages: {
-    championshipId: mongoose.Types.ObjectId; // Ссылка на этап в БД.
-    order: number; // Порядковый номер этапа в туре.
-    name: string; // Название этапа.
-    urlSlug: string;
-    durationInMilliseconds: number | null; // Время прохождения этапа (в миллисекундах). null, если этап не был пройден.
-    points: TPoints | null; // Заработанные финишные очки за этап. null в Туре.
-    positions: TPositions; // Места в разных протоколах на этапе.
-  }[];
+  stages: TStageInGC[];
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TStageInGC = {
+  championship: mongoose.Types.ObjectId; // Ссылка на этап в БД.
+  order: number; // Порядковый номер этапа в туре.
+  name: string; // Название этапа.
+  urlSlug: string;
+  durationInMilliseconds: number | null; // Время прохождения этапа (в миллисекундах). null, если этап не был пройден.
+  points: TPoints | null; // Заработанные финишные очки за этап. null в Туре.
+  positions: TPositions; // Места в разных протоколах на этапе.
 };

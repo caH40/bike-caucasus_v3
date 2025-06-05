@@ -35,7 +35,7 @@ const GeneralClassificationSchema = new Schema<TGeneralClassificationDocument>(
 
     stages: [
       {
-        championshipId: {
+        championship: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
           ref: 'Championship',
