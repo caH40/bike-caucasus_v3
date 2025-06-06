@@ -38,7 +38,7 @@ export class GeneralClassificationService {
   }
 
   /**
-   * Получение данных генеральной классификацией по _id родительского чемпионата - championshipId.
+   * Получение данных генеральной классификацией по urlSlug родительского чемпионата (urlSlug - Серии или тура).
    */
   public async getOne({
     urlSlug,
@@ -61,7 +61,7 @@ export class GeneralClassificationService {
       const gcAfterDto = gcsDB.map((gc) => generalClassificationDto(gc));
 
       // Получение всех этапов серии.
-      const stages = await this.getStates(champ._id);
+      const stages = await this.getStages(champ._id);
 
       const stagesForHeader: TStagesForGCTableHeader[] = stages
         .map((s) => ({
@@ -96,7 +96,7 @@ export class GeneralClassificationService {
       // const champ = await this.getChampionship({ championshipId });
 
       // Получение всех этапов серии.
-      const stages = await this.getStates(championshipId);
+      const stages = await this.getStages(championshipId);
 
       // Для каждого этапа получение результатов заездов
       // FIXME: на каждом из этапов может быть несколько заездов. Продумать логику их расчета.
@@ -313,7 +313,7 @@ export class GeneralClassificationService {
    * Получение этапов серии (тура).
    * @param championshipId - _id родительского чемпионата для запрашиваемых этапов.
    */
-  private async getStates(
+  private async getStages(
     championshipId: string | Types.ObjectId
   ): Promise<TGetStagesFromMongo[]> {
     // Получение всех этапов серии.
@@ -332,7 +332,7 @@ export class GeneralClassificationService {
       .lean<TGetStagesFromMongo[]>();
 
     if (stagesDB.length === 0) {
-      throw new Error(`Не найден ни один этап для чемпионата с _id: ${championshipId}!`);
+      throw new Error(`Не найден ни один этап для чемпионата с _id: ${championshipId}`);
     }
 
     // Сортировка по возрастанию Этапов.

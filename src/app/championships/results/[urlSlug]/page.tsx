@@ -29,10 +29,7 @@ export default async function ChampionshipResults(props: Props) {
 
   const { urlSlug } = params;
 
-  const [championship, gcFromServer] = await Promise.all([
-    getChampionship({ urlSlug }),
-    getOneGeneralClassification({ urlSlug }),
-  ]);
+  const championship = await getChampionship({ urlSlug });
 
   if (!championship.data) {
     return (
@@ -42,6 +39,11 @@ export default async function ChampionshipResults(props: Props) {
       </>
     );
   }
+
+  // Если championship является Серией или Туром, тогда запрашиваются данные по генеральной классификации.
+  const gcFromServer = isChampionshipWithStages(championship.data.type)
+    ? await getOneGeneralClassification({ urlSlug })
+    : { data: null };
 
   // Возвращает необходимые сущности для страниц чемпионата/
   const { buttons } = getChampionshipPageData({
