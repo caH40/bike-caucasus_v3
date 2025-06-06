@@ -56,6 +56,12 @@ export function deserializeChampionship(serializedFormData: FormData) {
                 return JSON.parse(value);
               }
 
+            // Если ключ urlTracksForDel парсить.
+            case 'awardedProtocols':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
             // Если ключ registeredRiders парсить.
             case 'registeredRiders':
               if (typeof value === 'string') {
@@ -76,6 +82,14 @@ export function deserializeChampionship(serializedFormData: FormData) {
 
             // Если ключ imageDeleted то возвращается булево значение.
             case 'imageDeleted':
+              return value === 'true' ? true : false;
+
+            // Если ключ isCounted то возвращается булево значение.
+            case 'isCountedStageInGC':
+              return value === 'true' ? true : false;
+
+            // Если ключ imageDeleted то возвращается булево значение.
+            case 'requiredStage':
               return value === 'true' ? true : false;
             default:
               return value;

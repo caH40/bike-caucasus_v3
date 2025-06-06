@@ -125,7 +125,7 @@ export default function FormRacePointsTable({
         />
 
         <BoxInput
-          label="Очки для всех мест, не указанных в таблице:"
+          label="Очки для всех мест не указанных в таблице:"
           id={`fallbackPoints`}
           autoComplete="off"
           type="number"

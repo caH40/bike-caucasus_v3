@@ -325,7 +325,7 @@ export class GeneralClassificationService {
         urlSlug: true,
         stageOrder: true,
         races: true,
-        isCountedInGC: true,
+        isCountedStageInGC: true,
       }
     )
       .populate({ path: 'races', select: ['name', 'categories'] })

@@ -84,12 +84,12 @@ export default function BlockGC({
         )}
 
         <Controller
-          name="generalClassification.awardedProtocols.category"
+          name="awardedProtocols.category"
           control={control}
           render={({ field }) => {
             return (
               <CheckboxRounded
-                id="generalClassificationAwardedProtocolsCategory"
+                id="awardedProtocolsCategory"
                 label={t.labels.awardedProtocolsCategory}
                 value={field.value ?? false}
                 setValue={field.onChange}
@@ -100,12 +100,12 @@ export default function BlockGC({
         />
 
         <Controller
-          name="generalClassification.awardedProtocols.absolute"
+          name="awardedProtocols.absolute"
           control={control}
           render={({ field }) => {
             return (
               <CheckboxRounded
-                id="generalClassificationAwardedProtocolsAbsolute"
+                id="awardedProtocolsAbsolute"
                 label={t.labels.awardedProtocolsAbsolute}
                 value={field.value ?? false}
                 setValue={field.onChange}
@@ -116,12 +116,12 @@ export default function BlockGC({
         />
 
         <Controller
-          name="generalClassification.awardedProtocols.absoluteGender"
+          name="awardedProtocols.absoluteGender"
           control={control}
           render={({ field }) => {
             return (
               <CheckboxRounded
-                id="generalClassificationAwardedProtocolsAbsoluteGender"
+                id="awardedProtocolsAbsoluteGender"
                 label={t.labels.awardedProtocolsAbsoluteGender}
                 value={field.value ?? false}
                 setValue={field.onChange}

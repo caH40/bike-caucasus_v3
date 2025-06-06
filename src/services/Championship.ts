@@ -35,6 +35,7 @@ import type {
   TStageDateDescription,
 } from '@/types/index.interface';
 import type {
+  TChampionship,
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
@@ -233,6 +234,9 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
+        awardedProtocols,
+        isCountedStageInGC,
+        requiredStage,
       } = deserializeChampionship(serializedFormData);
 
       // Проверка на дубликат названия Чемпионата.
@@ -262,7 +266,7 @@ export class ChampionshipService {
         champName: name,
       });
 
-      const createData: any = {
+      const createData: TChampionship = {
         name,
         description,
         startDate,
@@ -272,6 +276,9 @@ export class ChampionshipService {
         organizer: organizerId,
         posterUrl,
         creator,
+        awardedProtocols,
+        isCountedStageInGC,
+        requiredStage,
         urlSlug,
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
@@ -316,6 +323,9 @@ export class ChampionshipService {
         parentChampionshipId,
         quantityStages,
         stage,
+        awardedProtocols,
+        isCountedStageInGC,
+        requiredStage,
         racePointsTable,
       } = deserializeChampionship(serializedFormData);
 
@@ -353,6 +363,9 @@ export class ChampionshipService {
         startDate,
         endDate,
         bikeType,
+        awardedProtocols,
+        isCountedStageInGC,
+        requiredStage,
         racePointsTable: racePointsTable || null,
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
         ...(quantityStages && { quantityStages }),

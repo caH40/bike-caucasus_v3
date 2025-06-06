@@ -52,7 +52,7 @@ export type TRegistrationStatusMongo = {
  */
 export type TGetStagesFromMongo = Pick<
   TChampionship,
-  '_id' | 'name' | 'urlSlug' | 'isCountedInGC'
+  '_id' | 'name' | 'urlSlug' | 'isCountedStageInGC'
 > & {
   parentChampionship: Types.ObjectId;
   stageOrder: number;

@@ -55,6 +55,13 @@ export function serializationChampionshipMain({
     formData.set('stage', String(dataForm.stageOrder));
   }
 
+  if (dataForm.awardedProtocols) {
+    formData.set('awardedProtocols', JSON.stringify(dataForm.awardedProtocols));
+  }
+
+  formData.set('isCountedStageInGC', dataForm.isCountedStageInGC ? 'true' : 'false');
+  formData.set('requiredStage', dataForm.requiredStage ? 'true' : 'false');
+
   formData.set('bikeType', dataForm.bikeType);
   formData.set('organizerId', organizerId);
 

@@ -2,7 +2,7 @@ import mongoose, { Schema, model, models, Model } from 'mongoose';
 
 // types
 import { TChampionshipDocument } from '@/types/models.interface';
-import { GeneralClassificationInChampSchema } from './Schema/GeneralClassificationInChamp';
+import { AwardedProtocolsSchema } from './Schema/AawardedProtocols';
 
 /**
  * Схема для чемпионата.
@@ -30,7 +30,6 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       { type: mongoose.Schema.Types.ObjectId, ref: 'Categories', required: true },
     ],
     quantityStages: { type: Number, default: null },
-    stageOrder: { type: Number, default: null },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     status: {
@@ -39,7 +38,17 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       default: 'upcoming',
       required: true,
     },
-    generalClassification: { type: GeneralClassificationInChampSchema },
+    awardedProtocols: {
+      type: AwardedProtocolsSchema,
+      default: {
+        category: false,
+        absolute: false,
+        absoluteGender: false,
+      },
+    },
+    isCountedStageInGC: { type: Boolean, default: true },
+    requiredStage: { type: Boolean, default: false },
+    stageOrder: { type: Number, default: null },
     type: { type: String, default: 'single', required: true },
     bikeType: { type: String, default: 'road', required: true },
     races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Race', default: [] }],

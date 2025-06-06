@@ -61,6 +61,13 @@ export default function FormChampionshipMain({
     formState: { errors, isDirty }, // Объект состояния формы, содержащий ошибки валидации.
   } = useForm<TFormChampionshipCreate>({
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
+    defaultValues: {
+      awardedProtocols: championshipForEdit
+        ? championshipForEdit.awardedProtocols
+        : { category: true, absolute: false, absoluteGender: false },
+      isCountedStageInGC: championshipForEdit ? championshipForEdit.isCountedStageInGC : true,
+      requiredStage: championshipForEdit ? championshipForEdit.requiredStage : false,
+    },
   });
 
   // Контроль были ли внесены изменения в форму или нет.
@@ -85,7 +92,6 @@ export default function FormChampionshipMain({
   // Функция отправки формы создания/редактирования Чемпионата.
   const onSubmit = useSubmitChampionshipMain({
     championshipForEdit,
-    // isSeriesOrTourInForm,
     organizerId: organizer._id,
     urlTracksForDel,
     fetchChampionshipCreated,
@@ -158,14 +164,37 @@ export default function FormChampionshipMain({
                   />
                 )}
               />
+            </div>
+          ) : (
+            <h3 className={styles.error}>{t.needTourAndSeries}</h3>
+          ))}
 
+        {watch('type') === 'stage' ||
+          (showNumberStage && (
+            <>
               <Controller
-                name="generalClassification.requiredStage"
+                name="isCountedStageInGC"
                 control={control}
                 render={({ field }) => {
                   return (
                     <CheckboxRounded
-                      id="generalClassificationRequiredStage"
+                      id="requiredStage"
+                      label="Учитывать результаты этапа в генеральной классификации"
+                      value={field.value ?? false}
+                      setValue={field.onChange}
+                      functional={false}
+                    />
+                  );
+                }}
+              />
+
+              <Controller
+                name="requiredStage"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <CheckboxRounded
+                      id="requiredStage"
                       label="Обязательный этап для участия в генеральной классификации"
                       value={field.value ?? false}
                       setValue={field.onChange}
@@ -174,9 +203,7 @@ export default function FormChampionshipMain({
                   );
                 }}
               />
-            </div>
-          ) : (
-            <h3 className={styles.error}>{t.needTourAndSeries}</h3>
+            </>
           ))}
 
         {/* Блок выбора номера Этапа */}

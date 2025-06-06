@@ -28,8 +28,6 @@ export function useShowChampionshipForm({
   const showQuantityStage =
     (isCreatingForm && isSeriesOrTourInForm) || (!isCreatingForm && isSeriesOrTour);
 
-  // const showNumberStage = !showQuantityStage;
-
   const showNumberStage = (isCreatingForm && isStageInForm) || isStage;
 
   return {
