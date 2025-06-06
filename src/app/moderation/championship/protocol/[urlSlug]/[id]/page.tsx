@@ -6,10 +6,9 @@ import WrapperProtocolRaceEdit from '@/components/WrapperProtocolRaceEdit/Wrappe
 import { postRiderRaceResult } from '@/actions/result-race';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
-import styles from '../../../layout.module.css';
 import BlockMessage from '@/components/BlockMessage/BlockMessage';
 import Spacer from '@/components/Spacer/Spacer';
-import IconEditOld from '@/components/Icons/IconEditOld';
+import styles from '../../../layout.module.css';
 
 type Props = {
   params: Promise<{
@@ -86,16 +85,8 @@ export default async function AddFinishProtocolPage(props: Props) {
                   этапы! При добавлении результата не будут начисляться очки за этап.
                 </h3>
                 <div>
-                  Необходимо создать очковую таблицу (Таблица очков), а затем установить её в
-                  настройках Серии заездов.
-                </div>
-                <div className={styles.helper}>
-                  <span>
-                    Список ➡️ в строке родительского чемпионата данного этапа (тип Серия) нажать
-                  </span>
-                  <IconEditOld squareSize={14} />
-                  <span> ➡️ Таблица начисления очков за этапы</span>
-                  <span> ➡️ Сохранить</span>
+                  Необходимо создать Таблица очков, а затем установить её в настройках Серии
+                  заездов.
                 </div>
               </>
             </BlockMessage>

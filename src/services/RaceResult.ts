@@ -219,6 +219,11 @@ export class RaceResultService {
           ? null
           : dataDeserialized.categoryName;
 
+      // Данные по заезду.
+      const race = await this.getRace(resultDB.race._id.toString());
+      // Название возрастной категории в зависимости от возраста участника и категорий в заезде.
+      const categoryAge = await this.getAgeCategory(dataDeserialized, race.categories);
+
       const query = {
         profile: {
           firstName: dataDeserialized.firstName,
@@ -230,6 +235,7 @@ export class RaceResultService {
           gender: dataDeserialized.gender,
         },
         categorySkillLevel,
+        categoryAge,
         startNumber: dataDeserialized.startNumber,
         raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
       };
