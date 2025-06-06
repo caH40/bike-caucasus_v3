@@ -1,6 +1,7 @@
 import { TProfileForRegistration } from '@/types/index.interface';
 import { getDefaultValue } from '../UI/Forms/FormRaceRegistration/utils';
 import styles from './BlockProfileRegRace.module.css';
+import TitleAndLine from '../TitleAndLine/TitleAndLine';
 
 type Props = {
   profile: TProfileForRegistration;
@@ -9,7 +10,8 @@ type Props = {
 export default function BlockProfileRegRace({ profile }: Props) {
   return (
     <section className={styles.wrapper}>
-      <h3 className={styles.title}>Данные из профиля аккаунта:</h3>
+      <TitleAndLine hSize={3} title="Данные из вашего аккаунта:" />
+
       <dl className={styles.list}>
         <dt className={styles.desc__title}>Фамилия</dt>
         <dd className={styles.desc__detail}>{getDefaultValue(profile.lastName, 'lastName')}</dd>

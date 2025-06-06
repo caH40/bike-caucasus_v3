@@ -1,3 +1,9 @@
+.wrapper {
+  background-color: var(--white-12);
+  padding: 1rem 1.4rem 1.4rem 1.4rem;
+  border-radius: 1rem;
+}
+
 .title {
   font-size: 1.6rem;
   margin-bottom: 14px;
@@ -8,6 +14,11 @@
   font-size: 1.1rem;
   gap: 8px 1rem;
   margin-bottom: 5px;
+}
+.desc__title {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: normal;
 }
 .desc__title::after {
   content: ':';
