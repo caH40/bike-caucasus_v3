@@ -615,6 +615,7 @@ export type TProfileForRegistration = {
   city: string | null;
   patronymic?: string;
   gender: TGender;
+  yearBirthday: number | null;
 };
 // Получаем ключи из TProfileForRegistration
 export type TProfileKey = keyof TProfileForRegistration;

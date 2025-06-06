@@ -1,5 +1,5 @@
 import { TGender } from '@/types/index.interface';
-import { createStringCategoryAge } from './age-category';
+import { createStringCategoryAge } from '@/libs/utils/string-category';
 import { calculateAverageSpeed } from './championship/championship';
 
 import { TResultRace } from '@/types/models.interface';

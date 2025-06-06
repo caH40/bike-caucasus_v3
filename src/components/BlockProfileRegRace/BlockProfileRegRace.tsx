@@ -5,9 +5,10 @@ import TitleAndLine from '../TitleAndLine/TitleAndLine';
 
 type Props = {
   profile: TProfileForRegistration;
+  category: { age: string | null; skillLevel: string | null };
 };
 
-export default function BlockProfileRegRace({ profile }: Props) {
+export default function BlockProfileRegRace({ profile, category }: Props) {
   return (
     <section className={styles.wrapper}>
       <TitleAndLine hSize={3} title="Данные из вашего аккаунта:" />
@@ -24,9 +25,14 @@ export default function BlockProfileRegRace({ profile }: Props) {
         <dt className={styles.desc__title}>Отчество</dt>
         <dd className={styles.desc__detail}>{profile.patronymic}</dd>
 
-        <dt className={styles.desc__title}>Возрастная категория</dt>
+        <dt className={styles.desc__title}>
+          {category.skillLevel ? 'Спецкатегория' : 'Возрастная категория'}
+        </dt>
         <dd className={styles.desc__detail}>
-          {getDefaultValue(profile.ageCategory, 'ageCategory')}
+          {getDefaultValue(
+            category.skillLevel ? category.skillLevel : category.age,
+            'ageCategory'
+          )}
         </dd>
 
         <dt className={styles.desc__title}>Пол</dt>

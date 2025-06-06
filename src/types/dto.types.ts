@@ -101,9 +101,10 @@ export type TUserDtoPublic = Omit<TUserDto, 'provider' | 'email' | 'person'> & {
     firstName: string;
     patronymic?: string;
     lastName: string;
-    ageCategory: string | null; // birthday заменён на ageCategory
+    ageCategory: string | null; //  ageCategory деление по 10 лет
     gender: 'male' | 'female';
     bio: string;
+    yearBirthday: number;
   };
 };
 

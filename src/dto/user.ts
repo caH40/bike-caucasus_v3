@@ -37,6 +37,7 @@ export function dtoGetUserPublic(user: TUserDto, ageCategory: string | null): TU
       ageCategory,
       gender: user.person.gender,
       bio: user.person.bio,
+      yearBirthday: getDateTime(user.person.birthday).year,
     },
   };
 

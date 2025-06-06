@@ -92,12 +92,14 @@ export async function getProfileForReg({
       throw new Error(res.message);
     }
 
+    // FIXME: Зачем делается DTO если было сделано на сервере?
     const gender = res.data.person.gender;
     const profile = {
       firstName: res.data.person.firstName || null,
       lastName: res.data.person.lastName || null,
       patronymic: res.data.person.patronymic,
       ageCategory: res.data.person.ageCategory || null,
+      yearBirthday: res.data.person.yearBirthday || null,
       city: res.data.city || null,
       gender,
     };

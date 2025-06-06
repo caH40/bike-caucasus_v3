@@ -1,4 +1,4 @@
-import { createStringCategoryAge } from '@/libs/utils/age-category';
+import { createStringCategoryAge } from '@/libs/utils/string-category';
 import { getAgeDetails, getDateTime } from '@/libs/utils/calendar';
 import type {
   TChampRegistrationRiderDto,

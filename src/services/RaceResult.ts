@@ -16,7 +16,7 @@ import {
   TResultRaceRiderDeserialized,
   TRiderRaceResultDB,
 } from '@/types/index.interface';
-import { createStringCategoryAge } from '@/libs/utils/age-category';
+import { createStringCategoryAge } from '@/libs/utils/string-category';
 import {
   TCategories,
   TChampionshipTypes,
@@ -627,7 +627,7 @@ export class RaceResultService {
   /**
    * Получение возрастной категории в зависимости от возраста участника и от категорий в заезде.
    */
-  private async getAgeCategory(
+  public async getAgeCategory(
     data: TResultRaceRiderDeserialized,
     categoriesId: Types.ObjectId
   ) {

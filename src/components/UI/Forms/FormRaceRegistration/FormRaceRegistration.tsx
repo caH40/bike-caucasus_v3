@@ -24,6 +24,7 @@ import {
   TFormRaceRegistration,
   TProfileKey,
 } from '@/types/index.interface';
+import { useCategoryName } from '@/hooks/useCategoryName';
 
 const textValidation = new TextValidationService();
 
@@ -55,6 +56,16 @@ export default function FormRaceRegistration({
 
   // Отслеживание изменения свойства raceId в форме.
   const raceId = watch('raceId');
+  const categoryName = watch('categoryName');
+
+  // Названия возрастной или спецкатегории для регистрирующегося участника.
+  const { category } = useCategoryName({
+    races,
+    categoriesConfigs,
+    profile,
+    raceId,
+    categoryName,
+  });
 
   // Обновление массива свободных стартовых номеров.
   useEffect(() => {
@@ -180,7 +191,7 @@ export default function FormRaceRegistration({
       </div>
 
       {/* Блок отображения данных профиля для регистрации */}
-      <BlockProfileRegRace profile={profile} />
+      <BlockProfileRegRace profile={profile} category={category} />
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button_registration}>
