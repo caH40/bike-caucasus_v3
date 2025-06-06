@@ -532,23 +532,6 @@ export type TFormChampionshipCreate = Omit<
   parentChampionship: { _id: string; name: string };
   racePointsTable: string | null;
 };
-// export type TFormChampionshipCreate = Omit<
-//   TChampionship,
-//   | '_id'
-//   | 'organizer'
-//   | 'startDate'
-//   | 'endDate'
-//   | 'status'
-//   | 'parentChampionship'
-//   | 'races'
-// > & {
-//   posterUrl?: string; // url Постер для страницы Чемпионата. (Существует при редактировании Организатора)
-//   posterFile: File | null; // Файл загружаемого Постера для страницы клуба.
-//   startDate: string;
-//   endDate: string;
-//   races: TRaceForForm[] | null;
-//   parentChampionship: { _id: string; name: string };
-// };
 
 export type TCategoryAgeFromForm = {
   min: string; // Значение минимального возраста из формы (всегда приходит как строка).

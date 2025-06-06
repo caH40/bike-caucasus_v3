@@ -323,10 +323,20 @@ export type TChampionship = {
   organizer: mongoose.Types.ObjectId; // Ссылка на объект Организатора.
   type: TChampionshipTypes;
   quantityStages: number | null; // Количество этапов.
+  generalClassification: {
+    isCounted: boolean; // Включать ли этап в генеральную классификацию.
+    awardedProtocols: {
+      // По каким протоколам будет награждение (идёт зачет в ГК).
+      category: boolean;
+      absolute: boolean;
+      absoluteGender: boolean;
+    };
+    requiredStage: boolean; // Обязателен ли данный этап для ГК. (Если true, то при пропуске участник получает дисквалификацию в ГК.)
+  };
   parentChampionship: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
   racePointsTable: mongoose.Types.ObjectId | null; // Ссылка на таблицу начисления очков на этапах, если это родительский Чемпионат (series, tour)
   stageOrder: number | null; // Номер этапа, если это этап.
-  isCountedInGC: boolean; // Включать ли этап в генеральную классификацию.
+
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   races: mongoose.Types.ObjectId[];

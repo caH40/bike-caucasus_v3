@@ -2,6 +2,7 @@ import mongoose, { Schema, model, models, Model } from 'mongoose';
 
 // types
 import { TChampionshipDocument } from '@/types/models.interface';
+import { GeneralClassificationInChampSchema } from './Schema/GeneralClassificationInChamp';
 
 /**
  * Схема для чемпионата.
@@ -38,7 +39,7 @@ const championshipSchema = new Schema<TChampionshipDocument>(
       default: 'upcoming',
       required: true,
     },
-    isCountedInGC: { type: Boolean, default: true },
+    generalClassification: { type: GeneralClassificationInChampSchema },
     type: { type: String, default: 'single', required: true },
     bikeType: { type: String, default: 'road', required: true },
     races: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Race', default: [] }],

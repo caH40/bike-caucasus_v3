@@ -12,7 +12,7 @@ import { content, TextValidationService } from '@/libs/utils/text';
 import { getDateTime } from '@/libs/utils/calendar';
 import { championshipTypes } from '@/constants/championship';
 import { bikeTypes } from '@/constants/trail';
-import { createParentOptions, createRacePointsTableOptions, createStageNumbers } from './utils';
+import { createParentOptions, createStageNumbers } from './utils';
 import { validateEndDateNotBeforeStartDate } from '@/libs/utils/date';
 import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import BoxInput from '../../BoxInput/BoxInput';
@@ -26,7 +26,9 @@ import styles from '../Form.module.css';
 // types
 import type { TFormChampionshipCreate, TFormChampionshipProps } from '@/types/index.interface';
 import useParentChampionshipDates from '@/hooks/useParentChampionshipDates';
-import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
+
+import BlockGC from '../../BlockGC/BlockGC';
+import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
 
 /**
  * Форма создания/редактирования Чемпионата.
@@ -131,33 +133,6 @@ export default function FormChampionshipMain({
           tooltip={{ text: t.tooltips.typeChampionship, id: 'type' }}
         />
 
-        {/* Блок установки количества Этапов в Серии или Туре*/}
-        {showQuantityStage && (
-          <BoxInput
-            label={t.labels.quantityStages}
-            id="quantityStages"
-            autoComplete="off"
-            type="number"
-            min="1"
-            step="1"
-            defaultValue={
-              championshipForEdit?.quantityStages
-                ? String(championshipForEdit.quantityStages)
-                : '2'
-            }
-            loading={isLoading}
-            register={register('quantityStages', {
-              required: t.required,
-              min: { value: 2, message: t.min.quantityStages },
-              max: {
-                value: 30,
-                message: t.max.quantityStages,
-              },
-            })}
-            validationText={errors.quantityStages ? errors.quantityStages.message : ''}
-          />
-        )}
-
         {/* Выбор родительской страницы Чемпионата только когда это Одиночное соревнование или Этап*/}
         {watch('type') === 'stage' &&
           // Проверка на наличие созданных Туров или Серий у Организатора
@@ -182,6 +157,22 @@ export default function FormChampionshipMain({
                     }
                   />
                 )}
+              />
+
+              <Controller
+                name="generalClassification.requiredStage"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <CheckboxRounded
+                      id="generalClassificationRequiredStage"
+                      label="Обязательный этап для участия в генеральной классификации"
+                      value={field.value ?? false}
+                      setValue={field.onChange}
+                      functional={false}
+                    />
+                  );
+                }}
               />
             </div>
           ) : (
@@ -295,18 +286,6 @@ export default function FormChampionshipMain({
           validationText={errors.endDate ? errors.endDate.message : ''}
         />
 
-        {/* Отображение выбора очковой таблицы только в Серии или Туре. */}
-        {isChampionshipWithStages(watch('type')) && (
-          <BoxSelectNew
-            label={t.labels.racePointsTable}
-            id="racePointsTable"
-            options={createRacePointsTableOptions(racePointsTables)}
-            loading={isLoading}
-            register={register('racePointsTable')}
-            validationText={errors.racePointsTable?.message || ''}
-          />
-        )}
-
         {/* Блок загрузки Главного изображения (обложки) */}
         <Controller
           name="posterFile"
@@ -341,6 +320,20 @@ export default function FormChampionshipMain({
           tooltip={{ text: t.tooltips.bikeType, id: 'bikeType' }}
         />
       </div>
+
+      {showQuantityStage && (
+        <div className={styles.wrapper__block}>
+          <BlockGC
+            championshipForEdit={championshipForEdit}
+            control={control}
+            errors={errors}
+            register={register}
+            watch={watch}
+            racePointsTables={racePointsTables}
+            isLoading={isLoading}
+          />
+        </div>
+      )}
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>
