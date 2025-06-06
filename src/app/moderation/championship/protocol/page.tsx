@@ -43,6 +43,9 @@ export default async function ChampionshipRaceForProtocolPage() {
         title="Выбор Чемпионата для работы с финишным протоколом"
         Icon={IconResults}
       />
+
+      <div>В списке соревнования со статусом &#34;Происходящий&#34;, &#34;Завершенный&#34;</div>
+
       <FormSelectionChampionship
         options={options}
         championshipsWithRacesIds={championshipsWithRacesIds}
