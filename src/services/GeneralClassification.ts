@@ -93,7 +93,11 @@ export class GeneralClassificationService {
   }): Promise<ServerResponse<null>> {
     try {
       // Данные чемпионата.
-      // const champ = await this.getChampionship({ championshipId });
+      const champ = await this.getChampionship({ championshipId });
+
+      if (!champ.racePointsTable) {
+        throw new Error('Не выбрана Таблица начисления очков за этапы!');
+      }
 
       // Получение всех этапов серии.
       const stages = await this.getStages(championshipId);
@@ -376,6 +380,7 @@ export class GeneralClassificationService {
   }): Promise<{
     _id: Types.ObjectId;
     type: TChampionshipTypes;
+    racePointsTable: Types.ObjectId | null;
   }> {
     if (!championshipId && !urlSlug) {
       throw new Error('Не передан championshipId или urlSlug для запроса данных чемпионата!');
@@ -386,9 +391,13 @@ export class GeneralClassificationService {
       ...(championshipId && { _id: championshipId }),
     };
 
-    const champDB = await ChampionshipModel.findOne(query, { type: true }).lean<{
+    const champDB = await ChampionshipModel.findOne(query, {
+      type: true,
+      racePointsTable: true,
+    }).lean<{
       _id: Types.ObjectId;
       type: TChampionshipTypes;
+      racePointsTable: Types.ObjectId | null;
     }>();
 
     if (!champDB) {
