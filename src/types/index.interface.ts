@@ -513,7 +513,7 @@ export type TChampionshipWithOrganizer = Omit<
 export type TParentChampionship = Pick<
   TChampionship,
   '_id' | 'name' | 'stageOrder' | 'type' | 'urlSlug'
->;
+> & { racePointsTable: string };
 export type TParentChampionshipForClient = Omit<TParentChampionship, '_id'> & { _id: string };
 
 /**

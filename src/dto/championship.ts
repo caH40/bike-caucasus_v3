@@ -31,6 +31,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
   const parentChampionship: TParentChampionshipForClient = championship.parentChampionship && {
     ...championship.parentChampionship,
     _id: String(championship.parentChampionship._id),
+    racePointsTable: String(championship.parentChampionship.racePointsTable),
   };
 
   // Приведение даты в вид yyyy-mm-dd

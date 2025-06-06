@@ -68,6 +68,9 @@ export default function FormChampionshipMain({
       isCountedStageInGC: championshipForEdit ? championshipForEdit.isCountedStageInGC : true,
       requiredStage: championshipForEdit ? championshipForEdit.requiredStage : false,
       type: championshipForEdit ? championshipForEdit.type : 'single',
+      racePointsTable: championshipForEdit?.racePointsTable?._id
+        ? championshipForEdit.racePointsTable?._id
+        : '',
     },
   });
 

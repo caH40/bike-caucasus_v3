@@ -76,7 +76,7 @@ export default async function AddFinishProtocolPage(props: Props) {
         Icon={IconResults}
       />
       {championship.data.parentChampionship?.type === 'series' &&
-        !championship.data.racePointsTable && (
+        !championship.data.parentChampionship.racePointsTable && (
           <Spacer margin="b-lg">
             <BlockMessage>
               <>
