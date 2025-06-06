@@ -67,6 +67,7 @@ export default function FormChampionshipMain({
         : { category: true, absolute: false, absoluteGender: false },
       isCountedStageInGC: championshipForEdit ? championshipForEdit.isCountedStageInGC : true,
       requiredStage: championshipForEdit ? championshipForEdit.requiredStage : false,
+      type: championshipForEdit ? championshipForEdit.type : 'single',
     },
   });
 
@@ -169,48 +170,47 @@ export default function FormChampionshipMain({
             <h3 className={styles.error}>{t.needTourAndSeries}</h3>
           ))}
 
-        {watch('type') === 'stage' ||
-          (showNumberStage && (
-            <>
-              <Controller
-                name="isCountedStageInGC"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <CheckboxRounded
-                      id="requiredStage"
-                      label="Учитывать результаты этапа в генеральной классификации"
-                      value={field.value ?? false}
-                      setValue={field.onChange}
-                      functional={false}
-                    />
-                  );
-                }}
-              />
+        {watch('type') === 'stage' && (
+          <>
+            <Controller
+              name="isCountedStageInGC"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <CheckboxRounded
+                    id="requiredStage"
+                    label="Учитывать результаты этапа в генеральной классификации"
+                    value={field.value ?? false}
+                    setValue={field.onChange}
+                    functional={false}
+                  />
+                );
+              }}
+            />
 
-              <Controller
-                name="requiredStage"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <CheckboxRounded
-                      id="requiredStage"
-                      label="Обязательный этап для участия в генеральной классификации"
-                      value={field.value ?? false}
-                      setValue={field.onChange}
-                      functional={false}
-                    />
-                  );
-                }}
-              />
-            </>
-          ))}
+            <Controller
+              name="requiredStage"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <CheckboxRounded
+                    id="requiredStage"
+                    label="Обязательный этап для участия в генеральной классификации"
+                    value={field.value ?? false}
+                    setValue={field.onChange}
+                    functional={false}
+                  />
+                );
+              }}
+            />
+          </>
+        )}
 
         {/* Блок выбора номера Этапа */}
         {showNumberStage && (
           <BoxSelectNew
             label={t.labels.stage}
-            id="stage"
+            id="stageOrder"
             options={stageNumbers}
             defaultValue={
               championshipForEdit?.stageOrder ? String(championshipForEdit.stageOrder) : '1'

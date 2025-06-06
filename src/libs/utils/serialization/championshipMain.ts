@@ -52,7 +52,7 @@ export function serializationChampionshipMain({
 
   // Номер Этапа у Этапа.
   if (dataForm.stageOrder) {
-    formData.set('stage', String(dataForm.stageOrder));
+    formData.set('stageOrder', String(dataForm.stageOrder));
   }
 
   if (dataForm.awardedProtocols) {

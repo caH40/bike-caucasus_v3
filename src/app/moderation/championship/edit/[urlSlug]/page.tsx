@@ -12,6 +12,7 @@ import { checkPermissionOrganizer } from '@/actions/permissions';
 import styles from '../ChampionshipEditPage.module.css';
 import CContainerChampionshipForms from '@/components/ClientContainers/CContainerChampionshipForms/CContainerChampionshipForms';
 import { getRacePointsTables } from '@/actions/race-points-table';
+import { getChampionshipPagesTitleName } from '@/app/championships/utils';
 
 type Props = {
   params: Promise<{
@@ -54,10 +55,21 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
   }
 
   const parentChampionships = await getToursAndSeries({ organizerId: organizer.data._id });
+  // console.log(championship.data);
 
   return (
     <>
-      <TitleAndLine title="Редактирование Чемпионата" hSize={1} Icon={IconChampionship} />
+      <TitleAndLine
+        title={getChampionshipPagesTitleName({
+          name: championship.data.name,
+          parentChampionship: championship.data.parentChampionship,
+          type: championship.data.type,
+          stageOrder: championship.data.stageOrder,
+          pageName: 'Редактирование',
+        })}
+        hSize={1}
+        Icon={IconChampionship}
+      />
 
       <CContainerChampionshipForms
         putChampionship={putChampionship}

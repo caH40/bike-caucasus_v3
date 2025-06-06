@@ -28,6 +28,7 @@ import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
   ServerResponse,
   TAddCategoryConfigsIdsParams,
+  TChampionshipForSave,
   TChampionshipWithOrganizer,
   TGetChampUrlSlugParams,
   TGetParentChampionship,
@@ -35,7 +36,6 @@ import type {
   TStageDateDescription,
 } from '@/types/index.interface';
 import type {
-  TChampionship,
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
@@ -216,10 +216,8 @@ export class ChampionshipService {
    */
   public async post({
     serializedFormData,
-    creator,
   }: {
     serializedFormData: FormData;
-    creator: string;
   }): Promise<ServerResponse<null>> {
     try {
       const {
@@ -233,7 +231,7 @@ export class ChampionshipService {
         organizerId,
         parentChampionshipId,
         quantityStages,
-        stage,
+        stageOrder,
         awardedProtocols,
         isCountedStageInGC,
         requiredStage,
@@ -266,7 +264,7 @@ export class ChampionshipService {
         champName: name,
       });
 
-      const createData: TChampionship = {
+      const createData: Partial<TChampionshipForSave> = {
         name,
         description,
         startDate,
@@ -275,7 +273,6 @@ export class ChampionshipService {
         bikeType,
         organizer: organizerId,
         posterUrl,
-        creator,
         awardedProtocols,
         isCountedStageInGC,
         requiredStage,
@@ -284,7 +281,7 @@ export class ChampionshipService {
           parentChampionship: parentChampionshipId,
         }),
         ...(quantityStages && { quantityStages }),
-        ...(stage && { stage }),
+        ...(stageOrder && { stageOrder }),
       };
 
       // Создаём новый чемпионат на основе входных данных.
@@ -322,7 +319,7 @@ export class ChampionshipService {
         bikeType,
         parentChampionshipId,
         quantityStages,
-        stage,
+        stageOrder,
         awardedProtocols,
         isCountedStageInGC,
         requiredStage,
@@ -357,7 +354,7 @@ export class ChampionshipService {
       }
 
       // Внимание! Добавлять соответствующие обновляемые свойства Чемпионата в ручную.
-      const updateData: any = {
+      const updateData: Partial<TChampionshipForSave> = {
         name,
         description,
         startDate,
@@ -372,7 +369,7 @@ export class ChampionshipService {
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
         }),
-        ...(stage && { stage }),
+        ...(stageOrder && { stageOrder }),
       };
 
       await championshipDB.updateOne({ $set: { ...updateData } });

@@ -474,13 +474,6 @@ export type TrackData = {
   metadata: MetadataParsed;
 };
 
-// /**
-//  * Данные Чемпионата с БД.
-//  */
-// export type TChampionshipWithUser = Omit<TChampionship, 'organizer'> & {
-//   organizer: TAuthorFromUser;
-// };
-
 /**
  * Данные Чемпионата с БД.
  */
@@ -494,6 +487,18 @@ export type TOrganizerForClient = Pick<
 > & {
   _id: string;
 };
+
+export type TChampionshipForSave = Omit<
+  TChampionship,
+  'startDate' | 'endDate' | 'organizer' | 'parentChampionship' | 'racePointsTable'
+> & {
+  parentChampionship: string;
+  startDate: string;
+  endDate: string;
+  organizer: string;
+  racePointsTable?: string | null;
+};
+
 export type TChampionshipWithOrganizer = Omit<
   TChampionship,
   'organizer' | 'categoriesConfigs' | 'races' | 'racePointsTable'

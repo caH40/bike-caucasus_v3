@@ -43,7 +43,7 @@ export function deserializeChampionship(serializedFormData: FormData) {
               return value ? +value : 0;
 
             // Если ключ ascent то возвращается число.
-            case 'stage':
+            case 'stageOrder':
               return +value;
 
             // Если ключ ascent то возвращается число.

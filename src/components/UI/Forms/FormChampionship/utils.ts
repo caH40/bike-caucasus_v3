@@ -117,12 +117,12 @@ export function createStageNumbers(
 ): TOptions[] {
   // В массиве Туров и Серий находим выбранный parentChampionship.
   // Если не найден такой Тур или Серия, это ошибка.
+
   const parentChampionship = parentChampionships.find(
     (elm) =>
       elm._id ===
       (watch('parentChampionship')?._id || championshipForEdit?.parentChampionship?._id)
   );
-
   if (!parentChampionship) {
     return [];
   }
@@ -135,11 +135,13 @@ export function createStageNumbers(
 
   // Добавление текущего номера Этапа в Общий массив всех Свободных номеров Этапов в Серии или Туре.
   if (championshipForEdit?.stageOrder) {
-    options.push({
-      id: championshipForEdit?.stageOrder,
-      translation: String(championshipForEdit?.stageOrder),
-      name: String(championshipForEdit?.stageOrder),
-    });
+    options
+      .filter((option) => option.id !== championshipForEdit?.stageOrder)
+      .push({
+        id: championshipForEdit?.stageOrder,
+        translation: String(championshipForEdit?.stageOrder),
+        name: String(championshipForEdit?.stageOrder),
+      });
     options.sort((a, b) => +a.name - +b.name);
   }
 

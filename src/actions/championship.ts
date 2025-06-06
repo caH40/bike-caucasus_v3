@@ -129,7 +129,7 @@ export async function fetchChampionshipCreated(
     }
 
     const championshipService = new ChampionshipService();
-    const res = await championshipService.post({ serializedFormData: formData, creator });
+    const res = await championshipService.post({ serializedFormData: formData });
 
     revalidatePath('/moderation/championship');
     revalidatePath('championship');
