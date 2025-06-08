@@ -33,10 +33,10 @@ export function useGeneralClassificationProtocol({
       });
     };
 
-    // Абсолютный ГК
+    // Абсолютный ГК.
     const absoluteGC = awardedProtocols.absolute ? sortByPoints('absolute') : [];
 
-    // Абсолютный ГК по полу
+    // Абсолютный ГК по полу.
     const absoluteGenderSorted = awardedProtocols.absoluteGender
       ? sortByPoints('absoluteGender')
       : [];
@@ -47,14 +47,16 @@ export function useGeneralClassificationProtocol({
       (gc) => gc.profile.gender === 'female'
     );
 
-    // ГК по возрастным категориям
+    // ГК по возрастным категориям. Райдер в возрастной категории, если categorySkillLevel === null.
     const ageCategoryGCs: TGeneralClassificationDto[][] = awardedProtocols.category
       ? existCategoryNames.age.map((categoryName) =>
-          sortByPoints('category').filter((gc) => gc.categoryAge === categoryName)
+          sortByPoints('category').filter(
+            (gc) => gc.categoryAge === categoryName && !gc.categorySkillLevel
+          )
         )
       : [];
 
-    // ГК по скилл-категориям
+    // ГК по скилл-категориям.
     const skillLevelCategoryGCs: TGeneralClassificationDto[][] = awardedProtocols.category
       ? existCategoryNames.skillLevel.map((categoryName) =>
           sortByPoints('category').filter((gc) => gc.categorySkillLevel === categoryName)
