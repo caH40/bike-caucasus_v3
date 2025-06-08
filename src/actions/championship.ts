@@ -66,9 +66,11 @@ export async function getChampionship({
 export async function getChampionships({
   forModeration,
   needTypes,
+  organizerId,
 }: {
   forModeration?: boolean;
   needTypes?: TChampionshipTypes[];
+  organizerId?: string; // если есть organizerId значит необходимы чемпионаты, созданные организатором, для отображения на странице организатора.
 }): Promise<ServerResponse<TDtoChampionship[] | null>> {
   try {
     const session = await getServerSession(authOptions);
@@ -91,6 +93,7 @@ export async function getChampionships({
       userIdDB,
       forModeration,
       needTypes,
+      organizerId,
     });
 
     if (!championship.ok) {

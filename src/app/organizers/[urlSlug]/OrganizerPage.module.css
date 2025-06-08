@@ -1,3 +1,9 @@
 .wrapper__contacts {
   margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+.wrapper__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }

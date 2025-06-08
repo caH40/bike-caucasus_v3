@@ -109,10 +109,12 @@ export class ChampionshipService {
     userIdDB,
     forModeration,
     needTypes,
+    organizerId,
   }: {
     userIdDB?: string;
     forModeration?: boolean;
     needTypes?: TChampionshipTypes[];
+    organizerId?: string;
   }): Promise<ServerResponse<TDtoChampionship[] | null>> {
     try {
       let query: any = { ...(needTypes && { type: needTypes }) };
@@ -129,6 +131,10 @@ export class ChampionshipService {
         }
 
         query = { organizer: organizer._id };
+      }
+
+      if (organizerId) {
+        query.organizer = organizerId;
       }
 
       // Получение Чемпионатов согласно запросу query.

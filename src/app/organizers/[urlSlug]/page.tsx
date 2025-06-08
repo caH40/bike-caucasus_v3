@@ -14,6 +14,8 @@ import styles from './OrganizerPage.module.css';
 import BlockOrganizerHeader from '@/components/BlockOrganizerHeader/BlockOrganizerHeader';
 import BlockOrganizerContacts from '@/components/BlockOrganizerContacts/BlockOrganizerContacts';
 import { generateMetadataOrganizer } from '@/meta/meta';
+import { getChampionships } from '@/actions/championship';
+import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 
 // Создание динамических meta данных
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -33,6 +35,11 @@ export default async function OrganizerPage(props: Props) {
 
   const organizer = await getOrganizer({ urlSlug });
 
+  const championships = await getChampionships({
+    needTypes: ['series', 'tour', 'single'],
+    organizerId: organizer.data?._id,
+  });
+
   return (
     <div className={styles.main}>
       {organizer.data && (
@@ -41,6 +48,13 @@ export default async function OrganizerPage(props: Props) {
 
           <div className={styles.wrapper__contacts}>
             <BlockOrganizerContacts organizer={organizer.data.contactInfo} />
+          </div>
+
+          <div className={styles.wrapper__cards}>
+            {championships.data &&
+              championships.data.map((champ) => (
+                <ChampionshipCard championship={champ} key={champ._id} />
+              ))}
           </div>
         </>
       )}
