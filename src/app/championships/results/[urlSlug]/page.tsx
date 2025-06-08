@@ -65,8 +65,15 @@ export default async function ChampionshipResults(props: Props) {
             pageName: 'Результаты',
           })}
         />
+
+        {/* Отображение генеральной классификации серии заездов (тура), или результатов одиночных соревнований и этапов. */}
         {isChampionshipWithStages(championship.data.type) ? (
-          gcFromServer.data && <SeriesResultsPage gcFromServer={gcFromServer.data} />
+          gcFromServer.data && (
+            <SeriesResultsPage
+              awardedProtocols={championship.data.awardedProtocols}
+              gcFromServer={gcFromServer.data}
+            />
+          )
         ) : (
           <ResultsPage championship={championship.data} />
         )}

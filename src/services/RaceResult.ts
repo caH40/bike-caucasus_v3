@@ -7,6 +7,24 @@ import { deserializationResultRaceRider } from '@/libs/utils/deserialization/res
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 import { User as UserModel } from '@/database/mongodb/Models/User';
 import { dtoResultsRace, dtoResultsRaceRider, dtoResultRaceRider } from '@/dto/results-race';
+import { createStringCategoryAge } from '@/libs/utils/string-category';
+import { processResults } from '@/libs/utils/results';
+import { CategoriesModel } from '@/database/mongodb/Models/Categories';
+import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
+import { RaceModel } from '@/database/mongodb/Models/Race';
+import { TRiderRaceResultDto } from '@/types/dto.types';
+import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
+import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
+import { getExistCategoryNames } from '@/libs/utils/championship/category';
+
+// types
+import {
+  TCategories,
+  TChampionshipTypes,
+  TRace,
+  TRacePointsTable,
+  TResultRace,
+} from '@/types/models.interface';
 import {
   ServerResponse,
   TGetRaceCategoriesParams,
@@ -16,22 +34,6 @@ import {
   TResultRaceRiderDeserialized,
   TRiderRaceResultDB,
 } from '@/types/index.interface';
-import { createStringCategoryAge } from '@/libs/utils/string-category';
-import {
-  TCategories,
-  TChampionshipTypes,
-  TRace,
-  TRacePointsTable,
-  TResultRace,
-} from '@/types/models.interface';
-import { sortCategoriesString } from '@/libs/utils/championship/championship';
-import { processResults } from '@/libs/utils/results';
-import { CategoriesModel } from '@/database/mongodb/Models/Categories';
-import { TGetRaceCategoriesFromMongo } from '@/types/mongo.types';
-import { RaceModel } from '@/database/mongodb/Models/Race';
-import { TRiderRaceResultDto } from '@/types/dto.types';
-import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
-import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -294,28 +296,14 @@ export class RaceResultService {
       );
 
       // Создание списка всех категорий в заезде (категории без результатов не учитываются).
-      // Берутся данные категорий из результатов, а не из конфигурации категорий заезда, что бы не отображать пустые таблицы, в которых нет результатов в данной категории.
-      const ageCategoriesSet = new Set<string>();
-      const skillLevelCategoriesSet = new Set<string>();
-      for (const result of resultsAfterDto) {
-        // Если  есть skillLevel категория, то результат участвует только в skillLevel категоризации.
-        if (result.categorySkillLevel) {
-          skillLevelCategoriesSet.add(result.categorySkillLevel);
-        } else {
-          ageCategoriesSet.add(result.categoryAge);
-        }
-      }
+      const existCategoryNames = getExistCategoryNames(resultsSorted);
 
-      // Сортируем категории по возрастанию года рождения.
-      const ageCategoriesSorted = sortCategoriesString([...ageCategoriesSet]);
+      
 
       return {
         data: {
           protocol: resultsSorted,
-          categories: {
-            age: ageCategoriesSorted,
-            skillLevel: [...skillLevelCategoriesSet],
-          },
+          categories: existCategoryNames,
           race: { name: race.name, _id: raceId },
         },
         ok: true,

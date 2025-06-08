@@ -4,6 +4,12 @@ import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { ChampionshipModel } from '@/database/mongodb/Models/Championship';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
+import { TChampionshipTypes, TPoints } from '@/types/models.interface';
+import { getCurrentCategoryName } from '@/libs/utils/results';
+import { createCategoriesInRace, setGCPositions } from '@/libs/utils/gc-results';
+import { GeneralClassificationModel } from '@/database/mongodb/Models/GeneralClassification';
+import { generalClassificationDto } from '@/dto/general-classification';
+import { getExistCategoryNames } from '@/libs/utils/championship/category';
 
 // types
 import {
@@ -19,11 +25,6 @@ import {
   TInitGeneralClassificationResultsParams,
   TStagesForGCTableHeader,
 } from '@/types/index.interface';
-import { TChampionshipTypes, TPoints } from '@/types/models.interface';
-import { getCurrentCategoryName } from '@/libs/utils/results';
-import { createCategoriesInRace, setGCPositions } from '@/libs/utils/gc-results';
-import { GeneralClassificationModel } from '@/database/mongodb/Models/GeneralClassification';
-import { generalClassificationDto } from '@/dto/general-classification';
 
 /**
  * Класс работы с генеральной классификацией серии заездов и туров.
@@ -63,17 +64,18 @@ export class GeneralClassificationService {
       // Получение всех этапов серии.
       const stages = await this.getStages(champ._id);
 
-      const stagesForHeader: TStagesForGCTableHeader[] = stages
-        .map((s) => ({
-          _id: s._id.toString(),
-          name: s.name,
-          urlSlug: s.urlSlug,
-          stageOrder: s.stageOrder,
-        }))
-        .sort((a, b) => a.stageOrder - b.stageOrder);
+      // Данные этапов для таблиц генеральной классификации.
+      const stagesForHeader = this.getStagesForHeader(stages);
+
+      // Создание списка всех категорий в заезде (категории без результатов не учитываются).
+      const existCategoryNames = getExistCategoryNames(gcAfterDto);
 
       return {
-        data: { generalClassification: gcAfterDto, stages: stagesForHeader },
+        data: {
+          generalClassification: gcAfterDto,
+          stages: stagesForHeader,
+          existCategoryNames,
+        },
         ok: true,
         message: 'Генеральная классификация Серии заездов.',
       };
@@ -84,7 +86,21 @@ export class GeneralClassificationService {
   }
 
   /**
-   *  Создание или обновление генеральной классификацией по _id родительского чемпионата - championshipId.
+   * Данные этапов для таблиц генеральной классификации
+   */
+  private getStagesForHeader(stages: TGetStagesFromMongo[]): TStagesForGCTableHeader[] {
+    return stages
+      .map((s) => ({
+        _id: s._id.toString(),
+        name: s.name,
+        urlSlug: s.urlSlug,
+        stageOrder: s.stageOrder,
+      }))
+      .sort((a, b) => a.stageOrder - b.stageOrder);
+  }
+
+  /**
+   * Создание или обновление генеральной классификацией по _id родительского чемпионата - championshipId.
    */
   public async upsert({
     championshipId,

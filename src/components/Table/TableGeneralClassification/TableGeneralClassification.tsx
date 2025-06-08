@@ -47,12 +47,10 @@ const allColumns = (
       uniqueName: '#',
     },
     {
-      header: () => (
-        <IconPodium tooltip={{ text: 'Занятое место в общем зачете', id: 'placeAbsolute' }} />
-      ),
-      accessorKey: 'positions.absolute',
+      header: () => <IconPodium tooltip={{ text: 'Занятое место', id: 'place' }} />,
+      accessorKey: `positions.${categoryEntity}`,
       cell: (props: any) => <Medal position={props.getValue()} />,
-      uniqueName: 'Место в абсолюте',
+      uniqueName: 'Место',
     },
     {
       header: () => (

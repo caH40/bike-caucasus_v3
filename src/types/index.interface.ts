@@ -1375,6 +1375,7 @@ export type TStagesForGCTableHeader = {
 export type TGetOneGeneralClassificationService = {
   generalClassification: TGeneralClassificationDto[];
   stages: TStagesForGCTableHeader[];
+  existCategoryNames: TCategoriesConfigNames;
 };
 
 export type TCategoriesEntity = 'category' | 'absolute' | 'absoluteGender';
