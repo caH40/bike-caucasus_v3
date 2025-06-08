@@ -1,5 +1,10 @@
 import mongoose, { Document, ObjectId, Types } from 'mongoose';
-import { TCategoryAge, TCategorySkillLevel, TFormCalendar } from './index.interface';
+import {
+  TAwardedProtocols,
+  TCategoryAge,
+  TCategorySkillLevel,
+  TFormCalendar,
+} from './index.interface';
 
 /**
  * Типизация модели пользователя сайта (Профиля).
@@ -323,12 +328,8 @@ export type TChampionship = {
   organizer: mongoose.Types.ObjectId; // Ссылка на объект Организатора.
   type: TChampionshipTypes;
   quantityStages: number | null; // Количество этапов.
-  awardedProtocols: {
-    // По каким протоколам будет награждение (идёт зачет в ГК).
-    category: boolean;
-    absolute: boolean;
-    absoluteGender: boolean;
-  };
+  awardedProtocols: TAwardedProtocols; // По каким протоколам будет награждение (идёт зачет в ГК).
+
   isCountedStageInGC: boolean; // Включать ли этап в генеральную классификацию.
   requiredStage: boolean; // Обязателен ли данный этап для ГК. (Если true, то при пропуске участник получает дисквалификацию в ГК.)
   stageOrder: number | null; // Номер этапа, если это этап.

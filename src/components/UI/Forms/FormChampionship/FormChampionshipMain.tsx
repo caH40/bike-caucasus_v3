@@ -81,14 +81,18 @@ export default function FormChampionshipMain({
 
   // Получения дат старта и финиша родительского чемпионата, если создаются этапы для него.
   const parentId = watch('parentChampionship._id');
-  const type = watch('type'); // Получаем значение типа
-  const parentChampDates = useParentChampionshipDates(parentChampionships, parentId, type);
+  const championshipType = watch('type'); // Получаем значение типа
+  const parentChampDates = useParentChampionshipDates(
+    parentChampionships,
+    parentId,
+    championshipType
+  );
 
   const urlTracksForDel = useRef<string[]>([]);
 
   // Отображения блоков в зависимости от использования формы и вводимых значений.
   const { showQuantityStage, showNumberStage } = useShowChampionshipForm({
-    typeInInput: watch('type'),
+    typeInInput: championshipType,
     typeInDB: championshipForEdit?.type,
     isCreatingForm: !championshipForEdit,
   });
@@ -358,7 +362,7 @@ export default function FormChampionshipMain({
             control={control}
             errors={errors}
             register={register}
-            watch={watch}
+            championshipType={championshipType}
             racePointsTables={racePointsTables}
             isLoading={isLoading}
           />

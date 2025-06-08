@@ -536,6 +536,16 @@ export type TFormChampionshipCreate = Omit<
   endDate: string;
   parentChampionship: { _id: string; name: string };
   racePointsTable: string | null;
+  awardedProtocols: TAwardedProtocols;
+};
+
+/**
+ * По каким протоколам будет награждение (идёт зачет в ГК).
+ */
+export type TAwardedProtocols = {
+  category: boolean;
+  absolute: boolean;
+  absoluteGender: boolean;
 };
 
 export type TCategoryAgeFromForm = {
