@@ -7,6 +7,7 @@ import {
 import ContainerForGeneralClassification from '../Table/Containers/GeneralClassification/ContainerForGeneralClassification';
 import styles from './GeneralClassificationWrapper.module.css';
 import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
+import { useGeneralClassificationProtocol } from '@/hooks/useGeneralClassificationProtocol';
 
 type Props = {
   gcFromServer: TGetOneGeneralClassificationService;
@@ -20,64 +21,82 @@ export default function GeneralClassificationWrapper({
   gcFromServer,
   awardedProtocols,
 }: Props) {
+  // Отфильтрованные и отсортированные генеральные классификации.
+  const {
+    absoluteGC,
+    absoluteMaleGC,
+    absoluteFemaleGC,
+    ageCategoryGCs,
+    skillLevelCategoryGCs,
+  } = useGeneralClassificationProtocol({
+    generalClassification: gcFromServer.generalClassification,
+    awardedProtocols,
+    existCategoryNames: gcFromServer.existCategoryNames,
+  });
+
   return (
     // Таблица ГК по абсолютному протоколу.
     <div className={styles.wrapper}>
+      {/* Таблицы ГК по возрастным категориям. */}
       {awardedProtocols.category
-        ? gcFromServer.existCategoryNames.age.map((category) => (
+        ? ageCategoryGCs.map((ageCategoryGC, index) => (
             <ContainerForGeneralClassification
-              key={category}
-              generalClassification={gcFromServer.generalClassification
-                .toSorted((a, b) => {
-                  const aCategory = a.totalFinishPoints?.category || 0;
-                  const bCategory = b.totalFinishPoints?.category || 0;
-                  return bCategory - aCategory;
-                })
-                .filter((gc) => gc.categoryAge === category)}
+              key={index}
+              generalClassification={ageCategoryGC}
               stages={gcFromServer.stages}
               hiddenColumnHeaders={['#']}
               captionTitle={`Генеральная классификация в категории ${replaceCategorySymbols(
-                category
+                ageCategoryGC[0].categoryAge || '"Нет категории!"'
               )}`}
               categoryEntity={'category'}
             />
           ))
         : null}
 
+      {/* Таблицы ГК по спецкатегориям. */}
       {awardedProtocols.category
-        ? gcFromServer.existCategoryNames.skillLevel.map((category) => (
+        ? skillLevelCategoryGCs.map((skillLevelCategoryGC, index) => (
             <ContainerForGeneralClassification
-              key={category}
-              generalClassification={gcFromServer.generalClassification
-                .toSorted((a, b) => {
-                  const aCategory = a.totalFinishPoints?.category || 0;
-                  const bCategory = b.totalFinishPoints?.category || 0;
-                  return bCategory - aCategory;
-                })
-                .filter((gc) => gc.categoryAge === category)}
+              key={index}
+              generalClassification={skillLevelCategoryGC}
               stages={gcFromServer.stages}
               hiddenColumnHeaders={['#']}
               captionTitle={`Генеральная классификация в категории ${replaceCategorySymbols(
-                category
+                skillLevelCategoryGC[0].categorySkillLevel || '"Нет категории!"'
               )}`}
               categoryEntity={'category'}
             />
           ))
         : null}
 
+      {/* Таблица ГК по абсолютному протоколу. */}
       {awardedProtocols.absolute && (
         <ContainerForGeneralClassification
-          generalClassification={gcFromServer.generalClassification.toSorted((a, b) => {
-            const aAbsolute = a.totalFinishPoints?.absolute || 0;
-            const bAbsolute = b.totalFinishPoints?.absolute || 0;
-            return bAbsolute - aAbsolute;
-          })}
+          generalClassification={absoluteGC}
           stages={gcFromServer.stages}
           hiddenColumnHeaders={['#']}
           captionTitle={'Генеральная классификация в абсолюте'}
           categoryEntity={'absolute'}
         />
       )}
+
+      {/* Таблицы ГК по абсолютным женским и мужским протоколам. */}
+      {awardedProtocols.absoluteGender
+        ? [absoluteMaleGC, absoluteFemaleGC]
+            .filter((gc) => gc.length > 0)
+            .map((absoluteGenderGC, index) => (
+              <ContainerForGeneralClassification
+                key={index}
+                generalClassification={absoluteGenderGC}
+                stages={gcFromServer.stages}
+                hiddenColumnHeaders={['#']}
+                captionTitle={`Генеральная классификация в ${
+                  absoluteGenderGC[0]?.profile.gender === 'male' ? 'мужском' : 'женском'
+                } абсолюте`}
+                categoryEntity={'absoluteGender'}
+              />
+            ))
+        : null}
     </div>
   );
 }

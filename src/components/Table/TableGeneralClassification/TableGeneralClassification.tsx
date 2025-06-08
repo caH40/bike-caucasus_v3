@@ -165,14 +165,7 @@ export default function TableGeneralClassification({
                   return (
                     <th
                       className={cx('th', {
-                        number: [
-                          'positions_absolute',
-                          'positions_category',
-                          'startNumber',
-                        ].includes(header.id),
                         profile: header.id === 'profile',
-                        raceTimeInMilliseconds: header.id === 'raceTimeInMilliseconds',
-                        averageSpeed: header.id === 'averageSpeed',
                       })}
                       key={header.id}
                     >
@@ -183,6 +176,7 @@ export default function TableGeneralClassification({
               </tr>
             ))}
           </thead>
+
           <tbody>
             {table.getRowModel().rows.map((row) => (
               <tr className={cx('tr', 'tr-hover')} key={row.id}>
@@ -190,10 +184,11 @@ export default function TableGeneralClassification({
                   return (
                     <td
                       className={cx('td', {
+                        // в зависимости от колонки (отличие по id) добавляется необходимый класс
                         number: [
                           'positions_absolute',
                           'positions_category',
-                          'startNumber',
+                          'positions_absoluteGender',
                         ].includes(cell.column.id),
                       })}
                       key={cell.id}
