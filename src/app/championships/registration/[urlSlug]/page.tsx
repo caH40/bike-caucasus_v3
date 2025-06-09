@@ -54,6 +54,7 @@ export default async function Registration(props: Props) {
     parentChampionshipUrlSlug: championshipResponse?.data?.parentChampionship?.urlSlug,
     parentChampionshipType: championshipResponse?.data?.parentChampionship?.type,
     urlSlug,
+    championshipType: championship.type,
   });
 
   const registeredInChamp = await checkRegisteredInChamp({

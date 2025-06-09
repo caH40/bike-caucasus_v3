@@ -46,6 +46,7 @@ export default async function ChampionshipDocuments(props: Props) {
     parentChampionshipUrlSlug: championship?.data?.parentChampionship?.urlSlug,
     parentChampionshipType: championship?.data?.parentChampionship?.type,
     urlSlug,
+    championshipType: championship.data.type,
   });
 
   return (

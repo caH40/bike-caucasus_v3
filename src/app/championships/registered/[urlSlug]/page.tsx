@@ -43,6 +43,7 @@ export default async function ChampionshipRegistered(props: Props) {
     parentChampionshipUrlSlug: parentChampionship?.urlSlug,
     parentChampionshipType: parentChampionship?.type,
     urlSlug,
+    championshipType: championship.data.type,
   });
 
   return (

@@ -70,6 +70,7 @@ export default async function ChampionshipPage(props: Props) {
     parentChampionshipUrlSlug: championship.parentChampionship?.urlSlug,
     parentChampionshipType: championship.parentChampionship?.type,
     urlSlug,
+    championshipType: championship.type,
   });
 
   // Показывать блоки только для чемпионата типа Серия или Тур.

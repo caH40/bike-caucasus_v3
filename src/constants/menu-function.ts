@@ -11,7 +11,7 @@ import type { TMenuOnPage } from '@/types/index.interface';
 type Params = {
   urlSlug: string;
   parentChampionshipUrlSlug?: string;
-  parentChampionshipType?: 'series' | 'tour';
+  hiddenItemNames?: string[];
 };
 
 /**
@@ -21,7 +21,7 @@ type Params = {
 export const buttonsMenuChampionshipPage = ({
   urlSlug,
   parentChampionshipUrlSlug,
-  parentChampionshipType,
+  hiddenItemNames = [],
 }: Params): TMenuOnPage[] =>
   [
     {
@@ -50,6 +50,14 @@ export const buttonsMenuChampionshipPage = ({
     },
     {
       id: 3,
+      name: 'Генеральная классификация',
+      classes: [],
+      href: `/championships/results/${urlSlug}`,
+      permission: null,
+      icon: IconResults,
+    },
+    {
+      id: 4,
       name: 'Регистрация',
       classes: [],
       href: `/championships/registration/${urlSlug}`,
@@ -57,7 +65,7 @@ export const buttonsMenuChampionshipPage = ({
       icon: IconRegistration,
     },
     {
-      id: 4,
+      id: 5,
       name: 'Документы',
       classes: [],
       href: `/championships/documents/${urlSlug}`,
@@ -65,22 +73,27 @@ export const buttonsMenuChampionshipPage = ({
       icon: IconDocument,
     },
     {
-      id: 5,
-      name: `Этапы ${parentChampionshipType === 'series' ? 'Серии заездов' : 'Тура'}`,
+      id: 6,
+      name: 'Этапы Серии заездов',
       classes: [],
       href: `/championships/${parentChampionshipUrlSlug}`,
       permission: null,
       icon: IconStages,
     },
     {
-      id: 6,
+      id: 7,
+      name: 'Этапы Тура',
+      classes: [],
+      href: `/championships/${parentChampionshipUrlSlug}`,
+      permission: null,
+      icon: IconStages,
+    },
+    {
+      id: 8,
       name: 'Все Чемпионаты',
       classes: [],
       href: `/championships`,
       permission: null,
       icon: IconChampionship,
     },
-  ].filter(
-    (item) =>
-      item.id !== 5 || (parentChampionshipUrlSlug && parentChampionshipType && item.id === 5)
-  );
+  ].filter((item) => !hiddenItemNames.includes(item.name));
