@@ -95,7 +95,7 @@ export async function deleteTrail(urlSlug: string): Promise<ServerResponse<null>
     }
 
     const trailsService = new Trail();
-    const response = await trailsService.delete({ urlSlug, idUserDB });
+    const response = await trailsService.delete({ urlSlug, moderator: idUserDB });
 
     revalidatePath('moderation/trails');
     return response;
@@ -267,7 +267,7 @@ export const putTrail = async (formData: FormData) => {
     }
 
     const trailService = new Trail();
-    const response = await trailService.put({ formData });
+    const response = await trailService.put({ formData, moderator: idUserDB });
 
     revalidatePath(`/`);
 

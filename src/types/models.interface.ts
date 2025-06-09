@@ -201,6 +201,7 @@ export interface TLogsErrorModel {
 export type TTrailDocument = Document & TTrail;
 
 export type TTrail = {
+  _id: mongoose.Types.ObjectId;
   title: string; // Название маршрута
   poster: string; // ССылка на изображение обложки Маршрута.
   urlSlug: string; // Последняя часть url страницы с маршрутом.

@@ -13,9 +13,10 @@ import { getNextSequenceValue } from './sequence';
 import type {
   ServerResponse,
   TSaveFile,
+  TServiceEntity,
   TTrailCreateFromClient,
 } from '@/types/index.interface';
-import type { TAuthorFromUser, TRoleModel, TTrailDocument } from '@/types/models.interface';
+import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
 import { ErrorCustom } from './Error';
 import { User } from '@/database/mongodb/Models/User';
@@ -24,6 +25,7 @@ import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 // import { millisecondsIn3Days } from '@/constants/date';
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -32,10 +34,13 @@ export class Trail {
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
   private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private entity: TServiceEntity;
+
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.saveFile = saveFile;
+    this.entity = 'trail';
   }
 
   /**
@@ -108,20 +113,12 @@ export class Trail {
    */
   public async delete({
     urlSlug,
-    idUserDB,
+    moderator,
   }: {
     urlSlug: string;
-    idUserDB: string | undefined;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
-      const userDB = await User.findOne({ _id: idUserDB }, { role: true, id: true, _id: false })
-        .populate('role')
-        .lean<{ role: TRoleModel; id: number }>();
-
-      if (!userDB) {
-        throw new Error(`Не найден пользователь с _id:${userDB}`);
-      }
-
       // Проверка есть ли такой Маршрут в БД.
       const trailDBForDelete: TTrailDocument | null = await TrailModel.findOne({ urlSlug });
       if (!trailDBForDelete) {
@@ -149,6 +146,21 @@ export class Trail {
       if (!newsDeleted.acknowledged || newsDeleted.deletedCount === 0) {
         throw new Error('Ошибка при удалении маршрута с БД!');
       }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator,
+        changes: {
+          description: `Удаление маршрута: "${trailDBForDelete.title}"`,
+          params: {
+            urlSlug,
+            moderator,
+          },
+        },
+        action: 'delete',
+        entity: this.entity,
+        entityIds: [trailDBForDelete._id.toString()],
+      });
 
       return {
         data: null,
@@ -344,6 +356,21 @@ export class Trail {
       throw new Error('Маршрут не сохранился в БД!');
     }
 
+    // Логирование действия.
+    await ModeratorActionLogService.create({
+      moderator: author,
+      changes: {
+        description: `Создание нового маршрута: "${response.title}"`,
+        params: {
+          formData: 'Данные создаваемого маршрута в формате FormData',
+          author,
+        },
+      },
+      action: 'create',
+      entity: this.entity,
+      entityIds: [response._id.toString()],
+    });
+
     return { data: null, ok: true, message: 'Маршрут сохранен в БД!' };
   }
 
@@ -448,7 +475,13 @@ export class Trail {
   /**
    * Сервис получения данных для интерактивного блока маршрута idTrail.
    */
-  public async put({ formData }: { formData: FormData }): Promise<ServerResponse<null>> {
+  public async put({
+    formData,
+    moderator,
+  }: {
+    formData: FormData;
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const trail = deserializeTrailCreate(formData);
@@ -461,13 +494,6 @@ export class Trail {
       if (!trailDB) {
         throw new Error(`Не найден Маршрут с urlSlug:${trail.urlSlug} для редактирования!`);
       }
-
-      // Запрет на удаление Маршрута, если с даты создания прошло более millisecondsIn3Days
-      // if (Date.now() - new Date(trailDB?.createdAt).getTime() > millisecondsIn3Days) {
-      //   throw new Error(
-      //     'Нельзя редактировать Маршрут, который был создан больше 3 дней назад!'
-      //   );
-      // }
 
       // Экземпляр сервиса работы с Облаком
       const cloud = new Cloud();
@@ -556,7 +582,25 @@ export class Trail {
       }
 
       // slug не обновляется, остается старый для исключения проблем с индексацией.
-      await TrailModel.findOneAndUpdate({ urlSlug: trail.urlSlug }, updateData);
+      const response = await TrailModel.findOneAndUpdate(
+        { urlSlug: trail.urlSlug },
+        updateData
+      );
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Обновление данных маршрута: "${response.title}"`,
+          params: {
+            formData: 'Измененные данные маршрута в формате FormData',
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
 
       return { data: null, ok: true, message: 'Данные маршрута обновлены!' };
     } catch (error) {
