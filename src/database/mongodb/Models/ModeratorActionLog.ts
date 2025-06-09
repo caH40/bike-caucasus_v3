@@ -14,6 +14,7 @@ const ModeratorActionLogSchema = new Schema<TModeratorActionLogDocument>({
       'organizer',
       'raceResult',
       'comment',
+      'racePointsTable',
       'generalClassification',
     ],
     required: true,

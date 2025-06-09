@@ -11,6 +11,7 @@ import { RacePointsTableModel } from '@/database/mongodb/Models/RacePointsTable'
 import { TRacePointsTable } from '@/types/models.interface';
 import { TRacePointsTableDto } from '@/types/dto.types';
 import { racePointsTableDto } from '@/dto/race-points-table';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Класс работы с сущностью Таблицы начисления очков за заезд для серии заездов (Series).
@@ -88,11 +89,30 @@ export class RacePointsTableService {
   /**
    * Создание очковой таблицы.
    */
-  public async create(
-    racePointsTableForm: TRacePointsTableForm
-  ): Promise<ServerResponse<null>> {
+  public async create({
+    racePointsTableForm,
+    moderator,
+  }: {
+    racePointsTableForm: TRacePointsTableForm;
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
-      await RacePointsTableModel.create(racePointsTableForm);
+      const response = await RacePointsTableModel.create(racePointsTableForm);
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Создание таблицы начисления очков за этапы серии заездов: "${response.name}"`,
+          params: {
+            racePointsTableForm,
+            moderator,
+          },
+        },
+        action: 'create',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
 
       return {
         data: null,
@@ -108,28 +128,47 @@ export class RacePointsTableService {
   /**
    * Обновление очковой таблицы.
    */
-  public async update(
-    racePointsTableForm: TRacePointsTableForm & { _id: string }
-  ): Promise<ServerResponse<null>> {
+  public async update({
+    racePointsTableForm,
+    moderator,
+  }: {
+    racePointsTableForm: TRacePointsTableForm & { _id: string };
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
       const { _id, ...updateFields } = racePointsTableForm;
 
-      const res = await RacePointsTableModel.findOneAndUpdate(
+      const response = await RacePointsTableModel.findOneAndUpdate(
         { _id },
         { $set: updateFields },
         { new: true }
       ).lean<TRacePointsTable>();
 
-      if (!res) {
+      if (!response) {
         throw new Error(
           `Не найдена таблица начисления очков с _id: ${racePointsTableForm._id}`
         );
       }
 
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Обновление данных таблицы начисления очков за этапы серии заездов: "${response.name}"`,
+          params: {
+            racePointsTableForm,
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
+
       return {
         data: null,
         ok: true,
-        message: `Обновлены данные таблицы очков "${res.name}".`,
+        message: `Обновлены данные таблицы очков "${response.name}".`,
       };
     } catch (error) {
       this.errorLogger(error);
@@ -142,22 +181,39 @@ export class RacePointsTableService {
    */
   public async delete({
     racePointsTableId,
+    moderator,
   }: {
     racePointsTableId: string;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
-      const res = await RacePointsTableModel.findByIdAndDelete(
+      const response = await RacePointsTableModel.findByIdAndDelete(
         racePointsTableId
       ).lean<TRacePointsTable>();
 
-      if (!res) {
+      if (!response) {
         throw new Error(`Не найдена таблица начисления очков с _id: ${racePointsTableId}`);
       }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Удаление таблицы начисления очков за этапы серии заездов: "${response.name}"`,
+          params: {
+            racePointsTableId,
+            moderator,
+          },
+        },
+        action: 'delete',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
 
       return {
         data: null,
         ok: true,
-        message: `Удалена таблица очков "${res.name}".`,
+        message: `Удалена таблица очков "${response.name}".`,
       };
     } catch (error) {
       this.errorLogger(error);

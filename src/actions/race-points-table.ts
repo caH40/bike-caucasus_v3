@@ -71,13 +71,16 @@ export async function createRacePointsTable(
 ): Promise<ServerResponse<null>> {
   try {
     // Проверка, есть ли у пользователя разрешение на модерацию чемпионата.
-    const res = await checkUserAccess('moderation.championship');
+    const { userIdDB } = await checkUserAccess('moderation.championship');
 
     // Проверка, является ли пользователь userIdDB организатором.
-    await checkIsOrganizer(res.userIdDB);
+    await checkIsOrganizer(userIdDB);
 
     const racePointsTableService = new RacePointsTableService();
-    const created = await racePointsTableService.create(racePointsTableForm);
+    const created = await racePointsTableService.create({
+      racePointsTableForm,
+      moderator: userIdDB,
+    });
 
     if (!created.ok) {
       throw new Error(created.message);
@@ -97,9 +100,10 @@ export async function updateRacePointsTable(
   racePointsTableForm: TRacePointsTableForm
 ): Promise<ServerResponse<null>> {
   try {
-    const racePointsTableId = racePointsTableForm._id;
+    // Проверка, есть ли у пользователя разрешение на модерацию чемпионата.
+    const { userIdDB } = await checkUserAccess('moderation.championship');
 
-    if (!racePointsTableId) {
+    if (!racePointsTableForm._id) {
       throw new Error('Не получен _id таблицы!');
     }
 
@@ -111,8 +115,11 @@ export async function updateRacePointsTable(
 
     const racePointsTableService = new RacePointsTableService();
     const created = await racePointsTableService.update({
-      ...racePointsTableForm,
-      _id: racePointsTableId,
+      racePointsTableForm: {
+        ...racePointsTableForm,
+        _id: racePointsTableForm._id,
+      },
+      moderator: userIdDB,
     });
 
     if (!created.ok) {
@@ -134,13 +141,16 @@ export async function deleteRacePointsTable(
 ): Promise<ServerResponse<null>> {
   try {
     // Проверка, есть ли у пользователя разрешение на модерацию чемпионата.
-    const res = await checkUserAccess('moderation.championship');
+    const { userIdDB } = await checkUserAccess('moderation.championship');
 
     // Проверка, является ли пользователь userIdDB организатором.
-    await checkIsOrganizer(res.userIdDB);
+    await checkIsOrganizer(userIdDB);
 
     const racePointsTableService = new RacePointsTableService();
-    const created = await racePointsTableService.delete({ racePointsTableId });
+    const created = await racePointsTableService.delete({
+      racePointsTableId,
+      moderator: userIdDB,
+    });
 
     if (!created.ok) {
       throw new Error(created.message);
