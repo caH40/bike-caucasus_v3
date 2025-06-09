@@ -12,6 +12,7 @@ import { RaceResultService } from '@/services/RaceResult';
 import { TRiderRaceResultDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
 import { ChampionshipService } from '@/services/Championship';
+import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
 
 /**
  * Сохранение результата райдера в Заезде Чемпионата.
@@ -112,10 +113,13 @@ export async function updateProtocolRace({
   raceId: string;
 }): Promise<ServerResponse<null>> {
   try {
+    const { userIdDB } = await checkUserAccess('moderation.championship.protocol');
+
     const resultRaceService = new RaceResultService();
     const res = await resultRaceService.updateRaceProtocol({
       championshipId,
       raceId,
+      moderator: userIdDB,
     });
 
     return res;
@@ -172,9 +176,12 @@ export async function getResultRaceForRider({
  */
 export async function deleteResult({ _id }: { _id: string }): Promise<ServerResponse<null>> {
   try {
+    const { userIdDB } = await checkUserAccess('moderation.championship.protocol');
+
     const resultRaceService = new RaceResultService();
     const res = await resultRaceService.delete({
       _id,
+      moderator: userIdDB,
     });
 
     return res;
@@ -193,8 +200,10 @@ export async function putResultRaceRider({
   result: FormData;
 }): Promise<ServerResponse<null>> {
   try {
+    const { userIdDB } = await checkUserAccess('moderation.championship.protocol');
+
     const resultRaceService = new RaceResultService();
-    const res = await resultRaceService.update({ result });
+    const res = await resultRaceService.update({ result, moderator: userIdDB });
 
     if (res.ok) {
       revalidatePath('/moderation/championship/protocol/edit');

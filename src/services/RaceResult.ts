@@ -24,6 +24,7 @@ import {
   TRace,
   TRacePointsTable,
   TResultRace,
+  TResultRaceDocument,
 } from '@/types/models.interface';
 import {
   ServerResponse,
@@ -33,7 +34,9 @@ import {
   TResultRaceFromDB,
   TResultRaceRiderDeserialized,
   TRiderRaceResultDB,
+  TServiceEntity,
 } from '@/types/index.interface';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Сервис работы с результатами заезда Чемпионата.
@@ -41,10 +44,12 @@ import {
 export class RaceResultService {
   private errorLogger;
   private handlerErrorDB;
+  private entity: TServiceEntity;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
+    this.entity = 'raceResult';
   }
 
   public async getOne({
@@ -160,7 +165,7 @@ export class RaceResultService {
           : dataDeserialized.categoryName;
 
       // Сохранение в БД результата райдера в Заезде Чемпионата.
-      await ResultRaceModel.create({
+      const createdResponse = await ResultRaceModel.create({
         championship: dataDeserialized.championshipId,
         race: dataDeserialized.raceId,
         startNumber: dataDeserialized.startNumber,
@@ -186,6 +191,24 @@ export class RaceResultService {
         raceId: dataDeserialized.raceId,
       });
 
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: creatorId,
+        changes: {
+          description: `Создание результата для заезда с _id: "${createdResponse.race.toString()}"`,
+          params: {
+            dataFromFormSerialized: {
+              description: 'Данные в формате FormData для создания организатора',
+              dataDeserialized,
+            },
+            creatorId,
+          },
+        },
+        action: 'create',
+        entity: this.entity,
+        entityIds: [createdResponse._id.toString()],
+      });
+
       return {
         data: null,
         ok: true,
@@ -200,13 +223,21 @@ export class RaceResultService {
   /**
    * Обновление данных результата.
    */
-  public async update({ result }: { result: FormData }): Promise<ServerResponse<null>> {
+  public async update({
+    result,
+    moderator,
+  }: {
+    result: FormData;
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
       // Данные после десериализации.
       const dataDeserialized = deserializationResultRaceRider(result);
 
       // Получение обновляемого результата.
-      const resultDB = await ResultRaceModel.findOne({ _id: dataDeserialized.resultId });
+      const resultDB: TResultRaceDocument | null = await ResultRaceModel.findOne({
+        _id: dataDeserialized.resultId,
+      });
 
       if (!resultDB) {
         throw new Error(`Не найден обновляемый результат с _id:${dataDeserialized.resultId}`);
@@ -251,6 +282,26 @@ export class RaceResultService {
       });
 
       const success = updateResult.modifiedCount > 0;
+
+      if (success) {
+        await ModeratorActionLogService.create({
+          moderator,
+          changes: {
+            description: `Изменение данных результата райдера в финишном протоколе заезда с _id: "${race.toString()}"`,
+            params: {
+              result: {
+                description: 'Формат FormData. Десериализованные данные в следующем свойстве',
+                dataDeserialized,
+              },
+              moderator,
+            },
+          },
+          action: 'update',
+          entity: this.entity,
+          entityIds: [resultDB._id.toString()],
+        });
+      }
+
       return {
         data: null,
         ok: success,
@@ -298,8 +349,6 @@ export class RaceResultService {
       // Создание списка всех категорий в заезде (категории без результатов не учитываются).
       const existCategoryNames = getExistCategoryNames(resultsSorted);
 
-      
-
       return {
         data: {
           protocol: resultsSorted,
@@ -326,9 +375,11 @@ export class RaceResultService {
   public async updateRaceProtocol({
     championshipId,
     raceId,
+    moderator,
   }: {
     championshipId: string;
     raceId: string;
+    moderator?: string;
   }): Promise<ServerResponse<null>> {
     try {
       // Получение данных заезда.
@@ -359,6 +410,24 @@ export class RaceResultService {
 
       // Обновление количества участников в коллекции Чемпионат в соответствующем заезде.
       await this.updateQuantityFinishedRiders({ raceId, quantityRidersFinished });
+
+      // Логирование действия, запущенного напрямую из клиента. Не логируется, если метод запущен из других методов данного класса (не передается moderator).
+      if (moderator) {
+        await ModeratorActionLogService.create({
+          moderator,
+          changes: {
+            description: `Пересчет данных и обновление финишного протокола заезда с _id: "${race.toString()}"`,
+            params: {
+              championshipId,
+              raceId,
+              moderator,
+            },
+          },
+          action: 'update',
+          entity: this.entity,
+          entityIds: [],
+        });
+      }
 
       return {
         data: null,
@@ -503,23 +572,40 @@ export class RaceResultService {
   /**
    * Удаление результата.
    */
-  public async delete({ _id }: { _id: string }): Promise<ServerResponse<null>> {
+  public async delete({
+    _id,
+    moderator,
+  }: {
+    _id: string;
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
       // Получение данных заезда.
       const resultDB = await ResultRaceModel.findOneAndDelete({ _id }, { profile: true });
-      if (resultDB) {
-        return {
-          data: null,
-          ok: true,
-          message: `Результат райдера ${resultDB.profile.lastName}${resultDB.profile.firstName} - удалён!`,
-        };
-      } else {
-        return {
-          data: null,
-          ok: false,
-          message: `Не найден запрашиваемый результат с _id:${_id}`,
-        };
+
+      if (!resultDB) {
+        throw new Error(`Не найден запрашиваемый результат с _id:${_id}`);
       }
+
+      await ModeratorActionLogService.create({
+        moderator,
+        changes: {
+          description: `Удален результат райдера _id: ${resultDB._id.toString()} в заезде с _id: "${resultDB.race.toString()}"`,
+          params: {
+            _id,
+            moderator,
+          },
+        },
+        action: 'delete',
+        entity: this.entity,
+        entityIds: [resultDB._id.toString()],
+      });
+
+      return {
+        data: null,
+        ok: true,
+        message: `Результат райдера ${resultDB.profile.lastName}${resultDB.profile.firstName} - удалён!`,
+      };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
