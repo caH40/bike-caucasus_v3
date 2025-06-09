@@ -20,6 +20,7 @@ import {
   TChampionshipTypes,
   TGeneralClassification,
   TLogsErrorModel,
+  TModeratorActionLog,
   TNewsBlockInfo,
   TOrganizer,
   TPerson,
@@ -1379,3 +1380,21 @@ export type TGetOneGeneralClassificationService = {
 };
 
 export type TCategoriesEntity = 'category' | 'absolute' | 'absoluteGender';
+
+export type TCreateModeratorActionLogServiceParams = Omit<
+  TModeratorActionLog,
+  '_id' | 'moderator' | 'timestamp'
+> & { moderator: string };
+
+/**
+ * Сущности, изменяемые модератором.
+ */
+export type TServiceEntity =
+  | 'championship'
+  | 'trail'
+  | 'news'
+  | 'calendar'
+  | 'organizer'
+  | 'raceResult'
+  | 'comment'
+  | 'generalClassification';

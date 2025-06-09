@@ -7,6 +7,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 
 // types
 import { ServerResponse, TGetOneGeneralClassificationService } from '@/types/index.interface';
+import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
 
 /**
  * Экшен создания/обновления генеральной классификации.
@@ -15,8 +16,10 @@ export async function upsertGeneralClassification(
   championshipId: string
 ): Promise<ServerResponse<any>> {
   try {
+    const { userIdDB } = await checkUserAccess('moderation.championship');
+
     const gcService = new GeneralClassificationService();
-    const gcUpsertResponse = await gcService.upsert({ championshipId });
+    const gcUpsertResponse = await gcService.upsert({ championshipId, moderatorId: userIdDB });
 
     if (!gcUpsertResponse.ok) {
       throw new Error(gcUpsertResponse.message);

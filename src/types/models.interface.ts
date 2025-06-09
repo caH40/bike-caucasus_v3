@@ -4,6 +4,7 @@ import {
   TCategoryAge,
   TCategorySkillLevel,
   TFormCalendar,
+  TServiceEntity,
 } from './index.interface';
 
 /**
@@ -562,18 +563,10 @@ export type TModeratorActionLogDocument = TModeratorActionLog & Document;
 export type TModeratorActionLog = {
   _id: mongoose.Types.ObjectId; // Уникальный идентификатор записи.
   moderator: mongoose.Types.ObjectId; // ID модератора, выполнившего действие.
-  entity:
-    | 'championship'
-    | 'trail'
-    | 'news'
-    | 'calendar'
-    | 'organizer'
-    | 'raceResult'
-    | 'comment'
-    | 'generalClassification'; // Название сущности, над которой было выполнено действие.
-  entityId: string; // ID изменённой сущности.
+  entity: TServiceEntity; // Название сущности, над которой было выполнено действие.
+  entityIds: string[]; // ID изменённой сущности.
   action: 'create' | 'update' | 'delete'; // Тип действия: создание, обновление или удаление.
-  changes?: Record<string, any>; // Объект с изменениями: новые или изменённые значения.
+  changes?: Record<string, any> & { description?: string }; // Объект с изменениями: новые или изменённые значения.
   timestamp: Date; // Дата и время выполнения действия.
   client?: {
     ip?: string; // IP-адрес клиента.

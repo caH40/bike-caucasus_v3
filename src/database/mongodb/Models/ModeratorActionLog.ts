@@ -18,7 +18,7 @@ const ModeratorActionLogSchema = new Schema<TModeratorActionLogDocument>({
     ],
     required: true,
   }, // Название сущности, над которой было выполнено действие.
-  entityId: { type: String, required: true }, // ID изменённой сущности.
+  entityIds: { type: [String], required: true }, // ID изменённой сущности.
   action: {
     type: String,
     enum: ['create', 'update', 'delete'],

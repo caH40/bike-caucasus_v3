@@ -10,6 +10,7 @@ import { createCategoriesInRace, setGCPositions } from '@/libs/utils/gc-results'
 import { GeneralClassificationModel } from '@/database/mongodb/Models/GeneralClassification';
 import { generalClassificationDto } from '@/dto/general-classification';
 import { getExistCategoryNames } from '@/libs/utils/championship/category';
+import { ModeratorActionLogService } from '@/services/ModerationActionLog';
 
 // types
 import {
@@ -23,6 +24,7 @@ import {
   TGetOneGeneralClassificationService,
   TInitGeneralClassificationResults,
   TInitGeneralClassificationResultsParams,
+  TServiceEntity,
   TStagesForGCTableHeader,
 } from '@/types/index.interface';
 
@@ -32,10 +34,12 @@ import {
 export class GeneralClassificationService {
   private errorLogger;
   private handlerErrorDB;
+  private entity: TServiceEntity;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
+    this.entity = 'generalClassification';
   }
 
   /**
@@ -104,8 +108,10 @@ export class GeneralClassificationService {
    */
   public async upsert({
     championshipId,
+    moderatorId,
   }: {
     championshipId: string;
+    moderatorId: string;
   }): Promise<ServerResponse<null>> {
     try {
       // Данные чемпионата.
@@ -145,7 +151,19 @@ export class GeneralClassificationService {
         championship: championshipId,
       });
 
-      await GeneralClassificationModel.insertMany(gcWithTotals);
+      const insertedDocs = await GeneralClassificationModel.insertMany(gcWithTotals);
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderatorId,
+        changes: {
+          description: `Создание/обновление данных генеральной классификации чемпионата: "${champ.name}"`,
+          params: { championshipId },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: insertedDocs.map((doc) => doc._id.toString()),
+      });
 
       return {
         data: null,
@@ -396,6 +414,7 @@ export class GeneralClassificationService {
   }): Promise<{
     _id: Types.ObjectId;
     type: TChampionshipTypes;
+    name: string;
     racePointsTable: Types.ObjectId | null;
   }> {
     if (!championshipId && !urlSlug) {
@@ -408,10 +427,12 @@ export class GeneralClassificationService {
     };
 
     const champDB = await ChampionshipModel.findOne(query, {
+      name: true,
       type: true,
       racePointsTable: true,
     }).lean<{
       _id: Types.ObjectId;
+      name: string;
       type: TChampionshipTypes;
       racePointsTable: Types.ObjectId | null;
     }>();

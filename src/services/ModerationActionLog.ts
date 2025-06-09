@@ -1,10 +1,13 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { ModeratorActionLogModel } from '@/database/mongodb/Models/ModeratorActionLog';
+import { getModeratorActionLogDto } from '@/dto/logs';
 
 // types.
-import { ServerResponse } from '@/types/index.interface';
-import { getModeratorActionLogDto } from '@/dto/logs';
+import {
+  ServerResponse,
+  TCreateModeratorActionLogServiceParams,
+} from '@/types/index.interface';
 import { TGetModeratorActionLogServiceFromMongo } from '@/types/mongo.types';
 import { TGetModeratorActionLogDto } from '@/types/dto.types';
 
@@ -39,6 +42,32 @@ export class ModeratorActionLogService {
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Логирование действия модератора.
+   */
+  public static async create({
+    moderator,
+    action,
+    client,
+    entity,
+    changes,
+    entityIds,
+  }: TCreateModeratorActionLogServiceParams): Promise<void> {
+    try {
+      await ModeratorActionLogModel.create({
+        moderator,
+        action,
+        client,
+        entityIds,
+        entity,
+        changes,
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      errorLogger(error);
     }
   }
 }
