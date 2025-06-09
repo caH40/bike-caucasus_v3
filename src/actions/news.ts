@@ -10,6 +10,7 @@ import { errorLogger } from '@/errors/error';
 import type { ServerResponse } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { PermissionsService } from '@/services/Permissions';
+import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
 
 type ParamsNews = {
   idUserDB?: string;
@@ -82,14 +83,7 @@ export const postNews = async (formData: FormData) => {
  */
 export const putNewsOne = async (formData: FormData) => {
   try {
-    // Получаем текущую сессию пользователя с использованием next-auth.
-    const session = await getServerSession(authOptions);
-
-    // Проверяем, есть ли у пользователя ID в базе данных.
-    const idUserDB = session?.user.idDB;
-    if (!idUserDB) {
-      throw new Error('Нет авторизации, нет idDB!');
-    }
+    const { userIdDB } = await checkUserAccess('moderation.news.edit');
 
     // Извлекаем urlSlug (уникальный идентификатор новости) из formData.
     const urlSlug = formData.get('urlSlug');
@@ -98,27 +92,11 @@ export const putNewsOne = async (formData: FormData) => {
       throw new Error('Некорректный или отсутствующий urlSlug!');
     }
 
-    // Определяем требуемое разрешение для редактирования новости.
-    const permission = 'moderation.news.edit';
-
     // Создаем экземпляр сервиса для работы с новостями.
     const newsService = new News();
 
-    // Проверяем права пользователя на редактирование данной новости.
-    const res = await PermissionsService.checkPermission({
-      entity: 'news',
-      urlSlug,
-      idUserDB,
-      permission,
-    });
-
-    // Если прав недостаточно, возвращаем ошибку.
-    if (!res.ok) {
-      throw new Error(res.message);
-    }
-
     // Обновляем новость с помощью метода сервиса
-    const response = await newsService.put(formData);
+    const response = await newsService.put({ formData, moderator: userIdDB });
 
     // Перегенерируем кэш для главной страницы после изменения данных.
     revalidatePath(`/`);
@@ -235,7 +213,7 @@ export async function deleteNews(urlSlug: string): Promise<ServerResponse<null>>
       throw new Error(res.message);
     }
 
-    const response = await newsService.delete({ urlSlug, idUserDB });
+    const response = await newsService.delete({ urlSlug, moderator: idUserDB });
 
     // Ревалидация данных после удаления новости.
     revalidatePath('/');

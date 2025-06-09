@@ -6,6 +6,7 @@ import {
   TChampionshipTypes,
   TGeneralClassification,
   TModeratorActionLog,
+  TNewsBlockInfo,
   TPerson,
   TRace,
   TRaceRegistrationStatus,
@@ -98,3 +99,12 @@ export type TGetModeratorActionLogServiceFromMongo = Omit<TModeratorActionLog, '
     person: TPerson;
   };
 };
+
+export type TDeleteNewsServiceFromMongo = {
+  _id: ObjectId;
+  createdAt: Date;
+  poster: string;
+  filePdf?: string;
+  title: string;
+  blocks: TNewsBlockInfo[];
+} & Document;

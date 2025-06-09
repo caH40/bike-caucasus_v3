@@ -1,4 +1,3 @@
-import { Document, ObjectId } from 'mongoose';
 import slugify from 'slugify';
 
 import { Cloud } from './cloud';
@@ -17,9 +16,18 @@ import { ErrorCustom } from './Error';
 import { getCurrentDocsOnPage } from '@/libs/utils/pagination';
 import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 import { fileNameFormUrl } from '@/constants/regex';
-import type { TNews, TNewsBlockInfo } from '@/types/models.interface';
-import type { ServerResponse, TNewsCreateFromClient, TSaveFile } from '@/types/index.interface';
+import { ModeratorActionLogService } from './ModerationActionLog';
+
+// types
+import type { TNews } from '@/types/models.interface';
+import type {
+  ServerResponse,
+  TNewsCreateFromClient,
+  TSaveFile,
+  TServiceEntity,
+} from '@/types/index.interface';
 import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
+import { TDeleteNewsServiceFromMongo } from '@/types/mongo.types';
 
 /**
  * Сервис работы с новостями (News) в БД
@@ -27,10 +35,12 @@ import type { TAuthor, TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.t
 export class News {
   private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private entity: TServiceEntity;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.saveFile = saveFile;
+    this.entity = 'news';
   }
 
   /**
@@ -104,6 +114,21 @@ export class News {
         throw new Error('Новость не сохранилась в БД!');
       }
 
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: author,
+        changes: {
+          description: `Создание новости: "${news.title}"`,
+          params: {
+            formData: 'Объект с новостью формата FormData',
+            author,
+          },
+        },
+        action: 'create',
+        entity: this.entity,
+        entityIds: [response._id],
+      });
+
       return { data: null, ok: true, message: 'Новость сохранена в БД!' };
     } catch (error) {
       this.errorLogger(error); // логирование
@@ -114,7 +139,13 @@ export class News {
   /**
    * Обновление отредактированной новости.
    */
-  public async put(formData: FormData): Promise<ServerResponse<null>> {
+  public async put({
+    formData,
+    moderator,
+  }: {
+    formData: FormData;
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
       // Десериализация данных, полученных с клиента.
       const news = deserializeNewsCreate(formData);
@@ -230,7 +261,29 @@ export class News {
       }
 
       // slug не обновляется, остается старый для исключения проблем с индексацией.
-      await NewsModel.findOneAndUpdate({ urlSlug: news.urlSlug }, updateData);
+      const response: TNews | null = await NewsModel.findOneAndUpdate(
+        { urlSlug: news.urlSlug },
+        updateData
+      );
+
+      if (!response) {
+        throw new Error(`Не найдена обновляемая новость с urSlug: ${news.urlSlug}`);
+      }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator,
+        changes: {
+          description: `Обновление новости: "${news.title}"`,
+          params: {
+            formData: 'Объект с новостью формата FormData',
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
 
       return { data: null, ok: true, message: 'Данные новости обновлены!' };
     } catch (error) {
@@ -520,23 +573,16 @@ export class News {
    * Удаление новости.
    * Проверка разрешений производится при запросе в серверном экшене.
    */
-  public async delete({ urlSlug }: { urlSlug: string; idUserDB: string }) {
+  public async delete({ urlSlug, moderator }: { urlSlug: string; moderator: string }) {
     try {
-      const newsOneDB:
-        | ({
-            _id: ObjectId;
-            createdAt: Date;
-            poster: string;
-            filePdf?: string;
-            blocks: TNewsBlockInfo[];
-          } & Document)
-        | null = await NewsModel.findOne(
+      const newsOneDB: TDeleteNewsServiceFromMongo | null = await NewsModel.findOne(
         { urlSlug },
         {
           createdAt: true,
           poster: true,
           blocks: true,
           filePdf: true,
+          title: true,
         }
       );
 
@@ -575,6 +621,21 @@ export class News {
       if (!newsDeleted.acknowledged || newsDeleted.deletedCount === 0) {
         throw new Error('Ошибка при удалении новости с БД!');
       }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator,
+        changes: {
+          description: `Удаление новости: "${newsOneDB.title}"`,
+          params: {
+            urlSlug,
+            moderator,
+          },
+        },
+        action: 'delete',
+        entity: this.entity,
+        entityIds: [newsOneDB._id.toString()],
+      });
 
       return {
         data: null,
