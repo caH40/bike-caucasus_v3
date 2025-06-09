@@ -761,6 +761,7 @@ export type TResultRaceRiderDeserialized = Omit<
  * Данные профиля минимальным количеством данных из БД.
  */
 export type TProfileSimpleFromDB = {
+  _id: Types.ObjectId;
   id: number;
   person: {
     firstName: string;

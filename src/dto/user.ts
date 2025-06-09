@@ -50,6 +50,7 @@ export function dtoGetUsersSimplePublic(users: TProfileSimpleFromDB[]): TProfile
   return users.map((user) => {
     const yearBirthday = getDateTime(user.person.birthday).year;
     return {
+      _id: user._id.toString(),
       firstName: user.person.firstName,
       patronymic: user.person.patronymic,
       lastName: user.person.lastName,

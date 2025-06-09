@@ -278,6 +278,7 @@ export type TCheckRegisteredInChampDto = {
  * Данные DTO профиля минимальным количеством данных.
  */
 export type TProfileSimpleDto = {
+  _id: string;
   id: number;
   firstName: string;
   lastName: string;

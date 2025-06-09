@@ -44,6 +44,7 @@ export default function BlockSearchRider({ setValue }: Props) {
       setValue('rider.lastName', rider.lastName, { shouldValidate: true });
       setValue('rider.patronymic', rider.patronymic || '');
       setValue('rider.id', rider.id);
+      setValue('rider._id', rider._id);
       setValue('rider.gender', rider.gender);
       setValue('rider.city', rider.city, { shouldValidate: true });
       setValue('rider.yearBirthday', rider.yearBirthday, { shouldValidate: true });

@@ -324,12 +324,11 @@ export class UserService {
       // Подключение к базе данных.
 
       // Обновление данных профиля в базе данных.
-      const usersDB: TProfileSimpleFromDB[] = await User.find(
+      const usersDB = await User.find(
         {
           'person.lastName': { $regex: lastNameSearch, $options: 'i' },
         },
         {
-          _id: false,
           id: true,
           'person.firstName': true,
           'person.lastName': true,
@@ -338,7 +337,7 @@ export class UserService {
           'person.gender': true,
           city: true,
         }
-      );
+      ).lean<TProfileSimpleFromDB[]>();
 
       const usersDto = dtoGetUsersSimplePublic(usersDB);
 
