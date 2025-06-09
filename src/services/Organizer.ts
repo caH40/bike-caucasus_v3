@@ -1,6 +1,6 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { ServerResponse, TSaveFile } from '@/types/index.interface';
+import { ServerResponse, TSaveFile, TServiceEntity } from '@/types/index.interface';
 import { Organizer as OrganizerModel } from '@/database/mongodb/Models/Organizer';
 import { dtoCOrganizer, dtoCOrganizers } from '@/dto/organizer';
 import { userPublicSelect } from '@/constants/populate';
@@ -14,6 +14,7 @@ import { getNextSequenceValue } from './sequence';
 import slugify from 'slugify';
 import { fileNameFormUrl } from '@/constants/regex';
 import { ObjectId } from 'mongoose';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Класс сервиса работы с сущностью Организатор.
@@ -21,6 +22,7 @@ import { ObjectId } from 'mongoose';
 export class OrganizerService {
   private errorLogger;
   private handlerErrorDB;
+  private entity: TServiceEntity;
 
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private suffixImagePoster: string;
@@ -33,6 +35,7 @@ export class OrganizerService {
     this.saveFile = saveFile;
     this.suffixImagePoster = 'organizer_image_poster-';
     this.suffixImageLogo = 'organizer_image_logo-';
+    this.entity = 'organizer';
   }
 
   /**
@@ -193,6 +196,21 @@ export class OrganizerService {
         throw new Error('Организатор не сохранился в БД!');
       }
 
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: creator,
+        changes: {
+          description: `Создание организатора: "${response.name}"`,
+          params: {
+            serializedFormData: 'Данные в формате FormData для создания организатора',
+            creator,
+          },
+        },
+        action: 'create',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
+
       return { data: null, ok: true, message: 'Организатор создан, данные сохранены в БД!' };
     } catch (error) {
       this.errorLogger(error);
@@ -205,8 +223,10 @@ export class OrganizerService {
    */
   public async put({
     serializedFormData,
+    moderator,
   }: {
     serializedFormData: FormData;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
       const deserializedFormData = deserializeOrganizer(serializedFormData);
@@ -262,6 +282,22 @@ export class OrganizerService {
       if (!response._id) {
         throw new Error('Изменения данных Организатора не сохранились в БД!');
       }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator,
+        changes: {
+          description: `Обновление данных организатора: "${response.name}"`,
+          params: {
+            serializedFormData:
+              'Измененные данные в формате FormData для обновления данных организатора',
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [response._id.toString()],
+      });
 
       return {
         data: null,

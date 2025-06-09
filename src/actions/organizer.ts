@@ -147,6 +147,7 @@ export async function fetchOrganizerEdited({
     const organizerService = new OrganizerService();
     const res = await organizerService.put({
       serializedFormData: dataSerialized,
+      moderator: creator,
     });
 
     revalidatePath('/moderation/organizer/edit');
