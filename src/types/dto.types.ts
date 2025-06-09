@@ -15,6 +15,7 @@ import {
   TDisqualification,
   TGeneralClassification,
   TLogsErrorModel,
+  TModeratorActionLog,
   TNewsBlockInfo,
   TOrganizer,
   TProfileRiderInProtocol,
@@ -371,3 +372,18 @@ export type TGeneralClassificationDto = Omit<
   stages: TStageClient[];
 };
 export type TStageClient = Omit<TStageInGC, 'championship'> & { championship: string };
+
+export type TGetModeratorActionLogDto = Omit<
+  TModeratorActionLog,
+  '_id' | 'moderator' | 'timestamp'
+> & {
+  _id: string;
+  moderator: {
+    _id: string;
+    person: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+  timestamp: string;
+};

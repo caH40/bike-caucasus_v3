@@ -554,3 +554,36 @@ export type TStageInGC = {
   points: TPoints | null; // Заработанные финишные очки за этап. null в Туре.
   positions: TPositions; // Места в разных протоколах на этапе.
 };
+
+/**
+ * Логирование действий модераторов.
+ */
+export type TModeratorActionLogDocument = TModeratorActionLog & Document;
+export type TModeratorActionLog = {
+  _id: mongoose.Types.ObjectId; // Уникальный идентификатор записи.
+  moderator: mongoose.Types.ObjectId; // ID модератора, выполнившего действие.
+  entity:
+    | 'championship'
+    | 'trail'
+    | 'news'
+    | 'calendar'
+    | 'organizer'
+    | 'raceResult'
+    | 'comment'
+    | 'generalClassification'; // Название сущности, над которой было выполнено действие.
+  entityId: string; // ID изменённой сущности.
+  action: 'create' | 'update' | 'delete'; // Тип действия: создание, обновление или удаление.
+  changes?: Record<string, any>; // Объект с изменениями: новые или изменённые значения.
+  timestamp: Date; // Дата и время выполнения действия.
+  client?: {
+    ip?: string; // IP-адрес клиента.
+    userAgent?: string; // User-Agent браузера или клиента.
+    location?: {
+      country?: string; // Страна, определённая по IP.
+      region?: string; // Регион или область, определённая по IP.
+      city?: string; // Город, определённый по IP.
+      lat?: number; // Географическая широта.
+      lon?: number; // Географическая долгота.
+    };
+  }; // Информация о клиенте, с которого было выполнено действие.
+};

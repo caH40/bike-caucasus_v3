@@ -1,5 +1,6 @@
-import { TGetErrorsDto } from '@/types/dto.types';
+import { TGetErrorsDto, TGetModeratorActionLogDto } from '@/types/dto.types';
 import type { TLogsErrorModel } from '@/types/models.interface';
+import { TGetModeratorActionLogServiceFromMongo } from '@/types/mongo.types';
 
 /**
  * Преобразует массив логов ошибок в массив DTO с дополнительными полями id и строковым _id.
@@ -19,4 +20,25 @@ export function serviceGetErrorsDto(logs: TLogsErrorModel[]): TGetErrorsDto[] {
 export function serviceGetErrorDto(log: TLogsErrorModel): TGetErrorsDto {
   // Преобразование массива логов с добавлением поля id и преобразованием _id в строку.
   return { ...log, id: 1, _id: String(log._id) };
+}
+
+/**
+ * ДТО получения лога действия модератора.
+ */
+export function getModeratorActionLogDto(
+  log: TGetModeratorActionLogServiceFromMongo
+): TGetModeratorActionLogDto {
+  const moderator = {
+    _id: log.moderator._id.toString(),
+    person: {
+      firstName: log.moderator.person.firstName,
+      lastName: log.moderator.person.lastName,
+    },
+  };
+  return {
+    ...log,
+    _id: log._id.toString(),
+    moderator,
+    timestamp: log.timestamp.toISOString(),
+  };
 }

@@ -5,6 +5,8 @@ import {
   TChampionshipStatus,
   TChampionshipTypes,
   TGeneralClassification,
+  TModeratorActionLog,
+  TPerson,
   TRace,
   TRaceRegistrationStatus,
   TResultRace,
@@ -87,5 +89,12 @@ export type TGetOneGeneralClassificationFromMongo = Omit<TGeneralClassification,
     image?: string;
     provider?: { image?: string };
     imageFromProvider: boolean;
+  };
+};
+
+export type TGetModeratorActionLogServiceFromMongo = Omit<TModeratorActionLog, 'moderator'> & {
+  moderator: {
+    _id: Types.ObjectId;
+    person: TPerson;
   };
 };
