@@ -132,7 +132,10 @@ export async function fetchChampionshipCreated(
     }
 
     const championshipService = new ChampionshipService();
-    const res = await championshipService.post({ serializedFormData: formData });
+    const res = await championshipService.post({
+      serializedFormData: formData,
+      moderator: creator,
+    });
 
     revalidatePath('/moderation/championship');
     revalidatePath('championship');
@@ -190,7 +193,7 @@ export async function deleteChampionship(urlSlug: string): Promise<ServerRespons
     }
 
     // Удаление чемпионата.
-    const response = await championshipService.delete({ urlSlug });
+    const response = await championshipService.delete({ urlSlug, moderator: userIdDB });
 
     revalidatePath('/championship');
     revalidatePath('/moderation/championship');
@@ -238,7 +241,10 @@ export async function putChampionship({
       );
     }
 
-    const response = await championshipService.put({ serializedFormData: dataSerialized });
+    const response = await championshipService.put({
+      serializedFormData: dataSerialized,
+      moderator: idUserDB,
+    });
 
     revalidatePath('/championship');
     revalidatePath('/moderation/championship');

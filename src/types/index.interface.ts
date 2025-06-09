@@ -1397,4 +1397,5 @@ export type TServiceEntity =
   | 'organizer'
   | 'raceResult'
   | 'comment'
+  | 'racePointsTable'
   | 'generalClassification';

@@ -33,6 +33,7 @@ import type {
   TGetChampUrlSlugParams,
   TGetParentChampionship,
   TSaveFile,
+  TServiceEntity,
   TStageDateDescription,
 } from '@/types/index.interface';
 import type {
@@ -43,6 +44,7 @@ import type {
   TTrackGPXObj,
 } from '@/types/models.interface';
 import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -57,6 +59,7 @@ export class ChampionshipService {
     startDate: Date;
     endDate: Date;
   }) => TChampionshipStatus;
+  private entity: TServiceEntity;
 
   constructor() {
     this.errorLogger = errorLogger;
@@ -64,6 +67,7 @@ export class ChampionshipService {
     this.saveFile = saveFile;
     this.suffixImagePoster = 'championship_image_poster-';
     this.getCurrentStatus = getCurrentStatus;
+    this.entity = 'championship';
   }
 
   /**
@@ -222,8 +226,10 @@ export class ChampionshipService {
    */
   public async post({
     serializedFormData,
+    moderator,
   }: {
     serializedFormData: FormData;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
       const {
@@ -297,7 +303,20 @@ export class ChampionshipService {
 
       await this.addCategoryConfigsIds({ championshipCreated, type, parentChampionshipId });
 
-      //
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Создание чемпионата: "${championshipCreated.name}"`,
+          params: {
+            serializedFormData: 'Данные в формате FormData для создания чемпионата',
+            moderator,
+          },
+        },
+        action: 'create',
+        entity: this.entity,
+        entityIds: [championshipCreated._id.toString()],
+      });
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
     } catch (error) {
@@ -311,8 +330,10 @@ export class ChampionshipService {
    */
   public async put({
     serializedFormData,
+    moderator,
   }: {
     serializedFormData: FormData;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
       const {
@@ -380,6 +401,22 @@ export class ChampionshipService {
 
       await championshipDB.updateOne({ $set: { ...updateData } });
 
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Обновление данных чемпионата: "${championshipDB.name}"`,
+          params: {
+            serializedFormData:
+              'Измененные данные в формате FormData для обновления данных чемпионата',
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [championshipDB._id.toString()],
+      });
+
       return { data: null, ok: true, message: 'Данные Чемпионата обновлены в БД!' };
     } catch (error) {
       this.errorLogger(error);
@@ -390,7 +427,13 @@ export class ChampionshipService {
   /**
    * Удаление Чемпионата.
    */
-  public async delete({ urlSlug }: { urlSlug: string }): Promise<ServerResponse<null>> {
+  public async delete({
+    urlSlug,
+    moderator,
+  }: {
+    urlSlug: string;
+    moderator: string;
+  }): Promise<ServerResponse<null>> {
     try {
       const championshipDB: TDeleteChampionshipFromMongo | null =
         await ChampionshipModel.findOne(
@@ -456,6 +499,21 @@ export class ChampionshipService {
           })
           .catch((error) => this.errorLogger(error));
       }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Удаление чемпионата: "${championshipDB.name}"`,
+          params: {
+            urlSlug,
+            moderator,
+          },
+        },
+        action: 'delete',
+        entity: this.entity,
+        entityIds: [championshipDB._id.toString()],
+      });
 
       return {
         data: null,

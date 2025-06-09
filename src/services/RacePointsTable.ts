@@ -2,7 +2,11 @@ import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 
 // types
-import type { ServerResponse, TRacePointsTableForm } from '@/types/index.interface';
+import type {
+  ServerResponse,
+  TRacePointsTableForm,
+  TServiceEntity,
+} from '@/types/index.interface';
 import { RacePointsTableModel } from '@/database/mongodb/Models/RacePointsTable';
 import { TRacePointsTable } from '@/types/models.interface';
 import { TRacePointsTableDto } from '@/types/dto.types';
@@ -14,10 +18,12 @@ import { racePointsTableDto } from '@/dto/race-points-table';
 export class RacePointsTableService {
   private errorLogger;
   private handlerErrorDB;
+  private entity: TServiceEntity;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
+    this.entity = 'racePointsTable';
   }
 
   /**
