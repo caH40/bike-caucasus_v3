@@ -28,7 +28,13 @@ export default async function ModeratorLogPage(props: Props) {
             <dd className={styles.group}>{getTimerLocal(log.timestamp, 'DDMMYYHms')}</dd>
 
             <dt>Модератор</dt>
-            <dd className={styles.group}>{log.moderator.person.lastName}</dd>
+            <dd className={styles.group}>
+              <span>{log.moderator.person.lastName}</span>{' '}
+              <span>{log.moderator.person.firstName}</span>
+            </dd>
+
+            <dt>Роль</dt>
+            <dd className={styles.group}>{log.moderator.role.name}</dd>
 
             <dt>Сущность</dt>
             <dd className={styles.group}>{log.entity}</dd>

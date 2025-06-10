@@ -1,6 +1,5 @@
 .group {
-  background-color: var(--color-bg-minor);
-  border: 1px solid var(--color-border-minor);
+  border: 1px solid var(--line);
   border-radius: 6px;
   padding: 10px;
   overflow: hidden;
