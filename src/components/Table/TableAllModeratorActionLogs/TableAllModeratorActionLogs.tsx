@@ -117,7 +117,7 @@ export default function TableAllModeratorActionLogs({ logs, docsOnPage = 5 }: Pr
     <div className={styles.wrapper}>
       <div className={styles.wrapper__wide}>
         <table className={styles.table}>
-          <caption className={styles.caption}>Таблица логов ошибок</caption>
+          <caption className={styles.caption}>Таблица логов действий модераторов</caption>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={styles.trh} key={headerGroup.id}>

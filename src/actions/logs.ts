@@ -29,7 +29,7 @@ export async function getLogError({
 /**
  * Серверный экшен, получает логи всех действий модераторов.
  */
-export async function geAllModeratoActionLogsError(): Promise<
+export async function geAllModeratoActionLogs(): Promise<
   ServerResponse<TGetModeratorActionLogDto[] | null>
 > {
   try {
@@ -37,6 +37,25 @@ export async function geAllModeratoActionLogsError(): Promise<
 
     const logService = new LogService();
     const response = await logService.getAllModeratorActions();
+
+    return response;
+  } catch (error) {
+    errorLogger(error);
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Серверный экшен, получает логи всех действий модераторов.
+ */
+export async function getModeratorActionLog(
+  logId: string
+): Promise<ServerResponse<TGetModeratorActionLogDto | null>> {
+  try {
+    await checkUserAccess('admin');
+
+    const logService = new LogService();
+    const response = await logService.getModeratorAction(logId);
 
     return response;
   } catch (error) {

@@ -1,7 +1,8 @@
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { getLogError } from '@/actions/logs';
+import { getModeratorActionLog } from '@/actions/logs';
 import ShowServerError from '@/components/UI/ShowServerError/ShowServerError';
 import styles from './ModeratorLogPage.module.css';
+import JSONBlock from '@/components/JSONBlock/JSONBlock';
 
 type Props = {
   params: Promise<{
@@ -15,7 +16,7 @@ export const dynamic = 'force-dynamic';
  */
 export default async function ModeratorLogPage(props: Props) {
   const params = await props.params;
-  const { data: log, ok, message } = await getLogError({ id: params.id });
+  const { data: log, ok, message } = await getModeratorActionLog(params.id);
 
   return (
     <>
@@ -24,31 +25,34 @@ export default async function ModeratorLogPage(props: Props) {
           <ShowServerError ok={ok} message={message} />
           <dl className={styles.list}>
             <dt>Дата и время</dt>
-            <dd className={styles.group}>{getTimerLocal(log.createdAt, 'DDMMYYHms')}</dd>
-            {log.type && (
+            <dd className={styles.group}>{getTimerLocal(log.timestamp, 'DDMMYYHms')}</dd>
+
+            <dt>Модератор</dt>
+            <dd className={styles.group}>{log.moderator.person.lastName}</dd>
+
+            <dt>Сущность</dt>
+            <dd className={styles.group}>{log.entity}</dd>
+
+            <dt>Действие</dt>
+            <dd className={styles.group}>{log.action}</dd>
+
+            {log.changes && (
               <>
-                <dt>Тип</dt>
-                <dd className={styles.group}>{log.type}</dd>
+                <dt>Входные параметры и комментарий</dt>
+                <dd className={styles.group}>{JSONBlock({ json: log.changes })}</dd>
               </>
             )}
 
-            {log.message && (
-              <>
-                <dt>Краткое описание</dt>
-                <dd className={styles.group}>{log.message}</dd>
-              </>
-            )}
+            <dt>_id лога</dt>
+            <dd className={styles.group}>{log._id}</dd>
 
-            {log.stack && (
+            <dt>_ids модерируемых сущностей</dt>
+            <dd className={styles.group}>{JSONBlock({ json: log.entityIds })}</dd>
+
+            {log.client && (
               <>
-                <dt>Стэк</dt>
-                <dd className={styles.group}>
-                  <pre
-                    dangerouslySetInnerHTML={{
-                      __html: log.stack,
-                    }}
-                  />
-                </dd>
+                <dt>meta данные модератора</dt>
+                <dd className={styles.group}>{JSONBlock({ json: log.client })}</dd>
               </>
             )}
           </dl>

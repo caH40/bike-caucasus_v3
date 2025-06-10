@@ -11,7 +11,7 @@ import styles from './AllModeratorActionLogsContainer.module.css';
 import { TGetModeratorActionLogDto } from '@/types/dto.types';
 
 type Props = {
-  logs: TGetModeratorActionLogDto[] | null;
+  logs: TGetModeratorActionLogDto[];
 };
 
 /**
@@ -22,7 +22,7 @@ export default function AllModeratorActionLogsContainer({ logs }: Props) {
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [logsFiltered, setLogsFiltered] = useState(logs || []);
+  const [logsFiltered, setLogsFiltered] = useState(logs);
 
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
@@ -41,10 +41,11 @@ export default function AllModeratorActionLogsContainer({ logs }: Props) {
 
   // Создание поиска необходимых логов по search.
   useMemo(() => {
-    if (!logs) {
+    if (logs.length === 0) {
       return;
     }
     setLogsFiltered(logs);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, logs]);
 
   return (

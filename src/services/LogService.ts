@@ -103,4 +103,43 @@ export class LogService {
       return handlerErrorDB(error);
     }
   }
+
+  /**
+   * Получение лога действия модератора.
+   */
+  public async getModeratorAction(
+    logId: string
+  ): Promise<ServerResponse<TGetModeratorActionLogDto | null>> {
+    try {
+      const logDB = await ModeratorActionLogModel.findById(logId)
+        .populate({
+          path: 'moderator',
+          select: [
+            'person.firstName',
+            'person.lastName',
+            'image',
+            'imageFromProvider',
+            'provider.image',
+            'role',
+          ],
+          populate: { path: 'role', select: ['-_id', 'name'] },
+        })
+        .lean<TGetAllModeratorActionLogsFromMongo>();
+
+      if (!logDB) {
+        throw new Error(`Не найден лог с _id: ${logId}`);
+      }
+
+      const logsAfterDto = getModeratorActionLogDto(logDB);
+
+      return {
+        data: logsAfterDto,
+        ok: true,
+        message: `Логи всех действий модераторов.`,
+      };
+    } catch (error) {
+      errorLogger(error);
+      return handlerErrorDB(error);
+    }
+  }
 }
