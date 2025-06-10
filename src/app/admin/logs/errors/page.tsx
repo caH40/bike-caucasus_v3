@@ -1,4 +1,4 @@
-import { Logger } from '@/services/logger';
+import { LogService } from '@/services/LogService';
 import MenuOnPage from '@/components/UI/Menu/MenuOnPage/MenuOnPage';
 import { buttonsMenuAdminPage } from '@/constants/menu';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
@@ -15,9 +15,9 @@ export const dynamic = 'force-dynamic';
  * @returns - Промис с данными логов ошибок или null в случае ошибки.
  */
 async function getLogsError(): Promise<ServerResponse<TGetErrorsDto[] | null>> {
-  const logger = new Logger();
+  const logService = new LogService();
 
-  const response = await logger.getErrors();
+  const response = await logService.getErrors();
 
   return response;
 }

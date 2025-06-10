@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongoose';
 import {
+  IUserModel,
   TCategories,
   TChampionship,
   TChampionshipStatus,
@@ -108,3 +109,26 @@ export type TDeleteNewsServiceFromMongo = {
   title: string;
   blocks: TNewsBlockInfo[];
 } & Document;
+
+/**
+ * Данные из монго для метода getById класса ModeratorActionLogService.
+ */
+export type TGetByIdModeratorActionLogFromMongo = Omit<TModeratorActionLog, 'moderator'> & {
+  moderator: {
+    _id: IUserModel['_id'];
+    person: IUserModel['person'];
+  };
+};
+
+/**
+ * Данные из монго для метода getAllModeratorActions класса LogService.
+ */
+export type TGetAllModeratorActionLogsFromMongo = Omit<TModeratorActionLog, 'moderator'> & {
+  moderator: {
+    _id: IUserModel['_id'];
+    image: IUserModel['image'];
+    imageFromProvider: IUserModel['imageFromProvider'];
+    person: Pick<IUserModel['person'], 'lastName' | 'firstName'>;
+    role: IUserModel['role'];
+  };
+};

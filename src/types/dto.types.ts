@@ -27,7 +27,10 @@ import {
   TStageInGC,
   TTrail,
 } from './models.interface';
-import { TGetToursAndSeriesFromMongo } from './mongo.types';
+import {
+  TGetAllModeratorActionLogsFromMongo,
+  TGetToursAndSeriesFromMongo,
+} from './mongo.types';
 
 /**
  * Одна новость с сервера.
@@ -374,7 +377,7 @@ export type TGeneralClassificationDto = Omit<
 };
 export type TStageClient = Omit<TStageInGC, 'championship'> & { championship: string };
 
-export type TGetModeratorActionLogDto = Omit<
+export type TGetByIdModeratorActionLogDto = Omit<
   TModeratorActionLog,
   '_id' | 'moderator' | 'timestamp'
 > & {
@@ -385,6 +388,21 @@ export type TGetModeratorActionLogDto = Omit<
       firstName: string;
       lastName: string;
     };
+  };
+  timestamp: string;
+};
+
+export type TGetModeratorActionLogDto = Omit<
+  TGetAllModeratorActionLogsFromMongo,
+  '_id' | 'moderator' | 'timestamp'
+> & {
+  _id: string;
+  moderator: {
+    _id: string;
+    image: IUserModel['image'];
+    imageFromProvider: IUserModel['imageFromProvider'];
+    person: Pick<IUserModel['person'], 'lastName' | 'firstName'>;
+    role: IUserModel['role'];
   };
   timestamp: string;
 };

@@ -1,7 +1,7 @@
 // import { revalidatePath } from 'next/cache';
 import { ignoreError } from './ignore';
 import { parseError } from './parse';
-import { Logger } from '@/services/logger';
+import { LogService } from '@/services/LogService';
 
 /**
  * Логирует ошибку в базу данных или выводит в консоль в зависимости от среды(прод или разработка).
@@ -24,9 +24,9 @@ export const errorLogger = async (error: unknown): Promise<void> => {
     }
 
     // логирование ошибки в БД
-    const logger = new Logger();
+    const logService = new LogService();
     const errorParsed = parseError(error);
-    await logger.saveError(errorParsed);
+    await logService.saveError(errorParsed);
 
     // revalidatePath('/admin/logs/errors');
   } catch (error) {

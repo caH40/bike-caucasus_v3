@@ -1,6 +1,6 @@
 'use server';
 
-import { Logger } from '@/services/logger';
+import { LogService } from '@/services/LogService';
 import type { TLogsErrorParsed } from '@/types/index.interface';
 
 /**
@@ -14,8 +14,8 @@ export async function errorHandlerClient(errorParsed: TLogsErrorParsed): Promise
       console.log(errorParsed); // eslint-disable-line
     } else {
       // логирование ошибки в БД
-      const logger = new Logger();
-      await logger.saveError(errorParsed);
+      const logService = new LogService();
+      await logService.saveError(errorParsed);
     }
   } catch (error) {
     console.log(error); // eslint-disable-line

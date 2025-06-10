@@ -1,16 +1,20 @@
 import { LogsError } from '@/database/mongodb/Models/LogsError';
 
-import { serviceGetErrorDto, serviceGetErrorsDto } from '@/dto/logs';
+import { getModeratorActionLogDto, serviceGetErrorDto, serviceGetErrorsDto } from '@/dto/logs';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import type { TGetErrorsDto } from '@/types/dto.types';
+import { ModeratorActionLogModel } from '@/database/mongodb/Models/ModeratorActionLog';
+
+// types
+import type { TGetErrorsDto, TGetModeratorActionLogDto } from '@/types/dto.types';
 import type { ServerResponse, TLogsErrorParsed } from '@/types/index.interface';
 import type { TLogsErrorModel } from '@/types/models.interface';
+import { TGetAllModeratorActionLogsFromMongo } from '@/types/mongo.types';
 
 /**
  * Класс работы с логами.
  */
-export class Logger {
+export class LogService {
   constructor() {}
 
   public async saveError(error: TLogsErrorParsed) {
@@ -58,6 +62,40 @@ export class Logger {
         data: serviceGetErrorDto(logDB),
         ok: true,
         message: `Логи ошибок.`,
+      };
+    } catch (error) {
+      errorLogger(error);
+      return handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение логов действий модераторов.
+   */
+  public async getAllModeratorActions(): Promise<
+    ServerResponse<TGetModeratorActionLogDto[] | null>
+  > {
+    try {
+      const logsDB = await ModeratorActionLogModel.find()
+        .populate({
+          path: 'moderator',
+          select: [
+            'person.firstName',
+            'person.lastName',
+            'image',
+            'imageFromProvider',
+            'provider.image',
+            'role',
+          ],
+        })
+        .lean<TGetAllModeratorActionLogsFromMongo[]>();
+
+      const logsAfterDto = logsDB.map((log) => getModeratorActionLogDto(log));
+
+      return {
+        data: logsAfterDto,
+        ok: true,
+        message: `Логи всех действий модераторов.`,
       };
     } catch (error) {
       errorLogger(error);

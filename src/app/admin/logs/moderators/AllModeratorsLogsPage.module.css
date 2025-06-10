@@ -1,0 +1,15 @@
+.wrapper {
+  display: grid;
+  gap: 1rem 20px;
+  grid-template-columns: 300px 1fr;
+}
+.content {
+  letter-spacing: 0.08rem;
+}
+
+/* ====================================================================== */
+@media (max-width: 992px) {
+  .wrapper {
+    grid-template-columns: 100%;
+  }
+}

@@ -169,7 +169,7 @@ export const buttonsMenuAdminPage: TMenuOnPage[] = [
     id: 2,
     name: 'Логи модераторов',
     classes: [],
-    href: '/admin/logs/admin',
+    href: '/admin/logs/moderators',
     permission: 'admin', // Для администратора сайта.
     icon: IconLog,
   },

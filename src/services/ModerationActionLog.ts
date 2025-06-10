@@ -1,15 +1,16 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { ModeratorActionLogModel } from '@/database/mongodb/Models/ModeratorActionLog';
-import { getModeratorActionLogDto } from '@/dto/logs';
+import { getByIdModeratorActionLogDto } from '@/dto/logs';
 
 // types.
 import {
   ServerResponse,
   TCreateModeratorActionLogServiceParams,
 } from '@/types/index.interface';
-import { TGetModeratorActionLogServiceFromMongo } from '@/types/mongo.types';
-import { TGetModeratorActionLogDto } from '@/types/dto.types';
+
+import { TGetByIdModeratorActionLogDto } from '@/types/dto.types';
+import { TGetByIdModeratorActionLogFromMongo } from '@/types/mongo.types';
 
 /**
  * Класс работы с логированием действий модераторов.
@@ -26,17 +27,19 @@ export class ModeratorActionLogService {
   /**
    * Получение лога по его _id
    */
-  public async getById(_id: string): Promise<ServerResponse<TGetModeratorActionLogDto | null>> {
+  public async getById(
+    _id: string
+  ): Promise<ServerResponse<TGetByIdModeratorActionLogDto | null>> {
     try {
       const logDB = await ModeratorActionLogModel.findById(_id)
         .populate({ path: 'moderator', select: ['person'] })
-        .lean<TGetModeratorActionLogServiceFromMongo>();
+        .lean<TGetByIdModeratorActionLogFromMongo>();
 
       if (!logDB) {
         throw new Error(`Не найден лог по действиям модератора с _id: ${_id}`);
       }
 
-      const logAfterDto = getModeratorActionLogDto(logDB);
+      const logAfterDto = getByIdModeratorActionLogDto(logDB);
 
       return { data: logAfterDto, ok: true, message: 'Лог действия модератора.' };
     } catch (error) {

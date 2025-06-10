@@ -176,7 +176,7 @@ const paths = [
     permission: ['admin'],
   },
   {
-    path: '/admin/logs/admin',
+    path: '/admin/logs/moderators',
     permission: ['admin'],
   },
   {

@@ -1,0 +1,28 @@
+.group {
+  background-color: var(--white-12);
+  border: 1px solid var(--color-border-minor);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow: hidden;
+}
+.list {
+  margin: 0;
+}
+.list dd {
+  margin-inline-start: 0;
+  margin: 0 0 15px 0;
+}
+.list dt {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.list dt::after {
+  content: ':';
+}
+.list dd pre {
+  margin: 0;
+}
+.right {
+  text-align: right;
+}
