@@ -18,6 +18,12 @@ export function deserializeNewsCreate(formData: FormData) {
             // Если ключ position то возвращается число.
             case 'position':
               return +value;
+
+            case 'client':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
             // Если ключ imageDeleted то возвращается булево значение.
             case 'imageDeleted':
               return value === 'true' ? true : false;

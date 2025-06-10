@@ -283,6 +283,7 @@ export class News {
         action: 'update',
         entity: this.entity,
         entityIds: [response._id.toString()],
+        client: news.client,
       });
 
       return { data: null, ok: true, message: 'Данные новости обновлены!' };

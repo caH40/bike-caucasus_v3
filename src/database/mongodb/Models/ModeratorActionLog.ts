@@ -28,14 +28,17 @@ const ModeratorActionLogSchema = new Schema<TModeratorActionLogDocument>({
   changes: { type: mongoose.Schema.Types.Mixed }, // Объект из запроса на изменение сущности.
   timestamp: { type: Date, default: Date.now }, // Дата и время выполнения действия.
   client: {
-    ip: { type: String }, // IP-адрес клиента.
-    userAgent: { type: String }, // User-Agent браузера или клиента.
+    deviceInfo: {
+      userAgent: { type: String, default: null },
+      language: { type: String, default: null },
+      screenResolution: { type: String, default: null },
+    },
     location: {
-      country: { type: String }, // Страна, определённая по IP.
-      region: { type: String }, // Регион или область, определённая по IP.
-      city: { type: String }, // Город, определённый по IP.
-      lat: { type: Number }, // Географическая широта.
-      lon: { type: Number }, // Географическая долгота.
+      ip: { type: String, default: null },
+      city: { type: String, default: null },
+      region: { type: String, default: null },
+      country: { type: String, default: null },
+      timezone: { type: String, default: null },
     },
   }, // Информация о клиенте, с которого было выполнено действие.
 });

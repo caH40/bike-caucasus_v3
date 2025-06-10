@@ -20,6 +20,7 @@ import type { ServerResponse, TBlockInputInfo } from '@/types/index.interface';
 import type { TNewsGetOneDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
 import BlockUploadFile from '../../BlockUploadFile/BlockUploadFile';
+import { useUserData } from '@/store/userdata';
 
 type Props = {
   postNews?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
@@ -34,6 +35,7 @@ type Props = {
  * @returns
  */
 export default function FormNews({ postNews, putNewsOne, newsForEdit }: Props) {
+  const { location, deviceInfo } = useUserData();
   // Новостные блоки в новости.
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(newsForEdit?.blocks)
@@ -120,6 +122,10 @@ export default function FormNews({ postNews, putNewsOne, newsForEdit }: Props) {
       urlSlug: newsForEdit?.urlSlug,
       posterOldUrl: newsForEdit?.posterOldUrl,
       filePdf,
+      client: {
+        location,
+        deviceInfo,
+      },
     });
 
     let response = {

@@ -12,7 +12,6 @@ type Props = {
  */
 export default async function NewsEditCurrentPage(props: Props) {
   const params = await props.params;
-  // revalidatePath(`/`); // ????????!!!!!!!!! Зачем???
 
   // !!!! Изменить логику удаления старого постера.
   const { urlSlug } = params;

@@ -378,6 +378,10 @@ export type TNewsCreateFromClient = {
   important: boolean; // important Важная новость?
   posterOldUrl?: string | null; // posterOldUrl старого постера, необходим для удаления файла из облака, если был изменен при редактировании новости.
   filePdf?: File | null; // Протокол или другой файл в формате pdf.
+  client?: {
+    deviceInfo?: TDeviceInfo;
+    location?: TLocationInfo;
+  };
 };
 
 /**
@@ -1400,3 +1404,23 @@ export type TServiceEntity =
   | 'comment'
   | 'racePointsTable'
   | 'generalClassification';
+
+/**
+ * Данные девайса пользователя.
+ */
+export type TDeviceInfo = {
+  userAgent: string | null;
+  language: string | null;
+  screenResolution: string | null;
+};
+
+/**
+ * Данные девайса пользователя.
+ */
+export type TLocationInfo = {
+  ip: string | null; // IP-адрес пользователя.
+  city: string | null; // Город.
+  region: string | null; // Регион.
+  country: string | null; // Страна.
+  timezone: string | null; // Часовой пояс.
+};

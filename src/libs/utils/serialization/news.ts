@@ -14,6 +14,7 @@ export function serializationNewsCreate({
   urlSlug,
   posterOldUrl,
   filePdf,
+  client,
 }: TNewsCreateFromClient): FormData {
   const formData = new FormData();
   formData.set('title', title);
@@ -31,6 +32,9 @@ export function serializationNewsCreate({
   }
   if (filePdf) {
     formData.set('filePdf', filePdf);
+  }
+  if (client) {
+    formData.set('client', JSON.stringify(client));
   }
 
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.

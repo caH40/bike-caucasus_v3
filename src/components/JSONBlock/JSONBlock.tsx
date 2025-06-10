@@ -7,7 +7,7 @@ function JSONBlock({ json }: { json: Record<string, any> }) {
       <pre
         className={styles.scrollable}
         dangerouslySetInnerHTML={{
-          __html: syntaxHighlight(JSON.stringify(json, undefined, 4), styles),
+          __html: syntaxHighlight(JSON.stringify(json, undefined, 3), styles),
         }}
       />
     </div>

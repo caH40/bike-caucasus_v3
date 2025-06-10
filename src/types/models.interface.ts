@@ -3,7 +3,9 @@ import {
   TAwardedProtocols,
   TCategoryAge,
   TCategorySkillLevel,
+  TDeviceInfo,
   TFormCalendar,
+  TLocationInfo,
   TServiceEntity,
 } from './index.interface';
 
@@ -570,14 +572,7 @@ export type TModeratorActionLog = {
   changes?: Record<string, any> & { description?: string }; // Объект с изменениями: новые или изменённые значения.
   timestamp: Date; // Дата и время выполнения действия.
   client?: {
-    ip?: string; // IP-адрес клиента.
-    userAgent?: string; // User-Agent браузера или клиента.
-    location?: {
-      country?: string; // Страна, определённая по IP.
-      region?: string; // Регион или область, определённая по IP.
-      city?: string; // Город, определённый по IP.
-      lat?: number; // Географическая широта.
-      lon?: number; // Географическая долгота.
-    };
+    deviceInfo?: TDeviceInfo;
+    location?: TLocationInfo;
   }; // Информация о клиенте, с которого было выполнено действие.
 };
