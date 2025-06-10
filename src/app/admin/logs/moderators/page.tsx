@@ -5,6 +5,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconLog from '@/components/Icons/IconLog';
 
 import styles from './AllModeratorsLogsPage.module.css';
+import AllModeratorActionLogsContainer from '@/components/Table/Containers/AllModeratorActionLogs/AllModeratorActionLogsContainer';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export const dynamic = 'force-dynamic';
  */
 export default async function AllModeratorsLogsPage(): Promise<JSX.Element> {
   const logsData = await geAllModeratoActionLogsError();
-  console.log(logsData);
+  console.log(logsData?.data?.[0]);
 
   return (
     <div className={styles.wrapper}>
@@ -24,7 +25,7 @@ export default async function AllModeratorsLogsPage(): Promise<JSX.Element> {
       <div className={styles.main}>
         <TitleAndLine Icon={IconLog} title="Логирование ошибок" hSize={1} />
 
-        {/* <ContainerTableLogsError logs={logsData.data} /> */}
+        <AllModeratorActionLogsContainer logs={logsData.data} />
       </div>
     </div>
   );

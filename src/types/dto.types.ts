@@ -402,7 +402,10 @@ export type TGetModeratorActionLogDto = Omit<
     image: IUserModel['image'];
     imageFromProvider: IUserModel['imageFromProvider'];
     person: Pick<IUserModel['person'], 'lastName' | 'firstName'>;
-    role: IUserModel['role'];
+    role: { name: string };
+    provider: {
+      image?: string;
+    };
   };
   timestamp: string;
 };

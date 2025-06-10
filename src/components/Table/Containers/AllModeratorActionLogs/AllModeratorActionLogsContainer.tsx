@@ -2,15 +2,16 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { TGetErrorsDto } from '@/types/dto.types';
 import { lcRecordsOnPage } from '@/constants/local-storage';
-
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
-import styles from './ContainerTableLogsError.module.css';
-import TableLogsErrors from '../../TableLogsErrors/TableLogsErrors';
+import TableAllModeratorActionLogs from '../../TableAllModeratorActionLogs/TableAllModeratorActionLogs';
+import styles from './AllModeratorActionLogsContainer.module.css';
+
+// types
+import { TGetModeratorActionLogDto } from '@/types/dto.types';
 
 type Props = {
-  logs: TGetErrorsDto[] | null;
+  logs: TGetModeratorActionLogDto[] | null;
 };
 
 /**
@@ -38,17 +39,12 @@ export default function AllModeratorActionLogsContainer({ logs }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
+  // Создание поиска необходимых логов по search.
   useMemo(() => {
     if (!logs) {
       return;
     }
-    setLogsFiltered(
-      logs.filter(
-        (elm) =>
-          elm.message.toLowerCase().includes(search.toLowerCase()) ||
-          elm.stack?.toLowerCase().includes(search.toLowerCase())
-      )
-    );
+    setLogsFiltered(logs);
   }, [search, logs]);
 
   return (
@@ -64,7 +60,7 @@ export default function AllModeratorActionLogsContainer({ logs }: Props) {
       </div>
 
       {/* Таблица */}
-      <TableLogsErrors logs={logsFiltered} docsOnPage={docsOnPage} />
+      <TableAllModeratorActionLogs logs={logsFiltered} docsOnPage={docsOnPage} />
     </>
   );
 }

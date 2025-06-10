@@ -1,7 +1,7 @@
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogError } from '@/actions/logs';
 import ShowServerError from '@/components/UI/ShowServerError/ShowServerError';
-import styles from './LogErrorDescription.module.css';
+import styles from './ModeratorLogPage.module.css';
 
 type Props = {
   params: Promise<{
@@ -11,9 +11,9 @@ type Props = {
 export const dynamic = 'force-dynamic';
 
 /**
- * Страница подобной информации об запрашиваемой ошибке на сервере
+ * Страница подобной информации о действии модератора.
  */
-export default async function LogErrorDescription(props: Props) {
+export default async function ModeratorLogPage(props: Props) {
   const params = await props.params;
   const { data: log, ok, message } = await getLogError({ id: params.id });
 

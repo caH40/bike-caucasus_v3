@@ -87,6 +87,7 @@ export class LogService {
             'provider.image',
             'role',
           ],
+          populate: { path: 'role', select: ['-_id', 'name'] },
         })
         .lean<TGetAllModeratorActionLogsFromMongo[]>();
 

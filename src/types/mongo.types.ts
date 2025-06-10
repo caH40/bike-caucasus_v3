@@ -129,6 +129,9 @@ export type TGetAllModeratorActionLogsFromMongo = Omit<TModeratorActionLog, 'mod
     image: IUserModel['image'];
     imageFromProvider: IUserModel['imageFromProvider'];
     person: Pick<IUserModel['person'], 'lastName' | 'firstName'>;
-    role: IUserModel['role'];
+    provider: {
+      image?: string;
+    };
+    role: { name: string };
   };
 };

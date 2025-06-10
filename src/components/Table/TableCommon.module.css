@@ -10,6 +10,9 @@
   width: 100%;
   max-width: 100%;
 }
+.danger {
+  color: var(--danger);
+}
 .caption,
 .footer {
   text-align: left;
