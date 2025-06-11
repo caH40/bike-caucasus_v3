@@ -1397,6 +1397,8 @@ export type TCreateModeratorActionLogServiceParams = Omit<
  */
 export type TServiceEntity =
   | 'championship'
+  | 'championshipCategories'
+  | 'championshipRaces'
   | 'trail'
   | 'news'
   | 'calendar'

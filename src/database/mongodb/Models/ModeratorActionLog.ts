@@ -8,6 +8,8 @@ const ModeratorActionLogSchema = new Schema<TModeratorActionLogDocument>({
     type: String,
     enum: [
       'championship',
+      'championshipCategories',
+      'championshipRaces',
       'trail',
       'news',
       'calendar',

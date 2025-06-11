@@ -8,10 +8,16 @@ import { CategoriesModel } from '@/database/mongodb/Models/Categories';
 import { deserializeCategories } from '@/libs/utils/deserialization/categories';
 
 // types
-import type { ServerResponse, TDeserializedCategories, TGender } from '@/types/index.interface';
+import type {
+  ServerResponse,
+  TDeserializedCategories,
+  TGender,
+  TServiceEntity,
+} from '@/types/index.interface';
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TCategories } from '@/types/models.interface';
 import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Класс работы с сущностью Категории чемпионата.
@@ -19,10 +25,12 @@ import { RaceRegistrationModel } from '@/database/mongodb/Models/Registration';
 export class ChampionshipCategories {
   private errorLogger;
   private handlerErrorDB;
+  private entity: TServiceEntity;
 
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
+    this.entity = 'championshipCategories';
   }
 
   /**
@@ -34,13 +42,15 @@ export class ChampionshipCategories {
   async updateAll({
     dataSerialized,
     championshipId,
+    moderator,
   }: {
     dataSerialized: FormData;
     championshipId: string;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
       // Десериализованные данные с клиента.
-      const categoriesConfigs = deserializeCategories(dataSerialized);
+      const { categoriesConfigs, client } = deserializeCategories(dataSerialized);
 
       // Проверка на дубликаты названий пакетов категорий.
       this.validateUniqueCategoryNames(categoriesConfigs);
@@ -78,10 +88,16 @@ export class ChampionshipCategories {
       }
 
       // Обновление categoriesConfigs в Чемпионате.
-      await ChampionshipModel.findOneAndUpdate(
+      const championship = await ChampionshipModel.findOneAndUpdate(
         { _id: championshipId },
         { $set: { categoriesConfigs: [...updatedIds] } }
       );
+
+      if (!championship) {
+        throw new Error(
+          `Не найден чемпионат в котором обновляются категории с _id: ${championshipId}`
+        );
+      }
 
       // Удаляем те пакеты, _id которых не было среди обновлённых.
       const toDelete = oldCategories
@@ -102,6 +118,26 @@ export class ChampionshipCategories {
           _id: { $in: toDelete },
         });
       }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Обновление всех конфигураций категорий чемпионата "${championship.name}"`,
+          params: {
+            dataSerialized: {
+              description: 'Данные в FormData',
+              fromFormData: categoriesConfigs,
+            },
+            championshipId,
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [...updatedIds],
+        client,
+      });
 
       return { data: null, ok: true, message: 'Пакеты категорий успешно обновлены.' };
     } catch (error) {

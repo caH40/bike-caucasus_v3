@@ -345,6 +345,7 @@ export async function putCategories({
     const response = await categoriesService.updateAll({
       dataSerialized,
       championshipId: data._id,
+      moderator: creator,
     });
 
     return response;

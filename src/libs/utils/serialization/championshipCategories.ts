@@ -3,16 +3,20 @@ import {
   formatSkillLevelCategories,
 } from '@/components/UI/Forms/FormChampionship/categories-format';
 import { content } from '@/libs/utils/text';
-import type { TCategoriesConfigsForm } from '@/types/index.interface';
+import type { TCategoriesConfigsForm, TClientMeta } from '@/types/index.interface';
 
 /**
  * Функция для сериализации данных по категориям Чемпионата для передачи на сервер.
  * @param dataForm - Данные формы, которые нужно сериализовать.
  * @returns Сериализованные данные в формате FormData.
  */
-export function serializationChampionshipCategories(
-  dataForm: TCategoriesConfigsForm[]
-): FormData {
+export function serializationChampionshipCategories({
+  dataForm,
+  client,
+}: {
+  dataForm: TCategoriesConfigsForm[];
+  client?: TClientMeta;
+}): FormData {
   const formData = new FormData();
 
   const formattedCategories = dataForm.map((categories) => {
@@ -36,6 +40,10 @@ export function serializationChampionshipCategories(
   });
 
   formData.append('categoriesConfigs', JSON.stringify(formattedCategories));
+
+  if (client) {
+    formData.set('client', JSON.stringify(client));
+  }
 
   return formData;
 }

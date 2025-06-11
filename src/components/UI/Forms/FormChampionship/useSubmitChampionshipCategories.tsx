@@ -9,6 +9,7 @@ import {
   TCategoriesConfigsForm,
   TUseSubmitChampionshipCategoriesParams,
 } from '@/types/index.interface';
+import { useUserData } from '@/store/userdata';
 
 /**
  * Отправка формы категории при редактировании Чемпионата.
@@ -22,6 +23,10 @@ export const useSubmitChampionshipCategories = ({
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
+  // Мета данные по client.
+  const location = useUserData((s) => s.location);
+  const deviceInfo = useUserData((s) => s.deviceInfo);
+
   const onSubmit = async (formData: { categories: TCategoriesConfigsForm[] }) => {
     // console.log(formData.categories);
 
@@ -29,7 +34,13 @@ export const useSubmitChampionshipCategories = ({
     setLoading(true);
 
     // Сериализация данных в FormData перед отправкой на сервер.
-    const dataSerialized = serializationChampionshipCategories(formData.categories);
+    const dataSerialized = serializationChampionshipCategories({
+      dataForm: formData.categories,
+      client: {
+        location,
+        deviceInfo,
+      },
+    });
 
     // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
 
