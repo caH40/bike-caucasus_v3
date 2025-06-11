@@ -1,9 +1,10 @@
 // types
-import type { TRaceForFormNew } from '@/types/index.interface';
+import type { TClientMeta, TRaceForFormNew } from '@/types/index.interface';
 
 type Params = {
   dataForm: { races: TRaceForFormNew[] };
   urlTracksForDel: string[]; // Массив url треков для удаления в облаке.
+  client: TClientMeta;
 };
 
 /**
@@ -15,6 +16,7 @@ type Params = {
 export function serializationChampionshipRaces({
   dataForm,
   urlTracksForDel,
+  client,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -54,6 +56,10 @@ export function serializationChampionshipRaces({
         formData.set(`races[${index}][trackGPXUrl]`, race.trackGPXUrl);
       }
     });
+  }
+
+  if (client) {
+    formData.set('client', JSON.stringify(client));
   }
 
   return formData;

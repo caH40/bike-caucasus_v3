@@ -42,6 +42,11 @@ export function deserializeRaces(serializedFormData: FormData): TDeserializedRac
                 return JSON.parse(value);
               }
 
+            case 'client':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
             default:
               return value;
           }

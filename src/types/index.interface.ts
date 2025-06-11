@@ -1185,6 +1185,7 @@ export type TDeserializedCategories = Omit<TCategories, '_id'> & { _id?: string 
  */
 export type TDeserializedRacesData = { races: TRaceForFormNew[] } & {
   urlTracksForDel: string[];
+  client: TClientMeta;
 } & {
   [key: string]: any;
 };

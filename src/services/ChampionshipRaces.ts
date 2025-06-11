@@ -13,8 +13,9 @@ import { deserializeRaces } from '@/libs/utils/deserialization/championshipRaces
 import { RaceModel } from '@/database/mongodb/Models/Race';
 
 // types
-import type { ServerResponse, TSaveFile } from '@/types/index.interface';
+import type { ServerResponse, TSaveFile, TServiceEntity } from '@/types/index.interface';
 import type { TTrackGPXObj } from '@/types/models.interface';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Класс работы с сущностью Заезды чемпионата.
@@ -22,6 +23,7 @@ import type { TTrackGPXObj } from '@/types/models.interface';
 export class ChampionshipRaces {
   private errorLogger;
   private handlerErrorDB;
+  private entity: TServiceEntity;
 
   private saveFile: (params: TSaveFile) => Promise<string>;
   private suffixTrackGpx: string;
@@ -29,6 +31,7 @@ export class ChampionshipRaces {
   constructor() {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
+    this.entity = 'championshipRaces';
 
     this.saveFile = saveFile;
     this.suffixTrackGpx = 'championship_track_gpx-';
@@ -40,12 +43,14 @@ export class ChampionshipRaces {
   public async updateAll({
     dataSerialized,
     championshipId,
+    moderator,
   }: {
     dataSerialized: FormData;
     championshipId: string;
+    moderator: string;
   }): Promise<ServerResponse<null>> {
     try {
-      const { races } = deserializeRaces(dataSerialized);
+      const { races, client } = deserializeRaces(dataSerialized);
 
       const oldRaces = await this.getOldRaces(championshipId);
       const urlTracksForDel: string[] = [];
@@ -69,6 +74,29 @@ export class ChampionshipRaces {
       if (urlTracksForDel.length > 0) {
         this.deleteOldTracks(urlTracksForDel);
       }
+
+      // Получение название чемпионата для логирования действий модератора.
+      const champDB = await ChampionshipModel.findById(championshipId, {
+        _id: false,
+        name: true,
+      }).lean();
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderator,
+        changes: {
+          description: `Изменение данных всех заездов в чемпионате: "${champDB?.name}"`,
+          params: {
+            dataSerialized,
+            championshipId,
+            moderator,
+          },
+        },
+        action: 'update',
+        entity: this.entity,
+        entityIds: [...updatedIds],
+        client,
+      });
 
       return { data: null, ok: true, message: 'Заезды успешно обновлены.' };
     } catch (error) {

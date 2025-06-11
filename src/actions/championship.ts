@@ -401,6 +401,7 @@ export async function putRaces({
     const response = await racesService.updateAll({
       dataSerialized,
       championshipId: data._id,
+      moderator: creator,
     });
 
     return response;
