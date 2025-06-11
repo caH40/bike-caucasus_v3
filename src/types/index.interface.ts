@@ -1424,3 +1424,7 @@ export type TLocationInfo = {
   country: string | null; // Страна.
   timezone: string | null; // Часовой пояс.
 };
+export type TClientMeta = {
+  deviceInfo: TDeviceInfo;
+  location: TLocationInfo;
+}; // Метаданные о клиенте.

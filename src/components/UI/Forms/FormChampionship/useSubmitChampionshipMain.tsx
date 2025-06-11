@@ -11,6 +11,7 @@ import t from '@/locales/ru/moderation/championship.json';
 import { TFormChampionshipCreate, TUseSubmitChampionshipParams } from '@/types/index.interface';
 
 import { useRouter } from 'next/navigation';
+import { useUserData } from '@/store/userdata';
 
 /**
  * Отправка формы создания/редактирования Чемпионата.
@@ -24,6 +25,10 @@ export const useSubmitChampionshipMain = ({
   reset,
   setIsFormDirty,
 }: TUseSubmitChampionshipParams): SubmitHandler<TFormChampionshipCreate> => {
+  // Мета данные по client.
+  const location = useUserData((s) => s.location);
+  const deviceInfo = useUserData((s) => s.deviceInfo);
+
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
   const isEditing = !!championshipForEdit;
@@ -45,6 +50,10 @@ export const useSubmitChampionshipMain = ({
       organizerId,
       isEditing,
       urlTracksForDel: urlTracksForDel.current,
+      client: {
+        location,
+        deviceInfo,
+      },
     });
 
     // Отправка данных на сервер и получение ответа после завершения операции.

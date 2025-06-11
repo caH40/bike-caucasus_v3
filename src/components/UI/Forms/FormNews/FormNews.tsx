@@ -35,7 +35,9 @@ type Props = {
  * @returns
  */
 export default function FormNews({ postNews, putNewsOne, newsForEdit }: Props) {
+  // Мета данные по client.
   const { location, deviceInfo } = useUserData();
+
   // Новостные блоки в новости.
   const [blocks, setBlocks] = useState<TBlockInputInfo[]>(() =>
     getInitialBlocks(newsForEdit?.blocks)

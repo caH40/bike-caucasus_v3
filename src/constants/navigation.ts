@@ -11,7 +11,7 @@ import IconUser from '@/components/Icons/IconUser';
 import IconWrench from '@/components/Icons/IconWrench';
 import { deleteItem } from '@/components/UI/BlockModeration/delete';
 import { upsertItem } from '@/components/UI/BlockModeration/upsert';
-import type { TMenuOnPage, TMenuPopup } from '@/types/index.interface';
+import type { TClientMeta, TMenuOnPage, TMenuPopup } from '@/types/index.interface';
 
 /**
  * Главное меню навигации сайта в мобильной версии.
@@ -118,29 +118,43 @@ export const legalLinks = [
 /**
  * Меню навигации для управления новостью в меню Popup.
  */
-export const getNavLinksNewsPopup = (urlSlug: string): TMenuOnPage[] => [
-  {
-    id: 0,
-    name: 'Редактирование',
-    href: `/moderation/news/edit/${urlSlug}`,
-    permission: 'moderation.news.edit',
-    icon: IconEditOld,
-    classes: [],
-  },
-  {
-    id: 1,
-    name: 'Удаление',
-    onClick: () => deleteItem({ type: 'news', urlSlug }),
-    permission: 'moderation.news.delete',
-    icon: IconDelete,
-    classes: [],
-  },
-];
+export const getNavLinksNewsPopup = ({
+  urlSlug,
+  client,
+}: {
+  urlSlug: string;
+  client: TClientMeta;
+}): TMenuOnPage[] => {
+  return [
+    {
+      id: 0,
+      name: 'Редактирование',
+      href: `/moderation/news/edit/${urlSlug}`,
+      permission: 'moderation.news.edit',
+      icon: IconEditOld,
+      classes: [],
+    },
+    {
+      id: 1,
+      name: 'Удаление',
+      onClick: () => deleteItem({ type: 'news', urlSlug, client }),
+      permission: 'moderation.news.delete',
+      icon: IconDelete,
+      classes: [],
+    },
+  ];
+};
 
 /**
  * Меню навигации для управления Маршрутом в меню Popup.
  */
-export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
+export const getNavLinksTrailPopup = ({
+  urlSlug,
+  client,
+}: {
+  urlSlug: string;
+  client: TClientMeta;
+}): TMenuOnPage[] => [
   {
     id: 0,
     name: 'Редактирование',
@@ -152,7 +166,7 @@ export const getNavLinksTrailPopup = (urlSlug: string): TMenuOnPage[] => [
   {
     id: 1,
     name: 'Удаление',
-    onClick: () => deleteItem({ type: 'trails', urlSlug }),
+    onClick: () => deleteItem({ type: 'trails', urlSlug, client }),
     permission: 'moderation.trails.delete',
     icon: IconDelete,
     classes: [],
@@ -166,6 +180,7 @@ export const getNavLinksChampionshipPopup = (
   urlSlug: string,
   raceId: string,
   championshipId: string,
+  client: TClientMeta,
   hiddenItemNames: string[] = []
 ): TMenuOnPage[] =>
   [
@@ -188,7 +203,7 @@ export const getNavLinksChampionshipPopup = (
     {
       id: 2,
       name: 'Удаление',
-      onClick: () => deleteItem({ type: 'championship', urlSlug }),
+      onClick: () => deleteItem({ type: 'championship', urlSlug, client }),
       permission: 'moderation.championship.delete',
       icon: IconDelete,
       classes: [],

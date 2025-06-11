@@ -3,18 +3,19 @@ import { toast } from 'sonner';
 import { deleteNews } from '@/actions/news';
 import { deleteTrail } from '@/actions/trail';
 import { translationForModeration } from '@/constants/texts';
-import { ServerResponse } from '@/types/index.interface';
+import { ServerResponse, TClientMeta } from '@/types/index.interface';
 import { deleteChampionship } from '@/actions/championship';
 
 type Params = {
   type: string;
   urlSlug: string;
+  client: TClientMeta;
 };
 
 /**
  * Обработка клика на удаление новости/маршрута.
  */
-export const deleteItem = async ({ type, urlSlug }: Params) => {
+export const deleteItem = async ({ type, urlSlug, client }: Params) => {
   const confirmed = window.confirm(
     `Вы действительно хотите удалить ${translationForModeration[type]?.m} c urlSlug:${urlSlug}?`
   );
@@ -29,10 +30,10 @@ export const deleteItem = async ({ type, urlSlug }: Params) => {
         res = await deleteTrail(urlSlug);
         break;
       case 'news':
-        res = await deleteNews(urlSlug);
+        res = await deleteNews({ urlSlug, client });
         break;
       case 'championship':
-        res = await deleteChampionship(urlSlug);
+        res = await deleteChampionship({ urlSlug, client });
         break;
 
       default:

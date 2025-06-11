@@ -22,6 +22,7 @@ import { ModeratorActionLogService } from './ModerationActionLog';
 import type { TNews } from '@/types/models.interface';
 import type {
   ServerResponse,
+  TClientMeta,
   TNewsCreateFromClient,
   TSaveFile,
   TServiceEntity,
@@ -127,6 +128,7 @@ export class News {
         action: 'create',
         entity: this.entity,
         entityIds: [response._id],
+        client: news.client,
       });
 
       return { data: null, ok: true, message: 'Новость сохранена в БД!' };
@@ -574,7 +576,15 @@ export class News {
    * Удаление новости.
    * Проверка разрешений производится при запросе в серверном экшене.
    */
-  public async delete({ urlSlug, moderator }: { urlSlug: string; moderator: string }) {
+  public async delete({
+    urlSlug,
+    moderator,
+    client,
+  }: {
+    urlSlug: string;
+    moderator: string;
+    client: TClientMeta;
+  }) {
     try {
       const newsOneDB: TDeleteNewsServiceFromMongo | null = await NewsModel.findOne(
         { urlSlug },
@@ -636,6 +646,7 @@ export class News {
         action: 'delete',
         entity: this.entity,
         entityIds: [newsOneDB._id.toString()],
+        client,
       });
 
       return {

@@ -1,5 +1,5 @@
 import { formateAndStripContent } from '@/components/UI/Forms/FormChampionship/utils';
-import type { TFormChampionshipCreate } from '@/types/index.interface';
+import type { TClientMeta, TFormChampionshipCreate } from '@/types/index.interface';
 
 type Params = {
   dataForm: TFormChampionshipCreate;
@@ -8,6 +8,7 @@ type Params = {
   organizerId: string; // _id Организатора.
   isEditing: boolean; //
   urlTracksForDel: string[]; // Массив url треков для удаления в облаке.
+  client: TClientMeta;
 };
 
 /**
@@ -22,6 +23,7 @@ export function serializationChampionshipMain({
   parentChampionshipId,
   isEditing,
   urlTracksForDel,
+  client,
 }: Params): FormData {
   const formData = new FormData();
 
@@ -35,6 +37,10 @@ export function serializationChampionshipMain({
   formData.set('description', descriptionFormatted);
   formData.set('startDate', dataForm.startDate);
   formData.set('endDate', dataForm.endDate);
+
+  if (client) {
+    formData.set('client', JSON.stringify(client));
+  }
 
   if (dataForm.racePointsTable) {
     formData.set('racePointsTable', dataForm.racePointsTable);

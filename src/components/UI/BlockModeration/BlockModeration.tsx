@@ -9,6 +9,7 @@ import IconDelete from '@/components/Icons/IconDelete';
 import { translationForModeration } from '@/constants/texts';
 import { deleteItem } from './delete';
 import styles from './BlockModeration.module.css';
+import { useUserData } from '@/store/userdata';
 
 /**
  * Блок Модерации маршрутом.
@@ -24,6 +25,10 @@ export default function BlockModeration({
   type: string;
 }): JSX.Element {
   const router = useRouter();
+
+  // Мета данные по client.
+  const location = useUserData((s) => s.location);
+  const deviceInfo = useUserData((s) => s.deviceInfo);
 
   const urlSlug = propsTable.row.original.urlSlug;
 
@@ -47,7 +52,7 @@ export default function BlockModeration({
       id: 1,
       icon: IconDelete,
       tooltip: 'Удаление',
-      getClick: () => deleteItem({ type, urlSlug }),
+      getClick: () => deleteItem({ type, urlSlug, client: { location, deviceInfo } }),
     },
   ];
 

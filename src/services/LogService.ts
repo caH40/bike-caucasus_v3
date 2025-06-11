@@ -91,6 +91,9 @@ export class LogService {
         })
         .lean<TGetAllModeratorActionLogsFromMongo[]>();
 
+      // Сортировка по убыванию даты создания лога (сначала свежие).
+      logsDB.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
       const logsAfterDto = logsDB.map((log) => getModeratorActionLogDto(log));
 
       return {

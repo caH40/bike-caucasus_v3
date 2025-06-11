@@ -4,10 +4,11 @@ import cn from 'classnames/bind';
 import { Tooltip } from 'react-tooltip';
 
 import MenuControl from './MenuControl';
-import styles from './MenuControl.module.css';
 import PermissionCheck from '@/hoc/permission-check';
-
 import { getNavLinksChampionshipPopup } from '@/constants/navigation';
+import { useLocationInfo } from '@/hooks/useLocationInfo';
+import { useDeviceInfo } from '@/hooks/useDeviceInfo';
+import styles from './MenuControl.module.css';
 
 const cx = cn.bind(styles);
 
@@ -30,6 +31,10 @@ export default function ChampionshipMenuPopup({
   hiddenItemNames,
   championshipId,
 }: Props) {
+  // Мета данные по client.
+  const location = useLocationInfo();
+  const deviceInfo = useDeviceInfo();
+
   return (
     <PermissionCheck permission={permission}>
       <div className={styles.inner}>
@@ -38,6 +43,7 @@ export default function ChampionshipMenuPopup({
             urlSlug,
             raceId,
             championshipId,
+            { location, deviceInfo },
             hiddenItemNames
           )}
         />

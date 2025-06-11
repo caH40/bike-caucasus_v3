@@ -1,4 +1,4 @@
-import { TFormChampionshipCreate } from '@/types/index.interface';
+import { TClientMeta, TFormChampionshipCreate } from '@/types/index.interface';
 
 /**
  * Функция для десериализации данных при создании Чемпионата.
@@ -10,6 +10,7 @@ export function deserializeChampionship(serializedFormData: FormData) {
     organizerId?: string;
     parentChampionshipId?: string;
     urlTracksForDel: string[];
+    client: TClientMeta;
   } & {
     [key: string]: any;
   };
@@ -76,6 +77,11 @@ export function deserializeChampionship(serializedFormData: FormData) {
 
             // Если ключ categoriesAgeMale парсить.
             case 'categoriesAgeMale':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
+            case 'client':
               if (typeof value === 'string') {
                 return JSON.parse(value);
               }

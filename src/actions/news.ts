@@ -7,7 +7,7 @@ import { News } from '@/services/news';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
-import type { ServerResponse } from '@/types/index.interface';
+import type { ServerResponse, TClientMeta } from '@/types/index.interface';
 import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { PermissionsService } from '@/services/Permissions';
 import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
@@ -188,7 +188,13 @@ export async function getInteractive(
 /**
  * Серверный экшен, удаления новости.
  */
-export async function deleteNews(urlSlug: string): Promise<ServerResponse<null>> {
+export async function deleteNews({
+  urlSlug,
+  client,
+}: {
+  urlSlug: string;
+  client: TClientMeta;
+}): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -213,7 +219,7 @@ export async function deleteNews(urlSlug: string): Promise<ServerResponse<null>>
       throw new Error(res.message);
     }
 
-    const response = await newsService.delete({ urlSlug, moderator: idUserDB });
+    const response = await newsService.delete({ urlSlug, moderator: idUserDB, client });
 
     // Ревалидация данных после удаления новости.
     revalidatePath('/');

@@ -17,6 +17,7 @@ import { ChampionshipService } from '@/services/Championship';
 import type { TDtoChampionship, TToursAndSeriesDto } from '@/types/dto.types';
 import type {
   ServerResponse,
+  TClientMeta,
   TPutCategoriesParams,
   TPutRacesParams,
 } from '@/types/index.interface';
@@ -150,7 +151,13 @@ export async function fetchChampionshipCreated(
 /**
  * Серверный экшен, удаления Чемпионата.
  */
-export async function deleteChampionship(urlSlug: string): Promise<ServerResponse<null>> {
+export async function deleteChampionship({
+  urlSlug,
+  client,
+}: {
+  urlSlug: string;
+  client: TClientMeta;
+}): Promise<ServerResponse<null>> {
   'use server';
   try {
     const session = await getServerSession(authOptions);
@@ -193,7 +200,7 @@ export async function deleteChampionship(urlSlug: string): Promise<ServerRespons
     }
 
     // Удаление чемпионата.
-    const response = await championshipService.delete({ urlSlug, moderator: userIdDB });
+    const response = await championshipService.delete({ urlSlug, moderator: userIdDB, client });
 
     revalidatePath('/championship');
     revalidatePath('/moderation/championship');

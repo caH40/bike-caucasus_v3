@@ -30,6 +30,7 @@ import type {
   TAddCategoryConfigsIdsParams,
   TChampionshipForSave,
   TChampionshipWithOrganizer,
+  TClientMeta,
   TGetChampUrlSlugParams,
   TGetParentChampionship,
   TSaveFile,
@@ -247,6 +248,7 @@ export class ChampionshipService {
         awardedProtocols,
         isCountedStageInGC,
         requiredStage,
+        client,
       } = deserializeChampionship(serializedFormData);
 
       // Проверка на дубликат названия Чемпионата.
@@ -316,6 +318,7 @@ export class ChampionshipService {
         action: 'create',
         entity: this.entity,
         entityIds: [championshipCreated._id.toString()],
+        client,
       });
 
       return { data: null, ok: true, message: 'Чемпионат создан, данные сохранены в БД!' };
@@ -351,6 +354,7 @@ export class ChampionshipService {
         isCountedStageInGC,
         requiredStage,
         racePointsTable,
+        client,
       } = deserializeChampionship(serializedFormData);
 
       const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
@@ -415,6 +419,7 @@ export class ChampionshipService {
         action: 'update',
         entity: this.entity,
         entityIds: [championshipDB._id.toString()],
+        client,
       });
 
       return { data: null, ok: true, message: 'Данные Чемпионата обновлены в БД!' };
@@ -430,9 +435,11 @@ export class ChampionshipService {
   public async delete({
     urlSlug,
     moderator,
+    client,
   }: {
     urlSlug: string;
     moderator: string;
+    client: TClientMeta;
   }): Promise<ServerResponse<null>> {
     try {
       const championshipDB: TDeleteChampionshipFromMongo | null =
@@ -513,6 +520,7 @@ export class ChampionshipService {
         action: 'delete',
         entity: this.entity,
         entityIds: [championshipDB._id.toString()],
+        client,
       });
 
       return {
