@@ -25,6 +25,7 @@ import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
 import type { ServerResponse, TBlockInputInfo } from '@/types/index.interface';
 import type { TTrailDto } from '@/types/dto.types';
 import styles from '../Form.module.css';
+import { useUserData } from '@/store/userdata';
 
 type Props = {
   postTrail?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
@@ -40,6 +41,10 @@ type Props = {
  * @returns
  */
 export default function FormTrail({ postTrail, putTrail, trailForEdit }: Props) {
+  // Мета данные по client.
+  const location = useUserData((s) => s.location);
+  const deviceInfo = useUserData((s) => s.deviceInfo);
+
   const [title, setTitle] = useState<string>(trailForEdit ? trailForEdit.title : '');
   const [region, setRegion] = useState<string>(trailForEdit ? trailForEdit.region : '');
   const [difficultyLevel, setDifficultyLevel] = useState<string>(
@@ -200,6 +205,7 @@ export default function FormTrail({ postTrail, putTrail, trailForEdit }: Props) 
       isEditing: !!trailForEdit,
       urlSlug: trailForEdit?.urlSlug,
       posterOldUrl: trailForEdit?.posterOldUrl,
+      client: { location, deviceInfo },
     });
 
     const messageErr = 'Не передана ни функция обновления, ни создания маршрута!';

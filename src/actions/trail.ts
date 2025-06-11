@@ -1,20 +1,22 @@
 'use server';
 
 import { getServerSession } from 'next-auth';
+import { revalidatePath } from 'next/cache';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { Trail } from '@/services/Trail';
 import { handlerErrorDB } from '@/services/mongodb/error';
-import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
-import type { ServerResponse } from '@/types/index.interface';
 import { errorLogger } from '@/errors/error';
-import { revalidatePath } from 'next/cache';
 import { TWeatherForecast } from '@/types/weather.types';
 import { getGPSData } from './gpx';
 import { WeatherService } from '@/services/Weather';
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
 import { PermissionsService } from '@/services/Permissions';
+
+// types
+import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
+import type { ServerResponse, TClientMeta } from '@/types/index.interface';
 
 type TGetTrails = {
   bikeType: string | null;
@@ -63,7 +65,13 @@ export async function getTrail(urlSlug: string): Promise<TTrailDto | null | unde
 /**
  * Получение данных маршрута с БД.
  */
-export async function deleteTrail(urlSlug: string): Promise<ServerResponse<null>> {
+export async function deleteTrail({
+  urlSlug,
+  client,
+}: {
+  urlSlug: string;
+  client: TClientMeta;
+}): Promise<ServerResponse<null>> {
   try {
     // Получаем текущую сессию пользователя с использованием next-auth.
     const session = await getServerSession(authOptions);
@@ -95,7 +103,7 @@ export async function deleteTrail(urlSlug: string): Promise<ServerResponse<null>
     }
 
     const trailsService = new Trail();
-    const response = await trailsService.delete({ urlSlug, moderator: idUserDB });
+    const response = await trailsService.delete({ urlSlug, moderator: idUserDB, client });
 
     revalidatePath('moderation/trails');
     return response;

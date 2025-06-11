@@ -23,6 +23,7 @@ export function serializationTrailCreate({
   posterOldUrl,
   track,
   isEditing,
+  client,
 }: TTrailCreateFromClient): FormData {
   const formData = new FormData();
   formData.set('isEditing', `${!!isEditing}`);
@@ -52,6 +53,10 @@ export function serializationTrailCreate({
 
   if (track) {
     formData.set('track', track);
+  }
+
+  if (client) {
+    formData.set('client', JSON.stringify(client));
   }
 
   // Проход по каждому блоку новостей и добавление текстовых данных и изображений (если есть) в formData.

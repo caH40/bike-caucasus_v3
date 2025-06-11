@@ -27,7 +27,7 @@ export const deleteItem = async ({ type, urlSlug, client }: Params) => {
     let res = {} as ServerResponse<null>;
     switch (type) {
       case 'trails':
-        res = await deleteTrail(urlSlug);
+        res = await deleteTrail({ urlSlug, client });
         break;
       case 'news':
         res = await deleteNews({ urlSlug, client });

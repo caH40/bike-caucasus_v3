@@ -363,6 +363,7 @@ export type TTrailCreateFromClient = {
   track: File | null; // Трэк маршрута в GPX.
   trackGPX?: string | undefined;
   isEditing: boolean;
+  client: TClientMeta;
 };
 
 /**

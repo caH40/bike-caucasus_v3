@@ -12,6 +12,7 @@ import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
 import type {
   ServerResponse,
+  TClientMeta,
   TSaveFile,
   TServiceEntity,
   TTrailCreateFromClient,
@@ -114,9 +115,11 @@ export class Trail {
   public async delete({
     urlSlug,
     moderator,
+    client,
   }: {
     urlSlug: string;
     moderator: string;
+    client: TClientMeta;
   }): Promise<ServerResponse<null>> {
     try {
       // Проверка есть ли такой Маршрут в БД.
@@ -160,6 +163,7 @@ export class Trail {
         action: 'delete',
         entity: this.entity,
         entityIds: [trailDBForDelete._id.toString()],
+        client,
       });
 
       return {
@@ -369,6 +373,7 @@ export class Trail {
       action: 'create',
       entity: this.entity,
       entityIds: [response._id.toString()],
+      client: trail.client,
     });
 
     return { data: null, ok: true, message: 'Маршрут сохранен в БД!' };
@@ -600,6 +605,7 @@ export class Trail {
         action: 'update',
         entity: this.entity,
         entityIds: [response._id.toString()],
+        client: trail.client,
       });
 
       return { data: null, ok: true, message: 'Данные маршрута обновлены!' };
