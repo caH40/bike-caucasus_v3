@@ -21,6 +21,7 @@ import getChampionshipPageData from '@/libs/utils/championship/getChampionshipPa
 import styles from './Championship.module.css';
 import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
 import TableRacePointsTable from '@/components/Table/TableRacePointsTable/TableRacePointsTable';
+import { notFound } from 'next/navigation';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -37,11 +38,15 @@ export default async function ChampionshipPage(props: Props) {
 
   const { urlSlug } = params;
 
-  const [{ data: championship, message: championshipMessage }, stagesResponse] =
-    await Promise.all([
-      getChampionship({ urlSlug }),
-      getChampionships({ needTypes: ['stage'] }),
-    ]);
+  const [{ data: championship }, stagesResponse] = await Promise.all([
+    getChampionship({ urlSlug }),
+    getChampionships({ needTypes: ['stage'] }),
+  ]);
+
+  // Если не найден чемпионат, то на 404 страницу.
+  if (!championship) {
+    notFound();
+  }
 
   // Обновление статуса чемпионата.
   const champService = new ChampionshipService();
@@ -50,9 +55,6 @@ export default async function ChampionshipPage(props: Props) {
   // !!! Продумать обработку или отображение ошибки.
   if (!stagesResponse.ok) {
     throw new Error(stagesResponse.message);
-  }
-  if (!championship) {
-    throw new Error(championshipMessage);
   }
 
   // Проверка наличия данных Этапов и их сортировка по возрастанию.
