@@ -23,8 +23,8 @@ function CategoriesSet({
   // Добавление
   const addCategoriesFn = (): void => {
     const age = {
-      female: [{ min: 0, max: 120, name: '' }],
-      male: [{ min: 0, max: 120, name: '' }],
+      female: [{ min: 18, max: 120, name: 'Ж18+' }],
+      male: [{ min: 18, max: 120, name: 'М18+' }],
     };
 
     appendCategories({ age, name: '', skillLevel: undefined });

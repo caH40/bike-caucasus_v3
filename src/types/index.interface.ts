@@ -1173,6 +1173,7 @@ export type TBlockCategoryProps = {
   control: Control<{ categories: TCategoriesConfigsForm[] }>;
   categoriesIndex: number;
   fieldKey: 'age' | 'skillLevel';
+  setAgeCategoryGender?: Dispatch<SetStateAction<TGender>>;
 };
 
 /**
@@ -1432,3 +1433,8 @@ export type TClientMeta = {
   deviceInfo: TDeviceInfo;
   location: TLocationInfo;
 }; // Метаданные о клиенте.
+
+/**
+ * Позиция блока.
+ */
+export type TBoxPosition = 'left' | 'center' | 'right' | 'solo';

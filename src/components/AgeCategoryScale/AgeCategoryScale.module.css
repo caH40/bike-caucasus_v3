@@ -1,0 +1,9 @@
+.wrapper {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0;
+  gap: 10px 0;
+}
+.wrapped {
+  flex-wrap: wrap;
+}

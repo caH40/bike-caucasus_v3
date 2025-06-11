@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { buttonsGender } from '@/constants/buttons';
 import { useCategoryFieldsByGender } from '@/hooks/useCategoryFieldsByGender';
@@ -22,6 +22,7 @@ export default function BlockCategory({
   register,
   errors,
   fieldKey,
+  setAgeCategoryGender,
 }: TBlockCategoryProps) {
   const [genderButtonNumber, setGenderButtonNumber] = useState<number>(0);
 
@@ -34,6 +35,15 @@ export default function BlockCategory({
     genderButtonNumber,
     fieldPathRoot,
   });
+
+  // Отслеживает и синхронизирует изменение пола.
+  useEffect(() => {
+    // Передается setAgeCategoryGender только для возрастных категорий.
+    if (!setAgeCategoryGender) {
+      return;
+    }
+    setAgeCategoryGender(genderButtonNumber === 0 ? 'male' : 'female');
+  }, [genderButtonNumber, setAgeCategoryGender]);
 
   const addCategoryFn = () => {
     if (fieldKey === 'age') {

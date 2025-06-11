@@ -4,7 +4,10 @@ import t from '@/locales/ru/moderation/championship.json';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import BlockCategory from '../BlockCategory/BlockCategory';
 import styles from './BlockCategories.module.css';
-import { TBlockCategoriesProps } from '@/types/index.interface';
+import { TBlockCategoriesProps, TGender } from '@/types/index.interface';
+import AgeCategoryScale from '@/components/AgeCategoryScale/AgeCategoryScale';
+import { useWatch } from 'react-hook-form';
+import { useState } from 'react';
 
 const textValidation = new TextValidationService();
 
@@ -18,7 +21,16 @@ export default function BlockCategories({
   categoriesIndex,
   control,
 }: TBlockCategoriesProps) {
-  // const key = `${index}-${categoryProperty}`;
+  const [ageCategoryGender, setAgeCategoryGender] = useState<TGender>('male');
+
+  const maleCategories = useWatch({
+    control,
+    name: `categories.${categoriesIndex}.age.male`,
+  });
+  const femaleCategories = useWatch({
+    control,
+    name: `categories.${categoriesIndex}.age.female`,
+  });
 
   return (
     <div className={styles.wrapper}>
@@ -65,12 +77,19 @@ export default function BlockCategories({
       <TitleAndLine title={'Возрастные категории'} hSize={2} />
 
       <div className={styles.spacer}>
+        <AgeCategoryScale
+          categories={ageCategoryGender === 'male' ? maleCategories : femaleCategories}
+        />
+      </div>
+
+      <div className={styles.spacer}>
         <BlockCategory
           fieldKey={'age'}
           register={register}
           control={control}
           categoriesIndex={categoriesIndex}
           errors={errors}
+          setAgeCategoryGender={setAgeCategoryGender}
         />
       </div>
 

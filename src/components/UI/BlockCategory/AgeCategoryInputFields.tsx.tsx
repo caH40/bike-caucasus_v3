@@ -36,8 +36,10 @@ export default function AgeCategoryInputFields({
         autoComplete="off"
         type="number"
         step={1}
+        min={1}
         register={register(`${fieldPathPrefix}.min` as Path<TCategoriesFormType>, {
           required: 'заполните',
+          validate: (value) => (value && +value >= 1) || 'мин. 1',
         })}
         validationText={fieldErrors?.min?.message || ''}
       />
@@ -48,8 +50,10 @@ export default function AgeCategoryInputFields({
         autoComplete="off"
         type="number"
         step={1}
+        max={120}
         register={register(`${fieldPathPrefix}.max` as Path<TCategoriesFormType>, {
           required: 'заполните',
+          validate: (value) => (value && +value <= 120) || 'макс. 120',
         })}
         validationText={fieldErrors?.max?.message || ''}
       />
