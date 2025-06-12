@@ -34,7 +34,7 @@ type Props = {
 
 const textValidation = new TextValidationService();
 
-export default function FromOrganizer({
+export default function FormOrganizer({
   fetchOrganizerCreated,
   fetchOrganizerEdited,
   organizerForEdit,

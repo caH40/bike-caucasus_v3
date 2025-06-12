@@ -1,7 +1,7 @@
 import IconOrganizers from '@/components/Icons/IconOrganizers';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import { checkHasOrganizer, fetchOrganizerCreated } from '@/actions/organizer';
-import FromOrganizer from '@/components/UI/Forms/FromOrganizer/FromOrganizer';
+import FormOrganizer from '@/components/UI/Forms/FormOrganizer/FormOrganizer';
 import styles from './OrganizerCreatePage.module.css';
 
 // export const dynamic = 'force-dynamic';
@@ -27,7 +27,7 @@ export default async function OrganizerCreatePage() {
       />
       {/* Если нет Организатора то отображается форма создания */}
       {!hasOrganizer ? (
-        <FromOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />
+        <FormOrganizer fetchOrganizerCreated={fetchOrganizerCreated} />
       ) : (
         <h2>
           У Вас уже есть созданный Организатор, для редактирования данных перейдите в
