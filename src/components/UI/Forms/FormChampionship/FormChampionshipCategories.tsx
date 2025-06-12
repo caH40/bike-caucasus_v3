@@ -34,7 +34,6 @@ export default function FormChampionshipCategories({
     handleSubmit,
     control,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<TFormChampionshipCategories>({
     mode: 'all',
