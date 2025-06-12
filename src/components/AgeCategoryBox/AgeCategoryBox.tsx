@@ -31,9 +31,9 @@ export default function AgeCategoryBox({
     <div className={cx('wrapper')}>
       <div className={styles.numbers}>
         <span className={cx('number', { wrong: isWrong })}>
-          {category.max === 120 ? category.min + '+' : category.min}
+          {+category.max === 120 ? category.min + '+' : category.min}
         </span>
-        <span className={styles.number}>{category.max === 120 ? '' : category.max}</span>
+        <span className={styles.number}>{+category.max === 120 ? '' : category.max}</span>
       </div>
 
       <div
