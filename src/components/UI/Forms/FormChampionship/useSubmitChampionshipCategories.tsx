@@ -6,10 +6,11 @@ import { toast } from 'sonner';
 import { serializationChampionshipCategories } from '@/libs/utils/serialization/championshipCategories';
 import { useLoadingStore } from '@/store/loading';
 import {
-  TCategoriesConfigsForm,
+  TFormChampionshipCategories,
   TUseSubmitChampionshipCategoriesParams,
 } from '@/types/index.interface';
 import { useUserData } from '@/store/userdata';
+import { validateCategoriesBeforePost } from '@/libs/utils/championship/category';
 
 /**
  * Отправка формы категории при редактировании Чемпионата.
@@ -27,8 +28,24 @@ export const useSubmitChampionshipCategories = ({
   const location = useUserData((s) => s.location);
   const deviceInfo = useUserData((s) => s.deviceInfo);
 
-  const onSubmit = async (formData: { categories: TCategoriesConfigsForm[] }) => {
-    // console.log(formData.categories);
+  const onSubmit = async (formData: TFormChampionshipCategories) => {
+    const { hasEmptyCategory, hasOverlappingCategory } = validateCategoriesBeforePost(
+      formData.categories
+    );
+
+    if (hasEmptyCategory) {
+      toast.error(
+        'Обнаружены пропущенные года между возрастными категориями. Проверьте границы и добавьте недостающие.'
+      );
+      return;
+    }
+
+    if (hasOverlappingCategory) {
+      toast.error(
+        'Возрастные категории пересекаются. Убедитесь, что границы категорий не перекрываются.'
+      );
+      return;
+    }
 
     // Старт отображение статуса загрузки.
     setLoading(true);

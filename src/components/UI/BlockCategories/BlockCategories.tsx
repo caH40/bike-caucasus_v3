@@ -35,7 +35,7 @@ export default function BlockCategories({
   });
 
   // Создание дополнительных блоков для отображение ошибок в категоризации заезда.
-  const visualCategories = useVisualCategories({
+  const { visualCategories } = useVisualCategories({
     maleCategories,
     femaleCategories,
     ageCategoryGender,

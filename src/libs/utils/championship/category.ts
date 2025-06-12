@@ -1,7 +1,7 @@
 import { sortCategoriesString } from './championship';
 
 // types
-import { TCategoriesConfigNames } from '@/types/index.interface';
+import { TCategoriesConfigNames, TCategoriesConfigsForm } from '@/types/index.interface';
 
 export type CategoriesInResult = {
   categoryAge: string;
@@ -33,6 +33,7 @@ export function getExistCategoryNames<T extends CategoriesInResult>(
 }
 
 import { TBoxPosition } from '@/types/index.interface';
+import { validateAndVisualizeCategories } from '../validateAndVisualizeCategories';
 
 /**
  * Определяет позицию блока (прямоугольника) возрастной категории
@@ -80,4 +81,37 @@ export function getAgeCategoryColor(index: number): string {
   ];
 
   return palette[index % palette.length];
+}
+
+/**
+ * Проверка всех конфигураций категорий перед отправкой на сервер для обновления.
+ * Проверяется на пропуски в годах между категориями и на наложение диапазонов возрастных категорий друг на друга.
+ */
+export function validateCategoriesBeforePost(categories: TCategoriesConfigsForm[]) {
+  return categories.reduce(
+    (acc, cur) => {
+      const maleCategory = validateAndVisualizeCategories({
+        maleCategories: cur.age.male,
+        femaleCategories: cur.age.female, // неважно, можно [] — игнорируется
+        ageCategoryGender: 'male',
+      });
+
+      acc.hasEmptyCategory = acc.hasEmptyCategory || maleCategory.hasEmptyCategory;
+      acc.hasOverlappingCategory =
+        acc.hasOverlappingCategory || maleCategory.hasOverlappingCategory;
+
+      const femaleCategory = validateAndVisualizeCategories({
+        maleCategories: cur.age.male, // неважно, можно []
+        femaleCategories: cur.age.female,
+        ageCategoryGender: 'female',
+      });
+
+      acc.hasEmptyCategory = acc.hasEmptyCategory || femaleCategory.hasEmptyCategory;
+      acc.hasOverlappingCategory =
+        acc.hasOverlappingCategory || femaleCategory.hasOverlappingCategory;
+
+      return acc;
+    },
+    { hasEmptyCategory: false, hasOverlappingCategory: false }
+  );
 }

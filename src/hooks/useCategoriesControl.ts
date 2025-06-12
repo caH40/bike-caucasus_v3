@@ -1,10 +1,10 @@
 import { Control, useWatch } from 'react-hook-form';
 
 // types
-import { TCategoriesConfigsForm, TGender } from '@/types/index.interface';
+import { TFormChampionshipCategories, TGender } from '@/types/index.interface';
 
 type Params = {
-  control: Control<{ categories: TCategoriesConfigsForm[] }>;
+  control: Control<TFormChampionshipCategories>;
   categoriesIndex: number;
   ageCategoryGender: TGender;
 };

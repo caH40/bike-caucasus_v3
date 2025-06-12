@@ -1083,28 +1083,17 @@ export type TPutRacesParams = TPutCategoriesParams;
  * Пропсы компонента CategoriesSet/
  */
 export type TCategoriesSetProps = {
-  categories: FieldArrayWithId<
-    {
-      categories: TCategoriesConfigsForm[];
-    },
-    'categories',
-    'id'
-  >;
-  register: UseFormRegister<{ categories: TCategoriesConfigsForm[] }>;
+  categories: FieldArrayWithId<TFormChampionshipCategories, 'categories', 'id'>;
+  register: UseFormRegister<TFormChampionshipCategories>;
   isDefault?: boolean; // Пакет категорий по умолчанию, или дополнительный.
-  appendCategories: UseFieldArrayAppend<
-    {
-      categories: TCategoriesConfigsForm[];
-    },
-    'categories'
-  >;
+  appendCategories: UseFieldArrayAppend<TFormChampionshipCategories, 'categories'>;
   removeCategories: UseFieldArrayRemove;
-  control: Control<{ categories: TCategoriesConfigsForm[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsForm[] }>;
+  control: Control<TFormChampionshipCategories>;
+  errors: FieldErrors<TFormChampionshipCategories>;
   categoriesIndex: number;
 };
 
-export type TCategoriesFormType = { categories: TCategoriesConfigsForm[] };
+export type TCategoriesFormType = TFormChampionshipCategories;
 /**
  * Пропсы для компонента AgeCategoryInputFields.
  */
@@ -1153,19 +1142,22 @@ export type TSkillLevelCategoryInputFieldsProps = Omit<
 };
 
 /**
+ * Форма редактирования категорий Чемпионата.
+ */
+export type TFormChampionshipCategories = {
+  categories: TCategoriesConfigsForm[];
+  hasEmptyCategory?: boolean;
+  hasOverlappingCategory?: boolean;
+};
+
+/**
  * Пропсы для компонента BlockCategories.
  */
 export type TBlockCategoriesProps = {
-  categories: FieldArrayWithId<
-    {
-      categories: TCategoriesConfigsForm[];
-    },
-    'categories',
-    'id'
-  >;
-  register: UseFormRegister<{ categories: TCategoriesConfigsForm[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsForm[] }>;
-  control: Control<{ categories: TCategoriesConfigsForm[] }>;
+  categories: FieldArrayWithId<TFormChampionshipCategories, 'categories', 'id'>;
+  register: UseFormRegister<TFormChampionshipCategories>;
+  errors: FieldErrors<TFormChampionshipCategories>;
+  control: Control<TFormChampionshipCategories>;
   categoriesIndex: number;
 };
 
@@ -1173,9 +1165,9 @@ export type TBlockCategoriesProps = {
  * Пропсы для компонента BlockCategory.
  */
 export type TBlockCategoryProps = {
-  register: UseFormRegister<{ categories: TCategoriesConfigsForm[] }>;
-  errors: FieldErrors<{ categories: TCategoriesConfigsForm[] }>;
-  control: Control<{ categories: TCategoriesConfigsForm[] }>;
+  register: UseFormRegister<TFormChampionshipCategories>;
+  errors: FieldErrors<TFormChampionshipCategories>;
+  control: Control<TFormChampionshipCategories>;
   categoriesIndex: number;
   fieldKey: 'age' | 'skillLevel';
   setAgeCategoryGender?: Dispatch<SetStateAction<TGender>>;

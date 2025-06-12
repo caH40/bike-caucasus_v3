@@ -12,7 +12,7 @@ import styles from '../Form.module.css';
 
 // types
 import type {
-  TCategoriesConfigsForm,
+  TFormChampionshipCategories,
   TFormChampionshipCategoriesProps,
 } from '@/types/index.interface';
 import { useEffect } from 'react';
@@ -34,11 +34,14 @@ export default function FormChampionshipCategories({
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm<{ categories: TCategoriesConfigsForm[] }>({
+  } = useForm<TFormChampionshipCategories>({
     mode: 'all',
     defaultValues: {
       categories: categoriesConfigs,
+      hasEmptyCategory: false,
+      hasOverlappingCategory: false,
     },
   });
 
@@ -64,6 +67,8 @@ export default function FormChampionshipCategories({
     if (categoriesConfigs) {
       reset({
         categories: categoriesConfigs,
+        hasEmptyCategory: false,
+        hasOverlappingCategory: false,
       });
     }
   }, [categoriesConfigs, reset]);
