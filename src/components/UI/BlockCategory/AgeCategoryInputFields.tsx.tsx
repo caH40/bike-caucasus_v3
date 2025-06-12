@@ -56,6 +56,10 @@ export default function AgeCategoryInputFields({
           validate: (value) => (value && +value <= 120) || 'макс. 120',
         })}
         validationText={fieldErrors?.max?.message || ''}
+        tooltip={{
+          text: 'Для верхней границы без ограничения возраста установите число 120',
+          id: fieldPathPrefix.replace(/\./g, '-'),
+        }}
       />
     </>
   );
