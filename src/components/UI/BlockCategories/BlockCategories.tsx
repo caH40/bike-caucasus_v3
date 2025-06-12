@@ -1,13 +1,17 @@
+import { useState } from 'react';
+
 import { TextValidationService } from '@/libs/utils/text';
+import { useCategoriesControl } from '@/hooks/useCategoriesControl';
 import BoxInput from '../BoxInput/BoxInput';
 import t from '@/locales/ru/moderation/championship.json';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import BlockCategory from '../BlockCategory/BlockCategory';
-import styles from './BlockCategories.module.css';
-import { TBlockCategoriesProps, TGender } from '@/types/index.interface';
 import AgeCategoryScale from '@/components/AgeCategoryScale/AgeCategoryScale';
-import { useWatch } from 'react-hook-form';
-import { useState } from 'react';
+import styles from './BlockCategories.module.css';
+
+// types
+import { TBlockCategoriesProps, TGender } from '@/types/index.interface';
+import { useVisualCategories } from '@/hooks/useVisualCategories';
 
 const textValidation = new TextValidationService();
 
@@ -23,13 +27,18 @@ export default function BlockCategories({
 }: TBlockCategoriesProps) {
   const [ageCategoryGender, setAgeCategoryGender] = useState<TGender>('male');
 
-  const maleCategories = useWatch({
+  // Контроль изменения данных в массиве категорий.
+  const { maleCategories, femaleCategories } = useCategoriesControl({
+    categoriesIndex,
     control,
-    name: `categories.${categoriesIndex}.age.male`,
+    ageCategoryGender,
   });
-  const femaleCategories = useWatch({
-    control,
-    name: `categories.${categoriesIndex}.age.female`,
+
+  // Создание дополнительных блоков для отображение ошибок в категоризации заезда.
+  const visualCategories = useVisualCategories({
+    maleCategories,
+    femaleCategories,
+    ageCategoryGender,
   });
 
   return (
@@ -77,9 +86,7 @@ export default function BlockCategories({
       <TitleAndLine title={'Возрастные категории'} hSize={2} />
 
       <div className={styles.spacer}>
-        <AgeCategoryScale
-          categories={ageCategoryGender === 'male' ? maleCategories : femaleCategories}
-        />
+        <AgeCategoryScale categories={visualCategories} />
       </div>
 
       <div className={styles.spacer}>

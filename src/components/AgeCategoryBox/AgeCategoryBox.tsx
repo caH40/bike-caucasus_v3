@@ -10,6 +10,8 @@ type Props = {
   category: TAgeCategoryFromForm;
   position: TBoxPosition;
   backgroundColor: string;
+  isEmpty?: boolean;
+  isWrong?: boolean;
 };
 
 const cx = cn.bind(styles);
@@ -22,17 +24,22 @@ export default function AgeCategoryBox({
   position,
   generatedName,
   backgroundColor,
+  isEmpty,
+  isWrong,
 }: Props) {
   return (
     <div className={cx('wrapper')}>
       <div className={styles.numbers}>
-        <span className={styles.number}>
+        <span className={cx('number', { wrong: isWrong })}>
           {category.max === 120 ? category.min + '+' : category.min}
         </span>
         <span className={styles.number}>{category.max === 120 ? '' : category.max}</span>
       </div>
 
-      <div className={cx('box', position)} style={{ backgroundColor }}>
+      <div
+        className={cx('box', position, { empty: isEmpty })}
+        style={isEmpty ? undefined : { backgroundColor }}
+      >
         <span className={styles.name}>{category.name || generatedName}</span>
       </div>
     </div>

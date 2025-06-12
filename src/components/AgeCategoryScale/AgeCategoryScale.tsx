@@ -8,10 +8,10 @@ import AgeCategoryBox from '../AgeCategoryBox/AgeCategoryBox';
 import styles from './AgeCategoryScale.module.css';
 
 // types
-import { TAgeCategoryFromForm } from '@/types/index.interface';
+import { TAgeCategoriesForVisual } from '@/types/index.interface';
 
 type Props = {
-  categories: TAgeCategoryFromForm[];
+  categories: TAgeCategoriesForVisual[];
 };
 
 const cx = cn.bind(styles);
@@ -20,16 +20,16 @@ const cx = cn.bind(styles);
  * Визуальная шкала возрастных категорий.
  */
 export default function AgeCategoryScale({ categories }: Props) {
-  const sortedCategories = categories.toSorted((a, b) => +a.min - +b.min);
-
   return (
-    <div className={cx('wrapper', { wrapped: sortedCategories.length > 5 })}>
-      {sortedCategories.map((category, index) => (
+    <div className={cx('wrapper', { wrapped: categories.length > 5 })}>
+      {categories.map((category, index) => (
         <AgeCategoryBox
           key={index}
           backgroundColor={getAgeCategoryColor(index)}
-          position={getAgeCategoryBoxPosition(sortedCategories.length, index + 1)}
+          position={getAgeCategoryBoxPosition(categories.length, index + 1)}
           category={category}
+          isEmpty={category.isEmpty}
+          isWrong={category.isWrong}
           generatedName={'...'}
         />
       ))}

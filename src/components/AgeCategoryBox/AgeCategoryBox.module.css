@@ -35,3 +35,13 @@
   font-size: 15px;
   letter-spacing: normal;
 }
+.box.empty {
+  border: dashed;
+  color: var(--line);
+  font-style: italic;
+}
+.number.wrong {
+  color: var(--error);
+  font-style: italic;
+  font-weight: 700;
+}

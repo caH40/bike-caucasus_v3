@@ -935,6 +935,11 @@ export type TFormChampionshipRacesProps = {
  */
 export type TAgeCategoryFromForm = { min: number | string; max: number | string; name: string };
 
+export type TAgeCategoriesForVisual = TAgeCategoryFromForm & {
+  isWrong?: boolean; // Есть ли наложение границ возрастных категорий друг на друга.
+  isEmpty?: boolean; // Промежуток годов с не назначенной категорией.
+};
+
 /**
  * Конфигурации категорий чемпионата для формы.
  */
