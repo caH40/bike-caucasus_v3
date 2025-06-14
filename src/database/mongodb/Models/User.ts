@@ -17,6 +17,15 @@ const SocialSchema = new Schema({
   garminConnect: String,
 });
 
+const ProviderSchema = new Schema(
+  {
+    name: { type: String }, // провайдер с помощью которого произошла регистрация
+    id: { type: String }, // провайдер с помощью которого произошла регистрация
+    image: { type: String }, // путь до картинки профиля  сп провайдера}
+  },
+  { _id: false }
+);
+
 const userSchema = new Schema<IUserModel>(
   {
     id: {
@@ -38,11 +47,7 @@ const userSchema = new Schema<IUserModel>(
       default: null,
     },
     provider: {
-      type: {
-        name: { type: String }, // провайдер с помощью которого произошла регистрация
-        id: { type: String }, // провайдер с помощью которого произошла регистрация
-        image: { type: String }, // путь до картинки профиля  сп провайдера}
-      },
+      type: ProviderSchema,
       default: null,
     },
     email: {
