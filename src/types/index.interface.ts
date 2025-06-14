@@ -1447,7 +1447,18 @@ export type TClientUser = {
   id?: string;
 };
 
+export type TMailServiceParams = {
+  target: TMailTarget;
+  email: string;
+  auth?: {
+    token: string;
+    username: string;
+    password?: string;
+  };
+  additional?: Record<string, any>;
+};
+
 /**
  * Ключи отправляемых стандартных писем.
  */
-export type TMailTarget = 'registration' | 'resetPassword' | 'savedNewPassword';
+export type TMailTarget = 'registration' | 'resetPassword' | 'savedNewPassword' | 'newUser';

@@ -35,15 +35,15 @@ export async function createNewPasswordService({ password: newPassword, userId }
   // Удаление записей о сбросе пароля
   await PasswordReset.deleteMany({ userId });
 
+  const auth = {
+    token: 'нет токена',
+    username: userDB.credentials.username,
+    password: newPassword,
+  };
+
   // Отправка уведомления о смене пароля на почту
   const target = 'savedNewPassword';
-  await mailService(
-    target,
-    'нет токена',
-    userDB.email,
-    userDB.credentials.username,
-    newPassword
-  );
+  await mailService({ target, auth, email: userDB.email });
 
   return { message: 'Пароль изменен и отправлен на Вашу почту!' };
 }

@@ -12,6 +12,7 @@ import { getNextSequenceValue } from '@/services/sequence';
 import { getProviderProfileDto } from '@/libs/dto/provider';
 import { Role } from '@/database/mongodb/Models/Role';
 import { errorLogger } from '@/errors/error';
+import { mailService } from '@/services/mail/nodemailer';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -148,6 +149,12 @@ export const authOptions: AuthOptions = {
             }
           }
 
+          const person = {
+            firstName: profileCur.firstName,
+            lastName: profileCur.lastName,
+            gender: profileCur.gender,
+          };
+
           // Данные для создания (регистрации) новой учетной записи (аккаунта) пользователя.
           const userNew = {
             id,
@@ -159,11 +166,7 @@ export const authOptions: AuthOptions = {
             email: email.toLowerCase(),
             role: roleUser._id,
             emailConfirm: hasRealEmail,
-            person: {
-              firstName: profileCur.firstName,
-              lastName: profileCur.lastName,
-              gender: profileCur.gender,
-            },
+            person,
           };
 
           const userCreated = await User.create(userNew);
@@ -173,6 +176,13 @@ export const authOptions: AuthOptions = {
           if (!userCreated) {
             throw new Error('Ошибка при создании нового пользователя в БД.');
           }
+
+          // Отправка письма администратору о новой регистрации.
+          await mailService({
+            email: 'support@bike-caucasus.ru',
+            target: 'newUser',
+            additional: { person, provider },
+          });
 
           return true;
         }

@@ -32,7 +32,11 @@ export async function resetPasswordService(email: string): Promise<{
   });
 
   const target = 'resetPassword';
-  await mailService(target, tokenReset, email, userDB.credentials?.username ?? 'username');
+  const auth = {
+    token: tokenReset,
+    username: userDB.credentials?.username ?? 'username',
+  };
+  await mailService({ target, auth, email });
 
   return { message: 'Сброс пароля', email };
 }

@@ -66,7 +66,26 @@ export async function postRegistrationService({
     email: email.toLowerCase(),
   });
 
+  const auth = {
+    token: activationToken,
+    username: username.toLowerCase(),
+    password,
+  };
+
   // отправка письма для контроля активации профиля и подтверждения email
   const target = 'registration'; //для отправки письма для активации
-  await mailService(target, activationToken, email, username.toLowerCase(), password);
+  await mailService({ target, auth, email });
+
+  // Отправка письма администратору сайта о регистрации нового пользователя.
+  await mailService({
+    email: 'support@bike-caucasus.ru',
+    target: 'newUser',
+    additional: {
+      person: {
+        username: username.toLowerCase(),
+        email: email.toLowerCase(),
+      },
+      provider: 'credentials',
+    },
+  });
 }

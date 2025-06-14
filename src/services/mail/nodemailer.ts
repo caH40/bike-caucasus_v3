@@ -2,20 +2,14 @@ import nodemailer from 'nodemailer';
 
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { mailTemplates } from './mail-emplates';
-import { TMailTarget } from '@/types/index.interface';
+import { TMailServiceParams } from '@/types/index.interface';
 
 const { MAIL_USER, MAIL_PASS, MAIL_HOST, MAIL_PORT, MAIL_SECURE } = process.env;
 
 /**
  * Сервис отправки email
  */
-export async function mailService(
-  target: TMailTarget,
-  token: string,
-  email: string,
-  username: string,
-  password?: string
-) {
+export async function mailService({ target, email, auth, additional }: TMailServiceParams) {
   if (!MAIL_USER || !MAIL_PASS || !MAIL_HOST || !MAIL_PORT || !MAIL_SECURE) {
     throw new Error('Получены не все данные с env');
   }
@@ -39,7 +33,7 @@ export async function mailService(
   }
 
   const subject = template.subject;
-  const html = template.getHtml({ username, email, token, password, date });
+  const html = template.getHtml({ auth, email, date, additional });
 
   await transporter.sendMail({
     from: MAIL_USER,
