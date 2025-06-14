@@ -1446,3 +1446,8 @@ export type TClientUser = {
   image?: string;
   id?: string;
 };
+
+/**
+ * Ключи отправляемых стандартных писем.
+ */
+export type TMailTarget = 'registration' | 'resetPassword' | 'savedNewPassword';

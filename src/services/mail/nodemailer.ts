@@ -1,32 +1,22 @@
 import nodemailer from 'nodemailer';
 
-import { htmlRegistration } from './letters/registration';
-import { htmlResetPassword } from './letters/resetpassword';
-import { htmlRefreshPassword } from './letters/refreshpassword';
-
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { mailTemplates } from './mail-emplates';
+import { TMailTarget } from '@/types/index.interface';
 
-const { MAIL_USER, MAIL_PASS, MAIL_HOST, MAIL_PORT, MAIL_SECURE, NEXT_PUBLIC_SERVER_FRONT } =
-  process.env;
+const { MAIL_USER, MAIL_PASS, MAIL_HOST, MAIL_PORT, MAIL_SECURE } = process.env;
 
 /**
  * Сервис отправки email
  */
 export async function mailService(
-  target: string,
+  target: TMailTarget,
   token: string,
   email: string,
   username: string,
   password?: string
 ) {
-  if (
-    !MAIL_USER ||
-    !MAIL_PASS ||
-    !MAIL_HOST ||
-    !MAIL_PORT ||
-    !MAIL_SECURE ||
-    !NEXT_PUBLIC_SERVER_FRONT
-  ) {
+  if (!MAIL_USER || !MAIL_PASS || !MAIL_HOST || !MAIL_PORT || !MAIL_SECURE) {
     throw new Error('Получены не все данные с env');
   }
 
@@ -41,38 +31,20 @@ export async function mailService(
   };
 
   const transporter = nodemailer.createTransport(smtpConfig);
-
-  let subject;
-  let html;
   const date = new Date().toLocaleString();
 
-  if (target === 'registration') {
-    if (!password) {
-      throw new Error('Нет пароля');
-    }
-    subject = 'Подтверждение регистрации на сайте bike-caucasus.ru';
-    html = htmlRegistration(username, password, email, token, NEXT_PUBLIC_SERVER_FRONT, date);
-  }
-  if (target === 'resetPassword') {
-    subject = 'Сброс пароля на сайте bike-caucasus.ru';
-    html = htmlResetPassword(username, email, token, NEXT_PUBLIC_SERVER_FRONT, date);
-  }
-  if (target === 'savedNewPassword') {
-    if (!password) {
-      throw new Error('Нет пароля');
-    }
-    subject = 'Обновление пароля профиля на сайте bike-caucasus.ru';
-    html = htmlRefreshPassword(date, username, password);
+  const template = mailTemplates[target];
+  if (!template) {
+    throw new Error(`Неизвестный тип письма: ${target}`);
   }
 
-  const from = MAIL_USER;
-  const to = email;
+  const subject = template.subject;
+  const html = template.getHtml({ username, email, token, password, date });
 
-  const result = await transporter.sendMail({ from, to, subject, html });
-
-  // !!!!!!!!!!! логирование консолей
-  console.log('Message sent: %s', result.messageId); // eslint-disable-line
-  if (!result.response.includes('250 OK')) {
-    console.log('ошибка при отправки письма для активации аккаунта'); // eslint-disable-line
-  }
+  await transporter.sendMail({
+    from: MAIL_USER,
+    to: email,
+    subject,
+    html,
+  });
 }

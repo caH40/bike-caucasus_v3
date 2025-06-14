@@ -11,6 +11,7 @@ export default function AuthProviderBlock({ callbackUrl }: Props) {
   const getAuth = (provider: string, callbackUrl: string) => {
     signIn(provider, { callbackUrl });
   };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.buttons}>
