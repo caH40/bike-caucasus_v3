@@ -16,9 +16,7 @@ type Props = {
 export default async function UserModeration(props: Props) {
   const params = await props.params;
 
-  const {
-    id
-  } = params;
+  const { id } = params;
 
   const [roles, profile] = await Promise.all([
     getRoles(),
@@ -31,10 +29,6 @@ export default async function UserModeration(props: Props) {
   if (!roles.data) {
     return <h2>Роли не найдены!</h2>;
   }
-
-  // if ('email' in profile) {
-  //   console.log(profile);
-  // }
 
   return (
     <div>

@@ -33,6 +33,7 @@ import BlockModerationResult from '@/components/UI/BlockModeration/BlockModerati
 import IconEditOld from '@/components/Icons/IconEditOld';
 import ProtocolMenuPopup from '@/components/UI/Menu/MenuControl/ProtocolMenuPopup';
 import IconNumber from '@/components/Icons/IconNumber';
+import { getUserDataDto } from '@/libs/user';
 
 const cx = cn.bind(styles);
 
@@ -110,22 +111,17 @@ const allColumns: (ColumnDef<TResultRaceDto & { index: number }> & { uniqueName?
       ),
       accessorKey: 'profile',
       cell: (props: any) => {
-        const data = props.row.original;
+        const { rider, profile } = props.row.original;
 
-        // Изображение из провайдера или загруженное.
-        const image = data.rider?.imageFromProvider
-          ? data.rider?.provider?.image
-          : data.rider?.image;
+        const riderData = getUserDataDto({
+          imageFromProvider: rider?.imageFromProvider,
+          downloadedImage: rider?.image,
+          providerImage: rider?.provider?.image,
+          profile: profile,
+          id: rider?.id,
+        });
 
-        const rider = {
-          firstName: data.profile.firstName,
-          lastName: data.profile.lastName,
-          patronymic: data.profile.patronymic,
-          image,
-          id: data.rider?.id,
-        };
-
-        return <TdRider rider={rider} showPatronymic={true} />;
+        return <TdRider rider={riderData} showPatronymic={true} />;
       },
     },
     {

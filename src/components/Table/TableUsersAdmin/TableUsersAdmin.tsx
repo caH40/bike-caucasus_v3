@@ -16,6 +16,7 @@ import { TUserDto } from '@/types/dto.types';
 import styles from '../TableCommon.module.css';
 import Pagination from '@/components/UI/Pagination/Pagination';
 import TdRider from '../Td/TdRider';
+import { getUserDataDto } from '@/libs/user';
 
 const cx = cn.bind(styles);
 
@@ -33,18 +34,20 @@ const columns: ColumnDef<TUserDto & { tableId?: number }>[] = [
     header: 'Участник',
     accessorKey: 'rider',
     cell: (props: any) => {
-      const data = props.row.original;
-      const rider = {
-        firstName: data.person.firstName,
-        lastName: data.person.lastName,
-        image: data.image,
-        id: data.id,
-      };
+      const { person, ...rider } = props.row.original;
+
+      const riderData = getUserDataDto({
+        imageFromProvider: rider?.imageFromProvider,
+        downloadedImage: rider?.image,
+        providerImage: rider?.provider?.image,
+        profile: person,
+        id: rider?.id,
+      });
 
       return (
         <TdRider
-          rider={rider}
-          linkAdditional={`/admin/users/${data.id}`}
+          rider={riderData}
+          linkAdditional={`/admin/users/${rider.id}`}
           showPatronymic={true}
         />
       );

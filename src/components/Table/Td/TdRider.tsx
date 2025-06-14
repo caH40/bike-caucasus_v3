@@ -1,19 +1,16 @@
 import Image from 'next/image';
 import cn from 'classnames/bind';
+import Link from 'next/link';
 
 import { blurBase64 } from '@/libs/image';
 import styles from './Td.module.css';
-import Link from 'next/link';
 import { getUserFullName } from '@/libs/utils/profile';
 
+// types
+import { TClientUser } from '@/types/index.interface';
+
 type Props = {
-  rider: {
-    firstName: string;
-    lastName: string;
-    patronymic?: string;
-    image?: string;
-    id?: string;
-  };
+  rider: TClientUser;
   linkAdditional?: string;
   showPatronymic?: boolean;
 };

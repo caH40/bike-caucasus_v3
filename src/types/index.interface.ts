@@ -1435,3 +1435,14 @@ export type TClientMeta = {
  * Позиция блока.
  */
 export type TBoxPosition = 'left' | 'center' | 'right' | 'solo';
+
+/**
+ *
+ */
+export type TClientUser = {
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  image?: string;
+  id?: string;
+};
