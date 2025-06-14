@@ -25,7 +25,7 @@ export async function mailService({ target, email, auth, additional }: TMailServ
   };
 
   const transporter = nodemailer.createTransport(smtpConfig);
-  const date = new Date().toLocaleString();
+  const date = new Date().toLocaleString('ru');
 
   const template = mailTemplates[target];
   if (!template) {
