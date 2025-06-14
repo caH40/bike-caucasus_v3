@@ -1,3 +1,14 @@
 .wrapper {
   letter-spacing: 0.08rem;
 }
+.profile__image {
+  border-radius: 1rem;
+  margin-bottom: 1.8rem;
+  object-fit: cover;
+}
+/* ====================================================================== */
+@media (max-width: 1200px) {
+  .profile__image {
+    margin-bottom: 0;
+  }
+}
