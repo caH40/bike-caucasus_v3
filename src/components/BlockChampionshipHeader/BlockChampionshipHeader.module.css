@@ -11,7 +11,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 500px;
+  height: 600px;
   border-radius: 1rem;
 }
 .poster {
@@ -21,7 +21,7 @@
 }
 .box__logo {
   position: absolute;
-  top: 450px;
+  top: 550px;
   left: 45px;
   width: 100px;
   height: 100px;
@@ -41,7 +41,7 @@
   object-position: center;
 }
 .block__text {
-  padding: 520px 2rem 2rem 180px;
+  padding: 620px 2rem 2rem 180px;
 }
 .title {
   margin-bottom: 6px;
@@ -53,7 +53,7 @@
 /* ====================================================================== */
 @media (max-width: 1300px) {
   .box__logo {
-    top: 380px;
+    top: 480px;
     left: 20px;
   }
   .box__date {
@@ -85,8 +85,14 @@
     height: 300px;
   }
   .box__logo {
-    top: 184px;
+    top: 214px;
     left: 14px;
+    width: 75px;
+    height: 75px;
+  }
+  .logo {
+    width: 65px;
+    height: 65px;
   }
   .box__date {
     left: 14px;
