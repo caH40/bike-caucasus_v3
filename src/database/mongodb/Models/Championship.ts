@@ -46,6 +46,10 @@ const championshipSchema = new Schema<TChampionshipDocument>(
         absoluteGender: false,
       },
     },
+    startNumbers: {
+      start: { type: Number, default: 1 },
+      end: { type: Number, default: 100 },
+    },
     isCountedStageInGC: { type: Boolean, default: true },
     requiredStage: { type: Boolean, default: false },
     stageOrder: { type: Number, default: null },

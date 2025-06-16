@@ -249,6 +249,7 @@ export class ChampionshipService {
         isCountedStageInGC,
         requiredStage,
         client,
+        startNumbers,
       } = deserializeChampionship(serializedFormData);
 
       // Проверка на дубликат названия Чемпионата.
@@ -291,6 +292,7 @@ export class ChampionshipService {
         isCountedStageInGC,
         requiredStage,
         urlSlug,
+        startNumbers,
         ...(parentChampionshipId && {
           parentChampionship: parentChampionshipId,
         }),
@@ -355,6 +357,7 @@ export class ChampionshipService {
         requiredStage,
         racePointsTable,
         client,
+        startNumbers,
       } = deserializeChampionship(serializedFormData);
 
       const championshipDB: TChampionshipDocument | null = await ChampionshipModel.findOne({
@@ -394,6 +397,7 @@ export class ChampionshipService {
         awardedProtocols,
         isCountedStageInGC,
         requiredStage,
+        startNumbers,
         racePointsTable: racePointsTable || null,
         ...(posterUrl && { posterUrl }), // Обновление только если posterUrl не пуст
         ...(quantityStages && { quantityStages }),

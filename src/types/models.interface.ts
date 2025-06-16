@@ -339,7 +339,10 @@ export type TChampionship = {
   stageOrder: number | null; // Номер этапа, если это этап.
   parentChampionship: mongoose.Types.ObjectId | null; // Ссылка на родительскую страницу чемпионата, если это этап.
   racePointsTable: mongoose.Types.ObjectId | null; // Ссылка на таблицу начисления очков на этапах, если это родительский Чемпионат (series, tour)
-
+  startNumbers: {
+    start: number; // Начало нумерации стартового номера (включительно).
+    end: number; // Конец нумерации стартового номера (включительно).
+  };
   startDate: Date; // Дата начала чемпионата.
   endDate: Date; // Дата окончания чемпионата.
   races: mongoose.Types.ObjectId[];
