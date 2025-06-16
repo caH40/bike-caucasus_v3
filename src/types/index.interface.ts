@@ -860,7 +860,7 @@ export interface TUserModeratedData {
  */
 export type TChampionshipForRegistered = Pick<
   TChampionship,
-  '_id' | 'name' | 'type' | 'startDate' | 'endDate'
+  '_id' | 'name' | 'type' | 'startDate' | 'endDate' | 'startNumbers'
 > & {
   races: TRaceWithCategories[];
 };
@@ -1241,6 +1241,7 @@ export type TFormRaceRegistrationProps = {
   categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & {
     _id: string;
   })[];
+  startNumbersLists: TGetStartNumbers;
 };
 
 export type TDocumentSectionContent = {
@@ -1477,3 +1478,8 @@ export type TMailServiceParams = {
  * Ключи отправляемых стандартных писем.
  */
 export type TMailTarget = 'registration' | 'resetPassword' | 'savedNewPassword' | 'newUser';
+
+/**
+ * Возвращаемые данные методом getStartNumbers класса RegistrationChampService.
+ */
+export type TGetStartNumbers = { free: number[]; occupied: number[] };

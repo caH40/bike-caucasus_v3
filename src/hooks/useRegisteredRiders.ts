@@ -9,7 +9,6 @@ import { getRegisteredRidersRace } from '@/actions/registration-champ';
  */
 export const useRegisteredRiders = (raceId: string) => {
   const setRegisteredRiders = useRegistrationRace((state) => state.setRegisteredRiders);
-  const trigger = useRegistrationRace((state) => state.trigger);
 
   useEffect(() => {
     async function fetchRegisteredRiders() {
@@ -25,5 +24,5 @@ export const useRegisteredRiders = (raceId: string) => {
     if (raceId) {
       fetchRegisteredRiders();
     }
-  }, [raceId, setRegisteredRiders, trigger]);
+  }, [raceId, setRegisteredRiders]);
 };

@@ -6,7 +6,7 @@ import { getChampionshipPagesTitleName } from '../../utils';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getProfileForReg } from '@/actions/user';
 import { generateMetadataChampRegistration } from '@/meta/meta';
-import { checkRegisteredInChamp } from '@/actions/registration-champ';
+import { checkRegisteredInChamp, getStartNumbersLists } from '@/actions/registration-champ';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import FormRaceRegistration from '@/components/UI/Forms/FormRaceRegistration/FormRaceRegistration';
 import ContainerTableRegisteredRace from '@/components/Table/Containers/RegisteredRace/RegisteredRace';
@@ -39,13 +39,14 @@ export default async function Registration(props: Props) {
   const session = await getServerSession(authOptions);
   const idRiderDB = session?.user?.idDB;
 
-  const [profile, championshipResponse] = await Promise.all([
+  const [profile, championshipResponse, startNumbersLists] = await Promise.all([
     getProfileForReg({ idDB: idRiderDB }),
     getChampionship({ urlSlug }),
+    getStartNumbersLists({ urlSlug }),
   ]);
 
   const { data: championship } = championshipResponse;
-  if (!championship) {
+  if (!championship || !startNumbersLists.data) {
     return <h2>Не получены данные с сервера о Чемпионате </h2>;
   }
 
@@ -92,6 +93,7 @@ export default async function Registration(props: Props) {
                     championshipId={championship._id}
                     races={championship.races}
                     categoriesConfigs={championship.categoriesConfigs}
+                    startNumbersLists={startNumbersLists.data}
                   />
                 ) : (
                   <BlockMessage>

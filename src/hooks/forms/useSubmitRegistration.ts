@@ -11,7 +11,7 @@ import {
   TProfileKey,
 } from '@/types/index.interface';
 import { useLoadingStore } from '@/store/loading';
-import { useRegistrationRace } from '@/store/registration-race';
+import { useRouter } from 'next/navigation';
 
 type Params = {
   championshipId: string;
@@ -24,8 +24,8 @@ export function useSubmitRegistration({
   profile,
   reset,
 }: Params): SubmitHandler<TFormRaceRegistration> {
+  const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
-  const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
 
   return async (dataForm) => {
     try {
@@ -39,7 +39,7 @@ export function useSubmitRegistration({
         }
       }
       setLoading(true);
-      toggleTrigger();
+
       const response = await registerForChampionship({
         championshipId,
         raceId: dataForm.raceId,
@@ -50,7 +50,7 @@ export function useSubmitRegistration({
 
       // Завершение отображение статуса загрузки.
       setLoading(false);
-
+      router.refresh();
       // Отображение статуса сохранения События в БД.
       if (!response.ok) {
         throw new Error(response.message);

@@ -10,7 +10,7 @@ import IconDelete from '../Icons/IconDelete';
 import { putRegistrationRiderChamp } from '@/actions/registration-champ';
 import { useLoadingStore } from '@/store/loading';
 import styles from './BlockRegRaceStatus.module.css';
-import { useRegistrationRace } from '@/store/registration-race';
+import { useRouter } from 'next/navigation';
 
 const cx = cn.bind(styles);
 
@@ -33,7 +33,7 @@ export default function BlockRegRaceStatus({
   showBtn,
 }: Props) {
   const setLoading = useLoadingStore((state) => state.setLoading);
-  const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
+  const router = useRouter();
 
   const { data: session } = useSession();
   const idDB = session?.user.idDB;
@@ -61,7 +61,7 @@ export default function BlockRegRaceStatus({
 
     if (res.ok) {
       toast.success(res.message);
-      toggleTrigger();
+      router.refresh();
     } else {
       toast.error(res.message);
     }

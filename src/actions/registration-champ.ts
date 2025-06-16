@@ -17,6 +17,7 @@ import type {
 import type {
   ServerResponse,
   TChampionshipForRegisteredClient,
+  TGetStartNumbers,
   TRegistrationRaceDataFromForm,
 } from '@/types/index.interface';
 import type { TRaceRegistrationStatus } from '@/types/models.interface';
@@ -190,6 +191,26 @@ export async function checkRegisteredInChamp({
     });
 
     return registeredInChamp;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
+ * Экшен получения свободных стартовых номеров в Чемпионате.
+ * На все заезды в чемпионате (single, stage) единый диапазон номеров.
+ */
+export async function getStartNumbersLists({
+  urlSlug,
+}: {
+  urlSlug: string;
+}): Promise<ServerResponse<TGetStartNumbers | null>> {
+  'use server';
+  try {
+    const startNumbers = await regService.getStartNumbers(urlSlug);
+
+    return startNumbers;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

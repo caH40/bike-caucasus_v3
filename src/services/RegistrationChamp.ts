@@ -18,6 +18,7 @@ import type {
   ServerResponse,
   TChampionshipForRegistered,
   TChampionshipForRegisteredClient,
+  TGetStartNumbers,
   TRaceWithCategories,
   TRegisteredRiderFromDB,
   TRegistrationRiderFromDB,
@@ -393,6 +394,53 @@ export class RegistrationChampService {
   }
 
   /**
+   * Получение свободных стартовых номеров в Чемпионате.
+   * На все заезды в чемпионате (single, stage) единый диапазон номеров.
+   */
+  public async getStartNumbers(
+    urlSlug: string
+  ): Promise<ServerResponse<TGetStartNumbers | null>> {
+    try {
+      const champ = await this.getChampionshipData({ urlSlug });
+
+      // Зарегистрированные райдеры в чемпионате во всех заездах.
+      const registeredRiders = await RaceRegistrationModel.find(
+        {
+          championship: champ.championshipId,
+        },
+        { _id: false, startNumber: true }
+      ).lean<{ startNumber: number }[]>();
+
+      // Список занятых стартовых номеров.
+      const occupiedStartNumbers = registeredRiders
+        .map((r) => r.startNumber)
+        .filter((r) => Boolean(r))
+        .sort((a, b) => a - b);
+
+      // Инициализация массива свободных стартовых номеров.
+      const freeStartNumbers: number[] = [];
+
+      const { start, end } = champ.championship.startNumbers;
+
+      for (let i = start; i <= end; i++) {
+        // Если номер не занят то добавляем в список свободных стартовых номеров.
+        if (!occupiedStartNumbers.includes(i)) {
+          freeStartNumbers.push(i);
+        }
+      }
+
+      return {
+        data: { free: freeStartNumbers, occupied: occupiedStartNumbers },
+        ok: true,
+        message: `Свободные и занятые стартовые номера во всех заездах чемпионата "${champ.championship.name}"`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
    * Получение основных данных чемпионата (Этапа).
    * Если raceId существует, значит получение необходимы данные только этого заезда.
    * Если raceId === undefined значит необходимы данные всех заездов.
@@ -418,6 +466,7 @@ export class RegistrationChampService {
         _id: true,
         name: true,
         type: true,
+        startNumbers: true,
         startDate: true,
         endDate: true,
       }
@@ -441,6 +490,7 @@ export class RegistrationChampService {
       type: champDB.type,
       startDate: champDB.startDate,
       endDate: champDB.endDate,
+      startNumbers: champDB.startNumbers,
     };
 
     return { championship, races, championshipId: champDB._id };

@@ -7,20 +7,22 @@ import { useEffect, useMemo } from 'react';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import Button from '../../Button/Button';
 import BoxInput from '../../BoxInput/BoxInput';
-import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
+import {
+  createCategoryOptions,
+  createStartNumbersOptions,
+} from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
-import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import { initRegChampForm } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
+import { useCategoryName } from '@/hooks/useCategoryName';
+import { useSubmitRegistration } from '@/hooks/forms/useSubmitRegistration';
 import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 import RaceSelectButtons from '@/UI/RaceSelectButtons/RaceSelectButtons';
 import styles from '../Form.module.css';
 
 // types
 import { TFormRaceRegistrationProps, TFormRaceRegistration } from '@/types/index.interface';
-import { useCategoryName } from '@/hooks/useCategoryName';
-import { useSubmitRegistration } from '@/hooks/forms/useSubmitRegistration';
 
 const textValidation = new TextValidationService();
 
@@ -29,11 +31,13 @@ export default function FormRaceRegistration({
   races,
   profile,
   categoriesConfigs,
+  startNumbersLists,
 }: TFormRaceRegistrationProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
-  const selectOptions = useRegistrationRace((state) => state.selectOptions);
-  const startNumberFree = useRegistrationRace((state) => state.startNumberFree);
+  const selectOptions = createStartNumbersOptions(startNumbersLists.free);
+  // const selectOptions = useRegistrationRace((state) => state.selectOptions);
+  const startNumberFree = startNumbersLists.free[0];
 
   const {
     register,
