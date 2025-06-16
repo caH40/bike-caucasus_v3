@@ -15,7 +15,7 @@ export const championshipTypes: TOptions[] = [
  */
 export const championshipTypesMap: TOptionsMap = new Map([
   ['single', { translation: 'Соревнование' }],
-  ['series', { translation: 'Серия' }],
+  ['series', { translation: 'Серия заездов' }],
   ['tour', { translation: 'Тур' }],
   ['stage', { translation: 'Этап' }],
 ]);

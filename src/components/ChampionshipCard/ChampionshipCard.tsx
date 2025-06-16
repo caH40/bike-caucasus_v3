@@ -17,9 +17,10 @@ const cx = cn.bind(styles);
 type Props = {
   championship: TDtoChampionship;
   simple?: boolean; // Используется для Этапа
+  hasStages?: boolean; // Чемпионат Серия заездов или Тур (есть ли этапы). Отличаются отображаемые поля.
 };
 
-export default function ChampionshipCard({ championship, simple }: Props) {
+export default function ChampionshipCard({ championship, simple, hasStages }: Props) {
   const bike = bikeTypesMap.get(championship.bikeType);
   const IconBike = bike?.icon || null;
 
@@ -98,25 +99,30 @@ export default function ChampionshipCard({ championship, simple }: Props) {
             )}
 
             {/* До появления протокола указывать количество зарегистрировавшихся, после протоколов - количество участвовавших участников */}
-            {['completed', 'cancelled'].includes(championship.status) ? (
+
+            {!hasStages && (
               <>
-                <dt className={styles.list__name}>Участники:</dt>
-                <dd className={styles.list__desc}>
-                  {championship.races.reduce(
-                    (acc, cur) => (acc += cur.quantityRidersFinished),
-                    0
-                  )}
-                </dd>
-              </>
-            ) : (
-              <>
-                <dt className={styles.list__name}>Зарегистрировано:</dt>
-                <dd className={styles.list__desc}>
-                  {championship.races.reduce(
-                    (acc, cur) => (acc += cur.registeredRiders.length),
-                    0
-                  )}
-                </dd>
+                {['completed', 'cancelled'].includes(championship.status) ? (
+                  <>
+                    <dt className={styles.list__name}>Участники:</dt>
+                    <dd className={styles.list__desc}>
+                      {championship.races.reduce(
+                        (acc, cur) => (acc += cur.quantityRidersFinished),
+                        0
+                      )}
+                    </dd>
+                  </>
+                ) : (
+                  <>
+                    <dt className={styles.list__name}>Зарегистрировано:</dt>
+                    <dd className={styles.list__desc}>
+                      {championship.races.reduce(
+                        (acc, cur) => (acc += cur.registeredRiders.length),
+                        0
+                      )}
+                    </dd>
+                  </>
+                )}
               </>
             )}
           </dl>
@@ -128,13 +134,11 @@ export default function ChampionshipCard({ championship, simple }: Props) {
           'wrapper__stages-simple': simple,
         })}
       >
-        {/* {!simple && !!championship.stageDateDescription && ( */}
-
         <div className={cx('block__stages')}>
           {!simple && <h3 className={styles.title__stages}>Этапы:</h3>}
           <StagesBox stages={championship.stageDateDescription} />
           <div className={styles.stages__completed}>
-            <span>завершено этапов: </span>
+            <span>{simple ? 'завершено:' : 'завершено этапов: '}</span>
             <span>{getStagesCompleted({ stages: championship.stageDateDescription })}</span>
           </div>
         </div>

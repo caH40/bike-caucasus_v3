@@ -6,6 +6,7 @@ import { getChampionships } from '@/actions/championship';
 import ChampionshipCard from '@/components/ChampionshipCard/ChampionshipCard';
 import AdContainer from '@/components/AdContainer/AdContainer';
 import styles from './Championships.module.css';
+import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
 
 // Создание meta данных.
 export const metadata: Metadata = metadataChampionships;
@@ -24,7 +25,11 @@ export default async function ChampionshipsPage() {
         <div className={styles.wrapper__cards}>
           {championships.data &&
             championships.data.map((champ) => (
-              <ChampionshipCard championship={champ} key={champ._id} />
+              <ChampionshipCard
+                championship={champ}
+                key={champ._id}
+                hasStages={isChampionshipWithStages(champ.type)}
+              />
             ))}
         </div>
       </div>
