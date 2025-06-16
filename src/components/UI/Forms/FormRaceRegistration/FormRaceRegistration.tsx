@@ -1,6 +1,6 @@
 'use client';
 
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useEffect, useMemo } from 'react';
 
@@ -9,22 +9,18 @@ import Button from '../../Button/Button';
 import BoxInput from '../../BoxInput/BoxInput';
 import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
 import { useLoadingStore } from '@/store/loading';
-import { registerForChampionship } from '@/actions/registration-champ';
 import { useRegistrationRace } from '@/store/registration-race';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
-import { initRegChampForm, validateRequiredFields } from './utils';
+import { initRegChampForm } from './utils';
 import { TextValidationService } from '@/libs/utils/text';
 import BlockProfileRegRace from '@/components/BlockProfileRegRace/BlockProfileRegRace';
 import RaceSelectButtons from '@/UI/RaceSelectButtons/RaceSelectButtons';
 import styles from '../Form.module.css';
 
 // types
-import {
-  TFormRaceRegistrationProps,
-  TFormRaceRegistration,
-  TProfileKey,
-} from '@/types/index.interface';
+import { TFormRaceRegistrationProps, TFormRaceRegistration } from '@/types/index.interface';
 import { useCategoryName } from '@/hooks/useCategoryName';
+import { useSubmitRegistration } from '@/hooks/forms/useSubmitRegistration';
 
 const textValidation = new TextValidationService();
 
@@ -34,9 +30,7 @@ export default function FormRaceRegistration({
   profile,
   categoriesConfigs,
 }: TFormRaceRegistrationProps) {
-  const toggleTrigger = useRegistrationRace((state) => state.toggleTrigger);
   const isLoading = useLoadingStore((state) => state.isLoading);
-  const setLoading = useLoadingStore((state) => state.setLoading);
 
   const selectOptions = useRegistrationRace((state) => state.selectOptions);
   const startNumberFree = useRegistrationRace((state) => state.startNumberFree);
@@ -80,43 +74,7 @@ export default function FormRaceRegistration({
   // Установка данных зарегистрированных райдеров в сторе, и генерация свободны стартовых номеров;
   useRegisteredRiders(raceId);
 
-  const onSubmit: SubmitHandler<TFormRaceRegistration> = async (dataForm) => {
-    try {
-      const profileEntries = Object.entries(profile) as [TProfileKey, string | undefined][];
-
-      for (const [key, value] of profileEntries) {
-        const res = validateRequiredFields(value, key);
-
-        if (!res.ok) {
-          throw new Error(res.message);
-        }
-      }
-      setLoading(true);
-      toggleTrigger();
-      const response = await registerForChampionship({
-        championshipId,
-        raceId: dataForm.raceId,
-        startNumber: +dataForm.startNumber,
-        teamVariable: dataForm.teamVariable,
-        categoryName: dataForm.categoryName,
-      });
-
-      // Завершение отображение статуса загрузки.
-      setLoading(false);
-
-      // Отображение статуса сохранения События в БД.
-      if (!response.ok) {
-        throw new Error(response.message);
-      }
-
-      reset({ teamVariable: '' });
-      toast.success(response.message);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    }
-  };
+  const onSubmit = useSubmitRegistration({ championshipId, profile, reset });
 
   // Формирования options для выбора категории райдера.
   const categoryOptions = useMemo(() => {

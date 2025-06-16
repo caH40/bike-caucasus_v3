@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { createOptionsStartNumbers } from '@/app/championships/registration/[urlSlug]/utils';
+import { createStartNumbersOptions } from '@/app/championships/registration/[urlSlug]/utils';
 import type { TRaceRegistrationDto } from '@/types/dto.types';
 import type { TOptions } from '@/types/index.interface';
 
@@ -33,7 +33,7 @@ export const useRegistrationRace = create<TRegistrationRace>((set, get) => ({
     set((state) => ({ trigger: !state.trigger }));
   },
 
-  selectOptions: createOptionsStartNumbers(initStartNumbersFree),
+  selectOptions: createStartNumbersOptions(initStartNumbersFree),
 
   // Свободный стартовый номер для инициализации Select. Так как формирование массива options
   // происходит не при монтировании компонента, а после получение данных выбранного Заезда в другом Select.
@@ -45,7 +45,7 @@ export const useRegistrationRace = create<TRegistrationRace>((set, get) => ({
       (elm) => !startNumbersOccupied.includes(elm)
     );
     set(() => ({
-      selectOptions: createOptionsStartNumbers(startNumbersFree),
+      selectOptions: createStartNumbersOptions(startNumbersFree),
       startNumberFree: startNumbersFree[0],
     }));
   },

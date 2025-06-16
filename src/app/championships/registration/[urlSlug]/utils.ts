@@ -5,7 +5,7 @@ import { TCategories } from '@/types/models.interface';
 /**
  * Создание массива option для Select выбора стартового номера.
  */
-export const createOptionsStartNumbers = (startNumbers: number[]): TOptions[] => {
+export const createStartNumbersOptions = (startNumbers: number[]): TOptions[] => {
   return startNumbers.map((number) => ({
     id: number,
     translation: number.toString(),
