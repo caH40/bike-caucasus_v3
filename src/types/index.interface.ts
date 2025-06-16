@@ -275,6 +275,21 @@ export type TMenuPopup = {
   icon?: React.ComponentType<TIconProps>;
 };
 
+export type TEmail = {
+  id: number;
+  name: string;
+  email: string;
+  icon?: React.ComponentType<TIconProps>;
+};
+
+export type TLinkWithImage = {
+  id: number;
+  href: string;
+  name: string;
+  src: string;
+  alt: string;
+};
+
 /**
  * Навигационные линки.
  */

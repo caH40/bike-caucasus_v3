@@ -1,10 +1,17 @@
-import Image from 'next/image';
-
+import {
+  mapNavLinksFull,
+  socialLinks,
+  supportEmails,
+  supportLinks,
+} from '@/constants/navigation';
+import { legalLinks } from '@/constants/navigation';
 import LogoMain from '../UI/LogoMain/LogoMain';
-import styles from './Footer.module.css';
 import NavBarFooter from '../UI/NavBarFooter/NavBarFooter';
-import NavBarFooterPolice from '../UI/NavBarFooter/NavBarFooterPolice';
+import styles from './Footer.module.css';
 
+/**
+ * Подвал сайта.
+ */
 const Footer = () => {
   return (
     <footer className={styles.footer}>
@@ -13,32 +20,30 @@ const Footer = () => {
           <LogoMain />
         </div>
 
-        {/* Колонка карта сайта, ссылки на все страницы сайта */}
+        {/* Колонка контактных данных поддержки и разработки */}
         <nav className={styles.block}>
-          <NavBarFooter />
+          <NavBarFooter
+            navLinks={[]}
+            title={'Техническая поддержка:'}
+            emails={supportEmails}
+            linksWithImage={supportLinks}
+          />
         </nav>
 
         {/* Колонка карта сайта, ссылки на все страницы сайта */}
         <nav className={styles.block}>
-          <NavBarFooterPolice />
+          <NavBarFooter title={'Карта сайта:'} navLinks={mapNavLinksFull} />
+        </nav>
+
+        {/* Колонка карта сайта, ссылки на все страницы сайта */}
+
+        <nav className={styles.block}>
+          <NavBarFooter title={'Документы:'} navLinks={legalLinks} />
         </nav>
 
         {/* Колонка социальные сети */}
         <nav className={styles.block}>
-          <h4 className={styles.title}>Соцсети:</h4>
-          <ul className={styles.list__social}>
-            <li className={styles.item}>
-              <a href="https://t.me/velokmv">
-                <Image
-                  width={24}
-                  height={24}
-                  className={styles.social__img}
-                  src="/images/icons/telegram.svg"
-                  alt="telegram"
-                />
-              </a>
-            </li>
-          </ul>
+          <NavBarFooter navLinks={[]} title={'Соцсети:'} linksWithImage={socialLinks} />
         </nav>
       </div>
 

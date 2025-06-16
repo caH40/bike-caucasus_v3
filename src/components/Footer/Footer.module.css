@@ -14,8 +14,8 @@
   gap: 1rem 40px;
 }
 .block {
-  flex: 0 1 340px;
-  min-width: 240px;
+  flex: 0 1 280px;
+  min-width: 200px;
 }
 .list__social {
   max-width: 580px;

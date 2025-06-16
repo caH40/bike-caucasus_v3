@@ -5,7 +5,7 @@
 }
 .list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 170px);
+  grid-template-columns: repeat(auto-fit, 220px);
   grid-gap: 8px 20px;
 }
 .link {
@@ -20,4 +20,9 @@
 }
 .active {
   color: #39a034;
+}
+.link__image {
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }

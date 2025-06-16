@@ -11,7 +11,13 @@ import IconUser from '@/components/Icons/IconUser';
 import IconWrench from '@/components/Icons/IconWrench';
 import { deleteItem } from '@/components/UI/BlockModeration/delete';
 import { upsertItem } from '@/components/UI/BlockModeration/upsert';
-import type { TClientMeta, TMenuOnPage, TMenuPopup } from '@/types/index.interface';
+import type {
+  TClientMeta,
+  TEmail,
+  TLinkWithImage,
+  TMenuOnPage,
+  TMenuPopup,
+} from '@/types/index.interface';
 
 /**
  * Главное меню навигации сайта в мобильной версии.
@@ -66,26 +72,69 @@ export const getNavLinksUserPopup = (userId: string | undefined): TMenuPopup[] =
  */
 export const getNavLinksChampionshipsPopup = (): TMenuPopup[] => [
   {
-    id: 0,
+    id: 100,
     name: 'Чемпионаты',
     href: '/championships',
     permission: '',
     icon: IconChampionship,
   },
   {
-    id: 1,
+    id: 101,
     name: 'Календарь',
     href: '/calendar',
     permission: '',
     icon: IconCalendar,
   },
   {
-    id: 2,
+    id: 103,
     name: 'Организаторы',
     href: '/organizers',
     permission: '',
     icon: IconOrganizers,
   },
+];
+
+export const supportEmails: TEmail[] = [
+  {
+    id: 0,
+    name: 'support@bike-caucasus.ru',
+    email: 'support@bike-caucasus.ru',
+  },
+];
+
+export const supportLinks: TLinkWithImage[] = [
+  {
+    id: 0,
+    href: 'https://t.me/Aleksandr_BV',
+    name: 'Разработчик',
+    src: '/images/icons/telegram.svg',
+    alt: 'Telegram',
+  },
+];
+
+export const socialLinks: TLinkWithImage[] = [
+  {
+    id: 0,
+    href: 'https://t.me/velokmv',
+    name: 'Велотренировки на КМВ',
+    src: '/images/icons/telegram.svg',
+    alt: 'Telegram',
+  },
+  {
+    id: 1,
+    href: 'https://t.me/meetupkmv',
+    name: 'Объявления о совместных заездах',
+    src: '/images/icons/telegram.svg',
+    alt: 'Telegram',
+  },
+];
+
+// навигация по страницам
+export const mapNavLinksFull: TMenuPopup[] = [
+  { id: 0, name: 'Главная', href: '/', permission: null },
+  { id: 1, name: 'Вебкамеры', href: '/webcam', permission: null },
+  { id: 2, name: 'Маршруты', href: '/trails', permission: null },
+  ...getNavLinksChampionshipsPopup(),
 ];
 
 // навигация по страницам
