@@ -278,6 +278,7 @@ export class ChampionshipService {
         parentChampionshipId,
         champName: name,
       });
+      // console.log(startNumbers);
 
       const createData: Partial<TChampionshipForSave> = {
         name,

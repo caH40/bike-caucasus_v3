@@ -41,6 +41,15 @@ export function serializationChampionshipMain({
   if (client) {
     formData.set('client', JSON.stringify(client));
   }
+  if (dataForm.startNumbers) {
+    formData.set(
+      'startNumbers',
+      JSON.stringify({
+        start: Number(dataForm.startNumbers.start),
+        end: Number(dataForm.startNumbers.end),
+      })
+    );
+  }
 
   if (dataForm.racePointsTable) {
     formData.set('racePointsTable', dataForm.racePointsTable);

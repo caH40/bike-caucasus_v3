@@ -54,6 +54,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
   return {
     _id: String(championship._id),
     organizer,
+    startNumbers: championship.startNumbers,
     parentChampionship,
     name: championship.name,
     urlSlug: championship.urlSlug,

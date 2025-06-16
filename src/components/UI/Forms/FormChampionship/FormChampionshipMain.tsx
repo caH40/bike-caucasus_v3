@@ -71,6 +71,9 @@ export default function FormChampionshipMain({
       racePointsTable: championshipForEdit?.racePointsTable?._id
         ? championshipForEdit.racePointsTable?._id
         : '',
+      startNumbers: championshipForEdit?.startNumbers
+        ? championshipForEdit.startNumbers
+        : { start: 1, end: 100 },
     },
   });
 
@@ -353,6 +356,48 @@ export default function FormChampionshipMain({
           validationText={errors.bikeType ? errors.bikeType.message : ''}
           tooltip={{ text: t.tooltips.bikeType, id: 'bikeType' }}
         />
+
+        {/* не отображать для Серии и Тура. Будет устанавливаться в каждом этапе */}
+        {!showQuantityStage && (
+          <>
+            {/* Блок ввода начала диапазона стартовых номеров */}
+            <BoxInput
+              label={t.labels.startNumbersStart}
+              id="startNumbers-start"
+              autoComplete="off"
+              step={1}
+              min={1}
+              type="number"
+              loading={isLoading}
+              register={register('startNumbers.start', {
+                required: t.required,
+              })}
+              validationText={errors.startNumbers?.start?.message || ''}
+            />
+
+            {/* Блок ввода конца диапазона стартовых номеров */}
+            <BoxInput
+              label={t.labels.startNumbersEnd}
+              id="startNumbers-end"
+              autoComplete="off"
+              step={1}
+              min={2}
+              type="number"
+              loading={isLoading}
+              register={register('startNumbers.end', {
+                required: t.required,
+                validate: (endValue) => {
+                  const start = watch('startNumbers.start');
+                  if (Number(endValue) <= Number(start)) {
+                    return 'Конечное число должно быть больше начального';
+                  }
+                  return true;
+                },
+              })}
+              validationText={errors.startNumbers?.end?.message || ''}
+            />
+          </>
+        )}
       </div>
 
       {showQuantityStage && (

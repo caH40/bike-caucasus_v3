@@ -2,12 +2,11 @@ import mongoose, { Schema, model, models, Model } from 'mongoose';
 
 // types
 import { TChampionshipDocument } from '@/types/models.interface';
-import { AwardedProtocolsSchema } from './Schema/AawardedProtocols';
+import { AwardedProtocolsSchema } from './Schema/AwardedProtocols';
 
 /**
  * Схема для чемпионата.
  */
-
 const championshipSchema = new Schema<TChampionshipDocument>(
   {
     // Название может быть не уникальным,

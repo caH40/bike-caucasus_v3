@@ -69,6 +69,12 @@ export function deserializeChampionship(serializedFormData: FormData) {
                 return JSON.parse(value);
               }
 
+            // Если ключ registeredRiders парсить.
+            case 'startNumbers':
+              if (typeof value === 'string') {
+                return JSON.parse(value);
+              }
+
             // Если ключ categoriesAgeFemale парсить.
             case 'categoriesAgeFemale':
               if (typeof value === 'string') {
