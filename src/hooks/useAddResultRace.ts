@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { UseFormReset, UseFormSetValue } from 'react-hook-form';
 
 import type { TRaceRegistrationDto } from '@/types/dto.types';
-import type { TFormResultRace } from '@/types/index.interface';
+import type { TFormResultRace, TOptions } from '@/types/index.interface';
 import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
+import { addStartNumberOption } from '@/libs/utils/championship/registration';
 
 type Props = {
   startNumberRegisteredInRace: number;
@@ -12,6 +13,7 @@ type Props = {
   setValue: UseFormSetValue<TFormResultRace>;
   reset: UseFormReset<TFormResultRace>;
   categorySkillLevelNames: string[]; // Названия skillLevel категорий для заезда.
+  setStartNumbersOptions: Dispatch<SetStateAction<TOptions[]>>;
 };
 
 type TSetValue = {
@@ -30,6 +32,7 @@ export function useAddResultRace({
   setValue,
   categorySkillLevelNames,
   reset,
+  setStartNumbersOptions,
 }: Props) {
   useEffect(() => {
     if (startNumberRegisteredInRace && startNumberRegisteredInRace !== 0) {
@@ -39,6 +42,13 @@ export function useAddResultRace({
 
       if (selectedRider) {
         setValue('riderRegisteredInRace.lastName', selectedRider.rider.lastName);
+        setValue('newStartNumber', startNumberRegisteredInRace);
+
+        // Добавление стартового номера участника, который был зарегистрирован и имел стартовый номер.
+        // Делается для отображения соответствующего номера в списке options поля выбора стартового номера.
+        setStartNumbersOptions((prev) =>
+          addStartNumberOption(prev, startNumberRegisteredInRace)
+        );
 
         // Заполнение полей в соответствии с выбранным стартовым номером зарегистрировавшегося райдера.
         setValueFields({ setValue, selectedRider, categorySkillLevelNames });

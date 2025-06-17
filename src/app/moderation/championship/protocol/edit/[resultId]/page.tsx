@@ -7,6 +7,7 @@ import { getOrganizerForModerate } from '@/actions/organizer';
 import styles from '../../../layout.module.css';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 import BlockMessage from '@/components/BlockMessage/BlockMessage';
+import { getStartNumbersLists } from '@/actions/registration-champ';
 
 type Props = {
   params: Promise<{
@@ -32,13 +33,15 @@ export default async function EditFinishProtocolPage(props: Props) {
       </>
     );
   }
+  const urlSlug = result.data.championship.urlSlug;
 
-  const [championship, organizer] = await Promise.all([
-    getChampionship({ urlSlug: result.data.championship.urlSlug, forModeration: true }),
+  const [championship, organizer, startNumbersLists] = await Promise.all([
+    getChampionship({ urlSlug, forModeration: true }),
     getOrganizerForModerate(),
+    getStartNumbersLists({ urlSlug }),
   ]);
 
-  if (!organizer.data || !championship.data) {
+  if (!organizer.data || !championship.data || !startNumbersLists.data) {
     return (
       <h2 className={styles.error}>
         Не найден Организатор, перед созданием Чемпионата необходимо создать Организатора!
@@ -74,7 +77,11 @@ export default async function EditFinishProtocolPage(props: Props) {
         title={`Редактирование результата райдера для чемпионата "${championship.data.name}"`}
         Icon={IconResults}
       />
-      <WrapperResultRaceEdit result={result.data} putResultRaceRider={putResultRaceRider} />
+      <WrapperResultRaceEdit
+        result={result.data}
+        putResultRaceRider={putResultRaceRider}
+        startNumbersLists={startNumbersLists.data}
+      />
     </>
   );
 }

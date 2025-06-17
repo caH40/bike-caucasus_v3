@@ -1,20 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import { ServerResponse, TCategoriesConfigNames, TGender } from '@/types/index.interface';
-import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
-import styles from './WrapperProtocolRaceEdit.module.css';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
 import { getRegisteredRidersChamp } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
 import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
 import { useResultsRace } from '@/store/results';
-import { toast } from 'sonner';
-import { createCategoryOptions } from '@/app/championships/registration/[urlSlug]/utils';
 import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
+import { createCategoryOptions } from '@/libs/utils/championship/registration';
+import styles from './WrapperProtocolRaceEdit.module.css';
+
+// types
+import {
+  ServerResponse,
+  TCategoriesConfigNames,
+  TGender,
+  TGetStartNumbers,
+} from '@/types/index.interface';
+import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 
 type Props = {
   championship: TDtoChampionship;
@@ -25,6 +32,7 @@ type Props = {
     dataFromFormSerialized: FormData;
   }) => Promise<ServerResponse<void>>;
   initialRaceId: string;
+  startNumbersLists: TGetStartNumbers;
 };
 
 /**
@@ -34,6 +42,7 @@ export default function WrapperProtocolRaceEdit({
   championship,
   postRiderRaceResult,
   initialRaceId,
+  startNumbersLists,
 }: Props) {
   const [raceId, setRaceId] = useState<string>(initialRaceId);
   const [registeredRiders, setRegisteredRiders] = useState<TRaceRegistrationDto[]>([]);
@@ -124,6 +133,7 @@ export default function WrapperProtocolRaceEdit({
         raceId={raceId}
         setTriggerResultTable={setTriggerResultTable}
         getCategoriesNameOptions={getCategoriesNameOptions}
+        startNumbersLists={startNumbersLists}
       />
 
       <ContainerProtocolRace

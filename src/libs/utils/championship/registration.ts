@@ -43,3 +43,25 @@ export const createCategoryOptions = (
 
   return [ageCategory, ...options];
 };
+
+/**
+ * Добавление option с номером зарегистрированного участника в массив options свободных стартовых номеров. Необходимо для отображение данного номера в поле select.
+ */
+export function addStartNumberOption(
+  options: TOptions[],
+  startNumberForAdd: number | string
+): TOptions[] {
+  // Исключение повторного добавления стартового номера зарегистрированного участника.
+  if (options.find((p) => p.id === +startNumberForAdd)) {
+    return options;
+  }
+
+  return [
+    ...options,
+    {
+      id: +startNumberForAdd,
+      translation: startNumberForAdd.toString(),
+      name: startNumberForAdd.toString(),
+    },
+  ].sort((a, b) => a.id - b.id);
+}

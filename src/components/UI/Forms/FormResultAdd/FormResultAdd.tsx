@@ -3,11 +3,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { useAddResultRace } from '@/hooks/useAddResultRace';
-import { TRaceRegistrationDto } from '@/types/dto.types';
-import { ServerResponse, TFormResultRace, TGender, TOptions } from '@/types/index.interface';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
-import BlockInputs from './BlockInputs/BlockInputs';
+import BlockInputsRegisteredRider from './BlockInputsRegisteredRider/BlockInputsRegisteredRider';
 import Button from '../../Button/Button';
+import { createStartNumbersOptions } from '@/libs/utils/championship/registration';
 import { timeDetailsToMilliseconds } from '@/libs/utils/date';
 import { useLoadingStore } from '@/store/loading';
 import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
@@ -19,6 +18,16 @@ import { useResetFormAddResultRace } from '@/hooks/useResetFormAddResultRace';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import styles from './FormResultAdd.module.css';
+
+// types
+import { TRaceRegistrationDto } from '@/types/dto.types';
+import {
+  ServerResponse,
+  TFormResultRace,
+  TGender,
+  TGetStartNumbers,
+  TOptions,
+} from '@/types/index.interface';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
@@ -32,6 +41,7 @@ type Props = {
   raceId: string;
   setTriggerResultTable: React.Dispatch<React.SetStateAction<boolean>>;
   getCategoriesNameOptions: (gender: TGender) => TOptions[];
+  startNumbersLists: TGetStartNumbers;
 };
 
 /**
@@ -44,8 +54,12 @@ export default function FormResultAdd({
   championshipId,
   setTriggerResultTable,
   getCategoriesNameOptions,
+  startNumbersLists,
 }: Props) {
-  // const isLoading = useLoadingStore((state) => state.isLoading);
+  const [startNumbersOptions, setStartNumbersOptions] = useState<TOptions[]>(
+    createStartNumbersOptions(startNumbersLists.free)
+  );
+
   const setLoading = useLoadingStore((state) => state.setLoading);
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
 
@@ -101,6 +115,7 @@ export default function FormResultAdd({
     setValue,
     reset,
     categorySkillLevelNames: categoriesNameOptions.map((c) => c.name),
+    setStartNumbersOptions,
   });
 
   // Обработка формы после нажатия кнопки "Отправить".
@@ -162,10 +177,12 @@ export default function FormResultAdd({
       {nameBtnFilter === 'search' && <BlockSearchRider setValue={setValue} />}
 
       {/* блок полей ввода данных райдера */}
-      <BlockInputs
+      <BlockInputsRegisteredRider
         register={register}
         errors={errors}
         startNumberRegisteredInRace={startNumberRegisteredInRace}
+        startNumberOptions={startNumbersOptions}
+        forCreate={true}
       />
 
       <div>

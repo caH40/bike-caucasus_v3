@@ -9,6 +9,7 @@ import { checkPermissionOrganizer } from '@/actions/permissions';
 import BlockMessage from '@/components/BlockMessage/BlockMessage';
 import Spacer from '@/components/Spacer/Spacer';
 import styles from '../../../layout.module.css';
+import { getStartNumbersLists } from '@/actions/registration-champ';
 
 type Props = {
   params: Promise<{
@@ -25,9 +26,10 @@ export default async function AddFinishProtocolPage(props: Props) {
 
   const { urlSlug, id } = params;
 
-  const [championship, organizer] = await Promise.all([
+  const [championship, organizer, startNumbersLists] = await Promise.all([
     getChampionship({ urlSlug, forModeration: true }),
     getOrganizerForModerate(),
+    getStartNumbersLists({ urlSlug }),
   ]);
 
   if (!organizer.data || !championship.data) {
@@ -36,6 +38,10 @@ export default async function AddFinishProtocolPage(props: Props) {
         Не найден Организатор, перед созданием Чемпионата необходимо создать Организатора!
       </h2>
     );
+  }
+
+  if (!startNumbersLists.data) {
+    return <h2>Не получены данные с сервера о Стартовых номерах</h2>;
   }
 
   if (['series', 'tour'].includes(championship.data.type)) {
@@ -97,6 +103,7 @@ export default async function AddFinishProtocolPage(props: Props) {
         postRiderRaceResult={postRiderRaceResult}
         championship={championship.data}
         initialRaceId={id}
+        startNumbersLists={startNumbersLists.data}
       />
     </>
   );

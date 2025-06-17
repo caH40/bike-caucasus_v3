@@ -1,16 +1,18 @@
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
+import { TFormResultRace, TOptions } from '@/types/index.interface';
+import { genderOptions } from '@/constants/other';
 import BoxInput from '../../../BoxInput/BoxInput';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-import { TFormResultRace } from '@/types/index.interface';
-import styles from './BlockInputs.module.css';
 import BoxSelectNew from '@/components/UI/BoxSelect/BoxSelectNew';
-import { genderOptions } from '@/constants/other';
+import styles from './BlockInputsRegisteredRider.module.css';
 
 type Props = {
   register: UseFormRegister<TFormResultRace>;
   errors: FieldErrors<TFormResultRace>;
   startNumberRegisteredInRace: number;
+  startNumberOptions: TOptions[];
+  forCreate?: boolean;
 };
 
 /**
@@ -20,6 +22,8 @@ export default function BlockInputsRegisteredRider({
   register,
   errors,
   startNumberRegisteredInRace,
+  startNumberOptions,
+  forCreate,
 }: Props) {
   return (
     <div className={styles.wrapper}>
@@ -70,38 +74,35 @@ export default function BlockInputsRegisteredRider({
           />
         </div>
 
-        <BoxInput
-          label={'Новый стартовый номер:'}
-          id="newStartNumber-BlockInputsRegisteredRider"
-          autoComplete="off"
-          type="number"
-          defaultValue={'0'}
-          register={register('newStartNumber', {
-            required:
-              startNumberRegisteredInRace === 0 || !startNumberRegisteredInRace
-                ? 'Заполните'
-                : '',
-            pattern: {
-              value: /^([0-9]|[0-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])$/,
-              message: '0-9999',
-            },
-            validate: (value) =>
-              (startNumberRegisteredInRace === 0 || !startNumberRegisteredInRace) &&
-              Number(value) === 0
-                ? 'Не может быть равно 0'
-                : true,
-          })}
-          validationText={errors.newStartNumber?.message}
-          hasError={!!errors.newStartNumber?.message}
-          hideCheckmark={true}
-        />
+        {forCreate ? (
+          <BoxSelectNew
+            label="Выбор нового стартового номера:"
+            id="newStartNumber"
+            options={startNumberOptions}
+            register={register('newStartNumber', {
+              required: !!startNumberRegisteredInRace
+                ? false
+                : 'Это обязательное поле для заполнения',
+            })}
+            validationText={errors.newStartNumber?.message || ''}
+          />
+        ) : (
+          <BoxSelectNew
+            label="Выбор стартового номера:"
+            id="riderRegisteredInRace-startNumber"
+            options={startNumberOptions}
+            register={register('riderRegisteredInRace.startNumber', {
+              required: 'Это обязательное поле для заполнения',
+            })}
+            validationText={errors.riderRegisteredInRace?.startNumber?.message || ''}
+          />
+        )}
 
         <div className={styles.wrapper__hor}>
           <BoxSelectNew
             label="Пол:*"
             id="gender-BlockInputsRegisteredRider"
             defaultValue={'мужской'}
-            // loading={loading}
             options={genderOptions}
             register={register('rider.gender')}
             validationText={errors.rider?.gender?.message}

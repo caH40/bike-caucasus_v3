@@ -10,7 +10,7 @@ import BoxInput from '../../BoxInput/BoxInput';
 import {
   createCategoryOptions,
   createStartNumbersOptions,
-} from '@/app/championships/registration/[urlSlug]/utils';
+} from '@/libs/utils/championship/registration';
 import { useLoadingStore } from '@/store/loading';
 import { useRegisteredRiders } from '@/hooks/useRegisteredRiders';
 import { initRegChampForm } from './utils';
