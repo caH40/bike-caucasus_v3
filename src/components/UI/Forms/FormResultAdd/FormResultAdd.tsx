@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -39,7 +40,6 @@ type Props = {
   }) => Promise<ServerResponse<void>>;
   championshipId: string;
   raceId: string;
-  setTriggerResultTable: React.Dispatch<React.SetStateAction<boolean>>;
   getCategoriesNameOptions: (gender: TGender) => TOptions[];
   startNumbersLists: TGetStartNumbers;
 };
@@ -52,7 +52,6 @@ export default function FormResultAdd({
   registeredRiders,
   raceId,
   championshipId,
-  setTriggerResultTable,
   getCategoriesNameOptions,
   startNumbersLists,
 }: Props) {
@@ -62,6 +61,8 @@ export default function FormResultAdd({
 
   const setLoading = useLoadingStore((state) => state.setLoading);
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
+
+  const router = useRouter();
 
   // Название активной кнопки для отображения соответствующих полей ввода в форме.
   const nameBtnFilter = buttonsForRiderRaceResult.find(
@@ -149,7 +150,8 @@ export default function FormResultAdd({
     if (response.ok) {
       reset();
       toast.success(response.message);
-      setTriggerResultTable((prev) => !prev);
+      router.refresh();
+      // setTriggerResultTable((prev) => !prev);
     } else {
       toast.error(response.message);
     }

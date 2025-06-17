@@ -873,7 +873,7 @@ export type TRaceWithCategories = Omit<TRace, 'categories'> & { categories: TCat
 export type TChampionshipForRegisteredClient = Omit<
   TChampionshipForRegistered,
   'races' | '_id'
->;
+> & { _id: string };
 
 /**
  * Протокол заезда с результатами райдеров.

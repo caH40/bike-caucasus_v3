@@ -109,6 +109,30 @@ export async function getRegisteredRidersChamp({
 }
 
 /**
+ * Экшен получение зарегистрированных Райдеров на Этап/Соревнования в заезде
+ * для создания финишных результатов.
+ */
+export async function getRegisteredRidersForProtocol({
+  urlSlug,
+  raceId,
+}: {
+  urlSlug: string;
+  raceId: string;
+}): Promise<ServerResponse<{ registeredRiders: TRaceRegistrationDto[] } | null>> {
+  try {
+    const response = await regService.getRegisteredRidersForProtocol({
+      urlSlug,
+      raceId,
+    });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
+
+/**
  * Экшен обновления данных по регистрации Райдера в Заезд Чемпионата.
  */
 export async function putRegistrationRiderChamp({

@@ -5,11 +5,10 @@ import { toast } from 'sonner';
 
 import BlockRaceInfo from '../BlockRaceInfo/BlockRaceInfo';
 import FormResultAdd from '../UI/Forms/FormResultAdd/FormResultAdd';
-import { getRegisteredRidersChamp } from '@/actions/registration-champ';
+import { getRegisteredRidersForProtocol } from '@/actions/registration-champ';
 import ContainerProtocolRace from '../Table/Containers/ProtocolRace/ContainerProtocolRace';
 import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
-import { useResultsRace } from '@/store/results';
 import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
 import { createCategoryOptions } from '@/libs/utils/championship/registration';
 import styles from './WrapperProtocolRaceEdit.module.css';
@@ -51,25 +50,23 @@ export default function WrapperProtocolRaceEdit({
     age: [],
     skillLevel: [],
   });
-  const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
-  const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
   const race = championship.races.find((race) => race._id === raceId);
 
   // Получение зарегистрированных участников в Заезде из БД.
   useEffect(() => {
-    getRegisteredRidersChamp({ urlSlug: championship.urlSlug, raceId })
+    getRegisteredRidersForProtocol({ urlSlug: championship.urlSlug, raceId })
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.message);
         }
         if (res.data) {
           // Берем 0 элемент, так как запрашиваем один конкретный заезд с номером raceNumber.
-          setRegisteredRiders(res.data.champRegistrationRiders[0].raceRegistrationRider);
+          setRegisteredRiders(res.data.registeredRiders);
         }
       })
       .catch((error) => toast.error(error.message));
-  }, [raceId, championship.urlSlug]);
+  }, [raceId, championship]);
 
   // Получение финишного протокола из БД.
   useEffect(() => {
@@ -80,7 +77,7 @@ export default function WrapperProtocolRaceEdit({
         setCategories(res.data.categories);
       }
     });
-  }, [raceId, triggerResultTable]);
+  }, [raceId, championship]);
 
   const raceInfo = {
     championshipId: championship._id,
@@ -131,7 +128,6 @@ export default function WrapperProtocolRaceEdit({
         registeredRiders={registeredRiders}
         championshipId={championship._id}
         raceId={raceId}
-        setTriggerResultTable={setTriggerResultTable}
         getCategoriesNameOptions={getCategoriesNameOptions}
         startNumbersLists={startNumbersLists}
       />

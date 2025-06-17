@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose, { ObjectId, Types } from 'mongoose';
 
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
@@ -32,6 +32,7 @@ import type {
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { TRegistrationStatusMongo } from '@/types/mongo.types';
 import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
+import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
 
 /**
  * Класс работы с сущностью Регистрация на Чемпионат.
@@ -180,6 +181,59 @@ export class RegistrationChampService {
         data: { champRegistrationRiders: registeredRiders, championship },
         ok: true,
         message: `Зарегистрированные райдеры на Чемпионат Этапа/Соревнования`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение зарегистрированных Райдеров на Этап/Соревнования в заезде
+   * для создания финишных результатов.
+   */
+  public async getRegisteredRidersForProtocol({
+    urlSlug,
+    raceId,
+  }: {
+    urlSlug: string;
+    raceId: string;
+  }): Promise<
+    ServerResponse<{
+      registeredRiders: TRaceRegistrationDto[];
+    } | null>
+  > {
+    try {
+      // Все зарегистрированные участники в заезде (raceId) чемпионата (urlSlug).
+      const registeredRides = await this.getRegisteredInChampRiders({ urlSlug, raceId });
+
+      if (!registeredRides.data) {
+        throw new Error(registeredRides.message);
+      }
+
+      const { championship, champRegistrationRiders } = registeredRides.data;
+
+      // Участники, результаты которых добавлены в финишный протокол.
+      const resultsDB = await ResultRaceModel.find(
+        {
+          championship: championship._id,
+          race: raceId,
+        },
+        { _id: false, rider: true }
+      ).lean<{ rider: Types.ObjectId }[]>();
+
+      // Берем [0] нулевой элемент массива заездов, так как заезд был один - запрашиваемый raceId, а не все заезды чемпионата (при отсутствии raceId).
+      const filteredRegisteredRides = champRegistrationRiders[0].raceRegistrationRider.filter(
+        (registration) =>
+          !resultsDB.some(
+            (result) => result.rider && result.rider.equals(registration.rider._id)
+          )
+      );
+
+      return {
+        data: { registeredRiders: filteredRegisteredRides },
+        ok: true,
+        message: `Зарегистрированные райдеры для формирования финишного протокола заезда.`,
       };
     } catch (error) {
       this.errorLogger(error);
@@ -486,6 +540,7 @@ export class RegistrationChampService {
       : champDB.races;
 
     const championship: TChampionshipForRegisteredClient = {
+      _id: champDB._id.toString(),
       name: champDB.name,
       type: champDB.type,
       startDate: champDB.startDate,

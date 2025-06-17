@@ -34,9 +34,7 @@ export default function FormRaceRegistration({
   startNumbersLists,
 }: TFormRaceRegistrationProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
-
   const selectOptions = createStartNumbersOptions(startNumbersLists.free);
-  // const selectOptions = useRegistrationRace((state) => state.selectOptions);
   const startNumberFree = startNumbersLists.free[0];
 
   const {

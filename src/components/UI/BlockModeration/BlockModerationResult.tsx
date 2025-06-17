@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 import IconEditOld from '@/components/Icons/IconEditOld';
 import IconDelete from '@/components/Icons/IconDelete';
 import { deleteResult } from '@/actions/result-race';
-import { useResultsRace } from '@/store/results';
 import styles from './BlockModeration.module.css';
 
 type Props = {
@@ -16,7 +15,6 @@ type Props = {
  */
 export default function BlockModerationResult({ resultIdDB }: Props): JSX.Element {
   const router = useRouter();
-  const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
 
   const editItem = (id: string) => {
     router.push(`/moderation/championship/protocol/edit/${id}`);
@@ -31,7 +29,7 @@ export default function BlockModerationResult({ resultIdDB }: Props): JSX.Elemen
 
     if (res.ok) {
       toast.success(res.message);
-      setTriggerResultTable();
+      router.refresh();
     } else {
       toast.error(res.message);
     }
