@@ -105,6 +105,7 @@ export default function FormResultAdd({
 
   // Фамилия у зарегистрированного в Заезде райдера.
   const lastNameRegisteredInRace = watch('riderRegisteredInRace.lastName');
+
   // Измененный стартовый номер.
   const newStartNumber = watch('newStartNumber');
 
@@ -151,7 +152,6 @@ export default function FormResultAdd({
       reset();
       toast.success(response.message);
       router.refresh();
-      // setTriggerResultTable((prev) => !prev);
     } else {
       toast.error(response.message);
     }

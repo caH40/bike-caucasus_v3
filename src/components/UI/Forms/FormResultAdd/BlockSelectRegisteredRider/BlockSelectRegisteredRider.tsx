@@ -5,6 +5,7 @@ import Select from '@/components/UI/Select/Select';
 import { TFormResultRace } from '@/types/index.interface';
 import { TRaceRegistrationDto } from '@/types/dto.types';
 import styles from './BlockSelectRegisteredRider.module.css';
+import { createOptionsForRegisteredRiderSelect } from '@/libs/utils/championship/registration';
 
 type Props = {
   control: Control<TFormResultRace>;
@@ -20,19 +21,8 @@ export default function BlockSelectRegisteredRider({
   control,
   newStartNumber,
 }: Props) {
-  // Создание массива опций для селекта райдера;
-  const optionsStartNumber = registeredRiders.map((elm) => ({
-    id: elm.rider.id,
-    translation: String(elm.startNumber),
-    name: String(elm.startNumber),
-  }));
-
-  // Создание массива опций для селекта райдера;
-  const optionsRiderName = registeredRiders.map((elm) => ({
-    id: elm.rider.id,
-    translation: elm.rider.lastName,
-    name: elm.rider.lastName,
-  }));
+  const { optionsStartNumber, optionsRiderName } =
+    createOptionsForRegisteredRiderSelect(registeredRiders);
 
   return (
     <Wrapper hSize={3} title="Выбор зарегистрированного в Заезде райдера">

@@ -1,4 +1,5 @@
 import { DEFAULT_AGE_NAME_CATEGORY } from '@/constants/category';
+import { TRaceRegistrationDto } from '@/types/dto.types';
 import type { TOptions } from '@/types/index.interface';
 import { TCategories } from '@/types/models.interface';
 
@@ -64,4 +65,25 @@ export function addStartNumberOption(
       name: startNumberForAdd.toString(),
     },
   ].sort((a, b) => a.id - b.id);
+}
+/**
+ * Создание массива опций для компонента BlockSelectRegisteredRider селекта райдера;
+ *  */
+export function createOptionsForRegisteredRiderSelect(
+  registeredRiders: TRaceRegistrationDto[]
+) {
+  const optionsStartNumber = registeredRiders.map((elm) => ({
+    id: elm.rider.id,
+    translation: String(elm.startNumber),
+    name: String(elm.startNumber),
+  }));
+
+  // Создание массива опций для селекта райдера;
+  const optionsRiderName = registeredRiders.map((elm) => ({
+    id: elm.rider.id,
+    translation: elm.rider.lastName,
+    name: elm.rider.lastName,
+  }));
+
+  return { optionsStartNumber, optionsRiderName };
 }

@@ -65,8 +65,15 @@ export function useAddResultRace({
         (elm) => elm.rider.lastName === lastNameRegisteredInRace
       );
 
-      if (selectedRider?.startNumber) {
-        setValue('riderRegisteredInRace.startNumber', selectedRider.startNumber);
+      const startNumber = selectedRider?.startNumber;
+
+      if (startNumber) {
+        setValue('riderRegisteredInRace.startNumber', startNumber);
+        setValue('newStartNumber', startNumber);
+
+        // Добавление стартового номера участника, который был зарегистрирован и имел стартовый номер.
+        // Делается для отображения соответствующего номера в списке options поля выбора стартового номера.
+        setStartNumbersOptions((prev) => addStartNumberOption(prev, startNumber));
 
         // Заполнение полей в соответствии с выбранным стартовым номером зарегистрировавшегося райдера.
         setValueFields({ setValue, selectedRider, categorySkillLevelNames });
