@@ -38,10 +38,7 @@ export default async function ChampionshipPage(props: Props) {
 
   const { urlSlug } = params;
 
-  const [{ data: championship }, stagesResponse] = await Promise.all([
-    getChampionship({ urlSlug }),
-    getChampionships({ needTypes: ['stage'] }),
-  ]);
+  const { data: championship } = await getChampionship({ urlSlug });
 
   // Если не найден чемпионат, то на 404 страницу.
   if (!championship) {
@@ -51,6 +48,11 @@ export default async function ChampionshipPage(props: Props) {
   // Обновление статуса чемпионата.
   const champService = new ChampionshipService();
   await champService.updateStatusChampionship();
+
+  const stagesResponse = await getChampionships({
+    needTypes: ['stage'],
+    parentChampionshipId: championship._id,
+  });
 
   // !!! Продумать обработку или отображение ошибки.
   if (!stagesResponse.ok) {

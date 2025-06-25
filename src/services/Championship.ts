@@ -115,14 +115,19 @@ export class ChampionshipService {
     forModeration,
     needTypes,
     organizerId,
+    parentChampionshipId,
   }: {
     userIdDB?: string;
     forModeration?: boolean;
     needTypes?: TChampionshipTypes[];
     organizerId?: string;
+    parentChampionshipId?: string;
   }): Promise<ServerResponse<TDtoChampionship[] | null>> {
     try {
-      let query: any = { ...(needTypes && { type: needTypes }) };
+      let query: any = {
+        ...(needTypes && { type: needTypes }),
+        ...(parentChampionshipId && { parentChampionship: parentChampionshipId }),
+      };
 
       // Если запрос для модерации, значит необходимо вернуть Чемпионаты, созданные Организатором userIdDB, или их модераторами userIdDB.
       if (forModeration && userIdDB) {
