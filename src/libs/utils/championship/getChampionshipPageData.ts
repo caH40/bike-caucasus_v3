@@ -5,8 +5,8 @@ import { TChampionshipTypes } from '@/types/models.interface';
 import { isChampionshipWithStages } from './championship';
 
 type Params = {
-  parentChampionshipType: TChampionshipTypes | undefined;
-  parentChampionshipUrlSlug?: string;
+  parentChampionshipType: TChampionshipTypes | undefined; // Если это этап.
+  parentChampionshipUrlSlug?: string; // Если это этап.
   urlSlug: string;
   championshipType: TChampionshipTypes;
 };
@@ -20,10 +20,6 @@ export default function getChampionshipPageData({
   urlSlug,
   championshipType,
 }: Params) {
-  const hasStages =
-    !!parentChampionshipType &&
-    (parentChampionshipType === 'series' || parentChampionshipType === 'tour');
-
   // Выбор скрываемых кнопок в навигационном меню чемпионатов. Скрывать "Тура" или "Серия заездов".
   let hiddenStageItemNames = ['Этапы Серии заездов', 'Этапы Тура'];
 
@@ -34,10 +30,9 @@ export default function getChampionshipPageData({
 
   `Этапы ${parentChampionshipType === 'series' ? 'Серии заездов' : 'Тура'}`;
 
+  const hasStages = isChampionshipWithStages(championshipType);
   // Выбор скрываемых кнопок в навигационном меню чемпионатов. У тура и серии скрывается кнопка "Результаты".
-  const hiddenResultsItemName = isChampionshipWithStages(championshipType)
-    ? 'Результаты'
-    : 'Генеральная классификация';
+  const hiddenResultsItemName = hasStages ? 'Результаты' : 'Генеральная классификация';
 
   // Выбор скрываемых кнопок в навигационном меню чемпионатов. У тура и серии скрывается кнопка "Результаты".
   const hiddenRegisteredItemNames = ['tour', 'series'].includes(championshipType)
@@ -55,7 +50,9 @@ export default function getChampionshipPageData({
   });
 
   // Если серия или тур, то не отображать пункт меню "Финишные протоколы".
-  const hiddenItemNames = hasStages ? ['Финишные протоколы'] : [];
+  const hiddenItemNames = hasStages
+    ? ['Финишные протоколы']
+    : ['Обновление данных генеральной классификации'];
 
   return { hiddenItemNames, buttons };
 }
