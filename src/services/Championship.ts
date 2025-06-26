@@ -91,7 +91,7 @@ export class ChampionshipService {
         })
         .populate('racePointsTable')
         .populate('categoriesConfigs')
-        .populate('races')
+        .populate({ path: 'races', populate: 'trackDistance' })
         .lean<TChampionshipWithOrganizer>();
 
       if (!championshipDB) {

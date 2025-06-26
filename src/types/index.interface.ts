@@ -10,6 +10,7 @@ import type {
   UseFormRegister,
   UseFormRegisterReturn,
   UseFormReset,
+  UseFormSetValue,
 } from 'react-hook-form';
 import {
   IUserModel,
@@ -18,6 +19,7 @@ import {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TDistance,
   TGeneralClassification,
   TLogsErrorModel,
   TModeratorActionLog,
@@ -33,6 +35,7 @@ import {
 import { Dispatch, LegacyRef, MutableRefObject, SetStateAction } from 'react';
 import mongoose, { Types } from 'mongoose';
 import {
+  TDistanceDto,
   TDtoChampionship,
   TDtoOrganizer,
   TGeneralClassificationDto,
@@ -123,10 +126,10 @@ export type PropsSelect<T> = {
   loading?: boolean;
   options: { id: number; translation: string; name: string }[];
 };
-export type TOptions = {
+export type TOptions<T = string> = {
   id: number;
   translation: string;
-  name: string;
+  name: T;
   icon?: React.ComponentType<TIconProps>;
 };
 
@@ -529,8 +532,10 @@ export type TChampionshipWithOrganizer = Omit<
   stageDateDescription: TStageDateDescription[];
   parentChampionship: TParentChampionship;
   categoriesConfigs: TCategories[];
-  races: TRace[];
+  races: TRacesWithTDistance[];
 };
+
+export type TRacesWithTDistance = Omit<TRace, 'trackDistance'> & { trackDistance: TDistance };
 export type TParentChampionship = Pick<
   TChampionship,
   '_id' | 'name' | 'stageOrder' | 'type' | 'urlSlug'
@@ -664,7 +669,7 @@ export type TRegistrationRaceDataFromForm = {
 
 export type TRaceForForm = Omit<
   TRace,
-  '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories'
+  '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories' | 'trackDistance'
 > & {
   _id: string;
   championship: string;
@@ -673,6 +678,7 @@ export type TRaceForForm = Omit<
   trackGPX: TTrackGPXObj;
   categories: string; // _id конфига категорий.
   registeredRiders: string[];
+  trackDistance: string | null;
 };
 // FIXME: Разобраться с названиями TRaceForForm, TRaceForFormNew одна для запроса с клиента, другая для формы.
 export type TRaceForFormNew = Omit<
@@ -702,7 +708,7 @@ export type TRegistrationRiderFromDB = Pick<
     type: TChampionshipTypes;
     posterUrl: string;
   };
-  race: TRace;
+  race: TRacesWithTDistance;
   rider: IUserModel;
 };
 
@@ -943,6 +949,7 @@ export type TFormChampionshipRacesProps = {
   categoriesConfigs: TClientCategoriesConfigs[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
+  distances: TDistanceDto[];
 };
 
 /**
@@ -993,6 +1000,15 @@ export type TCContainerChampionshipFormsProps = {
   putCategories?: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
   putRaces?: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
   racePointsTables: TRacePointsTableDto[];
+  distances: TDistanceDto[];
+};
+
+export type TContainerDistanceFormsProps = {
+  postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+};
+export type TUseSubmitDistanceParams = {
+  postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+  reset: UseFormReset<TFormDistanceCreate>;
 };
 
 /**
@@ -1055,6 +1071,11 @@ export type TBlockRaceAddProps = {
   urlTracksForDel: MutableRefObject<string[]>;
   hideCategoryBlock?: boolean;
   categories: TOptions[];
+  distanceOptions: TOptions[];
+  distances: TDistanceDto[];
+  setValue: UseFormSetValue<{
+    races: TRaceForFormNew[];
+  }>;
 };
 
 /**
@@ -1421,7 +1442,8 @@ export type TServiceEntity =
   | 'raceResult'
   | 'comment'
   | 'racePointsTable'
-  | 'generalClassification';
+  | 'generalClassification'
+  | 'distance';
 
 /**
  * Данные девайса пользователя.
@@ -1483,3 +1505,24 @@ export type TMailTarget = 'registration' | 'resetPassword' | 'savedNewPassword' 
  * Возвращаемые данные методом getStartNumbers класса RegistrationChampService.
  */
 export type TGetStartNumbers = { free: number[]; occupied: number[] };
+
+/**
+ *  Тип дорожного покрытия маршрута.
+ */
+export type TSurfaceType = 'road' | 'gravel' | 'trail' | 'mixed' | 'dirt';
+
+/**
+ * Данные для формы создания Чемпионата.
+ */
+export type TFormDistanceCreate = Pick<
+  TDistance,
+  'name' | 'description' | 'isPublic' | 'surfaceType'
+> & {
+  creator: string;
+  trackGPXFile: File | null; // Трэк маршрута в GPX.
+};
+
+export type TrackStats = Pick<
+  TDistance,
+  'distanceInMeter' | 'ascentInMeter' | 'avgGrade' | 'lowestElev' | 'highestElev'
+>;

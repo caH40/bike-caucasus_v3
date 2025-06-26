@@ -18,6 +18,7 @@ import IconOrganizers from '@/components/Icons/IconOrganizers';
 import IconResults from '@/components/Icons/IconResults';
 
 import type { TMenuOnPage } from '@/types/index.interface';
+import IconDistance from '@/components/Icons/IconDistance';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -116,6 +117,14 @@ export const buttonsMenuModerationPage: TMenuOnPage[] = [
     href: '/moderation/organizer',
     permission: 'moderation.organizer',
     icon: IconOrganizers,
+  },
+  {
+    id: 5,
+    name: 'Дистанция',
+    classes: [],
+    href: '/moderation/distances',
+    permission: 'moderation.distances',
+    icon: IconDistance,
   },
 ];
 
@@ -308,5 +317,33 @@ export const buttonsMenuModerationChampionshipPage: TMenuOnPage[] = [
     href: '/moderation/championship/race-points-tables',
     permission: 'moderation.championship',
     icon: IconChampionship,
+  },
+];
+
+// Кнопки для меню на странице Дистанция /moderation/distances
+export const buttonsMenuModerationDistancesPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Создание',
+    classes: [],
+    href: '/moderation/distances/create',
+    permission: 'moderation.distances.create',
+    icon: IconAdd,
+  },
+  // {
+  //   id: 1,
+  //   name: 'Редактирование',
+  //   classes: [],
+  //   href: '/moderation/distances/edit',
+  //   permission: 'moderation.distances.edit',
+  //   icon: IconEdit,
+  // },
+  {
+    id: 2,
+    name: 'Список',
+    classes: [],
+    href: '/moderation/distances/list',
+    permission: 'moderation.distances.list',
+    icon: IconView,
   },
 ];

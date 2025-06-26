@@ -7,6 +7,7 @@ import t from '@/locales/ru/moderation/championship.json';
 
 import CContainerChampionshipForms from '@/components/ClientContainers/CContainerChampionshipForms/CContainerChampionshipForms';
 import { getRacePointsTables } from '@/actions/race-points-table';
+import { getAllDistances } from '@/actions/distance';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +15,10 @@ export const dynamic = 'force-dynamic';
  * Страница создания Чемпионатов.
  */
 export default async function ChampionshipCreatePage() {
-  const [{ data: organizer }, racePointsTables] = await Promise.all([
+  const [{ data: organizer }, racePointsTables, distances] = await Promise.all([
     getOrganizerForModerate(),
     getRacePointsTables(),
+    getAllDistances(),
   ]);
 
   if (!organizer) {
@@ -34,6 +36,7 @@ export default async function ChampionshipCreatePage() {
         fetchChampionshipCreated={fetchChampionshipCreated}
         parentChampionships={parentChampionships.data || []}
         racePointsTables={racePointsTables?.data || []}
+        distances={distances.data || []}
       />
     </>
   );

@@ -13,6 +13,7 @@ import {
   TChampionship,
   TChampionshipTypes,
   TDisqualification,
+  TDistance,
   TGeneralClassification,
   TLogsErrorModel,
   TModeratorActionLog,
@@ -408,4 +409,11 @@ export type TGetModeratorActionLogDto = Omit<
     };
   };
   timestamp: string;
+};
+
+export type TDistanceDto = Omit<TDistance, '_id' | 'creator' | 'updatedAt' | 'createdAt'> & {
+  _id: string;
+  creator: string;
+  updatedAt: string;
+  createdAt: string;
 };

@@ -13,6 +13,7 @@ import styles from '../ChampionshipEditPage.module.css';
 import CContainerChampionshipForms from '@/components/ClientContainers/CContainerChampionshipForms/CContainerChampionshipForms';
 import { getRacePointsTables } from '@/actions/race-points-table';
 import { getChampionshipPagesTitleName } from '@/app/championships/utils';
+import { getAllDistances } from '@/actions/distance';
 
 type Props = {
   params: Promise<{
@@ -30,10 +31,11 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
 
   // Получение чемпионата для редактирования.
   // Проверка прав пользователя на редактирование Чемпионата и получение данных Организатора.
-  const [championship, organizer, racePointsTables] = await Promise.all([
+  const [championship, organizer, racePointsTables, distances] = await Promise.all([
     getChampionship({ urlSlug, forModeration: true }),
     getOrganizerForModerate(),
     getRacePointsTables(),
+    getAllDistances(),
   ]);
 
   if (!organizer.data || !championship.data) {
@@ -55,7 +57,6 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
   }
 
   const parentChampionships = await getToursAndSeries({ organizerId: organizer.data._id });
-  // console.log(championship.data);
 
   return (
     <>
@@ -79,6 +80,7 @@ export default async function ChampionshipEditCurrentPage(props: Props) {
         parentChampionships={parentChampionships.data || []}
         organizer={organizer.data}
         racePointsTables={racePointsTables?.data || []}
+        distances={distances.data || []}
       />
     </>
   );

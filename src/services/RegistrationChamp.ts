@@ -343,7 +343,7 @@ export class RegistrationChampService {
           ],
           populate: { path: 'parentChampionship', select: ['name', 'urlSlug', 'type', '-_id'] },
         })
-        .populate('race')
+        .populate({ path: 'races', populate: 'trackDistance' })
         .populate('rider')
         .lean<TRegistrationRiderFromDB[]>();
 

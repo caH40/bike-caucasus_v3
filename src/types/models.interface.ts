@@ -6,7 +6,9 @@ import {
   TDeviceInfo,
   TFormCalendar,
   TLocationInfo,
+  TrackData,
   TServiceEntity,
+  TSurfaceType,
 } from './index.interface';
 
 /**
@@ -389,6 +391,7 @@ export type TRace = {
   registeredRiders: Types.ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
   categories: Types.ObjectId; // _id Пакета категорий для заезда.
   quantityRidersFinished: number; // Общее количество финишировавших.
+  trackDistance: Types.ObjectId; // Ссылка на объект дистанции из БД.
 };
 export type TRaceDocument = Omit<TRace, '_id'> & Document;
 
@@ -578,4 +581,27 @@ export type TModeratorActionLog = {
     deviceInfo?: TDeviceInfo;
     location?: TLocationInfo;
   }; // Информация о клиенте, с которого было выполнено действие.
+};
+
+/**
+ * Дистанция для заездов.
+ */
+export type TDistanceDocument = TDistance & Document;
+export type TDistance = {
+  _id: mongoose.Types.ObjectId; // Уникальный идентификатор дистанции.
+  creator: mongoose.Types.ObjectId; // Идентификатор пользователя, создавшего маршрут.
+  name: string; // Название маршрута.
+  description?: string; // Описание маршрута.
+  trackGPX: TTrackGPXObj; // Объект с GPX-данными маршрута.
+  distanceInMeter: number; // Общая длина маршрута в метрах.
+  ascentInMeter: number; // Общий набор высоты в метрах.
+  avgGrade: number; // Средний градиент (в процентах).
+  lowestElev: number; // Минимальная высота на маршруте (в метрах).
+  highestElev: number; // Максимальная высота на маршруте (в метрах).
+  surfaceType?: TSurfaceType; // Тип покрытия маршрута.
+  isPublic: boolean; // Публичная ли дистанция.
+  isElevationProfileReady: boolean; // Профиль высоты рассчитан и есть БД.
+  elevationProfile?: TrackData; // Профиль высоты (если требуется для графиков).
+  createdAt: Date; // Дата создания записи.
+  updatedAt: Date; // Дата последнего изменения.
 };

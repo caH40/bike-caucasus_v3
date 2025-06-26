@@ -23,6 +23,7 @@ import type {
 } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 
+
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
  */
