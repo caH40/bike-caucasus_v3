@@ -1,6 +1,9 @@
 import { model, models, Schema } from 'mongoose';
 
 import { TrackGPXSchema } from './Schema/TrackGPX';
+import { ElevationProfileSchema } from './Schema/ElevationProfile';
+
+// types
 import { TDistanceDocument } from '@/types/models.interface';
 
 /**
@@ -20,7 +23,7 @@ const DistanceSchema = new Schema<TDistanceDocument>(
     surfaceType: { type: String, enum: ['road', 'gravel', 'trail', 'mixed'], default: 'road' },
     isPublic: { type: Boolean, default: true },
     isElevationProfileReady: { type: Boolean, default: false },
-    elevationProfile: { type: [Number] },
+    elevationProfile: { type: ElevationProfileSchema },
   },
   { timestamps: true }
 );

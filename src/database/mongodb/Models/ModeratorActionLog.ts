@@ -18,6 +18,7 @@ const ModeratorActionLogSchema = new Schema<TModeratorActionLogDocument>({
       'comment',
       'racePointsTable',
       'generalClassification',
+      'distance',
     ],
     required: true,
   }, // Название сущности, над которой было выполнено действие.

@@ -20,16 +20,14 @@ import BoxTextarea from '../../BoxTextarea/BoxTextarea';
 import { distanceSurfaceTypes } from '@/constants/championship';
 import { TextValidationService } from '@/libs/utils/text';
 import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
+import { useSubmitDistance } from './useSubmitDistance';
 
 const textValidation = new TextValidationService();
 
 /**
  * Форма создания дистанций для заездов чемпионата.
  */
-export default function FormDistance({
-  organizer,
-  postDistance,
-}: TContainerDistanceFormsProps) {
+export default function FormDistance({ postDistance }: TContainerDistanceFormsProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
   // console.log(championshipForEdit);
@@ -48,8 +46,7 @@ export default function FormDistance({
     },
   });
 
-  const onSubmit = () => {};
-
+  const onSubmit = useSubmitDistance({ postDistance });
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
       <div className={styles.wrapper__block}>
@@ -72,16 +69,6 @@ export default function FormDistance({
           validationText={errors.name?.message || ''}
         />
 
-        {/* Блок выбора типа дорожного покрытия */}
-        <BoxSelectNew
-          label={'Выберите тип дорожного покрытия'}
-          id="type-BoxSelectNew"
-          options={distanceSurfaceTypes}
-          loading={isLoading}
-          register={register('surfaceType')}
-          validationText={errors.surfaceType?.message || ''}
-        />
-
         {/* Блок ввода Описания */}
         <BoxTextarea
           label={'Краткое описание дистанции'}
@@ -98,6 +85,16 @@ export default function FormDistance({
             },
           })}
           validationText={errors.description?.message || ''}
+        />
+
+        {/* Блок выбора типа дорожного покрытия */}
+        <BoxSelectNew
+          label={'Выберите тип дорожного покрытия'}
+          id="type-BoxSelectNew"
+          options={distanceSurfaceTypes}
+          loading={isLoading}
+          register={register('surfaceType')}
+          validationText={errors.surfaceType?.message || ''}
         />
 
         {/* Блок загрузки GPX трека*/}

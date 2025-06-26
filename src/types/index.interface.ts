@@ -997,7 +997,6 @@ export type TCContainerChampionshipFormsProps = {
 };
 
 export type TContainerDistanceFormsProps = {
-  organizer: TDtoOrganizer;
   postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
 };
 
@@ -1427,7 +1426,8 @@ export type TServiceEntity =
   | 'raceResult'
   | 'comment'
   | 'racePointsTable'
-  | 'generalClassification';
+  | 'generalClassification'
+  | 'distance';
 
 /**
  * Данные девайса пользователя.

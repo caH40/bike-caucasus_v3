@@ -6,6 +6,7 @@ import {
   TDeviceInfo,
   TFormCalendar,
   TLocationInfo,
+  TrackData,
   TServiceEntity,
   TSurfaceType,
 } from './index.interface';
@@ -599,7 +600,7 @@ export type TDistance = {
   surfaceType?: TSurfaceType; // Тип покрытия маршрута.
   isPublic: boolean; // Публичная ли дистанция.
   isElevationProfileReady: boolean; // Профиль высоты рассчитан и есть БД.
-  elevationProfile?: number[]; // Профиль высоты (если требуется для графиков).
+  elevationProfile?: TrackData; // Профиль высоты (если требуется для графиков).
   createdAt: Date; // Дата создания записи.
   updatedAt: Date; // Дата последнего изменения.
 };
