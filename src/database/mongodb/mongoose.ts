@@ -2,6 +2,8 @@
 
 import mongoose from 'mongoose';
 
+import '@/database/mongodb/Models/Distance';
+
 let isConnected = false;
 
 /**
