@@ -1,4 +1,9 @@
-import type { TOptions, TOptionsMap, TRaceForFormNew } from '@/types/index.interface';
+import type {
+  TOptions,
+  TOptionsMap,
+  TRaceForFormNew,
+  TSurfaceType,
+} from '@/types/index.interface';
 
 /**
  * Тип Чемпионата.
@@ -19,6 +24,17 @@ export const championshipTypesMap: TOptionsMap = new Map([
   ['tour', { translation: 'Тур' }],
   ['stage', { translation: 'Этап' }],
 ]);
+
+/**
+ * Тип дорожного покрытия дистанции.
+ */
+export const distanceSurfaceTypes: TOptions<TSurfaceType>[] = [
+  { id: 0, translation: 'Асфальт', name: 'road' },
+  { id: 1, translation: 'Гравий', name: 'gravel' },
+  { id: 2, translation: 'Тропа', name: 'trail' },
+  { id: 3, translation: 'Смешанное покрытие', name: 'mixed' },
+  { id: 4, translation: 'Грунт', name: 'dirt' },
+];
 
 /**
  * Статус Чемпионата.

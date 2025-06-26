@@ -7,6 +7,7 @@ import {
   TFormCalendar,
   TLocationInfo,
   TServiceEntity,
+  TSurfaceType,
 } from './index.interface';
 
 /**
@@ -595,7 +596,7 @@ export type TDistance = {
   avgGrade: number; // Средний градиент (в процентах).
   lowestElev: number; // Минимальная высота на маршруте (в метрах).
   highestElev: number; // Максимальная высота на маршруте (в метрах).
-  surfaceType?: 'road' | 'gravel' | 'trail' | 'mixed'; // Тип покрытия маршрута.
+  surfaceType?: TSurfaceType; // Тип покрытия маршрута.
   isPublic: boolean; // Публичная ли дистанция.
   isElevationProfileReady: boolean; // Профиль высоты рассчитан и есть БД.
   elevationProfile?: number[]; // Профиль высоты (если требуется для графиков).

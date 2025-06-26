@@ -18,6 +18,7 @@ import {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TDistance,
   TGeneralClassification,
   TLogsErrorModel,
   TModeratorActionLog,
@@ -123,10 +124,10 @@ export type PropsSelect<T> = {
   loading?: boolean;
   options: { id: number; translation: string; name: string }[];
 };
-export type TOptions = {
+export type TOptions<T = string> = {
   id: number;
   translation: string;
-  name: string;
+  name: T;
   icon?: React.ComponentType<TIconProps>;
 };
 
@@ -995,6 +996,11 @@ export type TCContainerChampionshipFormsProps = {
   racePointsTables: TRacePointsTableDto[];
 };
 
+export type TContainerDistanceFormsProps = {
+  organizer: TDtoOrganizer;
+  postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+};
+
 /**
  * Параметры для хука useSubmitChampionship.
  *
@@ -1483,3 +1489,19 @@ export type TMailTarget = 'registration' | 'resetPassword' | 'savedNewPassword' 
  * Возвращаемые данные методом getStartNumbers класса RegistrationChampService.
  */
 export type TGetStartNumbers = { free: number[]; occupied: number[] };
+
+/**
+ *  Тип дорожного покрытия маршрута.
+ */
+export type TSurfaceType = 'road' | 'gravel' | 'trail' | 'mixed' | 'dirt';
+
+/**
+ * Данные для формы создания Чемпионата.
+ */
+export type TFormDistanceCreate = Pick<
+  TDistance,
+  'name' | 'description' | 'isPublic' | 'surfaceType'
+> & {
+  creator: string;
+  trackGPXFile: File | null; // Трэк маршрута в GPX.
+};
