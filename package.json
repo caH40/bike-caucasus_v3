@@ -21,8 +21,6 @@
     "chartjs-plugin-crosshair": "^2.0.0",
     "classnames": "^2.5.1",
     "emoji-picker-react": "^4.11.1",
-    "gpxparser": "^3.0.8",
-    "haversine-distance": "^1.2.4",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
     "leaflet": "^1.9.4",
