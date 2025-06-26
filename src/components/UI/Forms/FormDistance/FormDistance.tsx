@@ -5,6 +5,12 @@ import { Controller, useForm } from 'react-hook-form';
 import cn from 'classnames';
 
 import { useLoadingStore } from '@/store/loading';
+import BoxInput from '../../BoxInput/BoxInput';
+import BoxTextarea from '../../BoxTextarea/BoxTextarea';
+import { distanceSurfaceTypes } from '@/constants/championship';
+import { TextValidationService } from '@/libs/utils/text';
+import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
+import { useSubmitDistance } from './useSubmitDistance';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import Button from '../../Button/Button';
 import t from '@/locales/ru/moderation/championship.json';
@@ -15,12 +21,6 @@ import type {
   TContainerDistanceFormsProps,
   TFormDistanceCreate,
 } from '@/types/index.interface';
-import BoxInput from '../../BoxInput/BoxInput';
-import BoxTextarea from '../../BoxTextarea/BoxTextarea';
-import { distanceSurfaceTypes } from '@/constants/championship';
-import { TextValidationService } from '@/libs/utils/text';
-import BlockUploadTrack from '../../BlockUploadTrack/BlockUploadTrack';
-import { useSubmitDistance } from './useSubmitDistance';
 
 const textValidation = new TextValidationService();
 

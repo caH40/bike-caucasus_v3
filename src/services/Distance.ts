@@ -9,9 +9,11 @@ import { getTrackStatsFromTrackData } from '@/libs/utils/track-data';
 import { parseGPXTrack } from '@/libs/utils/track-parse';
 
 // types
-import { TTrackGPXObj } from '@/types/models.interface';
+import { TDistance, TTrackGPXObj } from '@/types/models.interface';
 import { ServerResponse, TServiceEntity } from '@/types/index.interface';
 import { ModeratorActionLogService } from './ModerationActionLog';
+import { TDistanceDto } from '@/types/dto.types';
+import { distanceDto } from '@/dto/distance';
 
 /**
  * Класс работы с дистанций для заездов чемпионата.
@@ -31,14 +33,36 @@ export class DistanceService {
   }
 
   /**
-   * Получение всех дистанций.
+   * Получение запрашиваемой дистанции.
    */
-  public async getOne(): Promise<ServerResponse<null>> {
+  public async get(distanceId: string): Promise<ServerResponse<TDistanceDto | null>> {
     try {
-      const distancesDB = await DistanceModel.find();
+      const distanceDB = await DistanceModel.findById(distanceId).lean<TDistance>();
+
+      if (!distanceDB) {
+        throw new Error(`Не найдена дистанция с _id: ${distanceId}`);
+      }
 
       return {
-        data: distancesDB,
+        data: distanceDto(distanceDB),
+        ok: true,
+        message: 'Все дистанции для чемпионатов',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение всех дистанций.
+   */
+  public async getAll(): Promise<ServerResponse<TDistanceDto[] | null>> {
+    try {
+      const distanceDB = await DistanceModel.find().lean<TDistance[]>();
+
+      return {
+        data: distanceDB.map((distance) => distanceDto(distance)),
         ok: true,
         message: 'Все дистанции для чемпионатов',
       };

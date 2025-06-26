@@ -1,4 +1,4 @@
-import { postDistance } from '@/actions/championship';
+import { postDistance } from '@/actions/distance';
 import ContainerDistanceForms from '@/components/ClientContainers/ContainerDistanceForms/ContainerDistanceForms';
 import IconDistance from '@/components/Icons/IconDistance';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';

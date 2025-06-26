@@ -998,6 +998,9 @@ export type TCContainerChampionshipFormsProps = {
 
 export type TContainerDistanceFormsProps = {
   postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+};
+export type TUseSubmitDistanceParams = {
+  postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
   reset: UseFormReset<TFormDistanceCreate>;
 };
 

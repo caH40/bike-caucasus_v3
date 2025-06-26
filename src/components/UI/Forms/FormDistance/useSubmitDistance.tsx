@@ -3,11 +3,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { useLoadingStore } from '@/store/loading';
-import { TContainerDistanceFormsProps, TFormDistanceCreate } from '@/types/index.interface';
+import { TUseSubmitDistanceParams, TFormDistanceCreate } from '@/types/index.interface';
 import { useUserData } from '@/store/userdata';
 import { serializationDistance } from '@/libs/utils/serialization/dictance';
 
-export const useSubmitDistance = ({ postDistance, reset }: TContainerDistanceFormsProps) => {
+export const useSubmitDistance = ({ postDistance, reset }: TUseSubmitDistanceParams) => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 

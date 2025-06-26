@@ -22,8 +22,7 @@ import type {
   TPutRacesParams,
 } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
-import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
-import { DistanceService } from '@/services/Distance';
+
 
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
@@ -408,24 +407,6 @@ export async function putRaces({
       championshipId: data._id,
       moderator: creator,
     });
-
-    return response;
-  } catch (error) {
-    errorHandlerClient(parseError(error));
-    return handlerErrorDB(error);
-  }
-}
-
-/**
- * Экшен отправки данных на сервер для создания дистанции.
- */
-export async function postDistance(serializedData: FormData): Promise<ServerResponse<any>> {
-  try {
-    const { userIdDB } = await checkUserAccess('moderation.distances');
-
-    const distanceService = new DistanceService();
-
-    const response = await distanceService.create({ creatorId: userIdDB, serializedData });
 
     return response;
   } catch (error) {
