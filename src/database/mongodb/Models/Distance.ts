@@ -17,9 +17,9 @@ const DistanceSchema = new Schema<TDistanceDocument>(
     avgGrade: { type: Number },
     lowestElev: { type: Number },
     highestElev: { type: Number },
-    estimatedTimeInMinutes: { type: Number },
-    surfaceType: { type: String, enum: ['road', 'gravel', 'trail', 'mixed'] },
-    isPublic: { type: Boolean, default: false },
+    surfaceType: { type: String, enum: ['road', 'gravel', 'trail', 'mixed'], default: 'road' },
+    isPublic: { type: Boolean, default: true },
+    isElevationProfileReady: { type: Boolean, default: false },
     elevationProfile: { type: [Number] },
   },
   { timestamps: true }

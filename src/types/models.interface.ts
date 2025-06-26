@@ -595,11 +595,10 @@ export type TDistance = {
   avgGrade: number; // Средний градиент (в процентах).
   lowestElev: number; // Минимальная высота на маршруте (в метрах).
   highestElev: number; // Максимальная высота на маршруте (в метрах).
-  estimatedTimeInMinutes?: number; // Оценочное время прохождения маршрута (в минутах).
   surfaceType?: 'road' | 'gravel' | 'trail' | 'mixed'; // Тип покрытия маршрута.
   isPublic: boolean; // Публичная ли дистанция.
-  createdAt: Date; // Дата создания записи.
-  updatedAt: Date; // Дата последнего изменения.
   isElevationProfileReady: boolean; // Профиль высоты рассчитан и есть БД.
   elevationProfile?: number[]; // Профиль высоты (если требуется для графиков).
+  createdAt: Date; // Дата создания записи.
+  updatedAt: Date; // Дата последнего изменения.
 };
