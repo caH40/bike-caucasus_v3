@@ -579,3 +579,27 @@ export type TModeratorActionLog = {
     location?: TLocationInfo;
   }; // Информация о клиенте, с которого было выполнено действие.
 };
+
+/**
+ * Дистанция для заездов.
+ */
+export type TDistanceDocument = TDistance & Document;
+export type TDistance = {
+  _id: mongoose.Types.ObjectId; // Уникальный идентификатор дистанции.
+  creator: mongoose.Types.ObjectId; // Идентификатор пользователя, создавшего маршрут.
+  name: string; // Название маршрута.
+  description?: string; // Описание маршрута.
+  trackGPX: TTrackGPXObj; // Объект с GPX-данными маршрута.
+  distanceInMeter: number; // Общая длина маршрута в метрах.
+  ascentInMeter: number; // Общий набор высоты в метрах.
+  avgGrade: number; // Средний градиент (в процентах).
+  lowestElev: number; // Минимальная высота на маршруте (в метрах).
+  highestElev: number; // Максимальная высота на маршруте (в метрах).
+  estimatedTimeInMinutes?: number; // Оценочное время прохождения маршрута (в минутах).
+  surfaceType?: 'road' | 'gravel' | 'trail' | 'mixed'; // Тип покрытия маршрута.
+  isPublic: boolean; // Публичная ли дистанция.
+  createdAt: Date; // Дата создания записи.
+  updatedAt: Date; // Дата последнего изменения.
+  isElevationProfileReady: boolean; // Профиль высоты рассчитан и есть БД.
+  elevationProfile?: number[]; // Профиль высоты (если требуется для графиков).
+};

@@ -2,20 +2,7 @@ import mongoose, { Schema, models, model } from 'mongoose';
 
 // types
 import { TRaceDocument } from '@/types/models.interface';
-
-// Трэк заезда.
-const trackGPXSchema = new Schema(
-  {
-    url: String,
-    coordStart: {
-      // Координаты старта заезда.
-      lat: Number,
-      lon: Number,
-      _id: false,
-    },
-  },
-  { _id: false }
-);
+import { TrackGPXSchema } from './Schema/TrackGPX';
 
 const RaceSchema = new Schema<TRaceDocument>({
   number: { type: Number, default: 1 }, // Порядковый номер.
@@ -25,7 +12,7 @@ const RaceSchema = new Schema<TRaceDocument>({
   laps: { type: Number, default: 1 }, // Количество кругов.
   distance: { type: Number, default: 1 }, // Дистанция Заезда в километрах.
   ascent: { type: Number, default: 0 }, // Набор высоты на дистанции в метрах.
-  trackGPX: trackGPXSchema,
+  trackGPX: TrackGPXSchema,
   registeredRiders: [
     {
       type: mongoose.Schema.Types.ObjectId,
