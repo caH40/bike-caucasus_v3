@@ -998,6 +998,7 @@ export type TCContainerChampionshipFormsProps = {
 
 export type TContainerDistanceFormsProps = {
   postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+  reset: UseFormReset<TFormDistanceCreate>;
 };
 
 /**
@@ -1505,3 +1506,8 @@ export type TFormDistanceCreate = Pick<
   creator: string;
   trackGPXFile: File | null; // Трэк маршрута в GPX.
 };
+
+export type TrackStats = Pick<
+  TDistance,
+  'distanceInMeter' | 'ascentInMeter' | 'avgGrade' | 'lowestElev' | 'highestElev'
+>;

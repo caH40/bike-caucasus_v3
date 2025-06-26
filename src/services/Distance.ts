@@ -1,12 +1,17 @@
 import { errorLogger } from '@/errors/error';
-import { ServerResponse, TServiceEntity } from '@/types/index.interface';
 import { handlerErrorDB } from './mongodb/error';
 import { DistanceModel } from '@/database/mongodb/Models/Distance';
 import { deserializeDistance } from '@/libs/utils/deserialization/distance';
-import { TTrackGPXObj } from '@/types/models.interface';
 import { getCoordStart } from '@/libs/utils/track';
 import { parseGPX } from '@/libs/utils/parse-gpx';
 import { saveFile } from './save-file';
+import { getTrackStatsFromTrackData } from '@/libs/utils/track-data';
+import { parseGPXTrack } from '@/libs/utils/track-parse';
+
+// types
+import { TTrackGPXObj } from '@/types/models.interface';
+import { ServerResponse, TServiceEntity } from '@/types/index.interface';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 /**
  * Класс работы с дистанций для заездов чемпионата.
@@ -50,24 +55,50 @@ export class DistanceService {
     creatorId,
     serializedData,
   }: {
-    creatorId?: string;
+    creatorId: string;
     serializedData: FormData;
   }): Promise<ServerResponse<null>> {
     try {
-      const { name, description, trackGPXFile, surfaceType } =
+      const { name, description, trackGPXFile, surfaceType, client } =
         deserializeDistance(serializedData);
 
       // Сохранение трека на облаке.
-
       const { trackGPX } = await this.processTrackGPX(trackGPXFile);
 
-      await DistanceModel.create({
+      // GPX трек из облака.
+      const trackData = await parseGPXTrack(trackGPX.url);
+
+      // Расчетные данные по треку (расстояние, средний градиент и т.д.)
+      const stats = getTrackStatsFromTrackData(trackData);
+
+      const response = await DistanceModel.create({
         creator: creatorId,
         name,
         description,
         trackGPX,
         surfaceType,
         isPublic: true,
+        elevationProfile: trackData,
+        isElevationProfileReady: !!trackData,
+        ...stats,
+      });
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: creatorId,
+        changes: {
+          description: `Создана дистанция с названием: "${response.name}"`,
+          params: {
+            name,
+            description,
+            trackGPXFile,
+            surfaceType,
+          },
+        },
+        action: 'create',
+        entity: this.entity,
+        entityIds: response._id,
+        client,
       });
 
       return {

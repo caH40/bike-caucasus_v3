@@ -12,8 +12,8 @@ import { TDistanceDocument } from '@/types/models.interface';
 const DistanceSchema = new Schema<TDistanceDocument>(
   {
     creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    name: { type: String, required: true },
-    description: { type: String },
+    name: { type: String, required: true, unique: true, trim: true },
+    description: { type: String, trim: true },
     trackGPX: { type: TrackGPXSchema, required: true },
     distanceInMeter: { type: Number },
     ascentInMeter: { type: Number },

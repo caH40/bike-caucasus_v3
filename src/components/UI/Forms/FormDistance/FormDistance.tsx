@@ -46,7 +46,7 @@ export default function FormDistance({ postDistance }: TContainerDistanceFormsPr
     },
   });
 
-  const onSubmit = useSubmitDistance({ postDistance });
+  const onSubmit = useSubmitDistance({ postDistance, reset });
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
       <div className={styles.wrapper__block}>

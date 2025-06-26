@@ -7,7 +7,7 @@ import { TContainerDistanceFormsProps, TFormDistanceCreate } from '@/types/index
 import { useUserData } from '@/store/userdata';
 import { serializationDistance } from '@/libs/utils/serialization/dictance';
 
-export const useSubmitDistance = ({ postDistance }: TContainerDistanceFormsProps) => {
+export const useSubmitDistance = ({ postDistance, reset }: TContainerDistanceFormsProps) => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
@@ -40,6 +40,7 @@ export const useSubmitDistance = ({ postDistance }: TContainerDistanceFormsProps
 
       // Обновляем родительский серверный компонент.
       router.refresh();
+      reset();
     } else {
       toast.error(response.message);
     }
