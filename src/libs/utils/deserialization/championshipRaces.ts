@@ -28,6 +28,9 @@ export function deserializeRaces(serializedFormData: FormData): TDeserializedRac
             case 'distance':
               return +value;
 
+            case 'trackDistance':
+              return value !== 'null' ? value : null;
+
             // Если ключ laps то возвращается число.
             case 'laps':
               return +value;

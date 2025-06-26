@@ -106,4 +106,5 @@ export const raceInit: TRaceForFormNew = {
   trackGPXFile: null,
   trackGPXUrl: null,
   quantityRidersFinished: 0,
+  trackDistance: 'null',
 };

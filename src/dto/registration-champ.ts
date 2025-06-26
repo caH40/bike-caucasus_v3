@@ -8,11 +8,12 @@ import type {
 } from '@/types/dto.types';
 import type {
   TRaceForForm,
+  TRacesWithTDistance,
   TRaceWithCategories,
   TRegisteredRiderFromDB,
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
-import { TCategories, TRace } from '@/types/models.interface';
+import { TCategories } from '@/types/models.interface';
 
 /**
  * ДТО Зарегистрированного райдера в Заезде.
@@ -126,16 +127,19 @@ export function dtoRegistrationRider(
   };
 }
 
-export function formatTRacesToClient(races: TRace[]): TRaceForForm[] {
+export function formatTRacesToClient(races: TRacesWithTDistance[]): TRaceForForm[] {
   return races.map((race) => formatTRaceToClient(race));
 }
-export function formatTRaceToClient(race: TRace): TRaceForForm {
+export function formatTRaceToClient(race: TRacesWithTDistance): TRaceForForm {
   const _id = String(race._id);
+  const trackGPX = race.trackDistance ? race.trackDistance.trackGPX : race.trackGPX;
+
+  const trackDistance = race.trackDistance ? race.trackDistance._id.toString() : null;
   const categories = String(race.categories);
   const championship = String(race.championship);
   const registeredRiders = race.registeredRiders.map((rider) => String(rider));
 
-  return { ...race, registeredRiders, categories, _id, championship };
+  return { ...race, registeredRiders, categories, _id, championship, trackDistance, trackGPX };
 }
 
 /**

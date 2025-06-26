@@ -75,6 +75,7 @@ export function getRacesInit(races?: TRaceForForm[]): TRaceForFormNew[] {
       quantityRidersFinished: race.quantityRidersFinished,
       categories: race.categories,
       championship: race.championship,
+      trackDistance: race.trackDistance || 'null',
     };
   });
 }

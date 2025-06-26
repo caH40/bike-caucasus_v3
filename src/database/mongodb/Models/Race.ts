@@ -22,6 +22,7 @@ const RaceSchema = new Schema<TRaceDocument>({
   ],
   categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Categories' },
   quantityRidersFinished: { type: Number, default: 0 },
+  trackDistance: { type: mongoose.Schema.Types.ObjectId, ref: 'Distance', default: null },
 });
 
 export const RaceModel = models.Race || model<TRaceDocument>('Race', RaceSchema);

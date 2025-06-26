@@ -15,6 +15,7 @@ import styles from './BlockRaceAdd.module.css';
 
 // types
 import type { TBlockRaceAddProps, TRaceForFormNew } from '@/types/index.interface';
+import { useTrackDistance } from '@/hooks/useTrackDistance';
 
 const textValidation = new TextValidationService();
 
@@ -30,7 +31,13 @@ export default function BlockRaceAdd({
   isLoading,
   urlTracksForDel,
   categories,
+  distanceOptions,
+  distances,
+  setValue,
 }: TBlockRaceAddProps) {
+  // Контроль за изменением trackDistance и обновлении полей, если изменен trackDistance.
+  useTrackDistance({ setValue, control, distances, index });
+
   // Добавление Заезда.
   const addRace = (): void => {
     const raceLast = races.at(-1)?.number;
@@ -87,6 +94,15 @@ export default function BlockRaceAdd({
       </div>
 
       <div className={styles.wrapper__inputs}>
+        <BoxSelectNew
+          label={'Выбор дистанции'}
+          id="type-BoxSelectNew"
+          options={distanceOptions}
+          loading={isLoading}
+          register={register(`races.${index}.trackDistance`, { required: t.required })}
+          validationText={errorsBasePath?.trackDistance?.message || ''}
+        />
+
         {/* Блок ввода Названия */}
         <BoxInput
           label={t.labels.nameChampionship}
@@ -165,6 +181,7 @@ export default function BlockRaceAdd({
           label={t.labels.distance}
           id={`races.${index}.distance`}
           autoComplete="off"
+          step={0.001}
           type="number"
           defaultValue={''}
           loading={isLoading}
@@ -202,7 +219,6 @@ export default function BlockRaceAdd({
           name={`races.${index}.trackGPXFile`}
           control={control}
           defaultValue={null}
-          rules={races?.[index]?.trackGPXUrl ? {} : { required: t.trackGPXFile }}
           render={({ field }) => (
             <BlockUploadTrack
               title={t.labels.trackGPXFile}

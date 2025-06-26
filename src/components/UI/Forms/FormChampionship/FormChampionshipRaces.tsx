@@ -13,6 +13,7 @@ import styles from '../Form.module.css';
 
 // types
 import type { TFormChampionshipRacesProps, TRaceForFormNew } from '@/types/index.interface';
+import { createDistanceOptions } from '@/libs/utils/championship/distance';
 
 /**
  * Форма создания/редактирования заездов Чемпионата.
@@ -24,6 +25,7 @@ export default function FormChampionshipRaces({
   races,
   urlSlug,
   setIsFormDirty,
+  distances,
 }: TFormChampionshipRacesProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
@@ -35,6 +37,7 @@ export default function FormChampionshipRaces({
     handleSubmit, // Функция для обработки отправки формы.
     control, // Объект контроля для работы с динамическими полями (например, с массивами полей).
     reset, // Функция для сброса формы до значений по умолчанию.
+    setValue,
     formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
   } = useForm<{ races: TRaceForFormNew[] }>({
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
@@ -89,6 +92,9 @@ export default function FormChampionshipRaces({
             isLoading={isLoading}
             urlTracksForDel={urlTracksForDel}
             categories={getCategoriesSelectOptions(categoriesConfigs)}
+            distanceOptions={createDistanceOptions(distances)}
+            distances={distances}
+            setValue={setValue}
           />
         </div>
       ))}

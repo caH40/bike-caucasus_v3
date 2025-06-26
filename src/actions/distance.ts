@@ -1,3 +1,5 @@
+'use server';
+
 import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { handlerErrorDB } from '@/services/mongodb/error';

@@ -391,6 +391,7 @@ export type TRace = {
   registeredRiders: Types.ObjectId[]; // Массив ссылок на зарегистрированных райдеров в заезде.
   categories: Types.ObjectId; // _id Пакета категорий для заезда.
   quantityRidersFinished: number; // Общее количество финишировавших.
+  trackDistance: Types.ObjectId; // Ссылка на объект дистанции из БД.
 };
 export type TRaceDocument = Omit<TRace, '_id'> & Document;
 
