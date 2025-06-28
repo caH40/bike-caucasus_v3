@@ -23,7 +23,6 @@ import type {
 } from '@/types/index.interface';
 import type { TChampionshipTypes } from '@/types/models.interface';
 
-
 /**
  * Экшен получения данных запрашиваемого Чемпионата.
  */
@@ -93,7 +92,7 @@ export async function getChampionships({
     }
 
     const championshipService = new ChampionshipService();
-    const championship = await championshipService.getMany({
+    const championships = await championshipService.getMany({
       userIdDB,
       forModeration,
       needTypes,
@@ -101,11 +100,11 @@ export async function getChampionships({
       parentChampionshipId,
     });
 
-    if (!championship.ok) {
+    if (!championships.ok) {
       throw new Error('Ошибка при получении списка Чемпионатов');
     }
 
-    return championship;
+    return championships;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

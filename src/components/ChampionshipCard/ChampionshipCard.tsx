@@ -11,6 +11,7 @@ import StagesBox from '../StagesBox/StagesBox';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
 import type { TDtoChampionship } from '@/types/dto.types';
 import styles from './ChampionshipCard.module.css';
+import StageName from '../StageName/StageName';
 
 const cx = cn.bind(styles);
 
@@ -51,9 +52,11 @@ export default function ChampionshipCard({ championship, simple, hasStages }: Pr
 
           <Link href={`/championships/${championship.urlSlug}`} className={styles.link}>
             <h2 className={styles.title}>
-              {simple
-                ? `Этап ${championship.stageOrder}: ${championship.name}`
-                : championship.name}
+              {simple ? (
+                <StageName name={championship.name} stageOrder={championship.stageOrder} />
+              ) : (
+                championship.name
+              )}
             </h2>
           </Link>
         </div>

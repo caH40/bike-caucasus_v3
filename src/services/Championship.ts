@@ -209,15 +209,15 @@ export class ChampionshipService {
         }
       );
 
-      sortedChamp.currentChamps.sort(
+      const currentSortedChamps = sortedChamp.currentChamps.toSorted(
         (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
       );
-      sortedChamp.finishedChamps.sort(
+      const finishedSortedChamps = sortedChamp.finishedChamps.toSorted(
         (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
       );
 
       return {
-        data: [...sortedChamp.currentChamps, ...sortedChamp.finishedChamps],
+        data: [...currentSortedChamps, ...finishedSortedChamps],
         ok: true,
         message: `Чемпионаты ${needTypes ? 'типов: ' + needTypes.join(', ') : 'все'}`,
       };

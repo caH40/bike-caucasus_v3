@@ -58,7 +58,7 @@ const columns: ColumnDef<TRaceRegistrationDto & { index: number }>[] = [
     accessorKey: 'rider.city',
   },
   {
-    header: 'Год рождения',
+    header: 'Год рож',
     accessorKey: 'rider.yearBirthday',
   },
   {
