@@ -10,7 +10,6 @@ import { parseError } from '@/errors/parse';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { RaceResultService } from '@/services/RaceResult';
 import { TRiderRaceResultDto } from '@/types/dto.types';
-import { revalidatePath } from 'next/cache';
 import { ChampionshipService } from '@/services/Championship';
 import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
 
@@ -205,12 +204,7 @@ export async function putResultRaceRider({
     const resultRaceService = new RaceResultService();
     const res = await resultRaceService.update({ result, moderator: userIdDB });
 
-    if (res.ok) {
-      revalidatePath('/moderation/championship/protocol/edit');
-      return { data: null, ok: true, message: res.message };
-    } else {
-      throw new Error(res.message);
-    }
+    return res;
   } catch (error) {
     errorHandlerClient(parseError(error));
     return handlerErrorDB(error);

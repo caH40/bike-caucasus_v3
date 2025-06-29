@@ -69,6 +69,7 @@ export default async function EditFinishProtocolPage(props: Props) {
   if (!responsePermission.ok) {
     return <h2 className={styles.error}>{responsePermission.message}</h2>;
   }
+  // console.log(startNumbersLists.data);
 
   return (
     <>

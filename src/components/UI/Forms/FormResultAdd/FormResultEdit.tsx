@@ -118,6 +118,7 @@ export default function FormResultEdit({
     setLoading(false);
 
     if (response.ok) {
+      router.refresh();
       toast.success(response.message);
     } else {
       toast.error(response.message);

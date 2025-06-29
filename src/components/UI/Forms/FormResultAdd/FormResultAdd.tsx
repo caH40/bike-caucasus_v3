@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -55,6 +55,7 @@ export default function FormResultAdd({
   getCategoriesNameOptions,
   startNumbersLists,
 }: Props) {
+  const router = useRouter();
   const [startNumbersOptions, setStartNumbersOptions] = useState<TOptions[]>(
     createStartNumbersOptions(startNumbersLists.free)
   );
@@ -62,7 +63,9 @@ export default function FormResultAdd({
   const setLoading = useLoadingStore((state) => state.setLoading);
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
 
-  const router = useRouter();
+  useEffect(() => {
+    setStartNumbersOptions(createStartNumbersOptions(startNumbersLists.free));
+  }, [startNumbersLists.free]);
 
   // Название активной кнопки для отображения соответствующих полей ввода в форме.
   const nameBtnFilter = buttonsForRiderRaceResult.find(
