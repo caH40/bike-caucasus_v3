@@ -465,8 +465,16 @@ export class RegistrationChampService {
         { _id: false, startNumber: true }
       ).lean<{ startNumber: number }[]>();
 
+      // Список результатов у которых есть стартовые номера.
+      const resultsDB = await ResultRaceModel.find(
+        {
+          championship: champ.championshipId,
+        },
+        { startNumber: true, _id: false }
+      ).lean<{ startNumber: number }[]>();
+
       // Список занятых стартовых номеров.
-      const occupiedStartNumbers = registeredRiders
+      const occupiedStartNumbers = [...registeredRiders, ...resultsDB]
         .map((r) => r.startNumber)
         .filter((r) => Boolean(r))
         .sort((a, b) => a - b);
