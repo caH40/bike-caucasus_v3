@@ -1,29 +1,22 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-
-import IconDistance from '@/components/Icons/IconDistance';
 import { getAllDistances } from '@/actions/distance';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
 import DistanceTableContainer from '@/components/Table/Containers/DistanceTableContainer/DistanceTableContainer';
 
-/**
- * Страница со списком всех Дистанций.
- */
-export default async function DistanceListPage() {
+// Создание динамических meta данных
+
+export default async function DistancesPage() {
   const distances = await getAllDistances();
 
-  if (!distances.ok || !distances.data) {
+  if (!distances.data || !distances.message) {
     return <ServerErrorMessage message={distances.message} statusCode={distances.statusCode} />;
   }
 
   return (
     <>
-      <TitleAndLine
-        hSize={1}
-        title="Список Дистанций для заездов чемпионатов"
-        Icon={IconDistance}
-      />
+      <TitleAndLine hSize={1} title="Дистанции для соревнований" />
 
-      <DistanceTableContainer distances={distances.data} forModeration={true} />
+      <DistanceTableContainer distances={distances.data} />
     </>
   );
 }

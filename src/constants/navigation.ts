@@ -4,6 +4,7 @@ import IconAdmin from '@/components/Icons/IconAdmin';
 import IconCalendar from '@/components/Icons/IconCalendar';
 import IconChampionship from '@/components/Icons/IconChampionship';
 import IconDelete from '@/components/Icons/IconDelete';
+import IconDistance from '@/components/Icons/IconDistance';
 import IconEditOld from '@/components/Icons/IconEditOld';
 import IconOrganizers from '@/components/Icons/IconOrganizers';
 import IconRefresh from '@/components/Icons/IconRefresh';
@@ -84,6 +85,13 @@ export const getNavLinksChampionshipsPopup = (): TMenuPopup[] => [
     href: '/calendar',
     permission: '',
     icon: IconCalendar,
+  },
+  {
+    id: 102,
+    name: 'Дистанции',
+    href: '/distances',
+    permission: '',
+    icon: IconDistance,
   },
   {
     id: 103,

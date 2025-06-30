@@ -20,6 +20,7 @@ import { getColumnsForDistanceTable } from './colunmns';
 type Props = {
   distances: TDistanceDto[];
   docsOnPage?: number;
+  forModeration?: boolean;
 };
 
 const cx = cn.bind(styles);
@@ -27,12 +28,12 @@ const cx = cn.bind(styles);
 /**
  * Таблица дистанций.
  */
-export default function TableDistances({ distances, docsOnPage = 15 }: Props) {
+export default function TableDistances({ distances, forModeration, docsOnPage = 15 }: Props) {
   const data = useMemo(() => distances.map((d, i) => ({ ...d, id: i + 1 })), [distances]);
 
   const table = useReactTable({
     data,
-    columns: getColumnsForDistanceTable(),
+    columns: getColumnsForDistanceTable(forModeration),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(), //load client-side pagination code
     initialState: {

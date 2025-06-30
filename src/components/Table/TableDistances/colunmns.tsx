@@ -1,39 +1,46 @@
 import BlockTableControlDistance from '@/components/UI/BlockTableControlDistance/BlockTableControlDistance';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { TDistanceDto } from '@/types/dto.types';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 
-export function getColumnsForDistanceTable(): ColumnDef<TDistanceDto & { id: number }, any>[] {
-  return [
+// Универсальный рендер для простых текстовых ячеек
+const renderCell = (props: CellContext<TDistanceDto & { id: number }, string | number>) => (
+  <span>{props.getValue()}</span>
+);
+
+export function getColumnsForDistanceTable(
+  forModeration?: boolean
+): ColumnDef<TDistanceDto & { id: number }, any>[] {
+  const columnsForModeration = [
     {
       header: '#',
       accessorKey: 'id',
-      cell: (props: any) => <span>{props.getValue()}</span>,
+      cell: renderCell,
     },
     {
       header: 'Название',
       accessorKey: 'name',
-      cell: (props: any) => <span>{props.getValue()}</span>,
+      cell: renderCell,
     },
     {
       header: 'Описание',
       accessorKey: 'description',
-      cell: (props: any) => <span>{props.getValue()}</span>,
+      cell: renderCell,
     },
     {
-      header: 'Дистанция',
+      header: 'Дистанция, км',
       accessorKey: 'distanceInMeter',
-      cell: (props: any) => <span>{props.getValue()}</span>,
+      cell: renderCell,
     },
     {
-      header: 'Общий набор',
+      header: 'Общий набор, м',
       accessorKey: 'ascentInMeter',
-      cell: (props: any) => <span>{props.getValue()}</span>,
+      cell: renderCell,
     },
     {
       header: 'Тип покрытия',
       accessorKey: 'surfaceType',
-      cell: (props: any) => <span>{props.getValue()}</span>,
+      cell: renderCell,
     },
     {
       header: 'Дата создания',
@@ -43,7 +50,7 @@ export function getColumnsForDistanceTable(): ColumnDef<TDistanceDto & { id: num
     {
       header: 'Модерация',
       accessorKey: '_id',
-      cell: (props) => (
+      cell: (props: any) => (
         <BlockTableControlDistance
           urlSlug={props.row.original.urlSlug}
           name={props.row.original.name}
@@ -51,4 +58,8 @@ export function getColumnsForDistanceTable(): ColumnDef<TDistanceDto & { id: num
       ),
     },
   ];
+
+  return forModeration
+    ? columnsForModeration
+    : columnsForModeration.filter((c) => !['Модерация'].includes(c.header));
 }

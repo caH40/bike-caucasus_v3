@@ -5,12 +5,13 @@ import TableDistances from '../../TableDistances/TableDistances';
 
 type Props = {
   distances: TDistanceDto[];
+  forModeration?: boolean;
 };
 
-export default function DistanceTableContainer({ distances }: Props) {
+export default function DistanceTableContainer({ distances, forModeration }: Props) {
   return (
     <div>
-      <TableDistances distances={distances} />
+      <TableDistances distances={distances} forModeration={forModeration} />
     </div>
   );
 }
