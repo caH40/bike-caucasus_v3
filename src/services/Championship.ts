@@ -46,6 +46,7 @@ import type {
 } from '@/types/models.interface';
 import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 import { ModeratorActionLogService } from './ModerationActionLog';
+import { compareDates, getDateForCompare } from '@/libs/utils/date';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -163,61 +164,17 @@ export class ChampionshipService {
         .lean<TChampionshipWithOrganizer[]>();
 
       // Формирование данных для отображение Блока Этапов в карточке Чемпионата.
-      for (const champ of championshipsDB) {
-        let stages: TStageDateDescription[] = [];
-
-        // поиск Этапов к Турам и Сериям
-        if (champ.type === 'tour' || champ.type === 'series') {
-          stages = await ChampionshipModel.find(
-            { parentChampionship: champ._id },
-            { stageOrder: true, status: true, startDate: true, endDate: true, _id: false }
-          ).lean<TStageDateDescription[]>();
-          stages.sort((a, b) => a.stageOrder - b.stageOrder);
-        } else {
-          stages = [
-            {
-              stageOrder: 1,
-              status: champ.status,
-              startDate: champ.startDate,
-              endDate: champ.endDate,
-            },
-          ];
-        }
-
-        champ.stageDateDescription = stages;
-      }
-      // }
+      const championshipsWithDesc = await this.buildStageDateDescriptions(championshipsDB);
 
       // ДТО формирование данных для Клиента.
-      const championships = dtoChampionships(championshipsDB);
+      const championships = dtoChampionships(championshipsWithDesc);
 
       // Сортировка 1 группа upcoming, ongoing сортируются по дате старта.
       // Далее сортировка 2 группы completed, canceled сортируются по дате финиша.
-      const sortedChamp = championships.reduce(
-        (acc, cur) => {
-          if (['upcoming', 'ongoing'].includes(cur.status)) {
-            acc.currentChamps.push(cur);
-          } else {
-            acc.finishedChamps.push(cur);
-          }
-
-          return acc;
-        },
-        {
-          currentChamps: [] as TDtoChampionship[],
-          finishedChamps: [] as TDtoChampionship[],
-        }
-      );
-
-      const currentSortedChamps = sortedChamp.currentChamps.toSorted(
-        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-      );
-      const finishedSortedChamps = sortedChamp.finishedChamps.toSorted(
-        (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
-      );
+      const sortedChampionships = this.sortChampionships(championships);
 
       return {
-        data: [...currentSortedChamps, ...finishedSortedChamps],
+        data: sortedChampionships,
         ok: true,
         message: `Чемпионаты ${needTypes ? 'типов: ' + needTypes.join(', ') : 'все'}`,
       };
@@ -777,5 +734,79 @@ export class ChampionshipService {
     } catch (error) {
       this.errorLogger(error);
     }
+  }
+
+  /**
+   * Формирование данных для отображение Блока Этапов в карточке Чемпионата.
+   */
+  private async buildStageDateDescriptions(
+    championships: TChampionshipWithOrganizer[]
+  ): Promise<TChampionshipWithOrganizer[]> {
+    return Promise.all(
+      championships.map(async (champ) => {
+        let stages: TStageDateDescription[];
+
+        if (champ.type === 'tour' || champ.type === 'series') {
+          stages = await ChampionshipModel.find(
+            { parentChampionship: champ._id },
+            {
+              stageOrder: true,
+              status: true,
+              startDate: true,
+              endDate: true,
+              _id: false,
+            }
+          ).lean<TStageDateDescription[]>();
+
+          stages.sort((a, b) => a.stageOrder - b.stageOrder);
+        } else {
+          stages = [
+            {
+              stageOrder: 1,
+              status: champ.status,
+              startDate: champ.startDate,
+              endDate: champ.endDate,
+            },
+          ];
+        }
+
+        return {
+          ...champ,
+          stageDateDescription: stages,
+        };
+      })
+    );
+  }
+
+  /**
+   * Сортировка для отображения всех чемпионатов в расписании.
+   * Сортировка 1 группа upcoming, ongoing сортируются по дате старта.
+   * Далее сортировка 2 группы completed, canceled сортируются по дате финиша.
+   */
+  private sortChampionships(championships: TDtoChampionship[]): TDtoChampionship[] {
+    const sortedChamp = championships.reduce(
+      (acc, cur) => {
+        if (['upcoming', 'ongoing'].includes(cur.status)) {
+          acc.currentChamps.push(cur);
+        } else {
+          acc.finishedChamps.push(cur);
+        }
+
+        return acc;
+      },
+      {
+        currentChamps: [] as TDtoChampionship[],
+        finishedChamps: [] as TDtoChampionship[],
+      }
+    );
+
+    const currentSortedChamps = sortedChamp.currentChamps.toSorted((a, b) => {
+      return compareDates(getDateForCompare(a), getDateForCompare(b));
+    });
+    const finishedSortedChamps = sortedChamp.finishedChamps.toSorted((a, b) =>
+      compareDates(b.endDate, a.endDate)
+    );
+
+    return [...currentSortedChamps, ...finishedSortedChamps];
   }
 }

@@ -2,6 +2,8 @@
 
 import { TTimeDetails } from '@/types/index.interface';
 import { getDateTime } from './calendar';
+import { isChampionshipWithStages } from './championship/championship';
+import { TDtoChampionship } from '@/types/dto.types';
 
 /**
  * обработка даты для работы с form
@@ -125,4 +127,26 @@ export function validateEndDateNotBeforeStartDate(
     return text;
   }
   return true;
+}
+
+// Сравнение дат.
+export function compareDates(a: Date | string | null, b: Date | string | null): number {
+  const timeA = a ? new Date(a).getTime() : Infinity;
+  const timeB = b ? new Date(b).getTime() : Infinity;
+  return timeA - timeB;
+}
+
+/**
+ * Если тур или серия заездов, то берется дата старта ближайшего этапа, иначе дата старта чемпионата.
+ */
+export function getDateForCompare(champ: TDtoChampionship): Date | null {
+  if (isChampionshipWithStages(champ.type)) {
+    const nearestStage = champ.stageDateDescription
+      .filter((stage) => ['upcoming', 'ongoing'].includes(stage.status))
+      .sort((a, b) => compareDates(a.startDate, b.startDate))[0];
+
+    return nearestStage?.startDate ? new Date(nearestStage.startDate) : null;
+  }
+
+  return champ.startDate ? new Date(champ.startDate) : null;
 }
