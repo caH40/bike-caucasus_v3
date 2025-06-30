@@ -1004,11 +1004,12 @@ export type TCContainerChampionshipFormsProps = {
 };
 
 export type TContainerDistanceFormsProps = {
-  postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+  postDistance?: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+  putDistance?: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
+  distance?: TDistanceDto;
 };
-export type TUseSubmitDistanceParams = {
-  postDistance: (dataSerialized: FormData) => Promise<ServerResponse<any>>;
-  reset: UseFormReset<TFormDistanceCreate>;
+export type TUseSubmitDistanceParams = Omit<TContainerDistanceFormsProps, 'distance'> & {
+  isEditForm: boolean;
 };
 
 /**
@@ -1520,6 +1521,7 @@ export type TFormDistanceCreate = Pick<
 > & {
   creator: string;
   trackGPXFile: File | null; // Трэк маршрута в GPX.
+  urlSlug?: string;
 };
 
 export type TrackStats = Pick<
@@ -1531,11 +1533,6 @@ export type TrackStats = Pick<
  * Параметры метода put класса DistanceService.
  */
 export type TPutDistanceServiceParams = {
-  distanceId: string;
-  updatedData: {
-    name: string;
-    description: string;
-  };
+  serializedData: FormData;
   moderatorId: string;
-  client?: TClientMeta;
 };

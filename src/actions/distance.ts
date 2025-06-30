@@ -27,6 +27,23 @@ export async function postDistance(serializedData: FormData): Promise<ServerResp
     return handlerErrorDB(error);
   }
 }
+/**
+ * Экшен отправки отредактированных данных на сервер для обновления дистанции.
+ */
+export async function putDistance(serializedData: FormData): Promise<ServerResponse<any>> {
+  try {
+    const { userIdDB } = await checkUserAccess('moderation.distances');
+
+    const distanceService = new DistanceService();
+
+    const response = await distanceService.put({ moderatorId: userIdDB, serializedData });
+
+    return response;
+  } catch (error) {
+    errorHandlerClient(parseError(error));
+    return handlerErrorDB(error);
+  }
+}
 
 /**
  * Экшен получения дистанции.

@@ -30,6 +30,11 @@ export function deserializeDistance(serializedFormData: FormData) {
                 return JSON.parse(value);
               }
 
+            case 'isEditForm':
+              if (typeof value === 'string') {
+                return value === 'true';
+              }
+
             default:
               return value;
           }
@@ -46,7 +51,8 @@ export function deserializeDistance(serializedFormData: FormData) {
     }, distance);
   }
 
-  if (!distance.trackGPXFile) {
+  // Если данные из формы редактирования, то пропускается проверка.
+  if (!distance.isEditForm && !distance.trackGPXFile) {
     throw new Error('Не получен GPX трек с клиента!');
   }
 

@@ -45,7 +45,7 @@ export function getColumnsForDistanceTable(): ColumnDef<TDistanceDto & { id: num
       accessorKey: '_id',
       cell: (props) => (
         <BlockTableControlDistance
-          _id={props.row.original._id}
+          urlSlug={props.row.original.urlSlug}
           name={props.row.original.name}
         />
       ),

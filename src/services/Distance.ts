@@ -160,30 +160,39 @@ export class DistanceService {
    * Обновление дистанции для заездов чемпионатов.
    */
   public async put({
-    distanceId,
-    updatedData,
+    serializedData,
     moderatorId,
-    client,
   }: TPutDistanceServiceParams): Promise<ServerResponse<null>> {
     try {
+      const { name, description, urlSlug, surfaceType, client } =
+        deserializeDistance(serializedData);
+
       const distanceDB = await DistanceModel.findOneAndUpdate(
-        { _id: distanceId },
+        { urlSlug },
         {
-          $set: { ...updatedData },
+          $set: { name, description, surfaceType },
         }
-      ).lean();
+      ).lean<TDistance>();
 
       if (!distanceDB) {
-        throw new Error(`Не найдена дистанция с _id: ${distanceId}`);
+        throw new Error(`Не найдена дистанция с urlSlug: ${urlSlug}`);
       }
 
       // Логирование действия.
       await ModeratorActionLogService.create({
         moderator: moderatorId,
-        changes: updatedData,
+        changes: {
+          description: `Обновлены данные дистанции с названием: "${distanceDB.name}"`,
+          params: {
+            urlSlug,
+            name,
+            description,
+            surfaceType,
+          },
+        },
         action: 'update',
         entity: this.entity,
-        entityIds: [distanceId],
+        entityIds: [distanceDB._id.toString()],
         client,
       });
 

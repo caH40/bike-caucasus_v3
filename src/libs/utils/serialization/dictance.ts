@@ -4,6 +4,7 @@ import type { TClientMeta, TFormDistanceCreate } from '@/types/index.interface';
 type Params = {
   dataFromForm: TFormDistanceCreate;
   client: TClientMeta;
+  isEditForm: boolean;
 };
 
 /**
@@ -11,12 +12,18 @@ type Params = {
  * @param dataForm - Данные формы, которые нужно сериализовать.
  * @returns Сериализованные данные в формате FormData.
  */
-export function serializationDistance({ dataFromForm, client }: Params): FormData {
+export function serializationDistance({ dataFromForm, client, isEditForm }: Params): FormData {
   const formData = new FormData();
 
   if (dataFromForm.name) {
     formData.set('name', dataFromForm.name);
   }
+  if (dataFromForm.urlSlug) {
+    formData.set('urlSlug', dataFromForm.urlSlug);
+  }
+
+  formData.set('isEditForm', String(isEditForm));
+
   if (dataFromForm.description) {
     formData.set('description', dataFromForm.description);
   }

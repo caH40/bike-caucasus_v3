@@ -21,16 +21,20 @@ import type {
   TContainerDistanceFormsProps,
   TFormDistanceCreate,
 } from '@/types/index.interface';
+import { useEffect } from 'react';
 
 const textValidation = new TextValidationService();
 
 /**
  * Форма создания дистанций для заездов чемпионата.
  */
-export default function FormDistance({ postDistance }: TContainerDistanceFormsProps) {
+export default function FormDistance({
+  postDistance,
+  putDistance,
+  distance,
+}: TContainerDistanceFormsProps) {
+  const isEditForm = !!distance;
   const isLoading = useLoadingStore((state) => state.isLoading);
-
-  // console.log(championshipForEdit);
 
   // Используем хук useForm из библиотеки react-hook-form для управления состоянием формы.
   const {
@@ -43,10 +47,20 @@ export default function FormDistance({ postDistance }: TContainerDistanceFormsPr
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
     defaultValues: {
       surfaceType: 'road',
+      ...distance,
     },
   });
 
-  const onSubmit = useSubmitDistance({ postDistance, reset });
+  useEffect(() => {
+    reset({ ...distance });
+  }, [distance, reset]);
+
+  const onSubmit = useSubmitDistance({
+    postDistance,
+    putDistance,
+    isEditForm,
+  });
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn(styles.form)}>
       <div className={styles.wrapper__block}>
@@ -98,28 +112,34 @@ export default function FormDistance({ postDistance }: TContainerDistanceFormsPr
         />
 
         {/* Блок загрузки GPX трека*/}
-        <Controller
-          name={`trackGPXFile`}
-          control={control}
-          defaultValue={null}
-          rules={{ required: t.trackGPXFile }}
-          render={({ field }) => (
-            <BlockUploadTrack
-              title={t.labels.trackGPXFile}
-              setTrack={field.onChange}
-              isLoading={isLoading}
-              resetData={false}
-              isRequired={true}
-              value={t.not}
-              validationText={errors.trackGPXFile?.message || ''}
-              tooltip={{ text: t.tooltips.track, id: 'track' }}
-            />
-          )}
-        />
+        {!isEditForm && (
+          <Controller
+            name={`trackGPXFile`}
+            control={control}
+            defaultValue={null}
+            rules={{ required: t.trackGPXFile }}
+            render={({ field }) => (
+              <BlockUploadTrack
+                title={t.labels.trackGPXFile}
+                setTrack={field.onChange}
+                isLoading={isLoading}
+                resetData={false}
+                isRequired={true}
+                value={t.not}
+                validationText={errors.trackGPXFile?.message || ''}
+                tooltip={{ text: t.tooltips.track, id: 'track' }}
+              />
+            )}
+          />
+        )}
 
         {/* Кнопка отправки формы. */}
         <div className={styles.box__button}>
-          <Button name={t.btn.add} theme="green" loading={isLoading} />
+          <Button
+            name={isEditForm ? t.btn.save : t.btn.add}
+            theme="green"
+            loading={isLoading}
+          />
         </div>
       </div>
     </form>

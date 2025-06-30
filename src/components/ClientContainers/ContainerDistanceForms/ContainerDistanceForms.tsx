@@ -8,10 +8,14 @@ import { TContainerDistanceFormsProps } from '@/types/index.interface';
 /**
  * Форма создания дистанций для заездов чемпионата.
  */
-export default function ContainerDistanceForms({ postDistance }: TContainerDistanceFormsProps) {
+export default function ContainerDistanceForms({
+  postDistance,
+  putDistance,
+  distance,
+}: TContainerDistanceFormsProps) {
   return (
     <div className={styles.wrapper}>
-      <FormDistance postDistance={postDistance} />
+      <FormDistance postDistance={postDistance} putDistance={putDistance} distance={distance} />
     </div>
   );
 }

@@ -7,7 +7,11 @@ import { TUseSubmitDistanceParams, TFormDistanceCreate } from '@/types/index.int
 import { useUserData } from '@/store/userdata';
 import { serializationDistance } from '@/libs/utils/serialization/dictance';
 
-export const useSubmitDistance = ({ postDistance, reset }: TUseSubmitDistanceParams) => {
+export const useSubmitDistance = ({
+  postDistance,
+  putDistance,
+  isEditForm,
+}: TUseSubmitDistanceParams) => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
 
@@ -26,10 +30,19 @@ export const useSubmitDistance = ({ postDistance, reset }: TUseSubmitDistancePar
         location,
         deviceInfo,
       },
+      isEditForm,
     });
 
-    // Вызывается серверный экшен.
-    const response = await postDistance(dataSerialized);
+    // Выбор обработчика в зависимости от типа формы: создание или редактирование дистанции.
+    const handler = isEditForm ? putDistance : postDistance;
+
+    if (!handler) {
+      throw new Error(
+        `Не получен обработчик сохранения дистанции (${isEditForm ? 'edit' : 'create'})!`
+      );
+    }
+
+    const response = await handler(dataSerialized);
 
     // Завершение отображение статуса загрузки.
     setLoading(false);
@@ -38,9 +51,8 @@ export const useSubmitDistance = ({ postDistance, reset }: TUseSubmitDistancePar
     if (response.ok) {
       toast.success(response.message);
 
-      // Обновляем родительский серверный компонент.
+      // Обновление данных получаемых с сервера на данной странице.
       router.refresh();
-      reset();
     } else {
       toast.error(response.message);
     }

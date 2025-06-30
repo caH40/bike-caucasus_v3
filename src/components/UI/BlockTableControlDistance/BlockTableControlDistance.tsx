@@ -9,10 +9,10 @@ import styles from './styles.module.css';
  * Блок Модерации таблицы c дистанциями.
  */
 export default function BlockTableControlDistance({
-  _id,
+  urlSlug,
   name,
 }: {
-  _id: string;
+  urlSlug: string;
   name: string;
 }): JSX.Element {
   const router = useRouter();
@@ -23,14 +23,14 @@ export default function BlockTableControlDistance({
       id: 0,
       icon: IconEditOld,
       tooltip: 'Редактирование',
-      getClick: () => router.push(`/moderation/distances/edit/${_id}`),
+      getClick: () => router.push(`/moderation/distances/edit/${urlSlug}`),
       colors: { default: 'green', hover: '#ec9c07' },
     },
     {
       id: 1,
       icon: IconDelete,
       tooltip: 'Удаление',
-      getClick: () => deleteItem({ _id, name, router }),
+      getClick: () => deleteItem({ urlSlug, name, router }),
       colors: { default: 'red', hover: '#ec9c07' },
     },
   ];
