@@ -7,13 +7,19 @@ import { parseGPX } from '@/libs/utils/parse-gpx';
 import { saveFile } from './save-file';
 import { getTrackStatsFromTrackData } from '@/libs/utils/track-data';
 import { parseGPXTrack } from '@/libs/utils/track-parse';
+import { distanceDto } from '@/dto/distance';
+import { ModeratorActionLogService } from './ModerationActionLog';
 
 // types
 import { TDistance, TTrackGPXObj } from '@/types/models.interface';
-import { ServerResponse, TServiceEntity } from '@/types/index.interface';
-import { ModeratorActionLogService } from './ModerationActionLog';
+import {
+  ServerResponse,
+  TPutDistanceServiceParams,
+  TServiceEntity,
+} from '@/types/index.interface';
 import { TDistanceDto } from '@/types/dto.types';
-import { distanceDto } from '@/dto/distance';
+import slugify from 'slugify';
+import { getNextSequenceValue } from './sequence';
 
 /**
  * Класс работы с дистанций для заездов чемпионата.
@@ -35,12 +41,12 @@ export class DistanceService {
   /**
    * Получение запрашиваемой дистанции.
    */
-  public async get(distanceId: string): Promise<ServerResponse<TDistanceDto | null>> {
+  public async get(urlSlug: string): Promise<ServerResponse<TDistanceDto | null>> {
     try {
-      const distanceDB = await DistanceModel.findById(distanceId).lean<TDistance>();
+      const distanceDB = await DistanceModel.findOne({ urlSlug }).lean<TDistance>();
 
       if (!distanceDB) {
-        throw new Error(`Не найдена дистанция с _id: ${distanceId}`);
+        throw new Error(`Не найдена дистанция с urlSlug: ${urlSlug}`);
       }
 
       return {
@@ -95,8 +101,12 @@ export class DistanceService {
       // Расчетные данные по треку (расстояние, средний градиент и т.д.)
       const stats = getTrackStatsFromTrackData(trackData);
 
+      // Генерация urlSlug.
+      const urlSlug = await this.getUrlSlug(name);
+
       const response = await DistanceModel.create({
         creator: creatorId,
+        urlSlug,
         name,
         description,
         trackGPX,
@@ -122,6 +132,58 @@ export class DistanceService {
         action: 'create',
         entity: this.entity,
         entityIds: response._id,
+        client,
+      });
+
+      return {
+        data: null,
+        ok: true,
+        message: 'Данные дистанции успешно сохранены в БД',
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Создание urlSlug дистанции.
+   */
+  private async getUrlSlug(name: string): Promise<string> {
+    const normalizedSlug = slugify(name, { lower: true, strict: true });
+
+    const sequenceValue = await getNextSequenceValue('distance');
+    return `${sequenceValue}-${normalizedSlug}`;
+  }
+
+  /**
+   * Обновление дистанции для заездов чемпионатов.
+   */
+  public async put({
+    distanceId,
+    updatedData,
+    moderatorId,
+    client,
+  }: TPutDistanceServiceParams): Promise<ServerResponse<null>> {
+    try {
+      const distanceDB = await DistanceModel.findOneAndUpdate(
+        { _id: distanceId },
+        {
+          $set: { ...updatedData },
+        }
+      ).lean();
+
+      if (!distanceDB) {
+        throw new Error(`Не найдена дистанция с _id: ${distanceId}`);
+      }
+
+      // Логирование действия.
+      await ModeratorActionLogService.create({
+        moderator: moderatorId,
+        changes: updatedData,
+        action: 'update',
+        entity: this.entity,
+        entityIds: [distanceId],
         client,
       });
 

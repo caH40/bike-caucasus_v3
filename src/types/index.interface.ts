@@ -1526,3 +1526,16 @@ export type TrackStats = Pick<
   TDistance,
   'distanceInMeter' | 'ascentInMeter' | 'avgGrade' | 'lowestElev' | 'highestElev'
 >;
+
+/**
+ * Параметры метода put класса DistanceService.
+ */
+export type TPutDistanceServiceParams = {
+  distanceId: string;
+  updatedData: {
+    name: string;
+    description: string;
+  };
+  moderatorId: string;
+  client?: TClientMeta;
+};

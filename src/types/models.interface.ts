@@ -591,6 +591,7 @@ export type TDistance = {
   _id: mongoose.Types.ObjectId; // Уникальный идентификатор дистанции.
   creator: mongoose.Types.ObjectId; // Идентификатор пользователя, создавшего маршрут.
   name: string; // Название маршрута.
+  urlSlug: string; // urlSlug для страницы дистанции.
   description?: string; // Описание маршрута.
   trackGPX: TTrackGPXObj; // Объект с GPX-данными маршрута.
   distanceInMeter: number; // Общая длина маршрута в метрах.

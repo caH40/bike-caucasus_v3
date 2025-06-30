@@ -32,11 +32,11 @@ export async function postDistance(serializedData: FormData): Promise<ServerResp
  * Экшен получения дистанции.
  */
 export async function getDistance(
-  distanceId: string
+  urlSlug: string
 ): Promise<ServerResponse<TDistanceDto | null>> {
   try {
     const distanceService = new DistanceService();
-    const response = await distanceService.get(distanceId);
+    const response = await distanceService.get(urlSlug);
 
     return response;
   } catch (error) {
