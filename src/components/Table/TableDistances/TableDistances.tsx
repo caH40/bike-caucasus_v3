@@ -45,12 +45,12 @@ export default function TableDistances({ distances, docsOnPage = 15 }: Props) {
 
   const router = useRouter();
 
-  const getLink = (id: string) => {
-    if (id === 'undefined') {
-      toast.error('Не получен _id ошибки!');
+  const getLink = (urlSlug: string) => {
+    if (!urlSlug) {
+      toast.error('Не получен urlSlug!');
     }
 
-    router.push(`/distance/${id}`);
+    router.push(`/distances/${urlSlug}`);
   };
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function TableDistances({ distances, docsOnPage = 15 }: Props) {
               <tr
                 className={cx('tr', 'tr__link', 'tr-hover')}
                 key={row.id}
-                onClick={() => getLink(String(row.getVisibleCells()[3]?.getValue()))}
+                onClick={() => getLink(row.original.urlSlug)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td className={styles.td} key={cell.id}>
