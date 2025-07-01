@@ -1,6 +1,10 @@
 import styles from './icons.module.css';
 
-export default function Checkmark({ isCompleted }: { isCompleted: boolean }) {
+type Props = {
+  isCompleted?: boolean;
+};
+
+export default function Checkmark({ isCompleted }: Props) {
   return (
     <svg
       className={styles.icon__custom}

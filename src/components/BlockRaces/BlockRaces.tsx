@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 
 import { TChampionshipStatus, TChampionshipTypes } from '@/types/models.interface';
 import Wrapper from '../Wrapper/Wrapper';
-import ParamsRace from '../ParamsRace/ParamsRace';
+import DistanceParams from '../DistanceParams/DistanceParams';
 import BoxRegistrationChamp from '../UI/BoxRegistrationChamp/BoxRegistrationChamp';
 import { TRaceForForm } from '@/types/index.interface';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
@@ -47,7 +47,10 @@ export default function BlockRaces({ races, registrationData }: Props) {
             )}
 
             <div className={styles.wrapper__params}>
-              <ParamsRace race={race} />
+              <DistanceParams
+                distance={{ distanceInMeter: race.distance * 1000, ascentInMeter: race.ascent }}
+                laps={race.laps}
+              />
             </div>
 
             <MapWithElevation url={race.trackGPX.url} key={race._id} />

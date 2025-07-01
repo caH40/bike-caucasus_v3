@@ -4,6 +4,7 @@ import type {
   TRaceForFormNew,
   TSurfaceType,
 } from '@/types/index.interface';
+import { SURFACE_TYPE_TRANSLATIONS } from './translations';
 
 /**
  * Тип Чемпионата.
@@ -28,13 +29,13 @@ export const championshipTypesMap: TOptionsMap = new Map([
 /**
  * Тип дорожного покрытия дистанции.
  */
-export const distanceSurfaceTypes: TOptions<TSurfaceType>[] = [
-  { id: 0, translation: 'Асфальт', name: 'road' },
-  { id: 1, translation: 'Гравий', name: 'gravel' },
-  { id: 2, translation: 'Тропа', name: 'trail' },
-  { id: 3, translation: 'Смешанное покрытие', name: 'mixed' },
-  { id: 4, translation: 'Грунт', name: 'dirt' },
-];
+export const distanceSurfaceTypes: TOptions<TSurfaceType>[] = (
+  Object.entries(SURFACE_TYPE_TRANSLATIONS) as [TSurfaceType, string][]
+).map(([name, translation], index) => ({
+  id: index,
+  name,
+  translation,
+}));
 
 /**
  * Статус Чемпионата.

@@ -6,7 +6,8 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 import styles from './Distance.module.css';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
-import JSONBlock from '@/components/JSONBlock/JSONBlock';
+
+import DistanceParams from '@/components/DistanceParams/DistanceParams';
 
 type Props = {
   params: Promise<{ urlSlug: string }>;
@@ -15,19 +16,23 @@ type Props = {
 export default async function DistancePage(props: Props) {
   const { urlSlug } = await props.params;
 
-  const { data: distance, message, statusCode } = await getDistance(urlSlug);
+  const { data: d, message, statusCode } = await getDistance(urlSlug);
 
-  if (!distance || !message) {
+  if (!d || !message) {
     return <ServerErrorMessage message={message} statusCode={statusCode} />;
   }
 
+  console.log(d);
+
   return (
     <div className={styles.wrapper}>
-      <TitleAndLine hSize={1} title={`Дистанция: ${distance.name}`} />
+      <TitleAndLine hSize={1} title={`Дистанция: ${d.name}`} />
 
-      <JSONBlock json={distance} />
+      <div className={styles.wrapper__params}>
+        <DistanceParams distance={d} />
+      </div>
 
-      <MapWithElevation url={distance.trackGPX.url} key={distance._id} />
+      <MapWithElevation url={d.trackGPX.url} key={d._id} />
     </div>
   );
 }
