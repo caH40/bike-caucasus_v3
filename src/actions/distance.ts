@@ -9,6 +9,7 @@ import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
 // types
 import { ServerResponse } from '@/types/index.interface';
 import { TDistanceDto } from '@/types/dto.types';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Экшен отправки данных на сервер для создания дистанции.
@@ -20,6 +21,10 @@ export async function postDistance(serializedData: FormData): Promise<ServerResp
     const distanceService = new DistanceService();
 
     const response = await distanceService.create({ creatorId: userIdDB, serializedData });
+
+    if (response.ok) {
+      revalidatePath('/distances');
+    }
 
     return response;
   } catch (error) {
@@ -37,6 +42,10 @@ export async function putDistance(serializedData: FormData): Promise<ServerRespo
     const distanceService = new DistanceService();
 
     const response = await distanceService.put({ moderatorId: userIdDB, serializedData });
+
+    if (response.ok) {
+      revalidatePath('/distances');
+    }
 
     return response;
   } catch (error) {
