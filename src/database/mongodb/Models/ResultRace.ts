@@ -3,23 +3,11 @@ import { DisqualificationSchema } from './Schema/Disqualification';
 import { ProfileSchema } from './Schema/Profile';
 import { PositionsSchema } from './Schema/Positions';
 import { GapsInCategoriesSchema } from './Schema/GapsInCategories';
+import { PointsSchema } from './Schema/Points';
+import { QuantityRidersFinishedSchema } from './Schema/QuantityRidersFinished';
 
 // types
-import { TQuantityRidersFinished, TResultRaceDocument } from '@/types/models.interface';
-import { PointsSchema } from './Schema/Points';
-
-/**
- * Схема и модель для результата Райдера в заезде Чемпионата.
- */
-export const QuantityRidersFinishedSchema = new Schema<TQuantityRidersFinished>(
-  {
-    category: Number, // Позиция в возрастной категории или по уровню подготовки. Подразумевается, что используется деление или по возрасту, или по подготовке.!!!
-    absolute: Number, // Абсолютная категория.
-    absoluteGenderMale: Number, // Абсолютная категория с делением по полу муж/жен.
-    absoluteGenderFemale: Number, // Позиция райдера в заезде, выставляется вручную. !В разработке.
-  },
-  { _id: false }
-);
+import { TResultRaceDocument } from '@/types/models.interface';
 
 const ResultRaceSchema: Schema = new Schema<TResultRaceDocument>(
   {

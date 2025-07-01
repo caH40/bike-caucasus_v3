@@ -606,3 +606,23 @@ export type TDistance = {
   createdAt: Date; // Дата создания записи.
   updatedAt: Date; // Дата последнего изменения.
 };
+
+/**
+ * Результат заезда на Дистанции в заезде Чемпионата.
+ */
+export type TDistanceResultDocument = TDistanceResult & Document;
+export type TDistanceResult = {
+  _id: mongoose.Types.ObjectId; // Идентификатор документа в коллекции.
+  championship: mongoose.Types.ObjectId; // Ссылка на объект дистанции из БД.
+  trackDistance: mongoose.Types.ObjectId; // Ссылка на объект дистанции из БД.
+  raceResult: mongoose.Types.ObjectId; // Ссылка на объект результата заезда.
+  rider: mongoose.Types.ObjectId; // Ссылка на пользователя.
+  raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
+  positions: Omit<TPositions, 'category'>; // Занятые места во всех протоколах.
+  disqualification?: TDisqualification; // Дисквалификация райдера в заезде.
+  averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
+  quantityRidersFinished: Omit<TQuantityRidersFinished, 'category'>; // Количество райдеров по абсолютным категориям.
+  gaps: Omit<TGapsInCategories, 'category'>; // Гэпы до лидера и до предыдущего райдера для каждой абсолютной категории.
+  createdAt: Date;
+  updatedAt: Date;
+};

@@ -18,3 +18,20 @@ export const GapsInCategoriesSchema = new Schema<TGapsInCategories>(
   },
   { _id: false }
 );
+
+export const AbsoluteGapsInCategoriesSchema = new Schema<TGapsInCategories>(
+  {
+    absolute: { type: { toLeader: Number, toPrev: Number }, default: null, _id: false },
+    absoluteGenderMale: {
+      type: { toLeader: Number, toPrev: Number },
+      default: null,
+      _id: false,
+    },
+    absoluteGenderFemale: {
+      type: { toLeader: Number, toPrev: Number },
+      default: null,
+      _id: false,
+    },
+  },
+  { _id: false }
+);

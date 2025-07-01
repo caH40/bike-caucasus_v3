@@ -8,3 +8,10 @@ export const PositionsSchema = new Schema(
   },
   { _id: false }
 );
+export const AbsolutePositionsSchema = new Schema(
+  {
+    absolute: Number, // Абсолютная категория.
+    absoluteGender: Number, // Абсолютная категория с делением по полу муж/жен.
+  },
+  { _id: false }
+);
