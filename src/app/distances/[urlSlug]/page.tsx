@@ -10,6 +10,7 @@ const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 import DistanceParams from '@/components/DistanceParams/DistanceParams';
 import Spacer from '@/components/Spacer/Spacer';
 import UnderConstruction from '@/components/UnderConstruction/UnderConstruction';
+import { getDistanceResults } from '@/actions/distance-result';
 
 type Props = {
   params: Promise<{ urlSlug: string }>;
@@ -23,6 +24,8 @@ export default async function DistancePage(props: Props) {
   if (!d || !message) {
     return <ServerErrorMessage message={message} statusCode={statusCode} />;
   }
+
+  const results = getDistanceResults(d._id);
 
   return (
     <div className={styles.wrapper}>
