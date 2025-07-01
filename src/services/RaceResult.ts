@@ -442,6 +442,25 @@ export class RaceResultService {
   }
 
   /**
+   * Получение всех результатов на запрашиваемой дистанции с urlSlug: distanceUrlSlug.
+   */
+  // public async getDistanceResults(distanceUrlSlug: string): Promise<ServerResponse<null>> {
+  //   try {
+  //     // Получение данных заезда.
+  //     const resultsDB = await ResultRaceModel.find().lean();
+
+  //     return {
+  //       data: null,
+  //       ok: true,
+  //       message: 'Все результаты на запрашиваемой дистанции!',
+  //     };
+  //   } catch (error) {
+  //     this.errorLogger(error);
+  //     return this.handlerErrorDB(error);
+  //   }
+  // }
+
+  /**
    * Установка очков в результат райдера в зависимости от его места.
    */
   private async setPoints({ championshipId, results }: TRaceResultsServiceSetPointsParams) {
