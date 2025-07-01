@@ -8,6 +8,8 @@ import styles from './Distance.module.css';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 
 import DistanceParams from '@/components/DistanceParams/DistanceParams';
+import Spacer from '@/components/Spacer/Spacer';
+import UnderConstruction from '@/components/UnderConstruction/UnderConstruction';
 
 type Props = {
   params: Promise<{ urlSlug: string }>;
@@ -22,17 +24,23 @@ export default async function DistancePage(props: Props) {
     return <ServerErrorMessage message={message} statusCode={statusCode} />;
   }
 
-  console.log(d);
-
   return (
     <div className={styles.wrapper}>
-      <TitleAndLine hSize={1} title={`Дистанция: ${d.name}`} />
+      <TitleAndLine hSize={1} title={d.name} />
 
-      <div className={styles.wrapper__params}>
+      {/* Параметры дистанции */}
+      <Spacer margin="b-md">
         <DistanceParams distance={d} />
-      </div>
+      </Spacer>
 
-      <MapWithElevation url={d.trackGPX.url} key={d._id} />
+      {/* Профиль дистанции и высоты с треком на карте */}
+      <Spacer margin="b-lg">
+        <MapWithElevation url={d.trackGPX.url} key={d._id} />
+      </Spacer>
+
+      <TitleAndLine hSize={2} title={'Таблица результатов на дистанции'} />
+
+      <UnderConstruction />
     </div>
   );
 }

@@ -61,18 +61,8 @@ export default function DistanceParams({
         <div className={styles.box}>
           <IconArrowTrendingUp squareSize={24} />
           <div className={styles.description}>
-            <h4 className={styles.title}>{avgGrade}%</h4>
+            <h4 className={styles.title}>{avgGrade} %</h4>
             <p className={styles.title__sub}>Ср. градиент</p>
-          </div>
-        </div>
-      )}
-
-      {highestElev && (
-        <div className={styles.box}>
-          <IconParamsHight squareSize={24} />
-          <div className={styles.description}>
-            <h4 className={styles.title}>{highestElev} м</h4>
-            <p className={styles.title__sub}>Макс. высота</p>
           </div>
         </div>
       )}
@@ -83,6 +73,16 @@ export default function DistanceParams({
           <div className={styles.description}>
             <h4 className={styles.title}>{lowestElev} м</h4>
             <p className={styles.title__sub}>Мин. высота</p>
+          </div>
+        </div>
+      )}
+
+      {highestElev && (
+        <div className={styles.box}>
+          <IconParamsHight squareSize={24} />
+          <div className={styles.description}>
+            <h4 className={styles.title}>{highestElev} м</h4>
+            <p className={styles.title__sub}>Макс. высота</p>
           </div>
         </div>
       )}
