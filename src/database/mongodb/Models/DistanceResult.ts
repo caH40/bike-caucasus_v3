@@ -26,6 +26,7 @@ const DistanceResultSchema = new Schema<TDistanceResultDocument>(
       ref: 'User', // замените на актуальное имя модели
       required: true,
     },
+    isBestForRank: { type: Boolean, default: false },
     raceTimeInMilliseconds: { type: Number, required: true },
     positions: AbsolutePositionsSchema,
     disqualification: DisqualificationSchema,

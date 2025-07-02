@@ -617,6 +617,7 @@ export type TDistanceResult = {
   trackDistance: mongoose.Types.ObjectId; // Ссылка на объект дистанции из БД.
   raceResult: mongoose.Types.ObjectId; // Ссылка на объект результата заезда.
   rider: mongoose.Types.ObjectId; // Ссылка на пользователя.
+  isBestForRank: boolean; // Результат использовать для общих таблиц.
   raceTimeInMilliseconds: number; // Время заезда (миллисекундах).
   positions: Omit<TPositions, 'category'>; // Занятые места во всех протоколах.
   disqualification?: TDisqualification; // Дисквалификация райдера в заезде.

@@ -68,9 +68,18 @@ export default function TableDistanceResults({ results, docsOnPage = 15 }: Props
             {table.getRowModel().rows.map((row) => (
               <tr className={cx('tr', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <td className={styles.td} key={cell.id}>
+                  <td
+                    className={cx('td', {
+                      number: ['positions_absolute'].includes(cell.column.id),
+                    })}
+                    key={cell.id}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
+
+                  // <td className={styles.td} key={cell.id}>
+                  //   {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  // </td>
                 ))}
               </tr>
             ))}

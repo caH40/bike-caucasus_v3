@@ -35,18 +35,28 @@ export class DistanceResultService {
 
   public async get({
     distanceId,
+    riderId,
   }: {
     distanceId: string;
+    riderId?: string; // Если нет, то абсолютные протоколы, иначе результаты райдера riderId.
   }): Promise<ServerResponse<TDistanceResultDto[] | null>> {
     try {
-      const resultsDB = await DistanceResultModel.find({
+      const query = {
         trackDistance: distanceId,
-      })
+        ...(riderId && { rider: riderId }),
+        ...(!riderId && { isBestForRank: true }), // Если не передан riderId, значит запрашиваются только лучшие результаты райдеров.
+      };
+
+      const resultsDB = await DistanceResultModel.find(query)
         .populate({ path: 'championship', select: ['urlSlug', 'startDate', '-_id'] })
         .populate('rider')
         .lean<TDistanceResultFromMongo[]>();
 
       const resultsAfterDto = resultsDB.map((result) => distanceResultDto(result));
+
+      // Сортировка по возрастанию времени на дистанции.
+      resultsAfterDto.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+
       return { data: resultsAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
@@ -106,34 +116,52 @@ export class DistanceResultService {
     const resultsWithUsers: (Omit<TResultRace, 'rider'> & { rider: Types.ObjectId })[] =
       raceResults.filter((r): r is TResultRace & { rider: Types.ObjectId } => !!r.rider);
 
+    // Коллекция для сохранения _id райдеров для пометки флагом самый лучший результат и последующие.
+    const uniqueRiderId = new Set<string>();
+
+    const sortedResultsWithRankFlag = resultsWithUsers
+      .toSorted((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds)
+      .map((result) => {
+        let isBestForRank = true;
+        const riderId = result.rider.toString();
+
+        // Если уже есть _id, значит лучший результат был помещен флагом isBestForRank:true
+        if (uniqueRiderId.has(riderId)) {
+          isBestForRank = false;
+        } else {
+          isBestForRank = true;
+          uniqueRiderId.add(riderId);
+        }
+        return { ...result, isBestForRank };
+      });
+
     // Создание массива результатов на дистанции без расчетных данных.
     // Сортировка по возрастанию финишного времени.
-    const results = resultsWithUsers
-      .map((result) => {
-        const race = races.find((r) => r._id.equals(result.race));
+    const results = sortedResultsWithRankFlag.map((result) => {
+      const race = races.find((r) => r._id.equals(result.race));
 
-        if (!race) {
-          throw new Error(
-            `Не найден заезд для создания результата на дистанции с _id: ${result._id}`
-          );
-        }
-        const { laps, championship } = race;
+      if (!race) {
+        throw new Error(
+          `Не найден заезд для создания результата на дистанции с _id: ${result._id}`
+        );
+      }
+      const { laps, championship } = race;
 
-        return {
-          championship,
-          trackDistance: distanceId,
-          raceResult: result._id,
-          rider: result.rider,
-          raceTimeInMilliseconds: result.raceTimeInMilliseconds,
-          averageSpeed: result.averageSpeed,
-          laps,
-          gender: result.profile.gender,
-        } satisfies Omit<
-          TDistanceResultForSave,
-          'positions' | 'gaps' | 'quantityRidersFinished'
-        > & { gender: TGender };
-      })
-      .sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+      return {
+        championship,
+        trackDistance: distanceId,
+        raceResult: result._id,
+        rider: result.rider,
+        raceTimeInMilliseconds: result.raceTimeInMilliseconds,
+        averageSpeed: result.averageSpeed,
+        isBestForRank: result.isBestForRank,
+        laps,
+        gender: result.profile.gender,
+      } satisfies Omit<
+        TDistanceResultForSave,
+        'positions' | 'gaps' | 'quantityRidersFinished'
+      > & { gender: TGender };
+    });
 
     // Добавление позиций, отставаний, количество участников по абсолютным категориям.
     const resultsForSave = processDistanceResults(results);
