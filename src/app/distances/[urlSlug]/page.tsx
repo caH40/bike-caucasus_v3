@@ -30,22 +30,25 @@ export default async function DistancePage(props: Props) {
     <div className={styles.wrapper}>
       <TitleAndLine hSize={1} title={d.name} />
       {/* Параметры дистанции */}
-      <Spacer margin="b-md">
-        <DistanceParams distance={d} />
-      </Spacer>
-      {/* Профиль дистанции и высоты с треком на карте */}
       <Spacer margin="b-lg">
-        <MapWithElevation url={d.trackGPX.url} key={d._id} />
+        <DistanceParams distance={d} />
       </Spacer>
 
       <TitleAndLine hSize={2} title={'Таблица результатов на дистанции'} />
 
       {/* Таблица с результатами */}
-      {results.data ? (
-        <DistanceResultsTableContainer results={results.data} />
-      ) : (
-        <ServerErrorMessage message={results.message} statusCode={results.statusCode} />
-      )}
+      <Spacer margin="b-lg">
+        {results.data ? (
+          <DistanceResultsTableContainer results={results.data} />
+        ) : (
+          <ServerErrorMessage message={results.message} statusCode={results.statusCode} />
+        )}
+      </Spacer>
+
+      {/* Профиль дистанции и высоты с треком на карте */}
+      <Spacer margin="b-lg">
+        <MapWithElevation url={d.trackGPX.url} key={d._id} />
+      </Spacer>
     </div>
   );
 }

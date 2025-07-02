@@ -76,10 +76,6 @@ export default function TableDistanceResults({ results, docsOnPage = 15 }: Props
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
-
-                  // <td className={styles.td} key={cell.id}>
-                  //   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  // </td>
                 ))}
               </tr>
             ))}
