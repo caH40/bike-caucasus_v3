@@ -14,6 +14,7 @@ import {
   TChampionshipTypes,
   TDisqualification,
   TDistance,
+  TDistanceResult,
   TGeneralClassification,
   TLogsErrorModel,
   TModeratorActionLog,
@@ -416,4 +417,26 @@ export type TDistanceDto = Omit<TDistance, '_id' | 'creator' | 'updatedAt' | 'cr
   creator: string;
   updatedAt: string;
   createdAt: string;
+};
+
+export type TDistanceResultDto = Omit<
+  TDistanceResult,
+  '_id' | 'championship' | 'trackDistance' | 'raceResult' | 'rider' | 'createdAt' | 'updatedAt'
+> & {
+  _id: string;
+  startDate: string; // Из документа championship.
+  championshipUrlSlug: string; // Из документа championship.
+  trackDistance: string;
+  raceResult: string;
+  rider: TRiderForDistanceResultDto;
+  createdAt: string;
+  updatedAt: string;
+};
+export type TRiderForDistanceResultDto = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  gender: TGender;
+  image?: string;
 };

@@ -5,6 +5,7 @@ import {
   TChampionship,
   TChampionshipStatus,
   TChampionshipTypes,
+  TDistanceResult,
   TGeneralClassification,
   TModeratorActionLog,
   TNewsBlockInfo,
@@ -143,4 +144,15 @@ export type TRaceMetaFromMongo = {
   _id: Types.ObjectId;
   championship: Types.ObjectId;
   laps: number;
+};
+
+/**
+ * Получение результата на дистанции.
+ */
+export type TDistanceResultFromMongo = Omit<TDistanceResult, 'championship' | 'rider'> & {
+  championship: {
+    urlSlug: string;
+    startDate: Date;
+  };
+  rider: IUserModel;
 };

@@ -27,17 +27,14 @@ export default async function DistancePage(props: Props) {
 
   // await putDistanceResults(d._id);
   const results = await getDistanceResults(d._id);
-  console.log(results);
 
   return (
     <div className={styles.wrapper}>
       <TitleAndLine hSize={1} title={d.name} />
-
       {/* Параметры дистанции */}
       <Spacer margin="b-md">
         <DistanceParams distance={d} />
       </Spacer>
-
       {/* Профиль дистанции и высоты с треком на карте */}
       <Spacer margin="b-lg">
         <MapWithElevation url={d.trackGPX.url} key={d._id} />
@@ -45,7 +42,12 @@ export default async function DistancePage(props: Props) {
 
       <TitleAndLine hSize={2} title={'Таблица результатов на дистанции'} />
 
-      <UnderConstruction />
+      {/* Таблица с результатами */}
+      {results.data ? (
+        <UnderConstruction />
+      ) : (
+        <ServerErrorMessage message={results.message} statusCode={results.statusCode} />
+      )}
     </div>
   );
 }

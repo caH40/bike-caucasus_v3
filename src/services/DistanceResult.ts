@@ -12,10 +12,12 @@ import {
 import { RaceModel } from '@/database/mongodb/Models/Race';
 import { Types } from 'mongoose';
 import { ResultRaceModel } from '@/database/mongodb/Models/ResultRace';
-import { TDistanceResult, TResultRace } from '@/types/models.interface';
-import { TRaceMetaFromMongo } from '@/types/mongo.types';
+import { TResultRace } from '@/types/models.interface';
+import { TDistanceResultFromMongo, TRaceMetaFromMongo } from '@/types/mongo.types';
 import { processDistanceResults } from '@/libs/utils/distance-results';
 import { DistanceResultModel } from '@/database/mongodb/Models/DistanceResult';
+import { distanceResultDto } from '@/dto/distance-result';
+import { TDistanceResultDto } from '@/types/dto.types';
 
 /**
  * Сервис работы с результатами на Дистанции для заездов Чемпионатов.
@@ -35,12 +37,17 @@ export class DistanceResultService {
     distanceId,
   }: {
     distanceId: string;
-  }): Promise<ServerResponse<TDistanceResult[] | null>> {
+  }): Promise<ServerResponse<TDistanceResultDto[] | null>> {
     try {
       const resultsDB = await DistanceResultModel.find({
         trackDistance: distanceId,
-      }).lean<TDistanceResult[]>();
-      return { data: resultsDB, ok: true, message: 'Данные заезда Чемпионата' };
+      })
+        .populate({ path: 'championship', select: ['urlSlug', 'startDate', '-_id'] })
+        .populate('rider')
+        .lean<TDistanceResultFromMongo[]>();
+
+      const resultsAfterDto = resultsDB.map((result) => distanceResultDto(result));
+      return { data: resultsAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

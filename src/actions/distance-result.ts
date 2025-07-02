@@ -5,14 +5,14 @@ import { DistanceResultService } from '@/services/DistanceResult';
 
 // types
 import { ServerResponse } from '@/types/index.interface';
-import { TDistanceResult } from '@/types/models.interface';
+import { TDistanceResultDto } from '@/types/dto.types';
 
 /**
  * Серверный экшен получения всех результатов на запрашиваемой дистанции с urlSlug: distanceUrlSlug.
  */
 export async function getDistanceResults(
   distanceId: string
-): Promise<ServerResponse<TDistanceResult[] | null>> {
+): Promise<ServerResponse<TDistanceResultDto[] | null>> {
   try {
     const distanceResult = new DistanceResultService();
 
