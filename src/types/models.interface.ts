@@ -623,6 +623,7 @@ export type TDistanceResult = {
   averageSpeed?: number; // Средняя скорость райдера в заезде (в км/ч).
   quantityRidersFinished: Omit<TQuantityRidersFinished, 'category'>; // Количество райдеров по абсолютным категориям.
   gaps: Omit<TGapsInCategories, 'category'>; // Гэпы до лидера и до предыдущего райдера для каждой абсолютной категории.
+  laps: number; // Сколько кругов данной дистанции было в заезде из которого взят результат.
   createdAt: Date;
   updatedAt: Date;
 };

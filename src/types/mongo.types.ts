@@ -135,3 +135,12 @@ export type TGetAllModeratorActionLogsFromMongo = Omit<TModeratorActionLog, 'mod
     role: { name: string };
   };
 };
+
+/**
+ * Получение всех заездов по дистанции distanceId.
+ */
+export type TRaceMetaFromMongo = {
+  _id: Types.ObjectId;
+  championship: Types.ObjectId;
+  laps: number;
+};

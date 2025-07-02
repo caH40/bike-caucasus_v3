@@ -20,6 +20,7 @@ import {
   TChampionshipStatus,
   TChampionshipTypes,
   TDistance,
+  TDistanceResult,
   TGeneralClassification,
   TLogsErrorModel,
   TModeratorActionLog,
@@ -44,7 +45,11 @@ import {
   TRoleDto,
   TToursAndSeriesDto,
 } from './dto.types';
-import { TGCStagesResultsFromMongo, TGetStagesFromMongo } from './mongo.types';
+import {
+  TGCStagesResultsFromMongo,
+  TGetStagesFromMongo,
+  TRaceMetaFromMongo,
+} from './mongo.types';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -1535,4 +1540,21 @@ export type TrackStats = Pick<
 export type TPutDistanceServiceParams = {
   serializedData: FormData;
   moderatorId: string;
+};
+
+/**
+ * Результат на дистанции для сохранения в БД.
+ */
+export type TDistanceResultForSave = Omit<
+  TDistanceResult,
+  'createdAt' | 'updatedAt' | '_id' | 'trackDistance'
+> & { trackDistance: string };
+
+/**
+ * Параметры метода prepareDistanceResultsForSave класса DistanceResult.
+ */
+export type TPrepareDistanceResultsForSaveParams = {
+  raceResults: TResultRace[];
+  distanceId: string;
+  races: TRaceMetaFromMongo[];
 };

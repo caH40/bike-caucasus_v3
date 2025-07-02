@@ -32,6 +32,7 @@ const DistanceResultSchema = new Schema<TDistanceResultDocument>(
     averageSpeed: { type: Number },
     quantityRidersFinished: AbsoluteQuantityRidersFinishedSchema,
     gaps: AbsoluteGapsInCategoriesSchema,
+    laps: { type: Number, required: true },
   },
   { timestamps: true }
 );
