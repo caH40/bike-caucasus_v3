@@ -6,14 +6,13 @@ import {
   IconRider,
   IconSpeed,
 } from '@/components/Icons';
-import { getTimerLocal } from '@/libs/utils/date-local';
+import TdDistanceResultDate from '../Td/TdDistanceResultDate';
 import { TDistanceResultDto } from '@/types/dto.types';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import Medal from '../Td/Medal';
 import TdRider from '../Td/TdRider';
 import Time from '../Td/Time';
 import TdGap from '@/components/GapInProtocol/GapInProtocol';
-
 import styles from '../TableCommon.module.css';
 
 type TCellProps = CellContext<TDistanceResultDto & { id: number }, string | number>;
@@ -103,7 +102,12 @@ export function getColumnsForDistanceResultsTable(): ColumnDef<
     {
       header: 'Дата',
       accessorKey: 'startDate',
-      cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYY')}</span>,
+      cell: (props: TCellProps) => (
+        <TdDistanceResultDate
+          date={String(props.getValue())}
+          championshipUrlSlug={props.row.original.championshipUrlSlug}
+        />
+      ),
     },
   ];
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import {
   flexRender,
   getCoreRowModel,
@@ -8,7 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
+
 import cn from 'classnames/bind';
 
 import Pagination from '@/components/UI/Pagination/Pagination';
@@ -43,16 +42,6 @@ export default function TableDistanceResults({ results, docsOnPage = 15 }: Props
     },
   });
 
-  const router = useRouter();
-
-  const getLink = (urlSlug: string) => {
-    if (!urlSlug) {
-      toast.error('Не получен urlSlug!');
-    }
-
-    router.push(`/distances/${urlSlug}`);
-  };
-
   useEffect(() => {
     table.setPageSize(docsOnPage);
     table.setPageIndex(0);
@@ -77,11 +66,7 @@ export default function TableDistanceResults({ results, docsOnPage = 15 }: Props
 
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr
-                className={cx('tr', 'tr__link', 'tr-hover')}
-                key={row.id}
-                onClick={() => getLink(row.original.championshipUrlSlug)}
-              >
+              <tr className={cx('tr', 'tr-hover')} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className={styles.td} key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
