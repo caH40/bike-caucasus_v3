@@ -1,16 +1,14 @@
 import dynamic from 'next/dynamic';
 
 import { getDistance } from '@/actions/distance';
+import { getDistanceResults } from '@/actions/distance-result';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
-
-import styles from './Distance.module.css';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
-
 import DistanceParams from '@/components/DistanceParams/DistanceParams';
 import Spacer from '@/components/Spacer/Spacer';
-import UnderConstruction from '@/components/UnderConstruction/UnderConstruction';
-import { getDistanceResults, putDistanceResults } from '@/actions/distance-result';
+import DistanceResultsTableContainer from '@/components/Table/Containers/DistanceResultsTableContainer/DistanceResultsTableContainer';
+import styles from './Distance.module.css';
 
 type Props = {
   params: Promise<{ urlSlug: string }>;
@@ -44,7 +42,7 @@ export default async function DistancePage(props: Props) {
 
       {/* Таблица с результатами */}
       {results.data ? (
-        <UnderConstruction />
+        <DistanceResultsTableContainer results={results.data} />
       ) : (
         <ServerErrorMessage message={results.message} statusCode={results.statusCode} />
       )}
