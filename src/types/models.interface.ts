@@ -4,6 +4,7 @@ import {
   TCategoryAge,
   TCategorySkillLevel,
   TDeviceInfo,
+  TDistanceStats,
   TFormCalendar,
   TLocationInfo,
   TrackData,
@@ -603,6 +604,7 @@ export type TDistance = {
   isPublic: boolean; // Публичная ли дистанция.
   isElevationProfileReady: boolean; // Профиль высоты рассчитан и есть БД.
   elevationProfile?: TrackData; // Профиль высоты (если требуется для графиков).
+  stats?: TDistanceStats; // Статистика по результатам райдеров на дистанции.
   createdAt: Date; // Дата создания записи.
   updatedAt: Date; // Дата последнего изменения.
 };

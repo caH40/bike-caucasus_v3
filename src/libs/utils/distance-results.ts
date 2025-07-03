@@ -1,4 +1,9 @@
-import { TDistanceResultForSave, TGender } from '@/types/index.interface';
+import {
+  TDistanceResultForSave,
+  TDistanceResultsWithGender,
+  TDistanceResultsWithGenderWithoutGaps,
+  TGender,
+} from '@/types/index.interface';
 import { TGapsInCategories } from '@/types/models.interface';
 
 type Params = (Omit<TDistanceResultForSave, 'positions' | 'gaps' | 'quantityRidersFinished'> & {
@@ -12,7 +17,7 @@ type Params = (Omit<TDistanceResultForSave, 'positions' | 'gaps' | 'quantityRide
  * @param {TResultRace[]} params.results - Массив результатов заезда.
  * @param {TRace} params.race - Данные заезда.
  */
-export function processDistanceResults(results: Params): TDistanceResultForSave[] {
+export function processDistanceResults(results: Params): TDistanceResultsWithGender[] {
   // Инициализация счетчиков.
   const counters = {
     positionAbsolute: 1,
@@ -82,7 +87,6 @@ export function processDistanceResults(results: Params): TDistanceResultForSave[
   return resultsForSave;
 }
 
-type ResultsWithGenderWithoutGaps = Omit<TDistanceResultForSave, 'gaps'> & { gender: TGender };
 /**
  * Рассчитывает и устанавливает временные гэпы между райдерами для различных категорий.
  *
@@ -93,9 +97,9 @@ export function setGaps({
   results,
   categoriesInRace,
 }: {
-  results: ResultsWithGenderWithoutGaps[];
+  results: TDistanceResultsWithGenderWithoutGaps[];
   categoriesInRace: Map<string, number>;
-}): TDistanceResultForSave[] {
+}): TDistanceResultsWithGender[] {
   const indexesInCategories: {
     [key: string]: { leader: number | null; prev: number };
   } = {};
@@ -106,7 +110,7 @@ export function setGaps({
   }
 
   const { resultsForRank, otherResults } = results.reduce<
-    Record<'resultsForRank' | 'otherResults', ResultsWithGenderWithoutGaps[]>
+    Record<'resultsForRank' | 'otherResults', TDistanceResultsWithGenderWithoutGaps[]>
   >(
     (acc, cur) => {
       if (cur.isBestForRank) {
@@ -123,9 +127,7 @@ export function setGaps({
   );
 
   // Расчет и установка отставаний для результатов из общего рейтинга.
-  const resultsForRankForSave = resultsForRank.map((resultWithGender, index) => {
-    const { gender, ...result } = resultWithGender;
-
+  const resultsForRankForSave = resultsForRank.map((result, index) => {
     // Инициализация полей gapsInCategories.
     const gaps = {
       absolute: null,
@@ -147,7 +149,7 @@ export function setGaps({
     }
 
     // 2. Расчет гэпов для пола.
-    if (gender === 'female') {
+    if (result.gender === 'female') {
       if (indexesInCategories['absoluteFemale'].leader === null) {
         indexesInCategories['absoluteFemale'].leader = index; // Лидер среди женщин.
         indexesInCategories['absoluteFemale'].prev = index; // Предыдущий среди женщин.

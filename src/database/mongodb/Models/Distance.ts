@@ -5,6 +5,7 @@ import { ElevationProfileSchema } from './Schema/ElevationProfile';
 
 // types
 import { TDistanceDocument } from '@/types/models.interface';
+import { DistanceStatsSchema } from './Schema/DistanceStats';
 
 /**
  * Схема и модель дистанции для заездов.
@@ -25,6 +26,7 @@ const DistanceSchema = new Schema<TDistanceDocument>(
     isPublic: { type: Boolean, default: true },
     isElevationProfileReady: { type: Boolean, default: false },
     elevationProfile: { type: ElevationProfileSchema },
+    stats: { type: DistanceStatsSchema },
   },
   { timestamps: true }
 );

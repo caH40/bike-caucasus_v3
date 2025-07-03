@@ -5,6 +5,8 @@ import { handlerErrorDB } from './mongodb/error';
 import {
   ServerResponse,
   TDistanceResultForSave,
+  TDistanceResultsWithGender,
+  TDistanceStats,
   TGender,
   TPrepareDistanceResultsForSaveParams,
   TServiceEntity,
@@ -18,6 +20,7 @@ import { processDistanceResults } from '@/libs/utils/distance-results';
 import { DistanceResultModel } from '@/database/mongodb/Models/DistanceResult';
 import { distanceResultDto } from '@/dto/distance-result';
 import { TDistanceResultDto } from '@/types/dto.types';
+import { DistanceModel } from '@/database/mongodb/Models/Distance';
 
 /**
  * Сервис работы с результатами на Дистанции для заездов Чемпионатов.
@@ -94,6 +97,10 @@ export class DistanceResultService {
       // Сохранение новых результатов.
       await DistanceResultModel.create(distanceResults);
 
+      // Добавление статистики по результатам в документ дистанции.
+      const stats = this.createStats(distanceResults);
+      await DistanceModel.findOneAndUpdate({ _id: distanceId }, { $set: { stats } });
+
       return {
         data: null,
         ok: true,
@@ -105,6 +112,26 @@ export class DistanceResultService {
     }
   }
 
+  private createStats(results: TDistanceResultsWithGender[]): TDistanceStats {
+    const uniqueRidersCount = results.filter((r) => r.isBestForRank).length;
+    const totalAttempts = results.length;
+    const lastResultsUpdate = new Date();
+    const bestResultMaleId = results.find(
+      (r) => r.positions.absolute === 1 && r.gender === 'male'
+    )?.raceResult;
+    const bestResultFemaleId = results.find(
+      (r) => r.positions.absolute === 1 && r.gender === 'female'
+    )?.raceResult;
+
+    return {
+      totalAttempts,
+      uniqueRidersCount,
+      lastResultsUpdate,
+      bestResultMaleId,
+      bestResultFemaleId,
+    };
+  }
+
   /**
    * Создание массива результатов на дистанции distanceId для сохранения в БД.
    */
@@ -112,7 +139,7 @@ export class DistanceResultService {
     raceResults,
     distanceId,
     races,
-  }: TPrepareDistanceResultsForSaveParams): TDistanceResultForSave[] {
+  }: TPrepareDistanceResultsForSaveParams): TDistanceResultsWithGender[] {
     const resultsWithUsers: (Omit<TResultRace, 'rider'> & { rider: Types.ObjectId })[] =
       raceResults.filter((r): r is TResultRace & { rider: Types.ObjectId } => !!r.rider);
 

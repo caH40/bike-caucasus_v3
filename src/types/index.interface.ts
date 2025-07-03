@@ -1549,6 +1549,10 @@ export type TDistanceResultForSave = Omit<
   TDistanceResult,
   'createdAt' | 'updatedAt' | '_id' | 'trackDistance'
 > & { trackDistance: string };
+export type TDistanceResultsWithGenderWithoutGaps = Omit<TDistanceResultForSave, 'gaps'> & {
+  gender: TGender;
+};
+export type TDistanceResultsWithGender = TDistanceResultForSave & { gender: TGender };
 
 /**
  * Параметры метода prepareDistanceResultsForSave класса DistanceResult.
@@ -1558,3 +1562,20 @@ export type TPrepareDistanceResultsForSaveParams = {
   distanceId: string;
   races: TRaceMetaFromMongo[];
 };
+
+export type TDistanceStats = {
+  uniqueRidersCount: number; // Уникальных райдеров.
+  totalAttempts: number; // Всего попыток.
+  lastResultsUpdate: Date; // Когда последний раз обновлялись результаты.
+
+  bestResultMaleId?: mongoose.Types.ObjectId; // ID из коллекции DistanceResult.
+  bestResultFemaleId?: mongoose.Types.ObjectId; // ID из коллекции DistanceResult.
+};
+
+// export type TDistanceStatsForClient = Omit<
+//   TDistanceStats,
+//   'bestResultMaleId' | 'bestResultFemaleId'
+// > & {
+//   bestResultMaleId?: string;
+//   bestResultFemaleId?: string;
+// };
