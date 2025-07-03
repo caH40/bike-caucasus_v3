@@ -21,6 +21,7 @@ import {
 
 // types
 import { TParamsProps } from '@/types/index.interface';
+import { getDistance } from '@/actions/distance';
 
 const server = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -398,6 +399,54 @@ export async function generateMetadataResultsRace({ params }: TParamsProps): Pro
       description,
       url: './',
       images: [data.posterUrl],
+      type: 'website',
+    },
+  };
+}
+
+/**
+ * Метаданные для страницы Дистанции "/distances".
+ */
+const titleDistances =
+  'Дистанции для велоспортивных соревнований: протяженность, набор высоты, градиент, покрытие';
+const descriptionDistances =
+  'Таблица дистанций для велосоревнований с параметрами: длина, набор высоты, средний уклон и тип покрытия. Готовые маршруты для организации гонок.';
+export const metadataDistances: Metadata = {
+  title: titleDistances,
+  description: descriptionDistances,
+  openGraph: {
+    title: titleDistances,
+    description: descriptionDistances,
+    url: './',
+    images: ['/images/og/distances.png'],
+    type: 'website',
+  },
+};
+
+/**
+ * Метаданные для страницы Результаты заездов "/distances/[urlSlug]".
+ */
+export async function generateMetadataDistancesResults({
+  params,
+}: TParamsProps): Promise<Metadata> {
+  const { urlSlug } = await params;
+  const { data } = await getDistance(urlSlug);
+
+  if (!data) {
+    return metadata404Page;
+  }
+
+  const title = `Дистанция ${data.name}: карта, профиль высоты, GPX-трек и результаты заездов`;
+  const description = `Описание дистанции ${data.name}: интерактивная карта, скачать GPX-трек, профиль высоты и история результатов участников. Сравните свои показатели с другими гонщиками!`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './',
+      images: ['/images/og/distance.png'],
       type: 'website',
     },
   };

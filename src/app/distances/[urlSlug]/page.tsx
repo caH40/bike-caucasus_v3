@@ -1,5 +1,7 @@
+import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 
+import { generateMetadataDistancesResults } from '@/meta/meta';
 import { getDistance } from '@/actions/distance';
 import { getDistanceResults } from '@/actions/distance-result';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
@@ -9,6 +11,11 @@ import DistanceParams from '@/components/DistanceParams/DistanceParams';
 import Spacer from '@/components/Spacer/Spacer';
 import DistanceResultsTableContainer from '@/components/Table/Containers/DistanceResultsTableContainer/DistanceResultsTableContainer';
 import styles from './Distance.module.css';
+
+// Создание динамических meta данных.
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  return await generateMetadataDistancesResults(props);
+}
 
 type Props = {
   params: Promise<{ urlSlug: string }>;
