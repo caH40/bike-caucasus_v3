@@ -82,11 +82,20 @@ export default function TableDistanceResults({
               )}
             </div>
           </caption>
+
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className={cx('trh')} key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th className={styles.th} key={header.id}>
+                  <th
+                    className={cx('th', {
+                      number: ['positions_absolute'].includes(header.id),
+                      profile: header.id === 'profile',
+                      raceTimeInMilliseconds: header.id === 'raceTimeInMilliseconds',
+                      averageSpeed: header.id === 'averageSpeed',
+                    })}
+                    key={header.id}
+                  >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
                 ))}
