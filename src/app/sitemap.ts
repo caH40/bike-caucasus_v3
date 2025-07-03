@@ -5,6 +5,7 @@ import { Trail } from '@/services/Trail';
 import { OrganizerService } from '@/services/Organizer';
 import { ChampionshipService } from '@/services/Championship';
 import { millisecondsInDay } from '@/constants/date';
+import { DistanceService } from '@/services/Distance';
 
 const host = process.env.NEXT_PUBLIC_SERVER_FRONT || 'https://bike-caucasus.ru';
 
@@ -39,6 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Генерация sitemap данных для страниц результатов на Чемпионата.
   const championshipsResultsSitemap = await generateSitemapChampionshipPages('results');
 
+  // Генерация sitemap данных для результатов на дистанции.
+  const DistanceResultsSitemap = await generateSitemapDistanceResultsPages();
+
   return [
     {
       url: host,
@@ -71,6 +75,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'hourly',
       priority: 0.9,
     },
+    {
+      url: `${host}/distances`,
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
     ...profilesSitemap, // profile.
     ...newsSitemap, // news.
     ...trailsSitemap, // trails.
@@ -78,6 +87,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...championshipsSitemap, // championship pages.
     ...championshipsRegistrationSitemap, // championship registration pages.
     ...championshipsResultsSitemap, // championship results pages.
+    ...DistanceResultsSitemap, // distanceResults results pages.
   ];
 }
 
@@ -186,6 +196,31 @@ async function generateSitemapChampionshipPages(
         lastModified: lastModified.toISOString(),
         changeFrequency: isOld ? 'yearly' : 'hourly',
         priority: isOld ? 0.1 : 1,
+      };
+    });
+
+    return trailsSitemap;
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Генерирует sitemap данных для страниц результаты на дистанции /distances/[urlSlug]
+ */
+async function generateSitemapDistanceResultsPages(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const distanceService = new DistanceService();
+    const distances = await distanceService.getAll();
+
+    const trailsSitemap: MetadataRoute.Sitemap = (distances.data || []).map((d) => {
+      const lastModified = new Date(d.updatedAt);
+
+      return {
+        url: `${host}/distances/${d.urlSlug}`,
+        lastModified: lastModified.toISOString(),
+        changeFrequency: 'weekly',
+        priority: 0.2,
       };
     });
 
