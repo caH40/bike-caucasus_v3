@@ -1,6 +1,8 @@
 import BlockTableControlDistance from '@/components/UI/BlockTableControlDistance/BlockTableControlDistance';
+import { SURFACE_TYPE_TRANSLATIONS } from '@/constants/translations';
 import { getTimerLocal } from '@/libs/utils/date-local';
 import { TDistanceDto } from '@/types/dto.types';
+import { TSurfaceType } from '@/types/index.interface';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 
 // Универсальный рендер для простых текстовых ячеек
@@ -30,7 +32,9 @@ export function getColumnsForDistanceTable(
     {
       header: 'Дистанция, км',
       accessorKey: 'distanceInMeter',
-      cell: renderCell,
+      cell: (props: CellContext<TDistanceDto & { id: number }, string | number>) => (
+        <span>{Math.round(+props.getValue() / 100) / 10}</span>
+      ),
     },
     {
       header: 'Общий набор, м',
@@ -40,7 +44,15 @@ export function getColumnsForDistanceTable(
     {
       header: 'Тип покрытия',
       accessorKey: 'surfaceType',
-      cell: renderCell,
+      cell: (props: CellContext<TDistanceDto & { id: number }, string | number>) => {
+        const surfaceType = props.getValue();
+        const value =
+          typeof surfaceType === 'string' && surfaceType in SURFACE_TYPE_TRANSLATIONS
+            ? SURFACE_TYPE_TRANSLATIONS[surfaceType as TSurfaceType]
+            : surfaceType;
+
+        return <span>{value}</span>;
+      },
     },
     {
       header: 'Дата создания',

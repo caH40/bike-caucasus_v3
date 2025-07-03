@@ -29,16 +29,17 @@ export const getNavLinksMobile = (userId: string | undefined) => [
   { id: 2, name: 'Маршруты', href: '/trails', permission: null },
   { id: 3, name: 'Календарь', href: '/calendar', permission: null },
   { id: 4, name: 'Чемпионаты', href: '/championships', permission: null },
+  { id: 5, name: 'Дистанции', href: '/distances', permission: null },
   {
-    id: 5,
+    id: 6,
     name: 'Профиль',
     href: userId ? `/profile/${userId}` : '/',
     permission: 'authorized',
     icon: IconUser,
   },
-  { id: 6, name: 'Организаторы', href: '/organizers', permission: null },
-  { id: 7, name: 'Управление', href: '/moderation', permission: 'moderation' },
-  { id: 8, name: 'Админ', href: '/admin', permission: 'admin' },
+  { id: 7, name: 'Организаторы', href: '/organizers', permission: null },
+  { id: 8, name: 'Управление', href: '/moderation', permission: 'moderation' },
+  { id: 9, name: 'Админ', href: '/admin', permission: 'admin' },
 ];
 
 /**
