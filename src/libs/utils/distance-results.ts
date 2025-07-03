@@ -78,7 +78,7 @@ export function processDistanceResults(results: Params): TDistanceResultsWithGen
     ['absoluteFemale', 1],
   ]);
 
-  // Количество отставаний.
+  // Установка отставаний в результаты.
   const resultsForSave = setGaps({
     results: resultsWithCounters,
     categoriesInRace,

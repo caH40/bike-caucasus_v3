@@ -21,6 +21,8 @@ import { DistanceResultModel } from '@/database/mongodb/Models/DistanceResult';
 import { distanceResultDto } from '@/dto/distance-result';
 import { TDistanceResultDto } from '@/types/dto.types';
 import { DistanceModel } from '@/database/mongodb/Models/Distance';
+import { millisecondsInHour } from '@/constants/date';
+import { formatTimeToStr } from '@/libs/utils/timer';
 
 /**
  * Сервис работы с результатами на Дистанции для заездов Чемпионатов.
@@ -70,8 +72,17 @@ export class DistanceResultService {
   /**
    * Обновление таблицы результатов дистанции distanceId.
    */
-  public async put({ distanceId }: { distanceId: string }): Promise<ServerResponse<null>> {
+  public async put({
+    distanceId,
+    moderationRequest,
+  }: {
+    distanceId: string;
+    moderationRequest?: boolean;
+  }): Promise<ServerResponse<null>> {
     try {
+      // Если запрос на модерацию не от модератора, то разрешать обновлять раз в 1 час.
+      await this.checkUpdatedResults(distanceId, moderationRequest);
+
       // Получение всех заездов по дистанции distanceId.
       const races = await RaceModel.find(
         { trackDistance: distanceId },
@@ -99,12 +110,15 @@ export class DistanceResultService {
 
       // Добавление статистики по результатам в документ дистанции.
       const stats = this.createStats(distanceResults);
-      await DistanceModel.findOneAndUpdate({ _id: distanceId }, { $set: { stats } });
+      const distance = await DistanceModel.findOneAndUpdate(
+        { _id: distanceId },
+        { $set: { stats } }
+      );
 
       return {
         data: null,
         ok: true,
-        message: `Обновлены результаты для дистанции с _id: ${distanceId}`,
+        message: `Обновлены результаты для дистанции "${distance?.name}"`,
       };
     } catch (error) {
       this.errorLogger(error);
@@ -140,12 +154,15 @@ export class DistanceResultService {
     distanceId,
     races,
   }: TPrepareDistanceResultsForSaveParams): TDistanceResultsWithGender[] {
+    // Фильтруются результаты от незарегистрированных(на сайте) участников.
     const resultsWithUsers: (Omit<TResultRace, 'rider'> & { rider: Types.ObjectId })[] =
       raceResults.filter((r): r is TResultRace & { rider: Types.ObjectId } => !!r.rider);
 
     // Коллекция для сохранения _id райдеров для пометки флагом самый лучший результат и последующие.
     const uniqueRiderId = new Set<string>();
 
+    // Сортировка по финишному времени.
+    // Выявление лучшего результата у пользователя (если у несколько результатов у пользователя) и отметка результатов соответствующими флагами.
     const sortedResultsWithRankFlag = resultsWithUsers
       .toSorted((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds)
       .map((result) => {
@@ -163,7 +180,6 @@ export class DistanceResultService {
       });
 
     // Создание массива результатов на дистанции без расчетных данных.
-    // Сортировка по возрастанию финишного времени.
     const results = sortedResultsWithRankFlag.map((result) => {
       const race = races.find((r) => r._id.equals(result.race));
 
@@ -194,5 +210,39 @@ export class DistanceResultService {
     const resultsForSave = processDistanceResults(results);
 
     return resultsForSave;
+  }
+
+  /**
+   * Если запрос на модерацию не от модератора, то разрешать обновлять раз в 1 час.
+   */
+  private async checkUpdatedResults(
+    distanceId: string,
+    moderationRequest?: boolean
+  ): Promise<void> {
+    // Если запрос от модератора, проверка не нужна.
+    if (moderationRequest) {
+      return;
+    }
+
+    const distanceStats = await DistanceModel.findOne(
+      { _id: distanceId },
+      { stats: true, _id: false }
+    ).lean<{ stats?: TDistanceStats }>();
+
+    // Если нет даты обновления, разрешаем обновление.
+    if (!distanceStats?.stats?.lastResultsUpdate) {
+      return;
+    }
+
+    const now = Date.now();
+    const lastUpdate = distanceStats.stats.lastResultsUpdate.getTime();
+    const differenceInMilliseconds = now - lastUpdate;
+
+    if (differenceInMilliseconds < millisecondsInHour) {
+      const waitTime = millisecondsInHour - differenceInMilliseconds;
+      throw new Error(
+        `Обновление доступно раз в час. Попробуйте снова через ${formatTimeToStr(waitTime)}.`
+      );
+    }
   }
 }

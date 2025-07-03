@@ -135,6 +135,12 @@
   position: relative;
 }
 
+.captionList {
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  font-size: 0.8rem;
+}
 .footerList {
   display: flex;
   gap: 5px;

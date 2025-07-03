@@ -1574,8 +1574,9 @@ export type TDistanceStats = {
 
 export type TDistanceStatsForClient = Omit<
   TDistanceStats,
-  'bestResultMaleId' | 'bestResultFemaleId'
+  'bestResultMaleId' | 'bestResultFemaleId' | 'lastResultsUpdate'
 > & {
+  lastResultsUpdate: string;
   bestResultMaleId?: string;
   bestResultFemaleId?: string;
 };

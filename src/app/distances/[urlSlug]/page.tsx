@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 
 import { getDistance } from '@/actions/distance';
-import { getDistanceResults, putDistanceResults } from '@/actions/distance-result';
+import { getDistanceResults } from '@/actions/distance-result';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
@@ -23,9 +23,14 @@ export default async function DistancePage(props: Props) {
     return <ServerErrorMessage message={message} statusCode={statusCode} />;
   }
 
-  await putDistanceResults(d._id);
-  const results = await getDistanceResults(d._id);
+  //
+  const distanceResults = await getDistanceResults(d._id);
 
+  const distanceStats = d.stats && {
+    uniqueRidersCount: d.stats.uniqueRidersCount,
+    totalAttempts: d.stats.totalAttempts,
+    lastResultsUpdate: d.stats.lastResultsUpdate,
+  };
   return (
     <div className={styles.wrapper}>
       <TitleAndLine hSize={1} title={d.name} />
@@ -38,10 +43,17 @@ export default async function DistancePage(props: Props) {
 
       {/* Таблица с результатами */}
       <Spacer margin="b-lg">
-        {results.data ? (
-          <DistanceResultsTableContainer results={results.data} />
+        {distanceResults.data ? (
+          <DistanceResultsTableContainer
+            distanceId={d._id}
+            results={distanceResults.data}
+            distanceStats={distanceStats}
+          />
         ) : (
-          <ServerErrorMessage message={results.message} statusCode={results.statusCode} />
+          <ServerErrorMessage
+            message={distanceResults.message}
+            statusCode={distanceResults.statusCode}
+          />
         )}
       </Spacer>
 

@@ -9,9 +9,11 @@ export function distanceDto(data: TDistance): TDistanceDto {
   const createdAt = data.createdAt.toISOString();
   const stats = data.stats && {
     ...data.stats,
+    lastResultsUpdate: data.stats.lastResultsUpdate.toISOString(),
     bestResultMaleId: data.stats.bestResultMaleId && data.stats.bestResultMaleId.toString(),
     bestResultFemaleId:
       data.stats.bestResultFemaleId && data.stats.bestResultFemaleId.toString(),
   };
+
   return { ...data, _id, creator, createdAt, updatedAt, stats };
 }
