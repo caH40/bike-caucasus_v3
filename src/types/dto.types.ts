@@ -1,4 +1,5 @@
 import {
+  TDistanceStatsForClient,
   TGender,
   TOrganizerForClient,
   TParentChampionshipForClient,
@@ -412,9 +413,13 @@ export type TGetModeratorActionLogDto = Omit<
   timestamp: string;
 };
 
-export type TDistanceDto = Omit<TDistance, '_id' | 'creator' | 'updatedAt' | 'createdAt'> & {
+export type TDistanceDto = Omit<
+  TDistance,
+  '_id' | 'creator' | 'stats' | 'updatedAt' | 'createdAt'
+> & {
   _id: string;
   creator: string;
+  stats?: TDistanceStatsForClient;
   updatedAt: string;
   createdAt: string;
 };

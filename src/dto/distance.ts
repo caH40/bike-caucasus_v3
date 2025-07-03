@@ -7,5 +7,11 @@ export function distanceDto(data: TDistance): TDistanceDto {
   const creator = data.creator.toString();
   const updatedAt = data.updatedAt.toISOString();
   const createdAt = data.createdAt.toISOString();
-  return { ...data, _id, creator, createdAt, updatedAt };
+  const stats = data.stats && {
+    ...data.stats,
+    bestResultMaleId: data.stats.bestResultMaleId && data.stats.bestResultMaleId.toString(),
+    bestResultFemaleId:
+      data.stats.bestResultFemaleId && data.stats.bestResultFemaleId.toString(),
+  };
+  return { ...data, _id, creator, createdAt, updatedAt, stats };
 }

@@ -1572,10 +1572,10 @@ export type TDistanceStats = {
   bestResultFemaleId?: mongoose.Types.ObjectId; // ID из коллекции DistanceResult.
 };
 
-// export type TDistanceStatsForClient = Omit<
-//   TDistanceStats,
-//   'bestResultMaleId' | 'bestResultFemaleId'
-// > & {
-//   bestResultMaleId?: string;
-//   bestResultFemaleId?: string;
-// };
+export type TDistanceStatsForClient = Omit<
+  TDistanceStats,
+  'bestResultMaleId' | 'bestResultFemaleId'
+> & {
+  bestResultMaleId?: string;
+  bestResultFemaleId?: string;
+};
