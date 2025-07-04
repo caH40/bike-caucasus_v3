@@ -681,6 +681,7 @@ export type TRaceForForm = Omit<
   categories: string; // _id конфига категорий.
   registeredRiders: string[];
   trackDistance: string | null;
+  trackGPX?: TTrackGPXObj;
 };
 // FIXME: Разобраться с названиями TRaceForForm, TRaceForFormNew одна для запроса с клиента, другая для формы.
 export type TRaceForFormNew = Omit<

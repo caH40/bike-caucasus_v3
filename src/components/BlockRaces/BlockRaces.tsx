@@ -33,7 +33,7 @@ export default function BlockRaces({ races, registrationData }: Props) {
             <h3 className={styles.title}>{`${race.number}. ${race.name}`}</h3>
             <p className={styles.description}>{race.description}</p>
 
-            {race.trackGPX.url && (
+            {race.trackGPX?.url && (
               <Spacer margin="b-md">
                 <Link
                   className={styles.link}
@@ -53,7 +53,7 @@ export default function BlockRaces({ races, registrationData }: Props) {
               />
             </div>
 
-            <MapWithElevation url={race.trackGPX.url} key={race._id} />
+            {race.trackGPX && <MapWithElevation url={race.trackGPX.url} key={race._id} />}
           </div>
         ))}
       </div>
