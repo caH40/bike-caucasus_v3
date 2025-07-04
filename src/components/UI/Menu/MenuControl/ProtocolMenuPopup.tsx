@@ -1,6 +1,7 @@
 'use client';
 
 import cn from 'classnames/bind';
+import { useRouter } from 'next/navigation';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
 
@@ -9,7 +10,6 @@ import styles from './MenuControl.module.css';
 import PermissionCheck from '@/hoc/permission-check';
 import IconEditOld from '@/components/Icons/IconEditOld';
 import { updateProtocolRace } from '@/actions/result-race';
-import { useResultsRace } from '@/store/results';
 import IconRefresh from '@/components/Icons/IconRefresh';
 
 const cx = cn.bind(styles);
@@ -25,7 +25,8 @@ const permission = 'moderation.championship.protocol';
  * Popup меню управления протоколом заезда в таблице результатов.
  */
 export default function ProtocolMenuPopup({ raceInfo }: Props) {
-  const setTriggerResultTable = useResultsRace((state) => state.setTriggerResultTable);
+  const router = useRouter();
+
   const handlerUpdateProtocolRace = async (championshipId: string, raceId: string) => {
     if (!championshipId || !raceId) {
       return toast.error('Нет данных об Чемпионате, или в протоколе нет ни одного результата!');
@@ -38,7 +39,7 @@ export default function ProtocolMenuPopup({ raceInfo }: Props) {
 
     if (response.ok) {
       toast.success(response.message);
-      setTriggerResultTable();
+      router.refresh();
     } else {
       toast.error(response.message);
     }

@@ -8,7 +8,6 @@ import FilterRidersForAddResult from '../UI/Filters/FilterRidersForAddResult/Fil
 import { getRaceProtocol } from '@/actions/result-race';
 import { replaceCategorySymbols } from '@/libs/utils/championship/championship';
 import { buttonsForProtocolRace } from '@/constants/buttons';
-import { useResultsRace } from '@/store/results';
 import RaceSelectButtons from '../UI/RaceSelectButtons/RaceSelectButtons';
 import styles from './RaceProtocolWrapper.module.css';
 
@@ -31,7 +30,6 @@ export default function RaceProtocolWrapper({ championship }: Props) {
     skillLevel: [],
   });
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
-  const triggerResultTable = useResultsRace((state) => state.triggerResultTable);
 
   const race = championship.races.find((race) => race._id === raceId);
 
@@ -43,7 +41,7 @@ export default function RaceProtocolWrapper({ championship }: Props) {
         setCategories(res.data.categories);
       }
     });
-  }, [raceId, championship._id, triggerResultTable]);
+  }, [raceId, championship._id]);
 
   const raceInfo = {
     championshipId: championship._id,

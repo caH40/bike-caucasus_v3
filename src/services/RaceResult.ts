@@ -587,6 +587,12 @@ export class RaceResultService {
         throw new Error(`Не найден запрашиваемый результат с _id:${_id}`);
       }
 
+      // Обновление протокола после удаления результата.
+      await this.updateRaceProtocol({
+        championshipId: resultDB.championship.toString(),
+        raceId: resultDB.race.toString(),
+      });
+
       await ModeratorActionLogService.create({
         moderator,
         changes: {
