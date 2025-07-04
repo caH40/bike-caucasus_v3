@@ -84,8 +84,10 @@ export default function TableDistances({ distances, forModeration, docsOnPage = 
                 onClick={() => getLink(row.original.urlSlug)}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td className={styles.td} key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  <td className={cx('td')} key={cell.id}>
+                    <div className={cx({ description: cell.column.id === 'description' })}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
                   </td>
                 ))}
               </tr>

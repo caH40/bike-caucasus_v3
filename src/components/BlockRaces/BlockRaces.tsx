@@ -11,6 +11,7 @@ import { TRaceForForm } from '@/types/index.interface';
 const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 import styles from './BlockRaces.module.css';
 import Spacer from '../Spacer/Spacer';
+import { generateYandexMapLink } from '@/libs/utils/geo';
 
 type Props = {
   races: TRaceForForm[];
@@ -32,6 +33,22 @@ export default function BlockRaces({ races, registrationData }: Props) {
           <div className={styles.wrapper__race} key={race.number}>
             <h3 className={styles.title}>{`${race.number}. ${race.name}`}</h3>
             <p className={styles.description}>{race.description}</p>
+
+            {race.trackGPX?.url && (
+              <Spacer margin="b-md">
+                <Link
+                  className={styles.link}
+                  target="blank"
+                  href={generateYandexMapLink(
+                    race.trackGPX.coordStart.lat,
+                    race.trackGPX.coordStart.lon
+                  )}
+                  rel="noreferrer"
+                >
+                  Место старта
+                </Link>
+              </Spacer>
+            )}
 
             {race.trackGPX?.url && (
               <Spacer margin="b-md">

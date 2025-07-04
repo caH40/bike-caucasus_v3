@@ -118,6 +118,9 @@
 .profile {
   width: 30%;
 }
+.description {
+  min-width: 250px;
+}
 .box__value {
   display: flex;
   align-items: baseline;

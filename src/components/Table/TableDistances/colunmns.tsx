@@ -6,9 +6,8 @@ import { TSurfaceType } from '@/types/index.interface';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 
 // Универсальный рендер для простых текстовых ячеек
-const renderCell = (props: CellContext<TDistanceDto & { id: number }, string | number>) => (
-  <span>{props.getValue()}</span>
-);
+const renderCell = (props: CellContext<TDistanceDto & { id: number }, string | number>) =>
+  props.getValue();
 
 export function getColumnsForDistanceTable(
   forModeration?: boolean
@@ -24,11 +23,7 @@ export function getColumnsForDistanceTable(
       accessorKey: 'name',
       cell: renderCell,
     },
-    {
-      header: 'Описание',
-      accessorKey: 'description',
-      cell: renderCell,
-    },
+
     {
       header: 'Дистанция, км',
       accessorKey: 'distanceInMeter',
@@ -53,6 +48,11 @@ export function getColumnsForDistanceTable(
 
         return <span>{value}</span>;
       },
+    },
+    {
+      header: 'Описание',
+      accessorKey: 'description',
+      cell: renderCell,
     },
     {
       header: 'Дата создания',
