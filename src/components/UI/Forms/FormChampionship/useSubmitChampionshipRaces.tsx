@@ -12,7 +12,6 @@ export const useSubmitChampionshipRaces = ({
   organizerId,
   setIsFormDirty,
   urlSlug,
-  urlTracksForDel,
 }: TUseSubmitChampionshipRacesParams) => {
   const router = useRouter();
   const setLoading = useLoadingStore((state) => state.setLoading);
@@ -28,7 +27,6 @@ export const useSubmitChampionshipRaces = ({
     // Сериализация данных в FormData перед отправкой на сервер.
     const dataSerialized = serializationChampionshipRaces({
       dataForm: { races: formData.races },
-      urlTracksForDel,
       client: {
         location,
         deviceInfo,

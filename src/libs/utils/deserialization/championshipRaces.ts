@@ -39,12 +39,6 @@ export function deserializeRaces(serializedFormData: FormData): TDeserializedRac
             case 'ascent':
               return value ? +value : 0;
 
-            // Если ключ urlTracksForDel парсить.
-            case 'urlTracksForDel':
-              if (typeof value === 'string') {
-                return JSON.parse(value);
-              }
-
             case 'client':
               if (typeof value === 'string') {
                 return JSON.parse(value);

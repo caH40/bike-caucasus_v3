@@ -3,7 +3,7 @@ import type { TClientMeta, TRaceForFormNew } from '@/types/index.interface';
 
 type Params = {
   dataForm: { races: TRaceForFormNew[] };
-  urlTracksForDel: string[]; // Массив url треков для удаления в облаке.
+
   client: TClientMeta;
 };
 
@@ -13,16 +13,8 @@ type Params = {
  * @param dataForm - Данные формы, которые нужно сериализовать.
  * @returns Сериализованные данные в формате FormData.
  */
-export function serializationChampionshipRaces({
-  dataForm,
-  urlTracksForDel,
-  client,
-}: Params): FormData {
+export function serializationChampionshipRaces({ dataForm, client }: Params): FormData {
   const formData = new FormData();
-
-  if (!!urlTracksForDel?.length) {
-    formData.set('urlTracksForDel', JSON.stringify(urlTracksForDel));
-  }
 
   // Преобразование поля races и добавление в fomData.
   if (dataForm.races) {
@@ -47,14 +39,6 @@ export function serializationChampionshipRaces({
 
       if (race.ascent !== undefined) {
         formData.set(`races[${index}][ascent]`, race.ascent.toString());
-      }
-
-      if (race.trackGPXFile) {
-        formData.set(`races[${index}][trackGPXFile]`, race.trackGPXFile);
-      }
-
-      if (race.trackGPXUrl) {
-        formData.set(`races[${index}][trackGPXUrl]`, race.trackGPXUrl);
       }
     });
   }

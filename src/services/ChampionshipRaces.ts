@@ -53,27 +53,18 @@ export class ChampionshipRaces {
       const { races, client } = deserializeRaces(dataSerialized);
 
       const oldRaces = await this.getOldRaces(championshipId);
-      const urlTracksForDel: string[] = [];
       const updatedIds = new Set<string>();
 
       for (const race of races) {
-        const { updatedId, trackUrlForDeletion } = await this.processRace(
-          race,
-          championshipId,
-          oldRaces
-        );
-        if (trackUrlForDeletion) {
-          urlTracksForDel.push(trackUrlForDeletion);
-        }
+        const { updatedId } = await this.processRace(race, championshipId);
+
         updatedIds.add(updatedId);
       }
 
+      //  Обновление списка заездов в чемпионате.
       await this.updateChampionshipRaces(championshipId, updatedIds);
-      await this.cleanupDeletedRaces(oldRaces, updatedIds, urlTracksForDel);
 
-      if (urlTracksForDel.length > 0) {
-        this.deleteOldTracks(urlTracksForDel);
-      }
+      await this.cleanupDeletedRaces(oldRaces, updatedIds);
 
       // Получение название чемпионата для логирования действий модератора.
       const champDB = await ChampionshipModel.findById(championshipId, {
@@ -120,26 +111,13 @@ export class ChampionshipRaces {
    */
   private async processRace(
     race: any,
-    championshipId: string,
-    oldRaces: { _id: Types.ObjectId; trackGPX: TTrackGPXObj }[]
+    championshipId: string
   ): Promise<{ updatedId: string; trackUrlForDeletion?: string }> {
-    let trackGPX = {} as TTrackGPXObj;
-    let trackUrlForDeletion: string | undefined;
-
-    if (race.trackGPXFile) {
-      const { trackGPX: newTrack, oldUrl } = await this.processTrackGPX(
-        race.trackGPXFile as File,
-        race._id ? oldRaces.find((r) => String(r._id) === race._id)?.trackGPX?.url : undefined
-      );
-      trackGPX = newTrack;
-      trackUrlForDeletion = oldUrl;
-    }
-
     if (race._id) {
-      await this.updateExistingRace(race, championshipId, trackGPX);
-      return { updatedId: race._id, trackUrlForDeletion };
+      await this.updateExistingRace(race, championshipId);
+      return { updatedId: race._id };
     } else {
-      const created = await this.createNewRace(race, championshipId, trackGPX);
+      const created = await this.createNewRace(race, championshipId);
       return { updatedId: created._id.toString() };
     }
   }
@@ -170,17 +148,12 @@ export class ChampionshipRaces {
   }
 
   /**
-   * Обновление существующего заезда
+   * Обновление существующего заезда.
    */
-  private async updateExistingRace(
-    race: any,
-    championshipId: string,
-    trackGPX: TTrackGPXObj
-  ): Promise<void> {
+  private async updateExistingRace(race: any, championshipId: string): Promise<void> {
     const updateData = {
       ...race,
       championship: championshipId,
-      ...(trackGPX.url && { trackGPX }),
     };
 
     await RaceModel.updateOne({ _id: race._id }, { $set: updateData });
@@ -191,18 +164,16 @@ export class ChampionshipRaces {
    */
   private async createNewRace(
     race: any,
-    championshipId: string,
-    trackGPX: TTrackGPXObj
+    championshipId: string
   ): Promise<{ _id: Types.ObjectId }> {
     return await RaceModel.create({
       ...race,
       championship: championshipId,
-      ...(trackGPX.url && { trackGPX }),
     });
   }
 
   /**
-   * Обновление списка заездов в чемпионате
+   * Обновление списка заездов в чемпионате.
    */
   private async updateChampionshipRaces(
     championshipId: string,
@@ -214,22 +185,17 @@ export class ChampionshipRaces {
   }
 
   /**
-   * Удаление заездов, которых нет в обновленных данных
+   * Удаление заездов, которых нет в обновленных данных.
    */
   private async cleanupDeletedRaces(
     oldRaces: { _id: Types.ObjectId; trackGPX: TTrackGPXObj }[],
-    updatedIds: Set<string>,
-    urlTracksForDel: string[]
+    updatedIds: Set<string>
   ): Promise<void> {
     const toDelete = oldRaces.filter((race) => !updatedIds.has(race._id.toString()));
 
     if (toDelete.length > 0) {
       await RaceModel.deleteMany({
         _id: { $in: toDelete.map((c) => c._id) },
-      });
-
-      toDelete.forEach((r) => {
-        urlTracksForDel.push(r.trackGPX.url);
       });
     }
   }

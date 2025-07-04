@@ -1,10 +1,9 @@
-import { Controller } from 'react-hook-form';
-
 import { raceInit } from '@/constants/championship';
 import { TextValidationService } from '@/libs/utils/text';
+import { useTrackDistance } from '@/hooks/useTrackDistance';
 import BoxInput from '../BoxInput/BoxInput';
 import BoxTextarea from '../BoxTextarea/BoxTextarea';
-import BlockUploadTrack from '../BlockUploadTrack/BlockUploadTrack';
+
 import IconInfo from '@/components/Icons/IconInfo';
 import t from '@/locales/ru/moderation/championship.json';
 import BoxSelectNew from '../BoxSelect/BoxSelectNew';
@@ -15,7 +14,6 @@ import styles from './BlockRaceAdd.module.css';
 
 // types
 import type { TBlockRaceAddProps, TRaceForFormNew } from '@/types/index.interface';
-import { useTrackDistance } from '@/hooks/useTrackDistance';
 
 const textValidation = new TextValidationService();
 
@@ -29,7 +27,6 @@ export default function BlockRaceAdd({
   errors,
   control,
   isLoading,
-  urlTracksForDel,
   categories,
   distanceOptions,
   distances,
@@ -54,12 +51,6 @@ export default function BlockRaceAdd({
 
   // Удаление Заезда.
   const deleteRace = (): void => {
-    // index начинается с нуля, а number c 1.
-    const trackGPXUrl = races.find((elm) => elm.number === index + 1)?.trackGPXUrl;
-    if (trackGPXUrl) {
-      urlTracksForDel.current.push(trackGPXUrl);
-    }
-
     remove(index);
   };
 
@@ -109,7 +100,6 @@ export default function BlockRaceAdd({
           id={`races.${index}.name`}
           autoComplete="off"
           type="text"
-          defaultValue={''}
           loading={isLoading}
           register={register(`races.${index}.name`, {
             required: t.required,
@@ -183,11 +173,11 @@ export default function BlockRaceAdd({
           autoComplete="off"
           step={0.001}
           type="number"
-          defaultValue={''}
+          disabled={true}
           loading={isLoading}
           register={register(`races.${index}.distance`, {
             required: t.required,
-            min: { value: 2, message: t.min.distance },
+            min: { value: 0.1, message: t.min.distance },
             max: {
               value: 20000,
               message: t.max.distance,
@@ -212,25 +202,6 @@ export default function BlockRaceAdd({
             },
           })}
           validationText={errorsBasePath?.ascent?.message || ''}
-        />
-
-        {/* Блок загрузки GPX трека*/}
-        <Controller
-          name={`races.${index}.trackGPXFile`}
-          control={control}
-          defaultValue={null}
-          render={({ field }) => (
-            <BlockUploadTrack
-              title={t.labels.trackGPXFile}
-              setTrack={field.onChange}
-              isLoading={isLoading}
-              resetData={false}
-              isRequired={true}
-              value={race.trackGPXUrl || t.not}
-              validationText={errorsBasePath?.trackGPXFile?.message || ''}
-              tooltip={{ text: t.tooltips.track, id: 'track' }}
-            />
-          )}
         />
       </div>
     </div>

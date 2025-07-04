@@ -678,9 +678,6 @@ export type TRaceForForm = Omit<
 > & {
   _id: string;
   championship: string;
-  trackGPXFile?: File | null;
-  trackGPXUrl?: string | null;
-  trackGPX: TTrackGPXObj;
   categories: string; // _id конфига категорий.
   registeredRiders: string[];
   trackDistance: string | null;
@@ -1040,7 +1037,6 @@ export type TUseSubmitChampionshipRacesParams = {
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
-  urlTracksForDel: string[];
 };
 
 /**
@@ -1056,7 +1052,6 @@ export type TBlockRaceAddProps = {
   errors: FieldErrors<{ races: TRaceForFormNew[] }>;
   control: Control<{ races: TRaceForFormNew[] }, any>;
   isLoading: boolean;
-  urlTracksForDel: MutableRefObject<string[]>;
   hideCategoryBlock?: boolean;
   categories: TOptions[];
   distanceOptions: TOptions[];
@@ -1206,7 +1201,6 @@ export type TDeserializedCategories = Omit<TCategories, '_id'> & { _id?: string 
  * Возвращаемые десериализованные данные заездов чемпионата из deserializeRaces.
  */
 export type TDeserializedRacesData = { races: TRaceForFormNew[] } & {
-  urlTracksForDel: string[];
   client: TClientMeta;
 } & {
   [key: string]: any;

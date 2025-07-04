@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import cn from 'classnames';
 
@@ -28,8 +28,6 @@ export default function FormChampionshipRaces({
 }: TFormChampionshipRacesProps) {
   const isLoading = useLoadingStore((state) => state.isLoading);
 
-  const urlTracksForDel = useRef<string[]>([]);
-
   // Используем хук useForm из библиотеки react-hook-form для управления состоянием формы.
   const {
     register, // Функция для регистрации поля формы.
@@ -56,12 +54,12 @@ export default function FormChampionshipRaces({
     organizerId,
     setIsFormDirty,
     urlSlug,
-    urlTracksForDel: urlTracksForDel.current,
   });
 
   // Обновление состояние формы при обновлении данных races из пропсов.
   // FIXME: необходимы тесты, могут быть баги при непредвиденном запуске reset.
   useEffect(() => {
+    // При монтировании не обновлять
     if (races.length === 0) {
       return;
     }
@@ -88,7 +86,6 @@ export default function FormChampionshipRaces({
             errors={errors}
             control={control}
             isLoading={isLoading}
-            urlTracksForDel={urlTracksForDel}
             categories={getCategoriesSelectOptions(categoriesConfigs)}
             distanceOptions={createDistanceOptions(distances)}
             distances={distances}

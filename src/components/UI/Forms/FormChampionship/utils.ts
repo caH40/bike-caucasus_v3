@@ -59,6 +59,7 @@ export function getRacesInit(races?: TRaceForForm[]): TRaceForFormNew[] {
   if (!races || races.length === 0) {
     return [raceInit];
   }
+
   // Мапируем гонки в формат, подходящий для использования в форме.
   return races.map((race) => {
     return {
@@ -69,9 +70,6 @@ export function getRacesInit(races?: TRaceForForm[]): TRaceForFormNew[] {
       description: race.description, // Описание гонки.
       distance: race.distance, // Дистанция гонки.
       ascent: race.ascent, // Набор высоты в гонке.
-      trackGPX: undefined, // Изначально пустое значение для трека в формате GPX.
-      trackGPXFile: null, // Изначально отсутствует загруженный файл GPX.
-      trackGPXUrl: race.trackGPX?.url || null, // URL для трека в формате GPX.
       quantityRidersFinished: race.quantityRidersFinished,
       categories: race.categories,
       championship: race.championship,
