@@ -35,7 +35,6 @@ import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
  */
 export default function FormChampionshipMain({
   organizer,
-  fetchChampionshipCreated,
   championshipForEdit,
   parentChampionships,
   setIsFormDirty,
@@ -104,7 +103,6 @@ export default function FormChampionshipMain({
     championshipForEdit,
     organizerId: organizer._id,
     urlTracksForDel,
-    fetchChampionshipCreated,
     reset,
     setIsFormDirty,
   });

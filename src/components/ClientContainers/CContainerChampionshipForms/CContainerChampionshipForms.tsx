@@ -16,7 +16,6 @@ import { getHiddenButtonNamesForEditChamp } from '@/libs/utils/championship/cham
  */
 export default function CContainerChampionshipForms({
   organizer,
-  fetchChampionshipCreated,
   parentChampionships,
   championshipForEdit,
   racePointsTables,
@@ -49,7 +48,6 @@ export default function CContainerChampionshipForms({
     0: (
       <FormChampionship
         organizer={organizer}
-        fetchChampionshipCreated={fetchChampionshipCreated}
         parentChampionships={parentChampionships}
         setIsFormDirty={setIsFormDirty}
         championshipForEdit={championshipForEdit}

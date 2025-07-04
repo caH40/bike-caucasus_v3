@@ -916,14 +916,6 @@ export type TParamsProps = {
  */
 export type TFormChampionshipProps = {
   organizer: TDtoOrganizer;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
-  putChampionship?: ({
-    dataSerialized,
-    urlSlug,
-  }: {
-    dataSerialized: FormData;
-    urlSlug: string;
-  }) => Promise<ServerResponse<any>>;
   championshipForEdit?: TDtoChampionship;
   parentChampionships: TToursAndSeriesDto[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
@@ -990,7 +982,6 @@ export type TClientCategoriesConfigs = Omit<TCategories, '_id' | 'championship'>
 
 export type TCContainerChampionshipFormsProps = {
   organizer: TDtoOrganizer;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
   putChampionship?: ({
     dataSerialized,
     urlSlug,
@@ -1029,7 +1020,6 @@ export type TUseSubmitChampionshipParams = {
   championshipForEdit?: TDtoChampionship;
   organizerId: any;
   urlTracksForDel: MutableRefObject<string[]>;
-  fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
   reset: UseFormReset<TFormChampionshipCreate>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
 };

@@ -1,7 +1,7 @@
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import IconChampionship from '@/components/Icons/IconChampionship';
 
-import { fetchChampionshipCreated, getToursAndSeries } from '@/actions/championship';
+import { getToursAndSeries } from '@/actions/championship';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import t from '@/locales/ru/moderation/championship.json';
 
@@ -33,7 +33,6 @@ export default async function ChampionshipCreatePage() {
 
       <CContainerChampionshipForms
         organizer={organizer}
-        fetchChampionshipCreated={fetchChampionshipCreated}
         parentChampionships={parentChampionships.data || []}
         racePointsTables={racePointsTables?.data || []}
         distances={distances.data || []}

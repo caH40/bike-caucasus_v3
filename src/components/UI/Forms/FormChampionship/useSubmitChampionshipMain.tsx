@@ -1,18 +1,17 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { SubmitHandler } from 'react-hook-form';
 
 import { useLoadingStore } from '@/store/loading';
 import { serializationChampionshipMain } from '@/libs/utils/serialization/championshipMain';
+import { useUserData } from '@/store/userdata';
+import { fetchChampionshipCreated, putChampionship } from '@/actions/championship';
 import t from '@/locales/ru/moderation/championship.json';
 
 // types
 import { TFormChampionshipCreate, TUseSubmitChampionshipParams } from '@/types/index.interface';
-
-import { useRouter } from 'next/navigation';
-import { useUserData } from '@/store/userdata';
-import { putChampionship } from '@/actions/championship';
 
 /**
  * Отправка формы создания/редактирования Чемпионата.
@@ -21,7 +20,6 @@ export const useSubmitChampionshipMain = ({
   championshipForEdit,
   organizerId,
   urlTracksForDel,
-  fetchChampionshipCreated,
   reset,
 }: TUseSubmitChampionshipParams): SubmitHandler<TFormChampionshipCreate> => {
   // Мета данные по client.
@@ -64,7 +62,7 @@ export const useSubmitChampionshipMain = ({
     };
 
     // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
-    if (fetchChampionshipCreated) {
+    if (!isEditing) {
       response = await fetchChampionshipCreated(dataSerialized);
     } else if (championshipForEdit) {
       response = await putChampionship({
