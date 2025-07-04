@@ -20,7 +20,6 @@ import { createDistanceOptions } from '@/libs/utils/championship/distance';
  */
 export default function FormChampionshipRaces({
   organizerId,
-  putRaces,
   categoriesConfigs,
   races,
   urlSlug,
@@ -54,7 +53,6 @@ export default function FormChampionshipRaces({
 
   // Функция отправки формы создания/редактирования Чемпионата.
   const onSubmit = useSubmitChampionshipRaces({
-    putRaces,
     organizerId,
     setIsFormDirty,
     urlSlug,

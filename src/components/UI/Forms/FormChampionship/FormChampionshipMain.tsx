@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import cn from 'classnames';
@@ -36,7 +36,6 @@ import CheckboxRounded from '../../CheckboxRounded/CheckboxRounded';
 export default function FormChampionshipMain({
   organizer,
   fetchChampionshipCreated,
-  putChampionship,
   championshipForEdit,
   parentChampionships,
   setIsFormDirty,
@@ -58,7 +57,7 @@ export default function FormChampionshipMain({
     control, // Объект контроля для работы с динамическими полями (например, с массивами полей).
     reset, // Функция для сброса формы до значений по умолчанию.
     watch, // Функция для наблюдения за изменениями значений полей формы.
-    formState: { errors, isDirty }, // Объект состояния формы, содержащий ошибки валидации.
+    formState: { errors }, // Объект состояния формы, содержащий ошибки валидации.
   } = useForm<TFormChampionshipCreate>({
     mode: 'all', // Режим валидации: 'all' означает, что валидация будет происходить при каждом изменении любого из полей.
     defaultValues: {
@@ -78,9 +77,9 @@ export default function FormChampionshipMain({
   });
 
   // Контроль были ли внесены изменения в форму или нет.
-  useEffect(() => {
-    setIsFormDirty?.(isDirty);
-  }, [isDirty, setIsFormDirty]);
+  // useEffect(() => {
+  //   setIsFormDirty?.(isDirty);
+  // }, [isDirty, setIsFormDirty]);
 
   // Получения дат старта и финиша родительского чемпионата, если создаются этапы для него.
   const parentId = watch('parentChampionship._id');
@@ -106,7 +105,6 @@ export default function FormChampionshipMain({
     organizerId: organizer._id,
     urlTracksForDel,
     fetchChampionshipCreated,
-    putChampionship,
     reset,
     setIsFormDirty,
   });

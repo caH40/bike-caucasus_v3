@@ -94,8 +94,8 @@ export default function FormDistance({
             required: t.required,
             minLength: { value: 25, message: 'Минимум 25 символов' },
             maxLength: {
-              value: 150,
-              message: 'Максимум 150 символов',
+              value: 250,
+              message: 'Максимум 250 символов',
             },
           })}
           validationText={errors.description?.message || ''}

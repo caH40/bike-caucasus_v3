@@ -22,7 +22,6 @@ import { useEffect } from 'react';
  */
 export default function FormChampionshipCategories({
   organizerId,
-  putCategories,
   categoriesConfigs,
   urlSlug,
   setIsFormDirty,
@@ -56,7 +55,6 @@ export default function FormChampionshipCategories({
   // Функция отправки формы редактирования категорий Чемпионата.
   const onSubmit = useSubmitChampionshipCategories({
     organizerId,
-    putCategories,
     urlSlug,
     setIsFormDirty,
   });

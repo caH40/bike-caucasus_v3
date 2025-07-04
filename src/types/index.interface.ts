@@ -938,7 +938,6 @@ export type TFormChampionshipProps = {
  */
 export type TFormChampionshipCategoriesProps = {
   organizerId: string;
-  putCategories: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
   categoriesConfigs: TClientCategoriesConfigs[];
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
@@ -948,7 +947,6 @@ export type TFormChampionshipCategoriesProps = {
  * Пропсы для компонента FormChampionshipRaces.
  */
 export type TFormChampionshipRacesProps = {
-  putRaces: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
   races: TRaceForForm[];
   organizerId: string;
   categoriesConfigs: TClientCategoriesConfigs[];
@@ -1032,10 +1030,6 @@ export type TUseSubmitChampionshipParams = {
   organizerId: any;
   urlTracksForDel: MutableRefObject<string[]>;
   fetchChampionshipCreated?: (formData: FormData) => Promise<ServerResponse<any>>;
-  putChampionship?: (args: {
-    dataSerialized: FormData;
-    urlSlug: string;
-  }) => Promise<ServerResponse<any>>;
   reset: UseFormReset<TFormChampionshipCreate>;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
 };
@@ -1044,7 +1038,6 @@ export type TUseSubmitChampionshipParams = {
  * Параметры для хука useSubmitChampionshipCategories.
  */
 export type TUseSubmitChampionshipCategoriesParams = {
-  putCategories: (params: TPutCategoriesParams) => Promise<ServerResponse<any>>;
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;
@@ -1054,7 +1047,6 @@ export type TUseSubmitChampionshipCategoriesParams = {
  * Параметры для хука useSubmitChampionshipRaces.
  */
 export type TUseSubmitChampionshipRacesParams = {
-  putRaces: (params: TPutRacesParams) => Promise<ServerResponse<any>>;
   organizerId: string;
   setIsFormDirty: Dispatch<SetStateAction<boolean>>;
   urlSlug: string;

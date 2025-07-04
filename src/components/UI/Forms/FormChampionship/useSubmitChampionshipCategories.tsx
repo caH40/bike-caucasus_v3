@@ -11,12 +11,12 @@ import {
 } from '@/types/index.interface';
 import { useUserData } from '@/store/userdata';
 import { validateCategoriesBeforePost } from '@/libs/utils/championship/category';
+import { putCategories } from '@/actions/championship';
 
 /**
  * Отправка формы категории при редактировании Чемпионата.
  */
 export const useSubmitChampionshipCategories = ({
-  putCategories,
   organizerId,
   setIsFormDirty,
   urlSlug,

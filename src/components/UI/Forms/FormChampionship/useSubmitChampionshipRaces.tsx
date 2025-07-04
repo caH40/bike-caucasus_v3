@@ -6,9 +6,9 @@ import { serializationChampionshipRaces } from '@/libs/utils/serialization/champ
 import { useLoadingStore } from '@/store/loading';
 import { TRaceForFormNew, TUseSubmitChampionshipRacesParams } from '@/types/index.interface';
 import { useUserData } from '@/store/userdata';
+import { putRaces } from '@/actions/championship';
 
 export const useSubmitChampionshipRaces = ({
-  putRaces,
   organizerId,
   setIsFormDirty,
   urlSlug,

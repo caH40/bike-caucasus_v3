@@ -19,9 +19,6 @@ export default function CContainerChampionshipForms({
   fetchChampionshipCreated,
   parentChampionships,
   championshipForEdit,
-  putChampionship,
-  putCategories,
-  putRaces,
   racePointsTables,
   distances,
 }: TCContainerChampionshipFormsProps) {
@@ -56,32 +53,27 @@ export default function CContainerChampionshipForms({
         parentChampionships={parentChampionships}
         setIsFormDirty={setIsFormDirty}
         championshipForEdit={championshipForEdit}
-        putChampionship={putChampionship}
         racePointsTables={racePointsTables}
       />
     ),
-    1: (championshipForEdit && putCategories && (
+    1: (championshipForEdit && (
       <FormChampionshipCategories
         organizerId={organizer._id}
-        putCategories={putCategories}
         categoriesConfigs={championshipForEdit.categoriesConfigs}
         urlSlug={championshipForEdit.urlSlug}
         setIsFormDirty={setIsFormDirty}
       />
     )) || <div>Не получены данные championshipForEdit или putCategories</div>,
-    2: (championshipForEdit &&
-      putRaces &&
-      !['series', 'tour'].includes(championshipForEdit.type) && (
-        <FormChampionshipRaces
-          organizerId={organizer._id}
-          putRaces={putRaces}
-          categoriesConfigs={championshipForEdit.categoriesConfigs}
-          races={championshipForEdit.races}
-          urlSlug={championshipForEdit.urlSlug}
-          setIsFormDirty={setIsFormDirty}
-          distances={distances}
-        />
-      )) || <div>Не получены данные championshipForEdit</div>,
+    2: (championshipForEdit && !['series', 'tour'].includes(championshipForEdit.type) && (
+      <FormChampionshipRaces
+        organizerId={organizer._id}
+        categoriesConfigs={championshipForEdit.categoriesConfigs}
+        races={championshipForEdit.races}
+        urlSlug={championshipForEdit.urlSlug}
+        setIsFormDirty={setIsFormDirty}
+        distances={distances}
+      />
+    )) || <div>Не получены данные championshipForEdit</div>,
   };
 
   return (

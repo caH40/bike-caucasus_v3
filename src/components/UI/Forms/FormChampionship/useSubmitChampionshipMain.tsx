@@ -12,6 +12,7 @@ import { TFormChampionshipCreate, TUseSubmitChampionshipParams } from '@/types/i
 
 import { useRouter } from 'next/navigation';
 import { useUserData } from '@/store/userdata';
+import { putChampionship } from '@/actions/championship';
 
 /**
  * Отправка формы создания/редактирования Чемпионата.
@@ -21,9 +22,7 @@ export const useSubmitChampionshipMain = ({
   organizerId,
   urlTracksForDel,
   fetchChampionshipCreated,
-  putChampionship,
   reset,
-  setIsFormDirty,
 }: TUseSubmitChampionshipParams): SubmitHandler<TFormChampionshipCreate> => {
   // Мета данные по client.
   const location = useUserData((s) => s.location);
@@ -67,7 +66,7 @@ export const useSubmitChampionshipMain = ({
     // В зависимости от типа формы (редактирование/создание Чемпионата) выбирается соответствующий обработчик.
     if (fetchChampionshipCreated) {
       response = await fetchChampionshipCreated(dataSerialized);
-    } else if (putChampionship && championshipForEdit) {
+    } else if (championshipForEdit) {
       response = await putChampionship({
         dataSerialized,
         urlSlug: championshipForEdit.urlSlug,
@@ -84,7 +83,6 @@ export const useSubmitChampionshipMain = ({
     if (response.ok) {
       reset();
       toast.success(response.message);
-      setIsFormDirty(false);
       router.push('/moderation/championship/list');
     } else {
       toast.error(response.message);
