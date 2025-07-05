@@ -129,7 +129,8 @@ export type PropsSelect<T> = {
   showValidationText?: boolean;
   defaultValue?: string;
   loading?: boolean;
-  options: { id: number; translation: string; name: string }[];
+  options: TOptions[];
+  showEmpty?: boolean;
 };
 export type TOptions<T = string> = {
   id: number;
@@ -1557,3 +1558,5 @@ export type TDistanceStatsForClient = Omit<
   bestResultMaleId?: string;
   bestResultFemaleId?: string;
 };
+
+export type TDstanceResultOptionNames = 'all' | 'male' | 'female' | 'my';

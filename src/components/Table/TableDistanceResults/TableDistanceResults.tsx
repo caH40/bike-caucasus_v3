@@ -89,7 +89,7 @@ export default function TableDistanceResults({
                 {headerGroup.headers.map((header) => (
                   <th
                     className={cx('th', {
-                      number: ['positions_absolute'].includes(header.id),
+                      number: ['position'].includes(header.id),
                       profile: header.id === 'profile',
                       raceTimeInMilliseconds: header.id === 'raceTimeInMilliseconds',
                       averageSpeed: header.id === 'averageSpeed',
@@ -109,7 +109,7 @@ export default function TableDistanceResults({
                 {row.getVisibleCells().map((cell) => (
                   <td
                     className={cx('td', {
-                      number: ['positions_absolute'].includes(cell.column.id),
+                      number: ['position'].includes(cell.column.id),
                     })}
                     key={cell.id}
                   >

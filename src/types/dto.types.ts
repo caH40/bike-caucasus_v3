@@ -426,7 +426,14 @@ export type TDistanceDto = Omit<
 
 export type TDistanceResultDto = Omit<
   TDistanceResult,
-  '_id' | 'championship' | 'trackDistance' | 'raceResult' | 'rider' | 'createdAt' | 'updatedAt'
+  | '_id'
+  | 'championship'
+  | 'trackDistance'
+  | 'raceResult'
+  | 'rider'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'positions'
 > & {
   _id: string;
   startDate: string; // Из документа championship.
@@ -434,6 +441,7 @@ export type TDistanceResultDto = Omit<
   trackDistance: string;
   raceResult: string;
   rider: TRiderForDistanceResultDto;
+  position: number;
   createdAt: string;
   updatedAt: string;
 };

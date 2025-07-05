@@ -7,6 +7,7 @@ import {
   TDistanceResultForSave,
   TDistanceResultsWithGender,
   TDistanceStats,
+  TDstanceResultOptionNames,
   TGender,
   TPrepareDistanceResultsForSaveParams,
   TServiceEntity,
@@ -40,24 +41,51 @@ export class DistanceResultService {
 
   public async get({
     distanceId,
-    riderId,
+    riderDBId,
+    query = 'all',
   }: {
     distanceId: string;
-    riderId?: string; // Если нет, то абсолютные протоколы, иначе результаты райдера riderId.
+    riderDBId?: string; // Если нет, то абсолютные протоколы, иначе результаты райдера riderId.
+    query?: TDstanceResultOptionNames;
   }): Promise<ServerResponse<TDistanceResultDto[] | null>> {
     try {
-      const query = {
-        trackDistance: distanceId,
-        ...(riderId && { rider: riderId }),
-        ...(!riderId && { isBestForRank: true }), // Если не передан riderId, значит запрашиваются только лучшие результаты райдеров.
-      };
-
-      const resultsDB = await DistanceResultModel.find(query)
+      const resultsDB = await DistanceResultModel.find({ trackDistance: distanceId })
         .populate({ path: 'championship', select: ['urlSlug', 'startDate', '-_id'] })
         .populate('rider')
         .lean<TDistanceResultFromMongo[]>();
 
-      const resultsAfterDto = resultsDB.map((result) => distanceResultDto(result));
+      // Сортировка по возрастанию времени на дистанции.
+      resultsDB.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+
+      const filteredResults = resultsDB
+        .filter((r) => {
+          switch (query) {
+            case 'male':
+              return r.rider.person.gender === 'male' && r.isBestForRank;
+            case 'female':
+              return r.rider.person.gender === 'female' && r.isBestForRank;
+            case 'my':
+              return r.rider._id.toString() === riderDBId;
+            default:
+              return r.isBestForRank;
+          }
+        })
+        .map((r, index) => {
+          const { positions, ...result } = r;
+
+          let position = ['male', 'female'].includes(query)
+            ? positions.absoluteGender
+            : positions.absolute;
+
+          if (query === 'my') {
+            position = query === 'my' ? index + 1 : position;
+            // result.gaps.
+          }
+
+          return { ...result, position };
+        });
+
+      const resultsAfterDto = filteredResults.map((result) => distanceResultDto(result));
 
       // Сортировка по возрастанию времени на дистанции.
       resultsAfterDto.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);

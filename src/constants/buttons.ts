@@ -1,4 +1,4 @@
-import { TOptions } from '@/types/index.interface';
+import { TDstanceResultOptionNames, TOptions } from '@/types/index.interface';
 
 /**
  * Кнопки для выбора способа ввода данных райдера для занесения результата в финишный протокол.
@@ -33,4 +33,14 @@ export const championshipFormNavigationButtons: TOptions[] = [
   { id: 0, translation: 'Основные', name: 'main' },
   { id: 1, translation: 'Категории', name: 'categories' },
   { id: 2, translation: 'Заезды', name: 'races' },
+];
+
+/**
+ * Опции для селект выбора данных для результатов на дистанции.
+ */
+export const distanceResultOptions: TOptions<TDstanceResultOptionNames>[] = [
+  { id: 0, translation: 'Все', name: 'all' },
+  { id: 1, translation: 'Мужчины', name: 'male' },
+  { id: 2, translation: 'Женщины', name: 'female' },
+  { id: 3, translation: 'Мои', name: 'my' },
 ];

@@ -9,19 +9,22 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { DistanceResultService } from '@/services/DistanceResult';
 
 // types
-import { ServerResponse } from '@/types/index.interface';
+import { ServerResponse, TDstanceResultOptionNames } from '@/types/index.interface';
 import { TDistanceResultDto } from '@/types/dto.types';
 
 /**
  * Серверный экшен получения всех результатов на запрашиваемой дистанции с urlSlug: distanceUrlSlug.
  */
 export async function getDistanceResults(
-  distanceId: string
+  distanceId: string,
+  query?: TDstanceResultOptionNames
 ): Promise<ServerResponse<TDistanceResultDto[] | null>> {
   try {
     const distanceResult = new DistanceResultService();
 
-    const res = await distanceResult.get({ distanceId });
+    const session = await getServerSession(authOptions);
+
+    const res = await distanceResult.get({ distanceId, query, riderDBId: session?.user?.idDB });
 
     return res;
   } catch (error) {

@@ -17,7 +17,7 @@ export default function Select<T extends string | number | readonly string[] | u
   disabled,
   disabledEmpty,
   defaultValue,
-
+  showEmpty = true,
   ...props
 }: PropsSelect<T>) {
   return (
@@ -37,9 +37,15 @@ export default function Select<T extends string | number | readonly string[] | u
           value={state}
           onChange={(e) => setState(e.target.value as unknown as T)}
         >
-          <option value={defaultValue || ''} className={styles.option} disabled={disabledEmpty}>
-            Все
-          </option>
+          {showEmpty && (
+            <option
+              value={defaultValue || ''}
+              className={styles.option}
+              disabled={disabledEmpty}
+            >
+              Все
+            </option>
+          )}
           {options.map((elm) => (
             <option key={elm.id} value={elm.name} className={styles.option}>
               {elm.translation}

@@ -1,0 +1,9 @@
+.wrapper__controls {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+.select {
+  flex: 0 0 100px;
+}

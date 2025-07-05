@@ -6,7 +6,9 @@ import { TDistanceResultFromMongo } from '@/types/mongo.types';
 /**
  * ДТО результата на дистанции.
  */
-export function distanceResultDto(result: TDistanceResultFromMongo): TDistanceResultDto {
+export function distanceResultDto(
+  result: Omit<TDistanceResultFromMongo, 'positions'> & { position: number }
+): TDistanceResultDto {
   const { championship, ...r } = result;
 
   return {

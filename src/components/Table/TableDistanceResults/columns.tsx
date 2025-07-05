@@ -26,7 +26,7 @@ export function getColumnsForDistanceResultsTable(): ColumnDef<
       header: () => (
         <IconPodium tooltip={{ text: 'Занятое место в общем зачете', id: 'placeAbsolute' }} />
       ),
-      accessorKey: 'positions.absolute',
+      accessorKey: 'position',
       cell: (props: any) => <Medal position={props.getValue()} />,
       uniqueName: 'Место в абсолюте',
     },
@@ -67,7 +67,7 @@ export function getColumnsForDistanceResultsTable(): ColumnDef<
           }}
         />
       ),
-      accessorKey: 'gapsInCategories.absolute.toLeader',
+      accessorKey: 'gaps.toLeader',
       cell: (props: any) => <TdGap gap={props.row.original.gaps?.absolute?.toLeader} />,
     },
     {
@@ -79,7 +79,7 @@ export function getColumnsForDistanceResultsTable(): ColumnDef<
           }}
         />
       ),
-      accessorKey: 'gapsInCategories.absolute.toPrev',
+      accessorKey: 'gaps.toPrev',
       cell: (props: any) => <TdGap gap={props.row.original.gaps?.absolute?.toPrev} />,
     },
     {
