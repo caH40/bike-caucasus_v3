@@ -81,7 +81,7 @@ export class DistanceResultService {
 
       const resultsAfterDto = resultsWithGaps.map((result) => distanceResultDto(result));
 
-      return { data: resultsAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
+      return { data: resultsAfterDto, ok: true, message: 'Результаты на дистанции' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

@@ -4,15 +4,16 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { TDistanceStatsForClient, TDstanceResultOptionNames } from '@/types/index.interface';
-import { getDistanceResults, putDistanceResults } from '@/actions/distance-result';
+import { putDistanceResults } from '@/actions/distance-result';
 import TableDistanceResults from '../../TableDistanceResults/TableDistanceResults';
 import styles from './DistanceResultsTableContainer.module.css';
 
 // types
 import { TDistanceResultDto } from '@/types/dto.types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from '@/components/UI/Select/Select';
 import { distanceResultOptions } from '@/constants/buttons';
+import { useGetDistanceResults } from '@/hooks/fetch/useGetDistanceResults';
 
 type Props = {
   results: TDistanceResultDto[];
@@ -28,31 +29,20 @@ export default function DistanceResultsTableContainer({
   const [query, setQuery] = useState<TDstanceResultOptionNames>('all');
   const [filteredResults, setFilteredResults] = useState<TDistanceResultDto[]>(results);
   const router = useRouter();
-  const initialQueryRef = useRef<{
-    distanceId: string;
-    query: TDstanceResultOptionNames;
-  } | null>(null);
 
   // Запрос результатов на клиенте согласно фильтрам query.
+  const { errorMessage, isError, setStatus } = useGetDistanceResults({
+    distanceId,
+    setFilteredResults,
+    query,
+  });
+
   useEffect(() => {
-    if (
-      !initialQueryRef.current ||
-      JSON.stringify(initialQueryRef.current) === JSON.stringify({ distanceId, query })
-    ) {
-      initialQueryRef.current = { distanceId, query };
-      return;
+    if (errorMessage && isError) {
+      toast.error(errorMessage);
     }
-
-    initialQueryRef.current = { distanceId, query };
-
-    getDistanceResults(distanceId, query).then((r) => {
-      if (r.ok) {
-        setFilteredResults(r.data || []);
-      } else {
-        toast.error(r.message);
-      }
-    });
-  }, [distanceId, query]);
+    setStatus({ isError: false, isLoading: false });
+  }, [isError, errorMessage, setStatus]);
 
   // Обработчик нажатия кнопки на обновление таблицы результатов.
   const handleClickUpdateTable = async (distanceId: string) => {
