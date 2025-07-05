@@ -1,13 +1,12 @@
 import { TDistanceResultDto, TRiderForDistanceResultDto } from '@/types/dto.types';
-import { IUserModel } from '@/types/models.interface';
-
-import { TDistanceResultFromMongo } from '@/types/mongo.types';
+import { TDistanceResultWithPosition } from '@/types/index.interface';
+import { IUserModel, TGap } from '@/types/models.interface';
 
 /**
  * ДТО результата на дистанции.
  */
 export function distanceResultDto(
-  result: Omit<TDistanceResultFromMongo, 'positions'> & { position: number }
+  result: TDistanceResultWithPosition & { currentGaps: TGap }
 ): TDistanceResultDto {
   const { championship, ...r } = result;
 

@@ -46,6 +46,7 @@ import {
   TToursAndSeriesDto,
 } from './dto.types';
 import {
+  TDistanceResultFromMongo,
   TGCStagesResultsFromMongo,
   TGetStagesFromMongo,
   TRaceMetaFromMongo,
@@ -1560,3 +1561,7 @@ export type TDistanceStatsForClient = Omit<
 };
 
 export type TDstanceResultOptionNames = 'all' | 'male' | 'female' | 'my';
+
+export type TDistanceResultWithPosition = Omit<TDistanceResultFromMongo, 'positions'> & {
+  position: number;
+};

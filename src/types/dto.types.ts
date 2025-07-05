@@ -16,6 +16,7 @@ import {
   TDisqualification,
   TDistance,
   TDistanceResult,
+  TGap,
   TGeneralClassification,
   TLogsErrorModel,
   TModeratorActionLog,
@@ -442,6 +443,7 @@ export type TDistanceResultDto = Omit<
   raceResult: string;
   rider: TRiderForDistanceResultDto;
   position: number;
+  currentGaps: TGap;
   createdAt: string;
   updatedAt: string;
 };

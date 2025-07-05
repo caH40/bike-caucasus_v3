@@ -6,6 +6,7 @@ import {
   ServerResponse,
   TDistanceResultForSave,
   TDistanceResultsWithGender,
+  TDistanceResultWithPosition,
   TDistanceStats,
   TDstanceResultOptionNames,
   TGender,
@@ -24,6 +25,7 @@ import { TDistanceResultDto } from '@/types/dto.types';
 import { DistanceModel } from '@/database/mongodb/Models/Distance';
 import { millisecondsInHour } from '@/constants/date';
 import { formatTimeToStr } from '@/libs/utils/timer';
+import { setResultGaps } from '@/libs/utils/gap';
 
 /**
  * Сервис работы с результатами на Дистанции для заездов Чемпионатов.
@@ -57,44 +59,85 @@ export class DistanceResultService {
       // Сортировка по возрастанию времени на дистанции.
       resultsDB.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
 
-      const filteredResults = resultsDB
-        .filter((r) => {
-          switch (query) {
-            case 'male':
-              return r.rider.person.gender === 'male' && r.isBestForRank;
-            case 'female':
-              return r.rider.person.gender === 'female' && r.isBestForRank;
-            case 'my':
-              return r.rider._id.toString() === riderDBId;
-            default:
-              return r.isBestForRank;
-          }
-        })
-        .map((r, index) => {
-          const { positions, ...result } = r;
-
-          let position = ['male', 'female'].includes(query)
-            ? positions.absoluteGender
-            : positions.absolute;
-
-          if (query === 'my') {
-            position = query === 'my' ? index + 1 : position;
-            // result.gaps.
-          }
-
-          return { ...result, position };
-        });
-
-      const resultsAfterDto = filteredResults.map((result) => distanceResultDto(result));
+      const filteredResults = this.filterResultsByQuery({
+        results: resultsDB,
+        riderDBId,
+        query,
+      });
 
       // Сортировка по возрастанию времени на дистанции.
-      resultsAfterDto.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+      filteredResults.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+
+      // Выбор и установка позиции в протоколе, согласно запроса query.
+      const resultsWithPositionsByQuery = this.setPositionsByQuery({
+        results: filteredResults,
+        query,
+      });
+
+      const resultsWithGaps = setResultGaps({
+        results: resultsWithPositionsByQuery,
+        getTime: (r) => r.raceTimeInMilliseconds,
+      });
+
+      const resultsAfterDto = resultsWithGaps.map((result) => distanceResultDto(result));
 
       return { data: resultsAfterDto, ok: true, message: 'Данные заезда Чемпионата' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Фильтрация результатов согласно запросу query.
+   */
+  private filterResultsByQuery({
+    results,
+    query,
+    riderDBId,
+  }: {
+    results: TDistanceResultFromMongo[];
+    query: TDstanceResultOptionNames;
+    riderDBId?: string;
+  }): TDistanceResultFromMongo[] {
+    return results.filter((r) => {
+      switch (query) {
+        case 'male':
+          return r.rider.person.gender === 'male' && r.isBestForRank;
+        case 'female':
+          return r.rider.person.gender === 'female' && r.isBestForRank;
+        case 'my':
+          return r.rider._id.toString() === riderDBId;
+        default:
+          return r.isBestForRank;
+      }
+    });
+  }
+
+  /**
+   * Установка позиций в результаты согласно запросу query.
+   */
+  private setPositionsByQuery({
+    results,
+    query,
+  }: {
+    results: TDistanceResultFromMongo[];
+    query: TDstanceResultOptionNames;
+    riderDBId?: string;
+  }): TDistanceResultWithPosition[] {
+    return results.map((r, index) => {
+      const { positions, ...result } = r;
+
+      let position = ['male', 'female'].includes(query)
+        ? positions.absoluteGender
+        : positions.absolute;
+
+      if (query === 'my') {
+        position = query === 'my' ? index + 1 : position;
+      }
+
+      return { ...result, position };
+    });
   }
 
   /**

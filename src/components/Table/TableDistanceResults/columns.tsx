@@ -67,8 +67,8 @@ export function getColumnsForDistanceResultsTable(): ColumnDef<
           }}
         />
       ),
-      accessorKey: 'gaps.toLeader',
-      cell: (props: any) => <TdGap gap={props.row.original.gaps?.absolute?.toLeader} />,
+      accessorKey: 'currentGaps.toLeader',
+      cell: (props: any) => <TdGap gap={props.getValue()} />,
     },
     {
       header: () => (
@@ -79,8 +79,8 @@ export function getColumnsForDistanceResultsTable(): ColumnDef<
           }}
         />
       ),
-      accessorKey: 'gaps.toPrev',
-      cell: (props: any) => <TdGap gap={props.row.original.gaps?.absolute?.toPrev} />,
+      accessorKey: 'currentGaps.toPrev',
+      cell: (props: any) => <TdGap gap={props.getValue()} />,
     },
     {
       header: () => (
