@@ -231,7 +231,11 @@ export default function TableResultsRider({ results, docsOnPage = 10 }: Props) {
                     })}
                     key={cell.id}
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    <div
+                      className={cx({ description: cell.column.id === 'championship_name' })}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
                   </td>
                 ))}
               </tr>

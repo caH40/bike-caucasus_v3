@@ -155,7 +155,11 @@ export default function TableRegistrationsRider({
               <tr className={styles.tr} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <td className={cx('td')} key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    <div
+                      className={cx({ description: cell.column.id === 'championship_name' })}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
                   </td>
                 ))}
               </tr>
