@@ -1,0 +1,22 @@
+.title {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.2rem;
+}
+.link {
+  border-bottom: solid transparent 2px;
+  transition: all 0.4s;
+  text-decoration: none;
+}
+.link:hover {
+  border-bottom: solid #39a034 2px;
+  transition: all 0.4s;
+}
+.active {
+  color: #39a034;
+}
+.link__image {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
