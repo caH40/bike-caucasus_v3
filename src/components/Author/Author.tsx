@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { getTimerLocal } from '@/libs/utils/date-local';
-import { getLogoProfile } from '@/libs/utils/profile';
+import { getLogoProfile, getUserFullName } from '@/libs/utils/profile';
 import styles from './Author.module.css';
 import type { TAuthor } from '@/types/dto.types';
 
@@ -17,6 +17,11 @@ type Props = {
  * Автор статьи, новости, маршрута и т.д.
  */
 export default function Author({ data }: Props) {
+  const fullName = getUserFullName({
+    person: data.author.person,
+    showPatronymic: data.author.preferences?.showPatronymic,
+  });
+
   return (
     <div className={styles.wrapper}>
       <Link href={`/profile/${data.author?.id}`} className={styles.author__name}>
@@ -35,9 +40,7 @@ export default function Author({ data }: Props) {
       </Link>
       {data.author ? (
         <Link href={`/profile/${data.author?.id}`} className={styles.author__name}>
-          {data.author?.person.firstName}
-          {data.author?.person.patronymic ? ' ' + data.author?.person.patronymic : ''}{' '}
-          {data.author?.person.lastName}
+          {fullName}
         </Link>
       ) : (
         <span>Неизвестный</span>

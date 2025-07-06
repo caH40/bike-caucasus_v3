@@ -44,6 +44,7 @@ export type IUserModel = {
   createdAt: Date;
   updatedAt: Date;
 };
+
 export type TPerson = {
   firstName: string;
   patronymic?: string;
@@ -84,19 +85,17 @@ export type TUserPreferences = {
 /**
  * Автор поста для публичного доступа, получаемый из модели User путем проекции документа при запросе из БД.
  */
-export type TAuthorFromUser = {
-  _id: ObjectId;
-  id: number;
+export type TAuthorFromUser = Pick<IUserModel, '_id' | 'id' | 'imageFromProvider' | 'image'> & {
   provider: {
     image?: string;
   };
-  imageFromProvider: boolean;
   image?: string;
   person: {
     firstName: string;
     lastName: string;
     patronymic?: string;
   };
+  preferences: { showPatronymic: boolean };
 };
 /**
  * Типы модели подтверждения email.

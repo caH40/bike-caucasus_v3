@@ -401,6 +401,7 @@ export class News {
             'provider.image',
             'imageFromProvider',
             'image',
+            'preferences.showPatronymic',
           ],
         })
         .lean<
