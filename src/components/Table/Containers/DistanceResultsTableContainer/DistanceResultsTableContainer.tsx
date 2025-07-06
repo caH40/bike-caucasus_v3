@@ -1,19 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-import { TDistanceStatsForClient, TDstanceResultOptionNames } from '@/types/index.interface';
 import { putDistanceResults } from '@/actions/distance-result';
+import Select from '@/components/UI/Select/Select';
+import { distanceResultOptions } from '@/constants/buttons';
+import { useGetDistanceResults } from '@/hooks/fetch/useGetDistanceResults';
 import TableDistanceResults from '../../TableDistanceResults/TableDistanceResults';
 import styles from './DistanceResultsTableContainer.module.css';
 
 // types
+import { TDistanceStatsForClient, TDistanceResultOptionNames } from '@/types/index.interface';
 import { TDistanceResultDto } from '@/types/dto.types';
-import { useEffect, useState } from 'react';
-import Select from '@/components/UI/Select/Select';
-import { distanceResultOptions } from '@/constants/buttons';
-import { useGetDistanceResults } from '@/hooks/fetch/useGetDistanceResults';
 
 type Props = {
   results: TDistanceResultDto[];
@@ -26,23 +26,15 @@ export default function DistanceResultsTableContainer({
   distanceStats,
   distanceId,
 }: Props) {
-  const [query, setQuery] = useState<TDstanceResultOptionNames>('all');
-  const [filteredResults, setFilteredResults] = useState<TDistanceResultDto[]>(results);
+  const [query, setQuery] = useState<TDistanceResultOptionNames>('all');
   const router = useRouter();
 
   // Запрос результатов на клиенте согласно фильтрам query.
-  const { errorMessage, isError, setStatus } = useGetDistanceResults({
+  const { filteredResults } = useGetDistanceResults({
     distanceId,
-    setFilteredResults,
     query,
+    initialData: results,
   });
-
-  useEffect(() => {
-    if (errorMessage && isError) {
-      toast.error(errorMessage);
-    }
-    setStatus({ isError: false, isLoading: false });
-  }, [isError, errorMessage, setStatus]);
 
   // Обработчик нажатия кнопки на обновление таблицы результатов.
   const handleClickUpdateTable = async (distanceId: string) => {

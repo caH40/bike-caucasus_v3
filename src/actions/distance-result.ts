@@ -9,7 +9,7 @@ import { handlerErrorDB } from '@/services/mongodb/error';
 import { DistanceResultService } from '@/services/DistanceResult';
 
 // types
-import { ServerResponse, TDstanceResultOptionNames } from '@/types/index.interface';
+import { ServerResponse, TDistanceResultOptionNames } from '@/types/index.interface';
 import { TDistanceResultDto } from '@/types/dto.types';
 
 /**
@@ -17,7 +17,7 @@ import { TDistanceResultDto } from '@/types/dto.types';
  */
 export async function getDistanceResults(
   distanceId: string,
-  query?: TDstanceResultOptionNames
+  query?: TDistanceResultOptionNames
 ): Promise<ServerResponse<TDistanceResultDto[] | null>> {
   try {
     const distanceResult = new DistanceResultService();

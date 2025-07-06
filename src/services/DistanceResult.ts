@@ -8,7 +8,7 @@ import {
   TDistanceResultsWithGender,
   TDistanceResultWithPosition,
   TDistanceStats,
-  TDstanceResultOptionNames,
+  TDistanceResultOptionNames,
   TGender,
   TPrepareDistanceResultsForSaveParams,
   TServiceEntity,
@@ -48,7 +48,7 @@ export class DistanceResultService {
   }: {
     distanceId: string;
     riderDBId?: string; // Если нет, то абсолютные протоколы, иначе результаты райдера riderId.
-    query?: TDstanceResultOptionNames;
+    query?: TDistanceResultOptionNames;
   }): Promise<ServerResponse<TDistanceResultDto[] | null>> {
     try {
       const resultsDB = await DistanceResultModel.find({ trackDistance: distanceId })
@@ -97,7 +97,7 @@ export class DistanceResultService {
     riderDBId,
   }: {
     results: TDistanceResultFromMongo[];
-    query: TDstanceResultOptionNames;
+    query: TDistanceResultOptionNames;
     riderDBId?: string;
   }): TDistanceResultFromMongo[] {
     return results.filter((r) => {
@@ -122,7 +122,7 @@ export class DistanceResultService {
     query,
   }: {
     results: TDistanceResultFromMongo[];
-    query: TDstanceResultOptionNames;
+    query: TDistanceResultOptionNames;
     riderDBId?: string;
   }): TDistanceResultWithPosition[] {
     return results.map((r, index) => {

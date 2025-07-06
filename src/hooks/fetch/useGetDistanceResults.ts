@@ -1,53 +1,59 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { getDistanceResults } from '@/actions/distance-result';
 
 // types
-import { TDstanceResultOptionNames } from '@/types/index.interface';
+import { TDistanceResultOptionNames } from '@/types/index.interface';
 import { TDistanceResultDto } from '@/types/dto.types';
+import { toast } from 'sonner';
 
 type Params = {
+  initialData: TDistanceResultDto[];
   distanceId: string;
-  setFilteredResults: Dispatch<SetStateAction<TDistanceResultDto[]>>;
-  query: TDstanceResultOptionNames;
+  query: TDistanceResultOptionNames;
 };
 
-export function useGetDistanceResults({ distanceId, setFilteredResults, query }: Params) {
-  const [status, setStatus] = useState<{
-    errorMessage?: string;
-    isError: boolean;
-    isLoading: boolean;
-  }>({
-    isError: false,
-    isLoading: false,
-  });
+/**
+ * Запрос результатов на дистанции с клиента при изменении фильтра query.
+ */
+export function useGetDistanceResults({ distanceId, query, initialData }: Params) {
+  const [filteredResults, setFilteredResults] = useState<TDistanceResultDto[]>(initialData);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const initialQueryRef = useRef<{
     distanceId: string;
-    query: TDstanceResultOptionNames;
+    query: TDistanceResultOptionNames;
   } | null>(null);
 
+  // Инициализируем данные из SSR. Если изменились данные, получаемые из серверного экшена.
+  // Происходит при запросе на обновление таблиц, запрос происходит с параметром 'all'
   useEffect(() => {
-    setStatus({ isLoading: true, isError: false });
+    setFilteredResults(initialData);
+  }, [initialData]);
 
+  useEffect(() => {
+    const nextQuery = { distanceId, query };
     if (
       !initialQueryRef.current ||
-      JSON.stringify(initialQueryRef.current) === JSON.stringify({ distanceId, query })
+      (initialQueryRef.current?.distanceId === distanceId &&
+        initialQueryRef.current?.query === query)
     ) {
-      initialQueryRef.current = { distanceId, query };
+      initialQueryRef.current = nextQuery;
       return;
     }
+
+    setIsLoading(true);
 
     initialQueryRef.current = { distanceId, query };
 
     getDistanceResults(distanceId, query).then((r) => {
       if (r.ok) {
         setFilteredResults(r.data || []);
-        setStatus({ isError: false, isLoading: false });
       } else {
-        setStatus({ errorMessage: r.message, isError: true, isLoading: false });
+        toast.error(r.message);
       }
+      setIsLoading(false);
     });
   }, [distanceId, query, setFilteredResults]);
 
-  return { ...status, setStatus };
+  return { filteredResults, isLoading };
 }

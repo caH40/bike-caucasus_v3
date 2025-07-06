@@ -1560,7 +1560,7 @@ export type TDistanceStatsForClient = Omit<
   bestResultFemaleId?: string;
 };
 
-export type TDstanceResultOptionNames = 'all' | 'male' | 'female' | 'my';
+export type TDistanceResultOptionNames = 'all' | 'male' | 'female' | 'my';
 
 export type TDistanceResultWithPosition = Omit<TDistanceResultFromMongo, 'positions'> & {
   position: number;
