@@ -1565,3 +1565,21 @@ export type TDistanceResultOptionNames = 'all' | 'male' | 'female' | 'my';
 export type TDistanceResultWithPosition = Omit<TDistanceResultFromMongo, 'positions'> & {
   position: number;
 };
+/**
+ * История использования поштучной услуги (например, создание чемпионата).
+ */
+export type TUsedHistory = {
+  entityId: string; // _id сущности entity, в рамках которого был использован слот.
+  status: 'used' | 'canceled'; // Статус использования: 'used' — слот использован;'canceled' — использование отменено (например, чемпионат не был создан).
+  createdAt: Date; // Дата, когда слот был использован.
+  updatedAt: Date; // Дата последнего обновления статуса (например, при отмене).
+};
+
+/**
+ * Поштучный сервис с учетом доступных слотов и истории их использования.
+ */
+export type TOneTimeServiceSimple = {
+  entityName: 'championship' | 'team';
+  available: number; // Количество доступных слотов (которые ещё можно использовать).
+  usedHistory: TUsedHistory[]; // История использования слотов с указанием чемпионата и статуса.
+};

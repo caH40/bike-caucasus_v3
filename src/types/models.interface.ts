@@ -7,6 +7,7 @@ import {
   TDistanceStats,
   TFormCalendar,
   TLocationInfo,
+  TOneTimeServiceSimple,
   TrackData,
   TServiceEntity,
   TSurfaceType,
@@ -628,4 +629,14 @@ export type TDistanceResult = {
   laps: number; // Сколько кругов данной дистанции было в заезде из которого взят результат.
   createdAt: Date;
   updatedAt: Date;
+};
+
+/**
+ * Купленные (оплаченные) услуги.
+ */
+export type TUserServiceAccessDocument = TUserServiceAccess & Document;
+export type TUserServiceAccess = {
+  _id: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId; // Ссылка на пользователя.
+  oneTimeServices: TOneTimeServiceSimple[]; // Сервисы, покупка и использование которых происходит поштучно (разовые услуги).
 };
