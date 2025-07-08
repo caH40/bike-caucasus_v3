@@ -1,4 +1,4 @@
-import { YooCheckout, ICreatePayment, Payment } from '@a2seven/yoo-checkout';
+import { YooCheckout, ICreatePayment, IConfirmation } from '@a2seven/yoo-checkout';
 
 import { Environment } from '@/configs/environment';
 import { errorLogger } from '@/errors/error';
@@ -31,11 +31,11 @@ export class PaymentService {
     createPayload,
   }: {
     createPayload: ICreatePayment;
-  }): Promise<ServerResponse<Payment | null>> {
+  }): Promise<ServerResponse<IConfirmation | null>> {
     try {
       const payment = await this.checkout.createPayment(createPayload, this.idempotenceKey);
 
-      return { data: payment, ok: true, message: 'Платеж создан.' };
+      return { data: payment.confirmation, ok: true, message: 'Платеж создан.' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

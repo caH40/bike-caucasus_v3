@@ -1,14 +1,43 @@
 import IconChampionship from '@/components/Icons/IconChampionship';
 import Wrapper from '@/components/Wrapper/Wrapper';
 import styles from './layout.module.css';
+import ChampionshipSlotPurchasePanel from '@/components/SlotPurchasePanels/ChampionshipSlotPurchasePanel/ChampionshipSlotPurchasePanel';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
+import Spacer from '@/components/Spacer/Spacer';
+import { getAvailableSlots } from '@/actions/slots';
 
-export default function ModerationChampionshipPage() {
+export default async function ModerationChampionshipPage() {
+  const session = await getServerSession(authOptions);
+
+  const userId = Number(session?.user.id);
+  const userDBId = session?.user.idDB;
+
+  if (!userId || isNaN(userId) || !userDBId) {
+    return <ServerErrorMessage message={'Не получен userId!'} />;
+  }
+
+  const availableSlots = await getAvailableSlots({ entityName: 'championship', userDBId });
+
+  if (!availableSlots.ok || !availableSlots.data) {
+    return <ServerErrorMessage message={availableSlots.message} />;
+  }
+
   return (
     <div className={styles.content}>
       <Wrapper hSize={1} title="Управление и настройка Чемпионатов" Icon={IconChampionship}>
         <h2 className={styles.title}>
           Добро пожаловать на страницу создания и редактирования Чемпионатов (соревнований)
         </h2>
+
+        <Spacer margin="b-sm">
+          <ChampionshipSlotPurchasePanel
+            userId={userId}
+            availableSlots={availableSlots.data.availableSlots}
+          />
+        </Spacer>
+
         <h3 className={styles.subtitle}>
           Добро пожаловать на страницу управления чемпионатами! Здесь вы можете создавать новые
           чемпионаты или редактировать уже существующие. Чтобы помочь вам быстрее освоиться, вот

@@ -9,6 +9,7 @@ const UsedHistorySchema = new Schema<TUsedHistory>(
   {
     entityId: { type: String },
     status: { type: String, enum: ['used', 'canceled'] },
+    type: { type: String, enum: ['trial', 'free', 'purchased'] },
   },
   {
     timestamps: true, // createdAt и updatedAt
@@ -20,7 +21,9 @@ const UsedHistorySchema = new Schema<TUsedHistory>(
 const OneTimeServicesSchema = new Schema<TOneTimeServiceSimple>(
   {
     entityName: { type: String, enum: ['championship'], required: true },
-    available: { type: Number, default: 0, required: true },
+    purchasedAvailable: { type: Number, default: 0, required: true },
+    trialAvailable: { type: Number, default: 0, required: true },
+    freeAvailable: { type: Number, default: 0, required: true },
     usedHistory: { type: [UsedHistorySchema], default: [] },
   },
   {

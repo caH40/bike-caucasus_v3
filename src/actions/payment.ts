@@ -1,5 +1,5 @@
 'use server';
-import { ICreatePayment, Payment } from '@a2seven/yoo-checkout';
+import { ICreatePayment, IConfirmation } from '@a2seven/yoo-checkout';
 
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
@@ -16,7 +16,7 @@ export async function createPayment({
   createPayload,
 }: {
   createPayload: ICreatePayment;
-}): Promise<ServerResponse<Payment | null>> {
+}): Promise<ServerResponse<IConfirmation | null>> {
   try {
     const paymentService = new PaymentService();
     const res = await paymentService.create({ createPayload });
