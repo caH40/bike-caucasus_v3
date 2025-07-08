@@ -1,5 +1,5 @@
 'use server';
-import { ICreatePayment, IConfirmation } from '@a2seven/yoo-checkout';
+import { IConfirmation } from '@a2seven/yoo-checkout';
 
 import { errorHandlerClient } from './error-handler';
 import { parseError } from '@/errors/parse';
@@ -7,7 +7,7 @@ import { PaymentService } from '@/services/Payment';
 import { handlerErrorDB } from '@/services/mongodb/error';
 
 // types
-import { ServerResponse } from '@/types/index.interface';
+import { ServerResponse, TCreatePaymentWithMeta } from '@/types/index.interface';
 
 /**
  * Серверный экшен оплаты.
@@ -15,7 +15,7 @@ import { ServerResponse } from '@/types/index.interface';
 export async function createPayment({
   createPayload,
 }: {
-  createPayload: ICreatePayment;
+  createPayload: TCreatePaymentWithMeta;
 }): Promise<ServerResponse<IConfirmation | null>> {
   try {
     const paymentService = new PaymentService();

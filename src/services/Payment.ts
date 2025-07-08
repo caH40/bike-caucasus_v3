@@ -1,10 +1,10 @@
-import { YooCheckout, ICreatePayment, IConfirmation } from '@a2seven/yoo-checkout';
+import { YooCheckout, IConfirmation } from '@a2seven/yoo-checkout';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Environment } from '@/configs/environment';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
-import { ServerResponse } from '@/types/index.interface';
+import { ServerResponse, TCreatePaymentWithMeta } from '@/types/index.interface';
 
 /**
  * Сервис работы c эквайрингом.
@@ -29,7 +29,7 @@ export class PaymentService {
   public async create({
     createPayload,
   }: {
-    createPayload: ICreatePayment;
+    createPayload: TCreatePaymentWithMeta;
   }): Promise<ServerResponse<IConfirmation | null>> {
     try {
       const idempotenceKey = uuidv4(); // Новый ключ для каждого вызова.

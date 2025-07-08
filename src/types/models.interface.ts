@@ -5,6 +5,7 @@ import {
   TCategorySkillLevel,
   TDeviceInfo,
   TDistanceStats,
+  TEntityNameForSlot,
   TFormCalendar,
   TLocationInfo,
   TOneTimeServiceSimple,
@@ -640,4 +641,28 @@ export type TUserPaidServiceAccess = {
   _id: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId; // Ссылка на пользователя.
   oneTimeServices: TOneTimeServiceSimple[]; // Сервисы, покупка и использование которых происходит поштучно (разовые услуги).
+};
+
+export type TPaymentNotificationDocument = TPaymentNotification & Document;
+export type TPaymentNotification = {
+  _id: mongoose.Types.ObjectId;
+  event: 'payment.succeeded';
+  id: string; // ID платежа в ЮKassa.
+  status: 'succeeded'; // Статус платежа.
+  amount: {
+    value: number;
+    currency: 'RUB';
+  };
+  income_amount: {
+    value: number; // Сумма, полученная магазином (за вычетом комиссии).
+    currency: 'RUB';
+  };
+  metadata: {
+    user: mongoose.Types.ObjectId; // Ссылка на User.
+    entityName: TEntityNameForSlot;
+    quantity: number;
+  };
+
+  createdAt: Date;
+  updatedAt: Date;
 };

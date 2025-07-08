@@ -1,13 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import PurchaseSection from '@/components/UI/PurchaseSection/PurchaseSection';
-import { ICreatePayment } from '@a2seven/yoo-checkout';
 import { createPayment } from '@/actions/payment';
-
 import styles from './ChampionshipSlotPurchasePanel.module.css';
-import { useState } from 'react';
+
+// types
+import { TCreatePaymentWithMeta } from '@/types/index.interface';
 
 type Props = {
   userId: number; // id пользователя на сайте.
@@ -36,7 +37,7 @@ export default function ChampionshipSlotPurchasePanel({ userId, availableSlots }
 
     try {
       setIsLoading(true);
-      const createPayload: ICreatePayment = {
+      const createPayload: TCreatePaymentWithMeta = {
         amount: {
           value: String(pricePerChampionship * quantity),
           currency: 'RUB',
@@ -48,6 +49,8 @@ export default function ChampionshipSlotPurchasePanel({ userId, availableSlots }
         },
         metadata: {
           userId,
+          quantity,
+          entityName: 'championship',
         },
 
         description: `Покупка слотов в количестве ${quantity}шт. на создание чемпионатов на сайте bike-caucasus.ru`,

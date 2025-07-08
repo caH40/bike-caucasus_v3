@@ -39,5 +39,6 @@ const UserPaidServiceAccessSchema = new Schema<TUserPaidServiceAccessDocument>({
   oneTimeServices: { type: [OneTimeServicesSchema], default: [] },
 });
 
-export const userPaidServiceAccessModel =
-  models.UserPaidServiceAccess || model('UserPaidServiceAccess', UserPaidServiceAccessSchema);
+export const UserPaidServiceAccessModel =
+  models.UserPaidServiceAccess ||
+  model<TUserPaidServiceAccessDocument>('UserPaidServiceAccess', UserPaidServiceAccessSchema);

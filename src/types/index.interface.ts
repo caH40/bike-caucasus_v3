@@ -57,6 +57,7 @@ import {
   TGetStagesFromMongo,
   TRaceMetaFromMongo,
 } from './mongo.types';
+import { ICreatePayment } from '@a2seven/yoo-checkout';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -1603,3 +1604,62 @@ export type TEntityNameForSlot = 'championship' | 'team';
 
 export type TAvailableSlots = { availableSlots: number; entityName: TEntityNameForSlot };
 export type TSlotType = 'trial' | 'purchased' | 'free';
+
+export type TCreatePaymentWithMeta = Omit<ICreatePayment, 'metadata'> & {
+  metadata: TCreatePayloadMetadata;
+};
+export type TCreatePayloadMetadata = {
+  userId: number;
+  quantity: number;
+  entityName: TEntityNameForSlot;
+};
+
+// Данные о покупке для обработки и сохранения в БД.
+export type TPurchaseMetadata = {
+  user: Types.ObjectId;
+  quantity: number;
+  entityName: TEntityNameForSlot;
+};
+
+/**
+ * Пример данных оповещения от ЮКассы.
+ */
+export type TYooKassaNotification = {
+  type: 'notification';
+  event: 'payment.succeeded';
+  object: {
+    id: string;
+    status: 'succeeded';
+    amount: {
+      value: string; // денежная сумма в виде строки
+      currency: 'RUB';
+    };
+    income_amount: {
+      value: string;
+      currency: 'RUB';
+    };
+    description: string;
+    recipient: {
+      account_id: string;
+      gateway_id: string;
+    };
+    payment_method: {
+      type: string; // 'yoo_money' и другие
+      id: string;
+      saved: boolean;
+      status: string;
+      title: string;
+      account_number: string;
+    };
+    captured_at: string; // ISO дата
+    created_at: string; // ISO дата
+    test: boolean;
+    refunded_amount: {
+      value: string;
+      currency: 'RUB';
+    };
+    paid: boolean;
+    refundable: boolean;
+    metadata: TCreatePayloadMetadata;
+  };
+};
