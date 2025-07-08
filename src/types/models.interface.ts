@@ -666,3 +666,26 @@ export type TPaymentNotification = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Цена за предоставляемую штучный сервис на сайте.
+ * Цена зависит от количества приобретаемых услуг.
+ */
+export type TSiteServicePriceDocument = TSiteServicePrice & Document;
+export type TSiteServicePrice = {
+  _id: mongoose.Types.ObjectId;
+  entityName: TEntityNameForSlot;
+  tiers: TPriceTier[]; // Несколько уровней цен в зависимости от количества.
+};
+
+/**
+ * Цена зависит от количества приобретаемых услуг.
+ */
+export type TPriceTier = {
+  quantityRange: {
+    min: number;
+    max: number;
+  };
+  unitPrice: number; // Цена за одну единицу в этом диапазоне.
+  currency: 'RUB';
+};

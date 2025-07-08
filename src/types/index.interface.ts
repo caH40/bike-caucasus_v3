@@ -31,6 +31,7 @@ import {
   TRacePointsTable,
   TRaceRegistration,
   TResultRace,
+  TSiteServicePrice,
   TTrackGPXObj,
 } from './models.interface';
 import {
@@ -1662,3 +1663,5 @@ export type TYooKassaNotification = {
     metadata: TCreatePayloadMetadata;
   };
 };
+
+export type TSiteServicePriceForClient = Omit<TSiteServicePrice, '_id'>;
