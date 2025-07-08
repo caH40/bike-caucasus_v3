@@ -8,6 +8,7 @@ import {
 } from '@/types/index.interface';
 import { UserPaidServiceAccessModel } from '@/database/mongodb/Models/UserPaidServiceAccess';
 import { TUserPaidServiceAccess } from '@/types/models.interface';
+import { Types } from 'mongoose';
 
 /**
  * Сервис работы со слотами по доступу к платным сервисам сайта.
@@ -72,11 +73,16 @@ export class SiteServiceSlotService {
     }
   }
 
+  /**
+   * Обработка данных покупки, изменение количества купленных слотов пользователя. Сохранение деталей покупки через ЮКассу.
+   */
   public async handlePurchaseSlot({
     user,
-    entityName,
-    quantity,
-  }: TPurchaseMetadata): Promise<void> {
+    metadata: { entityName, quantity },
+  }: {
+    user: Types.ObjectId;
+    metadata: TPurchaseMetadata;
+  }): Promise<void> {
     try {
       const result = await UserPaidServiceAccessModel.findOneAndUpdate(
         { user: user, 'oneTimeServices.entityName': entityName },

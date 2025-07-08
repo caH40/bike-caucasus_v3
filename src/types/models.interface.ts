@@ -646,6 +646,7 @@ export type TUserPaidServiceAccess = {
 export type TPaymentNotificationDocument = TPaymentNotification & Document;
 export type TPaymentNotification = {
   _id: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId; // Ссылка на User.
   event: 'payment.succeeded';
   id: string; // ID платежа в ЮKassa.
   status: 'succeeded'; // Статус платежа.
@@ -658,7 +659,6 @@ export type TPaymentNotification = {
     currency: 'RUB';
   };
   metadata: {
-    user: mongoose.Types.ObjectId; // Ссылка на User.
     entityName: TEntityNameForSlot;
     quantity: number;
   };

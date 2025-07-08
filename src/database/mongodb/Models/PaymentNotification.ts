@@ -7,6 +7,7 @@ const PaymentNotificationSchema = new Schema<TPaymentNotificationDocument>(
   {
     event: { type: String, enum: ['payment.succeeded'], required: true },
     id: { type: String, required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     status: { type: String, enum: ['succeeded'], required: true },
     amount: {
       value: { type: Number, required: true },
@@ -17,7 +18,6 @@ const PaymentNotificationSchema = new Schema<TPaymentNotificationDocument>(
       currency: { type: String, required: true },
     },
     metadata: {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
       entityName: { type: String, enum: ['championship'], required: true },
       quantity: { type: Number, required: true },
     },

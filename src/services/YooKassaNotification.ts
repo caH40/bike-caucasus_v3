@@ -72,15 +72,15 @@ export class YooKassaNotification {
     }
 
     const metadata: TPurchaseMetadata = {
-      user: userDB._id,
       entityName: notification.metadata.entityName,
       quantity: notification.metadata.quantity,
     };
 
     const siteServiceSlotService = new SiteServiceSlotService();
-    await siteServiceSlotService.handlePurchaseSlot(metadata);
+    await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
 
     const query: Omit<TPaymentNotification, '_id' | 'createdAt' | 'updatedAt'> = {
+      user: userDB._id,
       event,
       id: notification.id,
       status: notification.status,

@@ -1616,7 +1616,6 @@ export type TCreatePayloadMetadata = {
 
 // Данные о покупке для обработки и сохранения в БД.
 export type TPurchaseMetadata = {
-  user: Types.ObjectId;
   quantity: number;
   entityName: TEntityNameForSlot;
 };
