@@ -9,20 +9,26 @@ import styles from './ChampionshipSlotPurchasePanel.module.css';
 
 // types
 import { TCreatePaymentWithMeta } from '@/types/index.interface';
+import { TPriceTier } from '@/types/models.interface';
 
 type Props = {
   userId: number; // id пользователя на сайте.
   availableSlots: number;
+  priceTier: TPriceTier[];
 };
-
-const pricePerChampionship = 1000;
 
 /**
  * Панель состояния наличия слотов на создание чемпионатов и покупка слотов.
  */
-export default function ChampionshipSlotPurchasePanel({ userId, availableSlots }: Props) {
+export default function ChampionshipSlotPurchasePanel({
+  userId,
+  priceTier,
+  availableSlots,
+}: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // getUserServiceAccessInfo(userId)
+
+  // Простая логика получения данных по цене за товар и валюте.
+  const { unitPrice, currency } = priceTier[0];
 
   const handleClickPurchase = async (quantity: number) => {
     // Исключение случайного второго клика по кнопке.
@@ -39,8 +45,8 @@ export default function ChampionshipSlotPurchasePanel({ userId, availableSlots }
       setIsLoading(true);
       const createPayload: TCreatePaymentWithMeta = {
         amount: {
-          value: String(pricePerChampionship * quantity),
-          currency: 'RUB',
+          value: String(unitPrice * quantity),
+          currency,
         },
         capture: true,
         confirmation: {
@@ -77,7 +83,7 @@ export default function ChampionshipSlotPurchasePanel({ userId, availableSlots }
       <h3 className={styles.title}>
         Количество доступных слотов для создания чемпионатов {availableSlots} шт.
       </h3>
-      <p className={styles.description}>Стоимость 1 слота: {pricePerChampionship}р</p>
+      <p className={styles.description}>Стоимость 1 слота: {unitPrice}р</p>
 
       <PurchaseSection handleClickPurchase={handleClickPurchase} isLoading={isLoading} />
     </div>

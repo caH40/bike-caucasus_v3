@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Environment } from '@/configs/environment';
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
+
+// types
 import { ServerResponse, TCreatePaymentWithMeta } from '@/types/index.interface';
 
 /**

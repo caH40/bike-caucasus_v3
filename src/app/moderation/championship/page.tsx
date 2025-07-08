@@ -7,6 +7,9 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
 import Spacer from '@/components/Spacer/Spacer';
 import { getAvailableSlots } from '@/actions/slots';
+import { getPriceTier } from '@/actions/price';
+
+const entityName = 'championship';
 
 export default async function ModerationChampionshipPage() {
   const session = await getServerSession(authOptions);
@@ -18,10 +21,16 @@ export default async function ModerationChampionshipPage() {
     return <ServerErrorMessage message={'Не получен userId!'} />;
   }
 
-  const availableSlots = await getAvailableSlots({ entityName: 'championship', userDBId });
+  const availableSlots = await getAvailableSlots({ entityName, userDBId });
 
   if (!availableSlots.ok || !availableSlots.data) {
     return <ServerErrorMessage message={availableSlots.message} />;
+  }
+
+  const priceTier = await getPriceTier({ entityName });
+
+  if (!priceTier.ok || !priceTier.data) {
+    return <ServerErrorMessage message={priceTier.message} />;
   }
 
   return (
@@ -35,6 +44,7 @@ export default async function ModerationChampionshipPage() {
           <ChampionshipSlotPurchasePanel
             userId={userId}
             availableSlots={availableSlots.data.availableSlots}
+            priceTier={priceTier.data.tiers}
           />
         </Spacer>
 
