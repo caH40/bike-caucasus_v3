@@ -632,10 +632,11 @@ export type TDistanceResult = {
 };
 
 /**
- * Купленные (оплаченные) услуги.
+ * Сущность, описывающая доступ пользователя к платным сервисам сайта.
+ * Бесплатные сервисы включаются/отключаются простыми флагами и здесь не учитываются.
  */
-export type TUserServiceAccessDocument = TUserServiceAccess & Document;
-export type TUserServiceAccess = {
+export type TUserPaidServiceAccessDocument = TUserPaidServiceAccess & Document;
+export type TUserPaidServiceAccess = {
   _id: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId; // Ссылка на пользователя.
   oneTimeServices: TOneTimeServiceSimple[]; // Сервисы, покупка и использование которых происходит поштучно (разовые услуги).

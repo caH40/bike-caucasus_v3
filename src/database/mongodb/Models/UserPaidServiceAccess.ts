@@ -1,7 +1,7 @@
 import mongoose, { model, models, Schema } from 'mongoose';
 
 // types
-import { TUserServiceAccessDocument } from '@/types/models.interface';
+import { TUserPaidServiceAccessDocument } from '@/types/models.interface';
 import { TOneTimeServiceSimple, TUsedHistory } from '@/types/index.interface';
 
 // История использования слота (например, создания чемпионата)
@@ -32,12 +32,12 @@ const OneTimeServicesSchema = new Schema<TOneTimeServiceSimple>(
 );
 
 /**
- * Основная схема доступа к сервисам пользователя.
+ * Основная схема доступа к платным сервисам пользователя.
  */
-const UserServiceAccessSchema = new Schema<TUserServiceAccessDocument>({
+const UserPaidServiceAccessSchema = new Schema<TUserPaidServiceAccessDocument>({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   oneTimeServices: { type: [OneTimeServicesSchema], default: [] },
 });
 
-export const userServiceAccessModel =
-  models.UserServiceAccess || model('UserServiceAccess', UserServiceAccessSchema);
+export const userPaidServiceAccessModel =
+  models.UserPaidServiceAccess || model('UserPaidServiceAccess', UserPaidServiceAccessSchema);

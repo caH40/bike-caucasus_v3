@@ -1,4 +1,5 @@
 import { YooCheckout, ICreatePayment, IConfirmation } from '@a2seven/yoo-checkout';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Environment } from '@/configs/environment';
 import { errorLogger } from '@/errors/error';
@@ -12,7 +13,6 @@ export class PaymentService {
   private errorLogger;
   private handlerErrorDB;
   private checkout: YooCheckout;
-  private idempotenceKey: string;
 
   constructor() {
     const environment = new Environment();
@@ -21,7 +21,6 @@ export class PaymentService {
     this.errorLogger = errorLogger;
     this.handlerErrorDB = handlerErrorDB;
     this.checkout = new YooCheckout({ shopId: config.shopId, secretKey: config.secretKey });
-    this.idempotenceKey = Date.now().toString();
   }
 
   /**
@@ -33,7 +32,9 @@ export class PaymentService {
     createPayload: ICreatePayment;
   }): Promise<ServerResponse<IConfirmation | null>> {
     try {
-      const payment = await this.checkout.createPayment(createPayload, this.idempotenceKey);
+      const idempotenceKey = uuidv4(); // Новый ключ для каждого вызова.
+
+      const payment = await this.checkout.createPayment(createPayload, idempotenceKey);
 
       return { data: payment.confirmation, ok: true, message: 'Платеж создан.' };
     } catch (error) {

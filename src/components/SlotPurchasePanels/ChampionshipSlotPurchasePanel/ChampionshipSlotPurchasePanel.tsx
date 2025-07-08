@@ -49,6 +49,7 @@ export default function ChampionshipSlotPurchasePanel({ userId, availableSlots }
         metadata: {
           userId,
         },
+
         description: `Покупка слотов в количестве ${quantity}шт. на создание чемпионатов на сайте bike-caucasus.ru`,
       };
 
