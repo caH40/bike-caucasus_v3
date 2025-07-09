@@ -75,3 +75,7 @@ export { default as IconView } from './IconView';
 export { default as IconVk } from './IconVk';
 export { default as IconWrench } from './IconWrench';
 export { default as IconWWW } from './IconWWW';
+export { default as IconBriefcase } from './IconBriefcase';
+export { default as IconTransactionHistory } from './IconTransactionHistory';
+export { default as IconSiteServices } from './IconSiteServices';
+export { default as IconTickets } from './IconTickets';

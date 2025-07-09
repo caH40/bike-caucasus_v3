@@ -19,6 +19,9 @@ import IconResults from '@/components/Icons/IconResults';
 
 import type { TMenuOnPage } from '@/types/index.interface';
 import IconDistance from '@/components/Icons/IconDistance';
+import IconBriefcase from '@/components/Icons/IconBriefcase';
+import IconTransactionHistory from '@/components/Icons/IconTransactionHistory';
+import { IconSiteServices, IconTickets } from '@/components/Icons';
 
 // Кнопки для меню на странице Модерация новости /moderation/news
 export const buttonsMenuModerationNewsPage: TMenuOnPage[] = [
@@ -135,24 +138,61 @@ export const buttonsMenuAccountPage: TMenuOnPage[] = [
     name: 'Профиль',
     classes: [],
     href: '/account/profile',
-    permission: 'authorized', // Для авторизованного пользователя.
+    permission: 'authorized',
     icon: IconUser,
   },
+
   {
     id: 1,
-    name: 'Команда',
-    classes: [],
-    href: '/account/team',
-    permission: 'authorized', // Для авторизованного пользователя.
-    icon: IconTeam,
-  },
-  {
-    id: 2,
     name: 'Аккаунт',
     classes: [],
     href: '/account/details',
-    permission: 'authorized', // Для авторизованного пользователя.
+    permission: 'authorized',
     icon: IconAccount,
+  },
+  {
+    id: 3,
+    name: 'Финансы и сервисы',
+    classes: [],
+    href: '/account/services-and-finances',
+    permission: 'authorized',
+    icon: IconBriefcase,
+  },
+  {
+    id: 4,
+    name: 'Команда',
+    classes: [],
+    href: '/account/team',
+    permission: 'authorized',
+    icon: IconTeam,
+  },
+];
+
+// Кнопки для меню на странице Аккаунт Профиль /account/services-and-finances
+export const buttonsMenuServicesAndFinancesPage: TMenuOnPage[] = [
+  {
+    id: 0,
+    name: 'Слоты на соревнования',
+    classes: [],
+    href: '/account/services-and-finances/competition-slots',
+    permission: 'authorized',
+    icon: IconTickets,
+  },
+  {
+    id: 1,
+    name: 'Платные сервисы',
+    classes: [],
+    href: '/account/services-and-finances/site-services',
+    permission: 'authorized',
+    icon: IconSiteServices,
+  },
+  {
+    id: 2,
+    name: 'История операций',
+    classes: [],
+    href: '/account/services-and-finances/transaction-history',
+    permission: 'authorized',
+    icon: IconTransactionHistory,
   },
 ];
 
