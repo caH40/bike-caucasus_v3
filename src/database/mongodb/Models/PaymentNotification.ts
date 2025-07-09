@@ -14,12 +14,16 @@ const PaymentNotificationSchema = new Schema<TPaymentNotificationDocument>({
     currency: { type: String, required: true },
   },
   income_amount: {
-    value: { type: Number, required: true },
-    currency: { type: String, required: true },
+    value: { type: Number },
+    currency: { type: String },
   },
   metadata: {
     entityName: { type: String, enum: ['championship'], required: true },
     quantity: { type: Number, required: true },
+  },
+  cancellation_details: {
+    party: { type: String },
+    reason: { type: String },
   },
   capturedAt: Date, // Оплачен платёж.
   createdAt: Date, //Создан платёж.

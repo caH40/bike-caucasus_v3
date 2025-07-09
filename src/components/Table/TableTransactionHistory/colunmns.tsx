@@ -5,6 +5,8 @@ import { getTimerLocal } from '@/libs/utils/date-local';
 // types
 import { TPaymentNotificationDto } from '@/types/dto.types';
 import PaymentDetails from '@/components/PaymentDetails/PaymentDetails';
+import { YKASSA_PAYMENT_STATUS } from '@/constants/translations';
+import { TYooKassaPaymentStatus } from '@/types/index.interface';
 
 // Универсальный рендер для простых текстовых ячеек
 const renderCell = (
@@ -23,12 +25,14 @@ export const transactionHistoryTableColumns: ColumnDef<
   {
     header: 'Операция',
     accessorKey: 'event',
-    cell: renderCell,
+    cell: (props: any) => {
+      return props.getValue().includes('payment.') ? 'Платеж' : props.getValue();
+    },
   },
   {
     header: 'Статус',
     accessorKey: 'status',
-    cell: renderCell,
+    cell: (props: any) => YKASSA_PAYMENT_STATUS[props.getValue() as TYooKassaPaymentStatus],
   },
   {
     header: 'Сумма',
@@ -56,7 +60,7 @@ export const transactionHistoryTableColumns: ColumnDef<
     },
   },
   {
-    header: 'Дата создания платежа',
+    header: 'Дата создания',
     accessorKey: 'createdAt',
     cell: (props: any) => <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
   },

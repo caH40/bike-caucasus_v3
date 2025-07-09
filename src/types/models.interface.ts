@@ -12,6 +12,8 @@ import {
   TrackData,
   TServiceEntity,
   TSurfaceType,
+  TYooKassaPaymentEvent,
+  TYooKassaPaymentStatus,
 } from './index.interface';
 
 /**
@@ -647,15 +649,15 @@ export type TPaymentNotificationDocument = TPaymentNotification & Document;
 export type TPaymentNotification = {
   _id: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId; // Ссылка на User.
-  event: 'payment.succeeded';
+  event: TYooKassaPaymentEvent;
   description: string;
   id: string; // ID платежа в ЮKassa.
-  status: 'succeeded'; // Статус платежа.
+  status: TYooKassaPaymentStatus; // Статус платежа.
   amount: {
     value: number;
     currency: 'RUB';
   };
-  income_amount: {
+  income_amount?: {
     value: number; // Сумма, полученная магазином (за вычетом комиссии).
     currency: 'RUB';
   };
@@ -663,6 +665,7 @@ export type TPaymentNotification = {
     entityName: TEntityNameForSlot;
     quantity: number;
   };
+  cancellation_details?: { party: string; reason: string };
   capturedAt?: Date; // Оплачен платёж.
   createdAt: Date;
 };

@@ -1622,14 +1622,15 @@ export type TPurchaseMetadata = {
 };
 
 /**
- * Пример данных оповещения от ЮКассы.
+ * Пример данных оповещения событий платежа от ЮКассы.
  */
-export type TYooKassaNotification = {
+export type TYooKassaPaymentNotification = {
   type: 'notification';
-  event: 'payment.succeeded';
+  event: TYooKassaPaymentEvent;
   object: {
     id: string;
-    status: 'succeeded';
+    // https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#lifecycle
+    status: TYooKassaPaymentStatus;
     amount: {
       value: string; // денежная сумма в виде строки
       currency: 'RUB';
@@ -1658,10 +1659,22 @@ export type TYooKassaNotification = {
       value: string;
       currency: 'RUB';
     };
+    cancellation_details?: { party: string; reason: string };
     paid: boolean;
     refundable: boolean;
     metadata: TCreatePayloadMetadata;
   };
 };
+export type TYooKassaPaymentEvent =
+  | 'payment.succeeded'
+  | 'payment.canceled'
+  | 'payment.pending'
+  | 'payment.waiting_for_capture';
+
+export type TYooKassaPaymentStatus =
+  | 'succeeded'
+  | 'pending'
+  | 'waiting_for_capture'
+  | 'canceled';
 
 export type TSiteServicePriceForClient = Omit<TSiteServicePrice, '_id'>;
