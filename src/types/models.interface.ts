@@ -662,9 +662,8 @@ export type TPaymentNotification = {
     entityName: TEntityNameForSlot;
     quantity: number;
   };
-
-  createdAt: Date;
-  updatedAt: Date;
+  capturedAt: Date; //Создан платёж.
+  createdAt: Date; // Оплачен платёж.
 };
 
 /**

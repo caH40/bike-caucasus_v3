@@ -7,6 +7,10 @@ import { handlerErrorDB } from './mongodb/error';
 
 // types
 import { ServerResponse, TCreatePaymentWithMeta } from '@/types/index.interface';
+import { PaymentNotificationModel } from '@/database/mongodb/Models/PaymentNotification';
+import { TPaymentNotification } from '@/types/models.interface';
+import { getPaymentNotificationDto } from '@/dto/payment';
+import { TPaymentNotificationDto } from '@/types/dto.types';
 
 /**
  * Сервис работы c эквайрингом.
@@ -39,6 +43,28 @@ export class PaymentService {
       const payment = await this.checkout.createPayment(createPayload, idempotenceKey);
 
       return { data: payment.confirmation, ok: true, message: 'Платеж создан.' };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * История всех платежей пользователя.
+   */
+  public async getHistory({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<ServerResponse<TPaymentNotificationDto[] | null>> {
+    try {
+      const paymentNotificationsDB = await PaymentNotificationModel.find({
+        user: userId,
+      }).lean<TPaymentNotification[]>();
+
+      const afterDto = paymentNotificationsDB.map((n) => getPaymentNotificationDto(n));
+
+      return { data: afterDto, ok: true, message: 'История операций по платежам.' };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

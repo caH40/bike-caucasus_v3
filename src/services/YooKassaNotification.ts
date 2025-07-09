@@ -79,7 +79,7 @@ export class YooKassaNotification {
     const siteServiceSlotService = new SiteServiceSlotService();
     await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
 
-    const query: Omit<TPaymentNotification, '_id' | 'createdAt' | 'updatedAt'> = {
+    const query: Omit<TPaymentNotification, '_id'> = {
       user: userDB._id,
       event,
       id: notification.id,
@@ -92,6 +92,8 @@ export class YooKassaNotification {
         value: Number(notification.income_amount.value),
         currency: notification.income_amount.currency,
       },
+      capturedAt: new Date(notification.captured_at), //Создан платёж.
+      createdAt: new Date(notification.created_at), //Создан платёж.
       metadata,
     };
 

@@ -1651,8 +1651,8 @@ export type TYooKassaNotification = {
       title: string;
       account_number: string;
     };
-    captured_at: string; // ISO дата
-    created_at: string; // ISO дата
+    captured_at: string;
+    created_at: string;
     test: boolean;
     refunded_amount: {
       value: string;

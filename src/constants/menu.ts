@@ -188,7 +188,7 @@ export const buttonsMenuServicesAndFinancesPage: TMenuOnPage[] = [
   },
   {
     id: 2,
-    name: 'История операций',
+    name: 'История платежей',
     classes: [],
     href: '/account/services-and-finances/transaction-history',
     permission: 'authorized',

@@ -1,12 +1,27 @@
-import UnderConstruction from '@/components/UnderConstruction/UnderConstruction';
+import { getPaymentHistory } from '@/actions/payment';
+import { IconTransactionHistory } from '@/components/Icons';
+import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
+import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 /**
  * Страница историй финансовых операций.
  */
-export default function TransactionHistoryPage() {
+export default async function TransactionHistoryPage() {
+  const paymentHistory = await getPaymentHistory();
+
+  if (!paymentHistory.ok || !paymentHistory.data) {
+    return (
+      <ServerErrorMessage
+        message={paymentHistory.message}
+        statusCode={paymentHistory.statusCode}
+      />
+    );
+  }
+  console.log(paymentHistory.data);
+
   return (
     <div>
-      <UnderConstruction />
+      <TitleAndLine hSize={1} title="История платежей" Icon={IconTransactionHistory} />
     </div>
   );
 }

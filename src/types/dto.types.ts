@@ -22,6 +22,7 @@ import {
   TModeratorActionLog,
   TNewsBlockInfo,
   TOrganizer,
+  TPaymentNotification,
   TProfileRiderInProtocol,
   TQuantityRidersFinished,
   TRace,
@@ -454,4 +455,13 @@ export type TRiderForDistanceResultDto = {
   patronymic?: string;
   gender: TGender;
   image?: string;
+};
+export type TPaymentNotificationDto = Omit<
+  TPaymentNotification,
+  '_id' | 'user' | 'createdAt' | 'capturedAt'
+> & {
+  _id: string;
+  user: string;
+  createdAt: string;
+  capturedAt: string;
 };
