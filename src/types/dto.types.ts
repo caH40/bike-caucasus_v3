@@ -463,5 +463,5 @@ export type TPaymentNotificationDto = Omit<
   _id: string;
   user: string;
   createdAt: string;
-  capturedAt: string;
+  capturedAt?: string;
 };

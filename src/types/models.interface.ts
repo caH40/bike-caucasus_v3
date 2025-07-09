@@ -648,6 +648,7 @@ export type TPaymentNotification = {
   _id: mongoose.Types.ObjectId;
   user: mongoose.Types.ObjectId; // Ссылка на User.
   event: 'payment.succeeded';
+  description: string;
   id: string; // ID платежа в ЮKassa.
   status: 'succeeded'; // Статус платежа.
   amount: {
@@ -662,8 +663,8 @@ export type TPaymentNotification = {
     entityName: TEntityNameForSlot;
     quantity: number;
   };
-  capturedAt: Date; //Создан платёж.
-  createdAt: Date; // Оплачен платёж.
+  capturedAt?: Date; // Оплачен платёж.
+  createdAt: Date;
 };
 
 /**

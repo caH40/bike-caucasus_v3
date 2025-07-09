@@ -41,6 +41,24 @@ export class YooKassaNotification {
     }
   }
 
+  //    {
+  //   type: 'notification',
+  //   event: 'payment.canceled',
+  //   object: {
+  //     id: '30000ffc-000f-5000-b000-140a4870705b',
+  //     status: 'canceled',
+  //     amount: { value: '1000.00', currency: 'RUB' },
+  //     description: 'Покупка слотов в количестве 1шт. на создание чемпионатов на сайте bike-caucasus.ru',
+  //     recipient: { account_id: '1120099', gateway_id: '2485064' },
+  //     created_at: '2025-07-09T05:21:00.353Z',
+  //     test: true,
+  //     paid: false,
+  //     refundable: false,
+  //     metadata: { userId: '1000', entityName: 'championship', quantity: '1' },
+  //     cancellation_details: { party: 'yoo_money', reason: 'expired_on_confirmation' }
+  //   }
+  // }
+
   private async paymentSucceeded({
     object: notification,
     event,
@@ -82,6 +100,7 @@ export class YooKassaNotification {
     const query: Omit<TPaymentNotification, '_id'> = {
       user: userDB._id,
       event,
+      description: notification.description,
       id: notification.id,
       status: notification.status,
       amount: {

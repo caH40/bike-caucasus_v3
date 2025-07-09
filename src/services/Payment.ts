@@ -62,6 +62,9 @@ export class PaymentService {
         user: userId,
       }).lean<TPaymentNotification[]>();
 
+      // Сортировка времени создания платежа, сначала более свежие.
+      paymentNotificationsDB.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
       const afterDto = paymentNotificationsDB.map((n) => getPaymentNotificationDto(n));
 
       return { data: afterDto, ok: true, message: 'История операций по платежам.' };

@@ -8,6 +8,7 @@ const PaymentNotificationSchema = new Schema<TPaymentNotificationDocument>({
   id: { type: String, required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   status: { type: String, enum: ['succeeded'], required: true },
+  description: { type: String },
   amount: {
     value: { type: Number, required: true },
     currency: { type: String, required: true },

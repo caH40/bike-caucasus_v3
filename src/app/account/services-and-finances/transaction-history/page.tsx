@@ -1,6 +1,7 @@
 import { getPaymentHistory } from '@/actions/payment';
 import { IconTransactionHistory } from '@/components/Icons';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
+import TransactionHistoryTableContainer from '@/components/Table/Containers/TransactionHistoryTableContainer/TransactionHistoryTableContainer';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 /**
@@ -17,11 +18,12 @@ export default async function TransactionHistoryPage() {
       />
     );
   }
-  console.log(paymentHistory.data);
 
   return (
     <div>
       <TitleAndLine hSize={1} title="История платежей" Icon={IconTransactionHistory} />
+
+      <TransactionHistoryTableContainer paymentHistory={paymentHistory.data} />
     </div>
   );
 }
