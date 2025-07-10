@@ -4,10 +4,23 @@ import mongoose, { model, models, Schema } from 'mongoose';
 import { TPaymentNotificationDocument } from '@/types/models.interface';
 
 const PaymentNotificationSchema = new Schema<TPaymentNotificationDocument>({
-  event: { type: String, enum: ['payment.succeeded'], required: true },
+  event: {
+    type: String,
+    enum: [
+      'payment.succeeded',
+      'payment.pending',
+      'payment.waiting_for_capture',
+      'payment.canceled',
+    ],
+    required: true,
+  },
   id: { type: String, required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  status: { type: String, enum: ['succeeded'], required: true },
+  status: {
+    type: String,
+    enum: ['succeeded', 'pending', 'waiting_for_capture', 'canceled'],
+    required: true,
+  },
   description: { type: String },
   amount: {
     value: { type: Number, required: true },

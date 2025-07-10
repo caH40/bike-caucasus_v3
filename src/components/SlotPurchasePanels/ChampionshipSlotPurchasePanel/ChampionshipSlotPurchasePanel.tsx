@@ -50,7 +50,7 @@ export default function ChampionshipSlotPurchasePanel({
           value: String(unitPrice * quantity),
           currency,
         },
-        capture: true,
+        capture: false,
         confirmation: {
           type: 'redirect',
           return_url: server,
