@@ -13,7 +13,11 @@ import { TPriceTier } from '@/types/models.interface';
 
 type Props = {
   userId: number; // id пользователя на сайте.
-  availableSlots: number;
+  availableSlots: {
+    purchasedAvailable: number; // Количество доступных купленных слотов (которые ещё можно использовать).
+    trialAvailable: number;
+    freeAvailable: number;
+  } | null;
   priceTier: TPriceTier[];
 };
 
@@ -88,9 +92,18 @@ export default function ChampionshipSlotPurchasePanel({
 
   return (
     <div className={styles.wrapper}>
-      <h3 className={styles.title}>
-        Количество доступных слотов для создания чемпионатов {availableSlots} шт.
-      </h3>
+      <h3 className={styles.title}>Количество доступных слотов для создания чемпионатов:</h3>
+      <dl className={styles.list}>
+        <dt className={styles.list__title}>Купленных</dt>
+        <dl className={styles.list__description}>{availableSlots?.purchasedAvailable} шт.</dl>
+
+        <dt className={styles.list__title}>Пробных</dt>
+        <dl className={styles.list__description}>{availableSlots?.trialAvailable} шт.</dl>
+
+        <dt className={styles.list__title}>Бонусных</dt>
+        <dl className={styles.list__description}>{availableSlots?.freeAvailable} шт.</dl>
+      </dl>
+
       <p className={styles.description}>Стоимость 1 слота: {unitPrice}р</p>
 
       <PurchaseSection handleClickPurchase={handleClickPurchase} isLoading={isLoading} />

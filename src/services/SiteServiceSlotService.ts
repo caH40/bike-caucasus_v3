@@ -35,11 +35,6 @@ export class SiteServiceSlotService {
     entityName: TEntityNameForSlot;
   }): Promise<ServerResponse<TAvailableSlots | null>> {
     try {
-      // const res = await userPaidServiceAccessModel.create({
-      //   user: userDBId,
-      //   oneTimeServices: [{ entityName: 'championship', trialAvailable: 3 }],
-      // });
-
       const userServiceAccessDB = await UserPaidServiceAccessModel.findOne({
         user: userDBId,
         'oneTimeServices.entityName': entityName,
@@ -57,13 +52,15 @@ export class SiteServiceSlotService {
 
       // Подсчет общего количества доступных слотов.
       const availableSlots = currentServiceAccess
-        ? currentServiceAccess.freeAvailable +
-          currentServiceAccess.trialAvailable +
-          currentServiceAccess.purchasedAvailable
-        : 0;
+        ? {
+            freeAvailable: currentServiceAccess.freeAvailable,
+            trialAvailable: currentServiceAccess.trialAvailable,
+            purchasedAvailable: currentServiceAccess.purchasedAvailable,
+          }
+        : null;
 
       return {
-        data: { availableSlots: availableSlots || 0, entityName },
+        data: { availableSlots, entityName },
         ok: true,
         message: `Информация о слотах для ${entityName}`,
       };

@@ -5,8 +5,27 @@
   background-color: var(--white-12);
 }
 .title {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 .description {
   margin-bottom: 0.5rem;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.list__title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+}
+.list__title::after {
+  content: ':';
 }

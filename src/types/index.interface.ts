@@ -1602,7 +1602,14 @@ export type TOneTimeServiceSimple = {
 export type TEntityNameForSlot = 'championship' | 'team';
 // export type TPayment = Pick<Payment, 'confirmation'>;
 
-export type TAvailableSlots = { availableSlots: number; entityName: TEntityNameForSlot };
+export type TAvailableSlots = {
+  availableSlots: {
+    purchasedAvailable: number; // Количество доступных купленных слотов (которые ещё можно использовать).
+    trialAvailable: number;
+    freeAvailable: number;
+  } | null;
+  entityName: TEntityNameForSlot;
+};
 export type TSlotType = 'trial' | 'purchased' | 'free';
 
 export type TCreatePaymentWithMeta = Omit<ICreatePayment, 'metadata'> & {
