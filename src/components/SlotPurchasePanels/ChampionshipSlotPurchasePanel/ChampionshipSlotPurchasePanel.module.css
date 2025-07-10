@@ -1,0 +1,12 @@
+.wrapper {
+  border-radius: 0.5rem;
+  border: 1px solid var(--line);
+  padding: 1rem;
+  background-color: var(--white-12);
+}
+.title {
+  margin-bottom: 0.5rem;
+}
+.description {
+  margin-bottom: 0.5rem;
+}

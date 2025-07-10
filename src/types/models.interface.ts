@@ -5,11 +5,15 @@ import {
   TCategorySkillLevel,
   TDeviceInfo,
   TDistanceStats,
+  TEntityNameForSlot,
   TFormCalendar,
   TLocationInfo,
+  TOneTimeServiceSimple,
   TrackData,
   TServiceEntity,
   TSurfaceType,
+  TYooKassaPaymentEvent,
+  TYooKassaPaymentStatus,
 } from './index.interface';
 
 /**
@@ -628,4 +632,63 @@ export type TDistanceResult = {
   laps: number; // Сколько кругов данной дистанции было в заезде из которого взят результат.
   createdAt: Date;
   updatedAt: Date;
+};
+
+/**
+ * Сущность, описывающая доступ пользователя к платным сервисам сайта.
+ * Бесплатные сервисы включаются/отключаются простыми флагами и здесь не учитываются.
+ */
+export type TUserPaidServiceAccessDocument = TUserPaidServiceAccess & Document;
+export type TUserPaidServiceAccess = {
+  _id: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId; // Ссылка на пользователя.
+  oneTimeServices: TOneTimeServiceSimple[]; // Сервисы, покупка и использование которых происходит поштучно (разовые услуги).
+};
+
+export type TPaymentNotificationDocument = TPaymentNotification & Document;
+export type TPaymentNotification = {
+  _id: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId; // Ссылка на User.
+  event: TYooKassaPaymentEvent;
+  description: string;
+  id: string; // ID платежа в ЮKassa.
+  status: TYooKassaPaymentStatus; // Статус платежа.
+  amount: {
+    value: number;
+    currency: 'RUB';
+  };
+  income_amount?: {
+    value: number; // Сумма, полученная магазином (за вычетом комиссии).
+    currency: 'RUB';
+  };
+  metadata: {
+    entityName: TEntityNameForSlot;
+    quantity: number;
+  };
+  cancellation_details?: { party: string; reason: string };
+  capturedAt?: Date; // Оплачен платёж.
+  createdAt: Date;
+};
+
+/**
+ * Цена за предоставляемую штучный сервис на сайте.
+ * Цена зависит от количества приобретаемых услуг.
+ */
+export type TSiteServicePriceDocument = TSiteServicePrice & Document;
+export type TSiteServicePrice = {
+  _id: mongoose.Types.ObjectId;
+  entityName: TEntityNameForSlot;
+  tiers: TPriceTier[]; // Несколько уровней цен в зависимости от количества.
+};
+
+/**
+ * Цена зависит от количества приобретаемых услуг.
+ */
+export type TPriceTier = {
+  quantityRange: {
+    min: number;
+    max: number;
+  };
+  unitPrice: number; // Цена за одну единицу в этом диапазоне.
+  currency: 'RUB';
 };

@@ -11,6 +11,7 @@
     "start8055": "next start -p 8055"
   },
   "dependencies": {
+    "@a2seven/yoo-checkout": "^1.1.4",
     "@aws-sdk/client-s3": "^3.572.0",
     "@babel/core": "^7.26.10",
     "@tanstack/react-table": "^8.20.5",

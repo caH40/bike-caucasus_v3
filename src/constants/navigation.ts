@@ -143,6 +143,7 @@ export const mapNavLinksFull: TMenuPopup[] = [
   { id: 0, name: 'Главная', href: '/', permission: null },
   { id: 1, name: 'Вебкамеры', href: '/webcam', permission: null },
   { id: 2, name: 'Маршруты', href: '/trails', permission: null },
+  { id: 3, name: 'Цены на услуги', href: '/price', permission: null },
   ...getNavLinksChampionshipsPopup(),
 ];
 
@@ -158,7 +159,6 @@ export const navLinksFull = [
     permission: null,
     popupMenu: getNavLinksChampionshipsPopup,
   },
-  // { id: 3, name: 'Галерея', href: '/gallery', permission: null },
   // { id: 4, name: 'Джилы-Су', href: '/dzhilsu', permission: null },
 ];
 
@@ -171,6 +171,7 @@ export const legalLinks = [
     permission: null,
   },
   { id: 1, name: 'Пользовательское соглашение', href: '/legal/terms-of-use', permission: null },
+  { id: 2, name: 'Публичная оферта', href: '/legal/offer', permission: null },
 ];
 
 /**

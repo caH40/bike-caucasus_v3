@@ -1,5 +1,7 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import UnderConstruction from '@/components/UnderConstruction/UnderConstruction';
 
 export default async function TeamPage() {
   const session = await getServerSession(authOptions);
@@ -10,7 +12,7 @@ export default async function TeamPage() {
   return (
     <div>
       <h1>Team</h1>
-      <p>В разработке...</p>
+      <UnderConstruction />
     </div>
   );
 }

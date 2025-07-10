@@ -45,4 +45,18 @@ export class Environment {
 
     return { accessKeyId, secretAccessKey, region, endpoint, bucketName, endpointDomain };
   }
+
+  /**
+   * Данные YooKassa.
+   */
+  getYooKassaConfig() {
+    const secretKey = this.env.YOO_SECRET_KEY;
+    const shopId = this.env.YOO_SHOP_ID;
+
+    if (!secretKey || !shopId) {
+      throw new Error('Не получены данные конфигурации для yookassa');
+    }
+
+    return { secretKey, shopId };
+  }
 }

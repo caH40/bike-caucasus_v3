@@ -33,7 +33,13 @@ import {
   TResultRace,
   TTrackGPXObj,
 } from './models.interface';
-import { Dispatch, LegacyRef, MutableRefObject, SetStateAction } from 'react';
+import {
+  Dispatch,
+  InputHTMLAttributes,
+  LegacyRef,
+  MutableRefObject,
+  SetStateAction,
+} from 'react';
 import mongoose, { Types } from 'mongoose';
 import {
   TDistanceDto,
@@ -51,6 +57,7 @@ import {
   TGetStagesFromMongo,
   TRaceMetaFromMongo,
 } from './mongo.types';
+import { ICreatePayment } from '@a2seven/yoo-checkout';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -156,6 +163,12 @@ export type TOptionsMap = Map<
  */
 export type PropsBoxInputSimple<T> = Omit<PropsBoxInput, 'register' | 'setValue'> &
   TDispatchInput & { handlerInput: (value: T) => void }; // eslint-disable-line no-unused-vars
+
+export type PropsBoxInputSimpleNew = InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  loading?: boolean;
+  setValue: Dispatch<SetStateAction<string>>;
+};
 /**
  * Описание для инпута useState
  */
@@ -1565,3 +1578,100 @@ export type TDistanceResultOptionNames = 'all' | 'male' | 'female' | 'my';
 export type TDistanceResultWithPosition = Omit<TDistanceResultFromMongo, 'positions'> & {
   position: number;
 };
+/**
+ * История использования поштучной услуги (например, создание чемпионата).
+ */
+export type TUsedHistory = {
+  entityId: string; // _id сущности entity, в рамках которого был использован слот.
+  status: 'used' | 'canceled'; // Статус использования: 'used' — слот использован;'canceled' — использование отменено (например, чемпионат не был создан).
+  type: TSlotType;
+  createdAt: Date; // Дата, когда слот был использован.
+  updatedAt: Date; // Дата последнего обновления статуса (например, при отмене).
+};
+
+/**
+ * Поштучный сервис с учетом доступных слотов и истории их использования.
+ */
+export type TOneTimeServiceSimple = {
+  entityName: TEntityNameForSlot;
+  purchasedAvailable: number; // Количество доступных купленных слотов (которые ещё можно использовать).
+  trialAvailable: number;
+  freeAvailable: number;
+  usedHistory: TUsedHistory[]; // История использования слотов с указанием чемпионата и статуса.
+};
+export type TEntityNameForSlot = 'championship' | 'team';
+// export type TPayment = Pick<Payment, 'confirmation'>;
+
+export type TAvailableSlots = { availableSlots: number; entityName: TEntityNameForSlot };
+export type TSlotType = 'trial' | 'purchased' | 'free';
+
+export type TCreatePaymentWithMeta = Omit<ICreatePayment, 'metadata'> & {
+  metadata: TCreatePayloadMetadata;
+};
+export type TCreatePayloadMetadata = {
+  userId: number;
+  quantity: number;
+  entityName: TEntityNameForSlot;
+};
+
+// Данные о покупке для обработки и сохранения в БД.
+export type TPurchaseMetadata = {
+  quantity: number;
+  entityName: TEntityNameForSlot;
+};
+
+/**
+ * Пример данных оповещения событий платежа от ЮКассы.
+ */
+export type TYooKassaPaymentNotification = {
+  type: 'notification';
+  event: TYooKassaPaymentEvent;
+  object: {
+    id: string;
+    // https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#lifecycle
+    status: TYooKassaPaymentStatus;
+    amount: {
+      value: string; // денежная сумма в виде строки
+      currency: 'RUB';
+    };
+    income_amount: {
+      value: string;
+      currency: 'RUB';
+    };
+    description: string;
+    recipient: {
+      account_id: string;
+      gateway_id: string;
+    };
+    payment_method: {
+      type: string; // 'yoo_money' и другие
+      id: string;
+      saved: boolean;
+      status: string;
+      title: string;
+      account_number: string;
+    };
+    captured_at: string;
+    created_at: string;
+    test: boolean;
+    refunded_amount: {
+      value: string;
+      currency: 'RUB';
+    };
+    cancellation_details?: { party: string; reason: string };
+    paid: boolean;
+    refundable: boolean;
+    metadata: TCreatePayloadMetadata;
+  };
+};
+export type TYooKassaPaymentEvent =
+  | 'payment.succeeded'
+  | 'payment.canceled'
+  | 'payment.pending'
+  | 'payment.waiting_for_capture';
+
+export type TYooKassaPaymentStatus =
+  | 'succeeded'
+  | 'pending'
+  | 'waiting_for_capture'
+  | 'canceled';

@@ -1,0 +1,17 @@
+.list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px;
+  align-items: center;
+}
+.title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+}
+.title::after {
+  content: ':';
+}

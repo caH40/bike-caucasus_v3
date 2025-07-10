@@ -1,0 +1,8 @@
+.wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.box__input {
+  flex: 0 0 100px;
+}

@@ -22,12 +22,14 @@ import {
   TModeratorActionLog,
   TNewsBlockInfo,
   TOrganizer,
+  TPaymentNotification,
   TProfileRiderInProtocol,
   TQuantityRidersFinished,
   TRace,
   TRacePointsTable,
   TRaceRegistrationStatus,
   TRoleModel,
+  TSiteServicePrice,
   TStageInGC,
   TTrail,
 } from './models.interface';
@@ -455,3 +457,13 @@ export type TRiderForDistanceResultDto = {
   gender: TGender;
   image?: string;
 };
+export type TPaymentNotificationDto = Omit<
+  TPaymentNotification,
+  '_id' | 'user' | 'createdAt' | 'capturedAt'
+> & {
+  _id: string;
+  user: string;
+  createdAt: string;
+  capturedAt?: string;
+};
+export type TSiteServicePriceDto = Omit<TSiteServicePrice, '_id'> & { _id: string };
