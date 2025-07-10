@@ -1,11 +1,10 @@
 import { errorLogger } from '@/errors/error';
 import { handlerErrorDB } from './mongodb/error';
 import { SiteServicePriceModel } from '@/database/mongodb/Models/SiteServicePrice';
-import {
-  ServerResponse,
-  TEntityNameForSlot,
-  TSiteServicePriceForClient,
-} from '@/types/index.interface';
+import { ServerResponse, TEntityNameForSlot } from '@/types/index.interface';
+import { TSiteServicePriceDto } from '@/types/dto.types';
+import { TSiteServicePrice } from '@/types/models.interface';
+import { getPriceDto } from '@/dto/price';
 
 /**
  * Сервис работы c прайс листом.
@@ -26,20 +25,39 @@ export class PriceService {
     entityName,
   }: {
     entityName: TEntityNameForSlot;
-  }): Promise<ServerResponse<TSiteServicePriceForClient | null>> {
+  }): Promise<ServerResponse<TSiteServicePriceDto | null>> {
     try {
-      const siteServicePriceDB = await SiteServicePriceModel.findOne(
-        {
-          entityName,
-        },
-        { _id: false }
-      ).lean<TSiteServicePriceForClient>();
+      const siteServicePriceDB = await SiteServicePriceModel.findOne({
+        entityName,
+      }).lean<TSiteServicePrice>();
 
       if (!siteServicePriceDB) {
         throw new Error(`Не найден прайс лист для услуги ${entityName}`);
       }
 
-      return { data: siteServicePriceDB, ok: true, message: `Цены за сервис ${entityName}` };
+      return {
+        data: getPriceDto(siteServicePriceDB),
+        ok: true,
+        message: `Цены за сервис ${entityName}`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Получение стоимости всех сервисов на сайте.
+   */
+  public async getPrices(): Promise<ServerResponse<TSiteServicePriceDto[] | null>> {
+    try {
+      const siteServicePricesDB = await SiteServicePriceModel.find().lean<
+        TSiteServicePrice[]
+      >();
+
+      const priceAfterDto = siteServicePricesDB.map((p) => getPriceDto(p));
+
+      return { data: priceAfterDto, ok: true, message: `Цены за сервис на сайте` };
     } catch (error) {
       this.errorLogger(error);
       return this.handlerErrorDB(error);

@@ -29,6 +29,7 @@ import {
   TRacePointsTable,
   TRaceRegistrationStatus,
   TRoleModel,
+  TSiteServicePrice,
   TStageInGC,
   TTrail,
 } from './models.interface';
@@ -465,3 +466,4 @@ export type TPaymentNotificationDto = Omit<
   createdAt: string;
   capturedAt?: string;
 };
+export type TSiteServicePriceDto = Omit<TSiteServicePrice, '_id'> & { _id: string };

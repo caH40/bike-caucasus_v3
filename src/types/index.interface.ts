@@ -31,7 +31,6 @@ import {
   TRacePointsTable,
   TRaceRegistration,
   TResultRace,
-  TSiteServicePrice,
   TTrackGPXObj,
 } from './models.interface';
 import {
@@ -1676,5 +1675,3 @@ export type TYooKassaPaymentStatus =
   | 'pending'
   | 'waiting_for_capture'
   | 'canceled';
-
-export type TSiteServicePriceForClient = Omit<TSiteServicePrice, '_id'>;

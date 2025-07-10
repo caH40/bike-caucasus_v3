@@ -451,3 +451,27 @@ export async function generateMetadataDistancesResults({
     },
   };
 }
+
+/**
+ * Метаданные для страницы Прайс-лист "/price".
+ */
+export function generateMetadataPrice(): Metadata {
+  const title = 'Прайс-лист на платные услуги по велоспорту';
+  const description =
+    'Стоимость услуг по организации и проведению чемпионатов по велоспорту. Актуальные тарифы в зависимости от количества мероприятий.';
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: './price',
+      images: '/images/og/price.png',
+      type: 'website',
+    },
+    alternates: {
+      canonical: '/price',
+    },
+  };
+}
