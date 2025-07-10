@@ -8,7 +8,7 @@ import { legalLinks } from '@/constants/navigation';
 import LogoMain from '../UI/LogoMain/LogoMain';
 import NavBarFooter from '../UI/NavBarFooter/NavBarFooter';
 import styles from './Footer.module.css';
-import Requisites from '../Requisites/Requisites';
+// import Requisites from '../Requisites/Requisites';
 
 /**
  * Подвал сайта.
@@ -47,7 +47,7 @@ const Footer = () => {
           <NavBarFooter navLinks={[]} title={'Соцсети:'} linksWithImage={socialLinks} />
         </nav>
 
-        <Requisites />
+        {/* <Requisites /> */}
       </div>
 
       <div className={styles.copyright}>Copyright © 2022 Bike-Caucasus</div>

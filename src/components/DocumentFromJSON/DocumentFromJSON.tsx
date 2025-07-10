@@ -41,7 +41,7 @@ export default function DocumentFromJSON({ dataJson }: Props) {
                   {contentItem.term.map((termItem, index) => (
                     <li key={index} className={styles.item}>
                       <strong className={styles.term}>{termItem.term}:</strong>{' '}
-                      {termItem.definition}
+                      {renderTextWithLinks(termItem.definition)}
                     </li>
                   ))}
                 </ul>

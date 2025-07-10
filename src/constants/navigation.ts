@@ -171,6 +171,7 @@ export const legalLinks = [
     permission: null,
   },
   { id: 1, name: 'Пользовательское соглашение', href: '/legal/terms-of-use', permission: null },
+  { id: 2, name: 'Публичная оферта', href: '/legal/offer', permission: null },
 ];
 
 /**
