@@ -7,6 +7,7 @@ import { NextRequest } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json(); // или req.json(), если это JSON
+    // eslint-disable-next-line no-console
     console.log(body);
 
     if (body) {

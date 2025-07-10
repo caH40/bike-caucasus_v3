@@ -17,6 +17,8 @@ type Props = {
   priceTier: TPriceTier[];
 };
 
+const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
+
 /**
  * Панель состояния наличия слотов на создание чемпионатов и покупка слотов.
  */
@@ -51,7 +53,7 @@ export default function ChampionshipSlotPurchasePanel({
         capture: true,
         confirmation: {
           type: 'redirect',
-          return_url: 'http://localhost:3000',
+          return_url: server,
         },
         metadata: {
           userId,
@@ -70,9 +72,15 @@ export default function ChampionshipSlotPurchasePanel({
         toast.error(message);
       }
     } catch (error) {
-      toast.error(JSON.stringify(error));
+      let errorMessage = 'Непредвиденная ошибка при покупке услуги!';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
       // eslint-disable-next-line no-console
-      console.error(error);
+      console.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
