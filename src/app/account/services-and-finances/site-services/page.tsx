@@ -7,6 +7,7 @@ import { getAvailableSlots } from '@/actions/slots';
 import { getPriceTier } from '@/actions/price';
 import styles from './SiteServicesPage.module.css';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
+import PermissionCheck from '@/hoc/permission-check';
 
 /**
  * Приобретенные пользователем сервисы на сайте.
@@ -35,14 +36,16 @@ export default async function SiteServicesPage() {
 
   return (
     <div className={styles.wrapper}>
-      <TitleAndLine title="Платны сервисы сайта" hSize={1} />
+      <TitleAndLine title="Платные сервисы сайта" hSize={1} />
 
-      <TitleAndLine title="Создание чемпионатов" hSize={2} />
-      <ChampionshipSlotPurchasePanel
-        userId={userId}
-        availableSlots={availableSlots.data.availableSlots}
-        priceTier={priceTier.data.tiers}
-      />
+      <PermissionCheck permission={'moderation.championship'}>
+        <TitleAndLine title="Создание чемпионатов" hSize={2} />
+        <ChampionshipSlotPurchasePanel
+          userId={userId}
+          availableSlots={availableSlots.data.availableSlots}
+          priceTier={priceTier.data.tiers}
+        />
+      </PermissionCheck>
     </div>
   );
 }
