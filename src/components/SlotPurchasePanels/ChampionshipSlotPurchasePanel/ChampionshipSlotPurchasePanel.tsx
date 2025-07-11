@@ -94,13 +94,13 @@ export default function ChampionshipSlotPurchasePanel({
     <div className={styles.wrapper}>
       <h3 className={styles.title}>Количество доступных слотов для создания чемпионатов:</h3>
       <dl className={styles.list}>
-        <dt className={styles.list__title}>Купленных</dt>
+        <dt className={styles.list__title}>Платные</dt>
         <dl className={styles.list__description}>{availableSlots?.purchasedAvailable} шт.</dl>
 
-        <dt className={styles.list__title}>Пробных</dt>
+        <dt className={styles.list__title}>Тестовые</dt>
         <dl className={styles.list__description}>{availableSlots?.trialAvailable} шт.</dl>
 
-        <dt className={styles.list__title}>Бонусных</dt>
+        <dt className={styles.list__title}>Дополнительные</dt>
         <dl className={styles.list__description}>{availableSlots?.freeAvailable} шт.</dl>
       </dl>
 

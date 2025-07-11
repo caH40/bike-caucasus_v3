@@ -5,6 +5,7 @@ import {
   TAvailableSlots,
   TPurchaseMetadata,
   TEntityNameForSlot,
+  TOneTimeServiceSimple,
 } from '@/types/index.interface';
 import { UserPaidServiceAccessModel } from '@/database/mongodb/Models/UserPaidServiceAccess';
 import { TUserPaidServiceAccess } from '@/types/models.interface';
@@ -35,6 +36,16 @@ export class SiteServiceSlotService {
     entityName: TEntityNameForSlot;
   }): Promise<ServerResponse<TAvailableSlots | null>> {
     try {
+      // Проверка наличия документа со слотами доступов у пользователя.
+      const hasUserServiceAccessDB = await UserPaidServiceAccessModel.findOne({
+        user: userDBId,
+      }).lean<TUserPaidServiceAccess>();
+
+      // Если не найден докумет
+      if (!hasUserServiceAccessDB) {
+        await this.initialSlots({ userDBId });
+      }
+
       const userServiceAccessDB = await UserPaidServiceAccessModel.findOne({
         user: userDBId,
         'oneTimeServices.entityName': entityName,
@@ -42,7 +53,7 @@ export class SiteServiceSlotService {
 
       if (!userServiceAccessDB) {
         throw new Error(
-          `Не найден документ со информацией для доступа к сервисам сайта. Запрос для пользователя с _id:${userDBId}`
+          `Не найдены документ со информацией для доступа к сервису сайта: ${entityName}. Запрос для пользователя с _id:${userDBId}`
         );
       }
 
@@ -63,6 +74,48 @@ export class SiteServiceSlotService {
         data: { availableSlots, entityName },
         ok: true,
         message: `Информация о слотах для ${entityName}`,
+      };
+    } catch (error) {
+      this.errorLogger(error);
+      return this.handlerErrorDB(error);
+    }
+  }
+
+  /**
+   * Инициализация слотов пользователю.
+   */
+  private async initialSlots({
+    userDBId,
+    oneTimeServices,
+  }: {
+    userDBId: string | Types.ObjectId;
+    oneTimeServices?: TOneTimeServiceSimple[];
+  }): Promise<ServerResponse<null>> {
+    try {
+      // Если не передан объект инициализации.
+      const oneTimeServicesForInit = oneTimeServices || [
+        {
+          entityName: 'championship',
+          purchasedAvailable: 0,
+          trialAvailable: 3,
+          freeAvailable: 0,
+          usedHistory: [],
+        },
+      ];
+
+      await UserPaidServiceAccessModel.create({
+        user: userDBId,
+        oneTimeServices: oneTimeServicesForInit,
+      });
+
+      return {
+        data: null,
+        ok: true,
+        message: `Создан документ с начальными слотами ${JSON.stringify(
+          oneTimeServicesForInit,
+          null,
+          2
+        )} для сервисов сайта для пользователя с _id:${userDBId}`,
       };
     } catch (error) {
       this.errorLogger(error);
