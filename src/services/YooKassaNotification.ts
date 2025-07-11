@@ -71,6 +71,7 @@ export class YooKassaNotification {
       quantity: notification.metadata.quantity,
     };
 
+    // Обработка удачной покупки, зачисление слотов пользователю.
     const siteServiceSlotService = new SiteServiceSlotService();
     await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
 
@@ -113,9 +114,6 @@ export class YooKassaNotification {
       quantity: notification.metadata.quantity,
     };
 
-    const siteServiceSlotService = new SiteServiceSlotService();
-    await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
-
     const query: Omit<TPaymentNotification, '_id'> = {
       user: userDB._id,
       event,
@@ -150,9 +148,6 @@ export class YooKassaNotification {
       entityName: notification.metadata.entityName,
       quantity: notification.metadata.quantity,
     };
-
-    const siteServiceSlotService = new SiteServiceSlotService();
-    await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
 
     const query: Omit<TPaymentNotification, '_id'> = {
       user: userDB._id,

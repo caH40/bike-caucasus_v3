@@ -1639,11 +1639,11 @@ export type TYooKassaPaymentNotification = {
     status: TYooKassaPaymentStatus;
     amount: {
       value: string; // денежная сумма в виде строки
-      currency: 'RUB';
+      currency: TCurrency;
     };
     income_amount: {
       value: string;
-      currency: 'RUB';
+      currency: TCurrency;
     };
     description: string;
     recipient: {
@@ -1664,7 +1664,7 @@ export type TYooKassaPaymentNotification = {
     test: boolean;
     refunded_amount: {
       value: string;
-      currency: 'RUB';
+      currency: TCurrency;
     };
     cancellation_details?: { party: string; reason: string };
     paid: boolean;
@@ -1672,6 +1672,7 @@ export type TYooKassaPaymentNotification = {
     metadata: TCreatePayloadMetadata;
   };
 };
+export type TCurrency = 'RUB';
 export type TYooKassaPaymentEvent =
   | 'payment.succeeded'
   | 'payment.canceled'

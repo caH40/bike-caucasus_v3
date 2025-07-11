@@ -63,6 +63,7 @@ export class PaymentService {
       }).lean<TPaymentNotification[]>();
 
       // Сортировка времени создания платежа, сначала более свежие.
+      // Если это удачный платеж, то берется дата оплаты, а не дата создания операции.
       paymentNotificationsDB.sort((a, b) => {
         const currentTime = (item: TPaymentNotification) =>
           item.event === 'payment.succeeded' && item.capturedAt

@@ -1,15 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { toast } from 'sonner';
-
 import PurchaseSection from '@/components/UI/PurchaseSection/PurchaseSection';
-import { createPayment } from '@/actions/payment';
 import styles from './ChampionshipSlotPurchasePanel.module.css';
 
 // types
-import { TCreatePaymentWithMeta } from '@/types/index.interface';
 import { TPriceTier } from '@/types/models.interface';
+import { usePathname } from 'next/navigation';
+import { useChampionshipPurchase } from '@/hooks/useChampionshipPurchase';
 
 type Props = {
   userId: number; // id пользователя на сайте.
@@ -31,64 +28,18 @@ export default function ChampionshipSlotPurchasePanel({
   priceTier,
   availableSlots,
 }: Props) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const path = usePathname();
 
   // Простая логика получения данных по цене за товар и валюте.
   const { unitPrice, currency } = priceTier[0];
 
-  const handleClickPurchase = async (quantity: number) => {
-    // Исключение случайного второго клика по кнопке.
-    if (isLoading) {
-      return;
-    }
-
-    if (quantity <= 0) {
-      toast.error('Количество слотов должно быть больше 1!');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const createPayload: TCreatePaymentWithMeta = {
-        amount: {
-          value: String(unitPrice * quantity),
-          currency,
-        },
-        capture: false,
-        confirmation: {
-          type: 'redirect',
-          return_url: server,
-        },
-        metadata: {
-          userId,
-          quantity,
-          entityName: 'championship',
-        },
-
-        description: `Покупка слотов в количестве ${quantity}шт. на создание чемпионатов на сайте bike-caucasus.ru`,
-      };
-
-      const { data, ok, message } = await createPayment({ createPayload });
-
-      if (ok && data && data.confirmation_url) {
-        window.location.href = data.confirmation_url;
-      } else {
-        toast.error(message);
-      }
-    } catch (error) {
-      let errorMessage = 'Непредвиденная ошибка при покупке услуги!';
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage);
-      // eslint-disable-next-line no-console
-      console.error(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const returnUrl = `${server}${path}`;
+  const { handleClickPurchase, isLoading } = useChampionshipPurchase({
+    returnUrl,
+    unitPrice,
+    currency,
+    userId,
+  });
 
   return (
     <div className={styles.wrapper}>
