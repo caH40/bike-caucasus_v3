@@ -8,9 +8,8 @@
 }
 
 .title {
-  font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .priceTable {
@@ -27,4 +26,18 @@
 
 .priceTable th {
   font-weight: 500;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.list {
+  padding-left: 20px;
+  margin: 0 0 20px 0;
+}
+
+.item {
+  margin-bottom: 8px;
 }

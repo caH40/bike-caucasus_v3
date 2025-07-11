@@ -4,6 +4,12 @@ import { TSiteServicePriceDto } from '@/types/dto.types';
 type Props = {
   service: TSiteServicePriceDto;
 };
+const championshipDescriptions = [
+  '✔ Страница с описанием и GPS-треками',
+  '✔ Онлайн-регистрация участников',
+  '✔ Финишные протоколы (онлайн + PDF)',
+  '✔ Поддержка одиночных гонок, туров и серий',
+];
 
 export default function PriceCard({ service }: Props) {
   return (
@@ -14,10 +20,23 @@ export default function PriceCard({ service }: Props) {
           : 'Другая услуга'}
       </h2>
 
+      <p className={styles.subtitle}>
+        Покупка слота позволяет создавать динамические страницы для одного чемпионата. Ваши
+        данные — наш функционал:
+      </p>
+
+      <ul className={styles.list}>
+        {championshipDescriptions.map((c, key) => (
+          <li className={styles.item} key={key}>
+            {c}
+          </li>
+        ))}
+      </ul>
+
       <table className={styles.priceTable}>
         <thead>
           <tr>
-            <th>Кол-во</th>
+            <th>Количество</th>
             <th>Цена за единицу</th>
           </tr>
         </thead>
