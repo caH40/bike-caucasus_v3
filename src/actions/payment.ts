@@ -40,7 +40,7 @@ export async function getPaymentHistory(): Promise<
   ServerResponse<TPaymentNotificationDto[] | null>
 > {
   try {
-    const { userIdDB } = await checkUserAccess('');
+    const { userIdDB } = await checkUserAccess('authorized');
 
     const paymentService = new PaymentService();
     const res = await paymentService.getHistory({ userId: userIdDB });

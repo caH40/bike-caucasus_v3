@@ -168,6 +168,22 @@ const paths = [
     permission: ['authorized'],
   },
   {
+    path: '/account/services-and-finances',
+    permission: ['authorized'],
+  },
+  {
+    path: '/account/services-and-finances/competition-slots',
+    permission: ['authorized'],
+  },
+  {
+    path: '/account/services-and-finances/transaction-history',
+    permission: ['authorized'],
+  },
+  {
+    path: '/account/services-and-finances/site-services',
+    permission: ['authorized'],
+  },
+  {
     path: '/admin',
     permission: ['admin'],
   },
