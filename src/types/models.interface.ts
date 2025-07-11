@@ -667,6 +667,7 @@ export type TPaymentNotification = {
   };
   cancellation_details?: { party: string; reason: string };
   capturedAt?: Date; // Оплачен платёж.
+  expiresAt?: Date; // Время когда истечет срок подтверждения платежа магазином.
   createdAt: Date;
 };
 

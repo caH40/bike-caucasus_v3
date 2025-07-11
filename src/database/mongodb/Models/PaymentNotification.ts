@@ -40,6 +40,7 @@ const PaymentNotificationSchema = new Schema<TPaymentNotificationDocument>({
   },
   capturedAt: Date, // Оплачен платёж.
   createdAt: Date, //Создан платёж.
+  expiresAt: Date, //Создан платёж.
 });
 
 export const PaymentNotificationModel =

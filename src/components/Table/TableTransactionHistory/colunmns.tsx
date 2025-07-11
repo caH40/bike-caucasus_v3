@@ -23,6 +23,11 @@ export const transactionHistoryTableColumns: ColumnDef<
     cell: renderCell,
   },
   {
+    header: 'id Платежа',
+    accessorKey: 'id',
+    cell: (props: any) => `...${props.getValue().slice(-5)}`,
+  },
+  {
     header: 'Операция',
     accessorKey: 'event',
     cell: (props: any) => {
@@ -67,6 +72,12 @@ export const transactionHistoryTableColumns: ColumnDef<
   {
     header: 'Дата оплаты',
     accessorKey: 'capturedAt',
+    cell: (props: any) =>
+      props.getValue() && <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
+  },
+  {
+    header: 'Подтверждение платежа магазином до',
+    accessorKey: 'expiresAt',
     cell: (props: any) =>
       props.getValue() && <span>{getTimerLocal(props.getValue(), 'DDMMYYHm')}</span>,
   },

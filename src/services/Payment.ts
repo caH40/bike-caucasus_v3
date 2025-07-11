@@ -63,7 +63,14 @@ export class PaymentService {
       }).lean<TPaymentNotification[]>();
 
       // Сортировка времени создания платежа, сначала более свежие.
-      paymentNotificationsDB.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      paymentNotificationsDB.sort((a, b) => {
+        const currentTime = (item: TPaymentNotification) =>
+          item.event === 'payment.succeeded' && item.capturedAt
+            ? item.capturedAt.getTime()
+            : item.createdAt.getTime();
+
+        return currentTime(b) - currentTime(a);
+      });
 
       const afterDto = paymentNotificationsDB.map((n) => getPaymentNotificationDto(n));
 

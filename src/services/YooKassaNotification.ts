@@ -39,6 +39,11 @@ export class YooKassaNotification {
           break;
         }
 
+        case 'payment.waiting_for_capture': {
+          await this.paymentWaitingForCapture(notification);
+          break;
+        }
+
         default:
           throw new Error(
             `Нет соответствующего обработчика для уведомления события: ${notification.event}`
@@ -83,7 +88,7 @@ export class YooKassaNotification {
         value: Number(notification.income_amount.value),
         currency: notification.income_amount.currency,
       },
-      capturedAt: new Date(notification.captured_at), //Создан платёж.
+      capturedAt: notification.captured_at ? new Date(notification.captured_at) : undefined,
       createdAt: new Date(notification.created_at), //Создан платёж.
       metadata,
     };
@@ -122,6 +127,45 @@ export class YooKassaNotification {
         currency: notification.amount.currency,
       },
       createdAt: new Date(notification.created_at), //Создан платёж.
+      cancellation_details: notification.cancellation_details,
+      metadata,
+    };
+
+    await PaymentNotificationModel.create(query);
+  }
+
+  private async paymentWaitingForCapture({
+    object: notification,
+    event,
+  }: TYooKassaPaymentNotification): Promise<void> {
+    // Проверка существования данных об платеже в БД.
+    await this.ensurePaymentNotificationNotExistsByIdAndEvent(notification.id, event);
+
+    const userDB = await this.findUserOrThrow(
+      notification.metadata.userId,
+      notification.metadata
+    );
+
+    const metadata: TPurchaseMetadata = {
+      entityName: notification.metadata.entityName,
+      quantity: notification.metadata.quantity,
+    };
+
+    const siteServiceSlotService = new SiteServiceSlotService();
+    await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
+
+    const query: Omit<TPaymentNotification, '_id'> = {
+      user: userDB._id,
+      event,
+      description: notification.description,
+      id: notification.id,
+      status: notification.status,
+      amount: {
+        value: Number(notification.amount.value),
+        currency: notification.amount.currency,
+      },
+      createdAt: new Date(notification.created_at),
+      expiresAt: notification.expires_at ? new Date(notification.expires_at) : undefined,
       cancellation_details: notification.cancellation_details,
       metadata,
     };

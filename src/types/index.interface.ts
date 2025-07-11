@@ -1658,8 +1658,9 @@ export type TYooKassaPaymentNotification = {
       title: string;
       account_number: string;
     };
-    captured_at: string;
+    captured_at?: string;
     created_at: string;
+    expires_at?: string;
     test: boolean;
     refunded_amount: {
       value: string;
