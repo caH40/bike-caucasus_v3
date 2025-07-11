@@ -45,6 +45,9 @@ export class YooKassaNotification {
         }
 
         default:
+          // eslint-disable-next-line no-console
+          console.log(notification);
+
           throw new Error(
             `Нет соответствующего обработчика для уведомления события: ${notification.event}`
           );
