@@ -57,16 +57,21 @@ export class SiteServiceSlotService {
         );
       }
 
+      // Поиск данных по слотам для entityName
       const currentServiceAccess = userServiceAccessDB.oneTimeServices.find(
         (s) => s.entityName === entityName
       );
 
-      // Подсчет общего количества доступных слотов.
+      // Создание объекта для клиента.
       const availableSlots = currentServiceAccess
         ? {
             freeAvailable: currentServiceAccess.freeAvailable,
             trialAvailable: currentServiceAccess.trialAvailable,
             purchasedAvailable: currentServiceAccess.purchasedAvailable,
+            totalAvailable:
+              currentServiceAccess.purchasedAvailable +
+              currentServiceAccess.trialAvailable +
+              currentServiceAccess.freeAvailable,
           }
         : null;
 

@@ -30,11 +30,17 @@ export default async function ModerationChampionshipPage() {
     );
   }
 
-  const availableSlots = await getAvailableSlots({ entityName, userDBId: idDB });
+  const availableSlotsRes = await getAvailableSlots({ entityName, userDBId: idDB });
 
-  if (!availableSlots.ok || !availableSlots.data) {
-    return <ServerErrorMessage message={availableSlots.message} />;
+  const availableSlots = availableSlotsRes?.data?.availableSlots;
+  if (!availableSlotsRes.ok || !availableSlots) {
+    return <ServerErrorMessage message={availableSlotsRes.message} />;
   }
+
+  const totalAvailableSlots =
+    availableSlots.freeAvailable +
+    availableSlots.purchasedAvailable +
+    availableSlots.trialAvailable;
 
   const priceTier = await getPriceTier({ entityName });
 
@@ -49,10 +55,16 @@ export default async function ModerationChampionshipPage() {
           Добро пожаловать на страницу создания и редактирования Чемпионатов (соревнований)
         </h2>
 
+        {totalAvailableSlots === 0 && (
+          <Spacer margin="b-sm">
+            <ServerErrorMessage message="У вас нет доступных слотов для создания чемпионата!" />
+          </Spacer>
+        )}
+
         <Spacer margin="b-sm">
           <ChampionshipSlotPurchasePanel
             user={{ userId: Number(id), fullName: `${name}`, email: email }}
-            availableSlots={availableSlots.data.availableSlots}
+            availableSlots={availableSlots}
             priceTier={priceTier.data.tiers}
           />
         </Spacer>

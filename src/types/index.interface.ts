@@ -1607,6 +1607,7 @@ export type TAvailableSlots = {
     purchasedAvailable: number; // Количество доступных купленных слотов (которые ещё можно использовать).
     trialAvailable: number;
     freeAvailable: number;
+    totalAvailable: number; // Суммарное число всех слотов.
   } | null;
   entityName: TEntityNameForSlot;
 };
