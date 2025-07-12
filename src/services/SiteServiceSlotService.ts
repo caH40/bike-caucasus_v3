@@ -140,9 +140,9 @@ export class SiteServiceSlotService {
     metadata: { entityName, quantity },
   }: {
     actionSlot: 'purchase' | 'consume' | 'refund';
-    user: Types.ObjectId;
+    user: Types.ObjectId | string;
     metadata: TPurchaseMetadata;
-  }): Promise<void> {
+  }): Promise<ServerResponse<null>> {
     try {
       if (actionSlot !== 'purchase' && quantity > 1) {
         throw new Error(
@@ -208,8 +208,15 @@ export class SiteServiceSlotService {
 
       // Сохранение обновленных данных.
       await userPaidServiceDB.save();
+
+      return {
+        data: null,
+        ok: true,
+        message: `Выполнено ${actionSlot}, данные entityName:${entityName}, quantity:${quantity}`,
+      };
     } catch (error) {
       this.errorLogger(error);
+      return this.handlerErrorDB(error);
     }
   }
 
@@ -287,38 +294,38 @@ export class SiteServiceSlotService {
   /**
    * Обработка данных покупки, изменение количества купленных слотов пользователя. Сохранение деталей покупки через ЮКассу.
    */
-  public async changePurchaseSlotAfter({
-    user,
-    metadata: { entityName, quantity },
-  }: {
-    user: Types.ObjectId;
-    metadata: TPurchaseMetadata;
-  }): Promise<void> {
-    try {
-      const result = await UserPaidServiceAccessModel.findOneAndUpdate(
-        { user: user, 'oneTimeServices.entityName': entityName },
-        { $inc: { 'oneTimeServices.$.purchasedAvailable': quantity } }
-      );
-      // Если ничего не обновилось — значит элемента с таким entityName нет, добавим его
-      if (result.modifiedCount === 0) {
-        await UserPaidServiceAccessModel.updateOne(
-          { user },
-          {
-            $push: {
-              oneTimeServices: {
-                entityName,
-                purchasedAvailable: quantity,
-                trialAvailable: 0,
-                freeAvailable: 0,
-                usedHistory: [],
-              },
-            },
-          },
-          { upsert: true }
-        );
-      }
-    } catch (error) {
-      this.errorLogger(error);
-    }
-  }
+  // public async changePurchaseSlotAfter({
+  //   user,
+  //   metadata: { entityName, quantity },
+  // }: {
+  //   user: Types.ObjectId;
+  //   metadata: TPurchaseMetadata;
+  // }): Promise<void> {
+  //   try {
+  //     const result = await UserPaidServiceAccessModel.findOneAndUpdate(
+  //       { user: user, 'oneTimeServices.entityName': entityName },
+  //       { $inc: { 'oneTimeServices.$.purchasedAvailable': quantity } }
+  //     );
+  //     // Если ничего не обновилось — значит элемента с таким entityName нет, добавим его
+  //     if (result.modifiedCount === 0) {
+  //       await UserPaidServiceAccessModel.updateOne(
+  //         { user },
+  //         {
+  //           $push: {
+  //             oneTimeServices: {
+  //               entityName,
+  //               purchasedAvailable: quantity,
+  //               trialAvailable: 0,
+  //               freeAvailable: 0,
+  //               usedHistory: [],
+  //             },
+  //           },
+  //         },
+  //         { upsert: true }
+  //       );
+  //     }
+  //   } catch (error) {
+  //     this.errorLogger(error);
+  //   }
+  // }
 }

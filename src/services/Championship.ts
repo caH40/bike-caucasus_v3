@@ -47,6 +47,7 @@ import type {
 import { TDeleteChampionshipFromMongo, TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 import { ModeratorActionLogService } from './ModerationActionLog';
 import { compareDates, getDateForCompare } from '@/libs/utils/date';
+import { SiteServiceSlotService } from './SiteServiceSlotService';
 
 /**
  * Класс работы с сущностью Чемпионат.
@@ -214,6 +215,21 @@ export class ChampionshipService {
         startNumbers,
       } = deserializeChampionship(serializedFormData);
 
+      // Проверка наличия слотов на создание чемпионата у модератора.
+      const siteServiceSlotService = new SiteServiceSlotService();
+      const availableSlots = await siteServiceSlotService.getAvailableSlots({
+        userDBId: moderator,
+        entityName: 'championship',
+      });
+
+      if (
+        !availableSlots.data?.availableSlots?.totalAvailable ||
+        availableSlots.data?.availableSlots?.totalAvailable === 0
+      ) {
+        throw new Error(
+          `У вас нет слотов для создания чемпионата. Пользователь с _id:${moderator}`
+        );
+      }
       // Проверка на дубликат названия Чемпионата.
       const championshipDuplicate = await ChampionshipModel.findOne(
         { name },
@@ -232,15 +248,11 @@ export class ChampionshipService {
         suffix: this.suffixImagePoster,
       });
 
-      // Обработка данных Заездов (дистанций).
-      // const racesForSave = await this.handleRacesInPost(races);
-
       const urlSlug = await this.getUrlSlug({
         type,
         parentChampionshipId,
         champName: name,
       });
-      // console.log(startNumbers);
 
       const createData: Partial<TChampionshipForSave> = {
         name,
@@ -269,6 +281,15 @@ export class ChampionshipService {
       );
 
       // Изменение слотов у пользователя на создание чемпионатов.
+      // Обработка удачной покупки, зачисление слотов пользователю.
+      // Слот списывается только при создании одиночного соревнования или этапа серии (тура).
+      if (type === 'single' || type === 'stage') {
+        await siteServiceSlotService.manageServiceSlots({
+          user: moderator,
+          metadata: { entityName: 'championship', quantity: 1 },
+          actionSlot: 'consume',
+        });
+      }
 
       await this.addCategoryConfigsIds({ championshipCreated, type, parentChampionshipId });
 
