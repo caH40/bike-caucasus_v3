@@ -50,7 +50,7 @@ export class PaymentService {
   }
 
   /**
-   * История всех платежей пользователя.
+   * История всех платежей (уведомлений) пользователя из БД сайта.
    */
   public async getHistory({
     userId,

@@ -9,7 +9,11 @@ import { usePathname } from 'next/navigation';
 import { useChampionshipPurchase } from '@/hooks/useChampionshipPurchase';
 
 type Props = {
-  userId: number; // id пользователя на сайте.
+  user: {
+    userId: number; // id пользователя на сайте.
+    fullName: string;
+    email: string;
+  };
   availableSlots: {
     purchasedAvailable: number; // Количество доступных купленных слотов (которые ещё можно использовать).
     trialAvailable: number;
@@ -24,7 +28,7 @@ const server = process.env.NEXT_PUBLIC_SERVER_FRONT;
  * Панель состояния наличия слотов на создание чемпионатов и покупка слотов.
  */
 export default function ChampionshipSlotPurchasePanel({
-  userId,
+  user,
   priceTier,
   availableSlots,
 }: Props) {
@@ -34,11 +38,15 @@ export default function ChampionshipSlotPurchasePanel({
   const { unitPrice, currency } = priceTier[0];
 
   const returnUrl = `${server}${path}`;
+  const customer = { full_name: user.fullName, email: user.email };
   const { handleClickPurchase, isLoading } = useChampionshipPurchase({
     returnUrl,
-    unitPrice,
-    currency,
-    userId,
+    payloadData: {
+      unitPrice,
+      currency,
+      customer,
+    },
+    userId: user.userId,
   });
 
   return (

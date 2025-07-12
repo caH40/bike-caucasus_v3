@@ -14,14 +14,23 @@ const entityName = 'championship';
 export default async function ModerationChampionshipPage() {
   const session = await getServerSession(authOptions);
 
-  const userId = Number(session?.user.id);
-  const userDBId = session?.user.idDB;
+  const { id, name, email, idDB } = session?.user || {};
 
-  if (!userId || isNaN(userId) || !userDBId) {
+  if (isNaN(Number(id)) || !idDB) {
     return <ServerErrorMessage message={'Не получен userId!'} />;
   }
 
-  const availableSlots = await getAvailableSlots({ entityName, userDBId });
+  if (!email) {
+    return (
+      <ServerErrorMessage
+        message={
+          'Для продолжения работы необходимо указать email в вашем профиле. Пожалуйста, добавьте email-адрес.'
+        }
+      />
+    );
+  }
+
+  const availableSlots = await getAvailableSlots({ entityName, userDBId: idDB });
 
   if (!availableSlots.ok || !availableSlots.data) {
     return <ServerErrorMessage message={availableSlots.message} />;
@@ -42,7 +51,7 @@ export default async function ModerationChampionshipPage() {
 
         <Spacer margin="b-sm">
           <ChampionshipSlotPurchasePanel
-            userId={userId}
+            user={{ userId: Number(id), fullName: `${name}`, email: email }}
             availableSlots={availableSlots.data.availableSlots}
             priceTier={priceTier.data.tiers}
           />
