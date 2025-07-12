@@ -268,6 +268,8 @@ export class ChampionshipService {
         createData
       );
 
+      // Изменение слотов у пользователя на создание чемпионатов.
+
       await this.addCategoryConfigsIds({ championshipCreated, type, parentChampionshipId });
 
       // Логирование действия.

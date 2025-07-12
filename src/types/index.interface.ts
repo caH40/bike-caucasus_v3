@@ -1621,6 +1621,10 @@ export type TCreatePayloadMetadata = {
   quantity: number;
   entityName: TEntityNameForSlot;
 };
+export type TNotificationMetadata = Omit<TCreatePayloadMetadata, 'userId' | 'quantity'> & {
+  userId: string;
+  quantity: string;
+};
 
 // Данные о покупке для обработки и сохранения в БД.
 export type TPurchaseMetadata = {
@@ -1670,7 +1674,7 @@ export type TYooKassaPaymentNotification = {
     cancellation_details?: { party: string; reason: string };
     paid: boolean;
     refundable: boolean;
-    metadata: TCreatePayloadMetadata;
+    metadata: TNotificationMetadata;
   };
 };
 export type TCurrency = 'RUB';
@@ -1685,3 +1689,6 @@ export type TYooKassaPaymentStatus =
   | 'pending'
   | 'waiting_for_capture'
   | 'canceled';
+
+// Действия над слотами для сервисов. Покупка, Использование, Отмена использования.
+export type TActionSlot = 'purchase' | 'consume' | 'refund';

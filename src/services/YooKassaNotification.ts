@@ -4,7 +4,7 @@ import { errorLogger } from '@/errors/error';
 
 // types
 import {
-  TCreatePayloadMetadata,
+  TNotificationMetadata,
   TPurchaseMetadata,
   TYooKassaPaymentEvent,
   TYooKassaPaymentNotification,
@@ -45,9 +45,6 @@ export class YooKassaNotification {
         }
 
         default:
-          // eslint-disable-next-line no-console
-          console.log(notification);
-
           throw new Error(
             `Нет соответствующего обработчика для уведомления события: ${notification.event}`
           );
@@ -65,18 +62,22 @@ export class YooKassaNotification {
     await this.ensurePaymentNotificationNotExistsByIdAndEvent(notification.id, event);
 
     const userDB = await this.findUserOrThrow(
-      notification.metadata.userId,
+      Number(notification.metadata.userId),
       notification.metadata
     );
 
     const metadata: TPurchaseMetadata = {
       entityName: notification.metadata.entityName,
-      quantity: notification.metadata.quantity,
+      quantity: Number(notification.metadata.quantity),
     };
 
     // Обработка удачной покупки, зачисление слотов пользователю.
     const siteServiceSlotService = new SiteServiceSlotService();
-    await siteServiceSlotService.handlePurchaseSlot({ user: userDB._id, metadata });
+    await siteServiceSlotService.manageServiceSlots({
+      user: userDB._id,
+      metadata,
+      actionSlot: 'purchase',
+    });
 
     const query: Omit<TPaymentNotification, '_id'> = {
       user: userDB._id,
@@ -108,13 +109,13 @@ export class YooKassaNotification {
     await this.ensurePaymentNotificationNotExistsByIdAndEvent(notification.id, event);
 
     const userDB = await this.findUserOrThrow(
-      notification.metadata.userId,
+      Number(notification.metadata.userId),
       notification.metadata
     );
 
     const metadata: TPurchaseMetadata = {
       entityName: notification.metadata.entityName,
-      quantity: notification.metadata.quantity,
+      quantity: Number(notification.metadata.quantity),
     };
 
     const query: Omit<TPaymentNotification, '_id'> = {
@@ -143,13 +144,13 @@ export class YooKassaNotification {
     await this.ensurePaymentNotificationNotExistsByIdAndEvent(notification.id, event);
 
     const userDB = await this.findUserOrThrow(
-      notification.metadata.userId,
+      Number(notification.metadata.userId),
       notification.metadata
     );
 
     const metadata: TPurchaseMetadata = {
       entityName: notification.metadata.entityName,
-      quantity: notification.metadata.quantity,
+      quantity: Number(notification.metadata.quantity),
     };
 
     const query: Omit<TPaymentNotification, '_id'> = {
@@ -191,7 +192,7 @@ export class YooKassaNotification {
    */
   private async findUserOrThrow(
     userId: number,
-    metadata: TCreatePayloadMetadata
+    metadata: TNotificationMetadata
   ): Promise<{ _id: Types.ObjectId }> {
     const userDB = await User.findOne({ id: userId }, { _id: true }).lean<{
       _id: Types.ObjectId;
