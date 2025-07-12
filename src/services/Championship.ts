@@ -497,6 +497,18 @@ export class ChampionshipService {
           .catch((error) => this.errorLogger(error));
       }
 
+      const siteServiceSlotService = new SiteServiceSlotService();
+      // Изменение слотов у пользователя на создание чемпионатов.
+      // Обработка удачной покупки, зачисление слотов пользователю.
+      // Слот списывается только при создании одиночного соревнования или этапа серии (тура).
+      if (championshipDB.type === 'single' || championshipDB.type === 'stage') {
+        await siteServiceSlotService.manageServiceSlots({
+          user: moderator,
+          metadata: { entityName: 'championship', quantity: 1 },
+          actionSlot: 'refund',
+        });
+      }
+
       // Логирование действия.
       await ModeratorActionLogService.create({
         moderator: moderator,
