@@ -9,6 +9,7 @@ import {
   TFormCalendar,
   TLocationInfo,
   TOneTimeServiceSimple,
+  TRaceDisqualificationLabel,
   TrackData,
   TServiceEntity,
   TSurfaceType,
@@ -468,7 +469,7 @@ export type TQuantityRidersFinished = {
   absoluteGenderFemale: number; // Позиция райдера в заезде, выставляется вручную. !В разработке.
 };
 export type TDisqualification = {
-  type: 'DNF' | 'DSQ' | 'DNS'; // Не завершил заезд (Did Not Finish). Дисквалифицирован. Не стартовал (Did Not Start)
+  type: TRaceDisqualificationLabel;
   comment?: string;
 };
 export type TProfileRiderInProtocol = {

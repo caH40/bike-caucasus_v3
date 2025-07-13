@@ -19,6 +19,7 @@ import {
   TChampionshipDocument,
   TChampionshipStatus,
   TChampionshipTypes,
+  TDisqualification,
   TDistance,
   TDistanceResult,
   TGeneralClassification,
@@ -757,10 +758,25 @@ export type TFormResultRace = {
     city?: string;
     team?: string;
   };
+  disqualification?: TDisqualification;
   newStartNumber: number | string;
   categoryName: string; // Название категории SkillLevel или "Возрастная";
   time: TTimeDetails;
 };
+/**
+ * Коды статусов дисквалификации / не-старт / не-финиш и т.п.
+ */
+export type TRaceDisqualificationLabel =
+  | 'DSQ' // Disqualified (Синоним) — Дисквалифицирован.
+  | 'DNF' // Did Not Finish — Не финишировал.
+  | 'DNS' // Did Not Start — Не стартовал.
+  | 'OUT' // Out of Classification — Вне зачёта / Не выполнены условия.
+  | 'CUT' // Time Cut — Превышен лимит времени.
+  | 'LAP' // Lapped — Обогнан на круг / Снят с гонки.
+  | 'NP' // No Placement / Not Placed — Без места / Не имеет итогового места.
+  | 'MRS' // Missing Required Stage — Не завершён обязательный этап серии.
+  | 'MC' // Mixed Categories — На этапах разные категории участия. Для зачёта необходимо проехать все обязательные этапы в одной категории.
+  | 'UNC'; // Undefined Category — Не определена категория в Серии.
 
 /**
  * Данные формы отправляемые на сериализацию.
