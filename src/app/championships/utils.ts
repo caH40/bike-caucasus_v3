@@ -287,9 +287,7 @@ export function getDescriptionChampionship({ champ }: { champ: TDtoChampionship 
 export function getTitleResultsRace({ champ }: { champ: TDtoChampionship }) {
   const messageNotForStage = `Результаты соревнования по велоспорту «${
     champ.name
-  }» в дисциплине ${
-    bikeTypesMap.get(champ.bikeType)?.translation
-  } велосипед. Дата проведения: ${getTimerLocal(champ.endDate, 'DDMMYY')}`;
+  }» ${getTimerLocal(champ.endDate, 'DDMMYY')}`;
   switch (champ.type) {
     case 'single': {
       return messageNotForStage;
@@ -307,6 +305,29 @@ export function getTitleResultsRace({ champ }: { champ: TDtoChampionship }) {
     }
   }
 }
+// export function getTitleResultsRace({ champ }: { champ: TDtoChampionship }) {
+//   const messageNotForStage = `Результаты соревнования по велоспорту «${
+//     champ.name
+//   }» в дисциплине ${
+//     bikeTypesMap.get(champ.bikeType)?.translation
+//   } велосипед. Дата проведения: ${getTimerLocal(champ.endDate, 'DDMMYY')}`;
+//   switch (champ.type) {
+//     case 'single': {
+//       return messageNotForStage;
+//     }
+
+//     default: {
+//       // Если не поступили данные о Родительском чемпионате.
+//       if (!champ.parentChampionship) {
+//         return messageNotForStage;
+//       }
+
+//       return `Результаты велогонки ${champ.stageOrder} Этап: "${champ.name}". ${
+//         championshipTypesMap.get(champ.parentChampionship.type)?.translation
+//       } "${champ.parentChampionship.name}"`;
+//     }
+//   }
+// }
 
 /**
  * Формирование Description для страницы Результаты заездов.
