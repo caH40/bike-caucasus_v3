@@ -1,43 +1,30 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
 
 import { useAddResultRace } from '@/hooks/useAddResultRace';
+import { createStartNumbersOptions } from '@/libs/utils/championship/registration';
+import { buttonsForRiderRaceResult } from '@/constants/buttons';
+import { useResetFormAddResultRace } from '@/hooks/useResetFormAddResultRace';
+import { disqualificationOptions } from '@/constants/championship';
+import { RACE_DISQUALIFICATION_LABELS } from '@/constants/translations';
+import { useAddResultRaceSubmit } from '@/hooks/useAddResultRaceSubmit';
+import BoxInput from '../../BoxInput/BoxInput';
 import BlockInputsTime from './BlockInputsTime/BlockInputsTime';
 import BlockInputsRegisteredRider from './BlockInputsRegisteredRider/BlockInputsRegisteredRider';
 import Button from '../../Button/Button';
-import { createStartNumbersOptions } from '@/libs/utils/championship/registration';
-import { timeDetailsToMilliseconds } from '@/libs/utils/date';
-import { useLoadingStore } from '@/store/loading';
 import BlockSelectRegisteredRider from './BlockSelectRegisteredRider/BlockSelectRegisteredRider';
-import { serializationResultRaceRider } from '@/libs/utils/serialization/resultRaceRider';
 import FilterRidersForAddResult from '../../Filters/FilterRidersForAddResult/Filters';
-import { buttonsForRiderRaceResult } from '@/constants/buttons';
 import BlockSearchRider from './BlockSearchRider/BlockSearchRider';
-import { useResetFormAddResultRace } from '@/hooks/useResetFormAddResultRace';
 import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 import BoxSelectNew from '../../BoxSelect/BoxSelectNew';
 import styles from './FormResultAdd.module.css';
 
 // types
 import { TRaceRegistrationDto } from '@/types/dto.types';
-import {
-  ServerResponse,
-  TFormResultRace,
-  TGender,
-  TGetStartNumbers,
-  TOptions,
-} from '@/types/index.interface';
+import { TFormResultRace, TGender, TGetStartNumbers, TOptions } from '@/types/index.interface';
 
 type Props = {
   registeredRiders: TRaceRegistrationDto[];
-  postRiderRaceResult: ({
-    // eslint-disable-next-line no-unused-vars
-    dataFromFormSerialized,
-  }: {
-    dataFromFormSerialized: FormData;
-  }) => Promise<ServerResponse<void>>;
   championshipId: string;
   raceId: string;
   getCategoriesNameOptions: (gender: TGender) => TOptions[];
@@ -48,19 +35,16 @@ type Props = {
  * Форма добавления результата райдера в Протокол заезда.
  */
 export default function FormResultAdd({
-  postRiderRaceResult,
   registeredRiders,
   raceId,
   championshipId,
   getCategoriesNameOptions,
   startNumbersLists,
 }: Props) {
-  const router = useRouter();
   const [startNumbersOptions, setStartNumbersOptions] = useState<TOptions[]>(
     createStartNumbersOptions(startNumbersLists.free)
   );
 
-  const setLoading = useLoadingStore((state) => state.setLoading);
   const [activeIdBtn, setActiveIdBtn] = useState<number>(0);
 
   useEffect(() => {
@@ -88,6 +72,7 @@ export default function FormResultAdd({
       rider: {
         lastName: '',
       },
+      disqualification: { type: undefined, comment: '' },
     },
   });
 
@@ -124,41 +109,15 @@ export default function FormResultAdd({
   });
 
   // Обработка формы после нажатия кнопки "Отправить".
-  const onSubmit: SubmitHandler<TFormResultRace> = async (dataFromForm) => {
-    const timeDetailsInMilliseconds = timeDetailsToMilliseconds(dataFromForm.time);
+  const { onSubmit } = useAddResultRaceSubmit({ raceId, championshipId, reset });
 
-    // Получение стартового номера.
-    const startNumber = () => {
-      // Если введен новый номер, значит он используется как стартовый номер.
-      if (!!dataFromForm.newStartNumber && +dataFromForm.newStartNumber !== 0) {
-        return +dataFromForm.newStartNumber;
-      }
-
-      return +dataFromForm.riderRegisteredInRace.startNumber;
-    };
-
-    const dataSerialized = serializationResultRaceRider({
-      ...dataFromForm.rider,
-      timeDetailsInMilliseconds,
-      startNumber: startNumber(),
-      raceId,
-      championshipId,
-      categoryName: dataFromForm.categoryName,
-    });
-
-    setLoading(true);
-    const response = await postRiderRaceResult({ dataFromFormSerialized: dataSerialized });
-
-    setLoading(false);
-
-    if (response.ok) {
-      reset();
-      toast.success(response.message);
-      router.refresh();
-    } else {
-      toast.error(response.message);
-    }
-  };
+  const dsqType = watch('disqualification.type');
+  useEffect(() => {
+    setValue(
+      'disqualification.comment',
+      dsqType === '' ? '' : RACE_DISQUALIFICATION_LABELS[dsqType]
+    );
+  }, [dsqType, setValue]);
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
@@ -205,6 +164,30 @@ export default function FormResultAdd({
 
       {/* блок полей ввода финишного времени */}
       <BlockInputsTime register={register} errors={errors} />
+
+      <div>
+        <TitleAndLine hSize={3} title="Дисквалификация" />
+        <div className={styles.wrapper__inputs}>
+          <BoxSelectNew
+            label="Выбор типа дисквалификации:"
+            id="disqualification-type"
+            options={disqualificationOptions}
+            register={register('disqualification.type')}
+          />
+
+          <BoxInput
+            label={'Комментарий:'}
+            id="disqualification-comment"
+            autoComplete="off"
+            type="text"
+            register={register('disqualification.comment', {
+              maxLength: { value: 50, message: 'Не больше 50 символов' },
+            })}
+            validationText={errors.disqualification?.comment?.message}
+            hasError={!!errors.rider?.lastName?.message}
+          />
+        </div>
+      </div>
 
       {/* Кнопка отправки формы. */}
       <div className={styles.box__button}>

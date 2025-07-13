@@ -9,3 +9,9 @@
   gap: 1rem;
   justify-content: flex-end;
 }
+.wrapper__inputs {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

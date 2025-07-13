@@ -23,7 +23,11 @@ export function deserializationResultRaceRider(
     ) {
       resultRaceRider[key] = +value;
       continue;
+    } else if (key === 'disqualification' && typeof value === 'string') {
+      resultRaceRider[key] = JSON.parse(value);
+      continue;
     }
+
     resultRaceRider[key] = value;
   }
 

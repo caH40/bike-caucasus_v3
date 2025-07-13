@@ -14,22 +14,12 @@ import { createCategoryOptions } from '@/libs/utils/championship/registration';
 import styles from './WrapperProtocolRaceEdit.module.css';
 
 // types
-import {
-  ServerResponse,
-  TCategoriesConfigNames,
-  TGender,
-  TGetStartNumbers,
-} from '@/types/index.interface';
+import { TCategoriesConfigNames, TGender, TGetStartNumbers } from '@/types/index.interface';
 import { TDtoChampionship, TRaceRegistrationDto, TResultRaceDto } from '@/types/dto.types';
 
 type Props = {
   championship: TDtoChampionship;
-  postRiderRaceResult: ({
-    // eslint-disable-next-line no-unused-vars
-    dataFromFormSerialized,
-  }: {
-    dataFromFormSerialized: FormData;
-  }) => Promise<ServerResponse<void>>;
+
   initialRaceId: string;
   startNumbersLists: TGetStartNumbers;
 };
@@ -39,7 +29,6 @@ type Props = {
  */
 export default function WrapperProtocolRaceEdit({
   championship,
-  postRiderRaceResult,
   initialRaceId,
   startNumbersLists,
 }: Props) {
@@ -124,7 +113,6 @@ export default function WrapperProtocolRaceEdit({
       {race ? <BlockRaceInfo race={race} /> : <div>Не найден заезд</div>}
 
       <FormResultAdd
-        postRiderRaceResult={postRiderRaceResult}
         registeredRiders={registeredRiders}
         championshipId={championship._id}
         raceId={raceId}

@@ -126,7 +126,7 @@ export class RaceResultService {
   }
 
   /**
-   * Добавление результата райдера в Заезде Чемпионата в протокол.
+   * Добавление результата заезда райдера в финишный протокол.
    */
   public async post({
     dataFromFormSerialized,
@@ -170,6 +170,9 @@ export class RaceResultService {
         race: dataDeserialized.raceId,
         startNumber: dataDeserialized.startNumber,
         ...(riderDB && { rider: riderDB._id }),
+        ...(dataDeserialized.disqualification && {
+          disqualification: dataDeserialized.disqualification,
+        }),
         profile: {
           firstName: dataDeserialized.firstName,
           lastName: dataDeserialized.lastName,

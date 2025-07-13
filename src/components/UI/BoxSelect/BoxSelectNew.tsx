@@ -37,6 +37,7 @@ export default function BoxSelectNew({
           {...props}
           {...register}
         >
+          <option value=""></option> {/* <-- пустая опция */}
           {options.map((elm) => (
             <option key={elm.id} value={elm.name} className={styles.option}>
               {elm.translation}

@@ -1,10 +1,11 @@
 import type {
   TOptions,
   TOptionsMap,
+  TRaceDisqualificationLabel,
   TRaceForFormNew,
   TSurfaceType,
 } from '@/types/index.interface';
-import { SURFACE_TYPE_TRANSLATIONS } from './translations';
+import { RACE_DISQUALIFICATION_LABELS, SURFACE_TYPE_TRANSLATIONS } from './translations';
 
 /**
  * Тип Чемпионата.
@@ -46,6 +47,18 @@ export const championshipStatus: TOptions[] = [
   { id: 2, translation: 'Завершенный', name: 'completed' },
   { id: 3, translation: 'Отмененный', name: 'cancelled' },
 ];
+
+/**
+ * Опции дисквалификации результата заезда.
+ * RACE_DISQUALIFICATION_LABELS
+ */
+export const disqualificationOptions: TOptions<TRaceDisqualificationLabel>[] = (
+  Object.keys(RACE_DISQUALIFICATION_LABELS) as TRaceDisqualificationLabel[]
+).map((d, i) => ({
+  id: i,
+  translation: d,
+  name: d,
+}));
 
 /**
  * Статус Зарегистрированного на Чемпионат.

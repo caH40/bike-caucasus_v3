@@ -3,7 +3,6 @@ import IconResults from '@/components/Icons/IconResults';
 import { getChampionship } from '@/actions/championship';
 import WrapperProtocolRaceEdit from '@/components/WrapperProtocolRaceEdit/WrapperProtocolRaceEdit';
 import { getStartNumbersLists } from '@/actions/registration-champ';
-import { postRiderRaceResult } from '@/actions/result-race';
 import { getOrganizerForModerate } from '@/actions/organizer';
 import { checkPermissionOrganizer } from '@/actions/permissions';
 import BlockMessage from '@/components/BlockMessage/BlockMessage';
@@ -99,7 +98,6 @@ export default async function AddFinishProtocolPage(props: Props) {
         )}
 
       <WrapperProtocolRaceEdit
-        postRiderRaceResult={postRiderRaceResult}
         championship={championship.data}
         initialRaceId={id}
         startNumbersLists={startNumbersLists.data}

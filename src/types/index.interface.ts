@@ -758,7 +758,7 @@ export type TFormResultRace = {
     city?: string;
     team?: string;
   };
-  disqualification?: TDisqualification;
+  disqualification?: TDisqualificationClient;
   newStartNumber: number | string;
   categoryName: string; // Название категории SkillLevel или "Возрастная";
   time: TTimeDetails;
@@ -777,6 +777,11 @@ export type TRaceDisqualificationLabel =
   | 'MRS' // Missing Required Stage — Не завершён обязательный этап серии.
   | 'MC' // Mixed Categories — На этапах разные категории участия. Для зачёта необходимо проехать все обязательные этапы в одной категории.
   | 'UNC'; // Undefined Category — Не определена категория в Серии.
+
+export type TDisqualificationClient = {
+  type: TRaceDisqualificationLabel | '';
+  comment?: string;
+};
 
 /**
  * Данные формы отправляемые на сериализацию.
@@ -815,6 +820,7 @@ export type TResultRaceRiderDeserialized = Omit<
   raceId: string;
   resultId?: string;
   categoryName: string;
+  disqualification: TDisqualification;
 };
 
 /**
