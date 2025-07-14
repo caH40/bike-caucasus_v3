@@ -15,6 +15,7 @@ import { protocolColumns } from './columns';
 import styles from '../TableCommon.module.css';
 
 import { TResultRaceDto } from '@/types/dto.types';
+import { TCategoriesEntity } from '@/types/index.interface';
 
 const cx = cn.bind(styles);
 
@@ -25,6 +26,7 @@ type Props = {
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
   captionTitle: string; // Название таблицы.
   raceInfo: { championshipId: string; championshipUrlSlug: string; raceId: string };
+  categoryEntity: TCategoriesEntity;
 };
 
 /**
@@ -37,13 +39,14 @@ export default function TableProtocolRace({
   hiddenColumnHeaders = [],
   captionTitle,
   raceInfo,
+  categoryEntity,
 }: Props) {
   const data = useMemo(() => {
     return [...protocol].map((elm, index) => ({ ...elm, index: index + 1 }));
   }, [protocol]);
 
   // Скрытие столбцов которые есть в массиве hide
-  const columns = protocolColumns.filter((column) => {
+  const columns = protocolColumns({ categoryEntity }).filter((column) => {
     // Проверяем, что column.header — строка, и только тогда сравниваем с hideColumns.
     if (column.uniqueName) {
       return !hiddenColumnHeaders.includes(column.uniqueName);

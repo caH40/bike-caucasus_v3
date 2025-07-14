@@ -2,6 +2,7 @@
 
 import { TResultRaceDto } from '@/types/dto.types';
 import TableProtocolRace from '../../TableProtocolRace/TableProtocolRace';
+import { TCategoriesEntity } from '@/types/index.interface';
 
 type Props = {
   protocol: TResultRaceDto[];
@@ -9,6 +10,7 @@ type Props = {
   hiddenColumnHeaders: string[]; // Массив названий столбцов, которых необходимо скрыть.
   captionTitle: string; // Название таблицы.
   raceInfo: { championshipId: string; championshipUrlSlug: string; raceId: string };
+  categoryEntity: TCategoriesEntity;
 };
 
 /**
@@ -20,6 +22,7 @@ export default function ContainerProtocolRace({
   hiddenColumnHeaders,
   captionTitle,
   raceInfo,
+  categoryEntity,
 }: Props) {
   return (
     <>
@@ -30,6 +33,7 @@ export default function ContainerProtocolRace({
         raceInfo={raceInfo}
         hiddenColumnHeaders={hiddenColumnHeaders}
         captionTitle={captionTitle}
+        categoryEntity={categoryEntity}
       />
     </>
   );

@@ -132,6 +132,7 @@ export default function WrapperProtocolRaceEdit({
           'Очки',
         ]}
         captionTitle="Общий протокол"
+        categoryEntity={'absolute'}
       />
 
       {categories.age.map((category) => (
@@ -143,6 +144,7 @@ export default function WrapperProtocolRaceEdit({
           raceInfo={raceInfo}
           hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+          categoryEntity={'category'}
         />
       ))}
 
@@ -153,6 +155,7 @@ export default function WrapperProtocolRaceEdit({
           raceInfo={raceInfo}
           hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
+          categoryEntity={'category'}
         />
       ))}
     </div>
