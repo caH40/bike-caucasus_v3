@@ -185,7 +185,7 @@ export class RaceResultService {
         },
         categoryAge,
         ...(dataDeserialized.id && { id: dataDeserialized.id }),
-        raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds,
+        raceTimeInMilliseconds: dataDeserialized.timeDetailsInMilliseconds || 0,
         categorySkillLevel,
         creator: creatorId,
       });
@@ -659,8 +659,8 @@ export class RaceResultService {
       throw new Error('Отсутствует имя');
     } else if (!data.yearBirthday || +data.yearBirthday === 0) {
       throw new Error('Отсутствует год рождения');
-    } else if (!data.timeDetailsInMilliseconds) {
-      throw new Error('Отсутствует финишное время');
+    } else if (!data.timeDetailsInMilliseconds && !data.disqualification?.type) {
+      throw new Error('Отсутствует финишное время'); // если есть dsq, можно игнорировать время.
     }
   }
 

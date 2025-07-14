@@ -39,7 +39,7 @@ export default function BlockInputsTime({ register, errors }: Props) {
           autoComplete="off"
           type="number"
           register={register('time.minutes', {
-            required: 'обязательное поле',
+            // required: 'обязательное поле',
             pattern: {
               value: /^([0-9]|[1-5][0-9])$/,
               message: '0-59',

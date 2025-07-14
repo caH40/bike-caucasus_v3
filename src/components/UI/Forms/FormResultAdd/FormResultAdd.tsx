@@ -184,7 +184,7 @@ export default function FormResultAdd({
               maxLength: { value: 50, message: 'Не больше 50 символов' },
             })}
             validationText={errors.disqualification?.comment?.message}
-            hasError={!!errors.rider?.lastName?.message}
+            hasError={!!errors.disqualification?.comment?.message}
           />
         </div>
       </div>
