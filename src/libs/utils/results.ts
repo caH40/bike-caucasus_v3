@@ -21,9 +21,25 @@ export function processResults({
   categories: TGetRaceCategoriesFromMongo;
   raceDistance: number;
 }): {
-  resultsUpdated: TResultRace[];
+  validResults: TResultRace[];
+  dsqResults: TResultRace[];
   quantityRidersFinished: number;
 } {
+  // Отделение результатов с дисквалификацией от нормальных.
+  const { validResults, dsqResults } = results.reduce<{
+    validResults: TResultRace[];
+    dsqResults: TResultRace[];
+  }>(
+    (acc, cur) => {
+      !!cur.disqualification?.type ? acc.dsqResults.push(cur) : acc.validResults.push(cur);
+      return acc;
+    },
+    {
+      validResults: [],
+      dsqResults: [],
+    }
+  );
+
   // Инициализация коллекции мест по категориям.
   const categoriesInRace = new Map<string, number>([
     ['absolute', 1],
@@ -32,7 +48,7 @@ export function processResults({
   ]);
 
   // Определение и установка название categoryAge в результат.
-  for (const result of results) {
+  for (const result of validResults) {
     const isFemale = result.profile.gender === 'female';
 
     const categoryAge = createStringCategoryAge({
@@ -57,27 +73,33 @@ export function processResults({
 
   // Количество финишировавших в категориях.
   const quantityRidersFinishedMap = getQuantityRidersFinished({
-    results,
+    results: validResults,
     categoriesInRace,
   });
 
   // Сортировка по финишному времени.
-  results.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
+  validResults.sort((a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds);
 
-  // Количество финишировавших в категориях.
+  // Установка отставаний на финише.
   setGaps({
-    results,
+    results: validResults,
     categoriesInRace,
   });
 
   // Установка мест и средней скорости.
-  results.forEach((result) => {
-    setPositions(result, categoriesInRace, quantityRidersFinishedMap);
+  [...validResults, ...dsqResults].forEach((result) => {
+    if (!!result.disqualification?.type) {
+      result.positions = { category: 0, absolute: 0, absoluteGender: 0 };
+    } else {
+      setPositions(result, categoriesInRace, quantityRidersFinishedMap);
+    }
+
     result.averageSpeed = calculateAverageSpeed(raceDistance, result.raceTimeInMilliseconds);
   });
 
   return {
-    resultsUpdated: [...results],
+    validResults,
+    dsqResults,
     quantityRidersFinished: quantityRidersFinishedMap.get('absolute') || 0,
   };
 }

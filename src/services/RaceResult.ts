@@ -399,17 +399,17 @@ export class RaceResultService {
       });
 
       // Обработка данных.
-      const { resultsUpdated, quantityRidersFinished } = processResults({
+      const { validResults, dsqResults, quantityRidersFinished } = processResults({
         results: resultsRaceDB,
         categories: categoriesDB,
         raceDistance: race.distance,
       });
 
       // Получение очков за этап в серии заездов или туре.
-      await this.setPoints({ championshipId, results: resultsUpdated });
+      await this.setPoints({ championshipId, results: validResults });
 
       // Обновление позиций и прочих данных.
-      await this.updateResults(resultsUpdated);
+      await this.updateResults([...validResults, ...dsqResults]);
 
       // Обновление количества участников в коллекции Чемпионат в соответствующем заезде.
       await this.updateQuantityFinishedRiders({ raceId, quantityRidersFinished });
