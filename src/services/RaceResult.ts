@@ -21,6 +21,7 @@ import { getExistCategoryNames } from '@/libs/utils/championship/category';
 import {
   TCategories,
   TChampionshipTypes,
+  TDisqualification,
   TRace,
   TRacePointsTable,
   TResultRace,
@@ -344,17 +345,19 @@ export class RaceResultService {
       // Подготовка данных для клиента.
       const resultsAfterDto = dtoResultsRace(resultsRaceDB);
 
+      const { validResults, dsqResults } = this.reduceResults(resultsAfterDto);
+
       // Сортируем по времени заезда.
-      const resultsSorted = resultsAfterDto.sort(
+      const resultsSorted = validResults.sort(
         (a, b) => a.raceTimeInMilliseconds - b.raceTimeInMilliseconds
       );
 
       // Создание списка всех категорий в заезде (категории без результатов не учитываются).
-      const existCategoryNames = getExistCategoryNames(resultsSorted);
+      const existCategoryNames = getExistCategoryNames([...resultsSorted, ...dsqResults]);
 
       return {
         data: {
-          protocol: resultsSorted,
+          protocol: [...resultsSorted, ...dsqResults],
           categories: existCategoryNames,
           race: { name: race.name, _id: raceId },
         },
@@ -365,6 +368,31 @@ export class RaceResultService {
       this.errorLogger(error);
       return this.handlerErrorDB(error);
     }
+  }
+
+  /**
+   * Отделение результатов с дисквалификацией от нормальных.
+   */
+  private reduceResults<T extends { disqualification?: TDisqualification }>(
+    results: T[]
+  ): {
+    validResults: T[];
+    dsqResults: T[];
+  } {
+    // Отделение результатов с дисквалификацией от нормальных.
+    return results.reduce<{
+      validResults: T[];
+      dsqResults: T[];
+    }>(
+      (acc, cur) => {
+        !!cur.disqualification?.type ? acc.dsqResults.push(cur) : acc.validResults.push(cur);
+        return acc;
+      },
+      {
+        validResults: [],
+        dsqResults: [],
+      }
+    );
   }
 
   /**
