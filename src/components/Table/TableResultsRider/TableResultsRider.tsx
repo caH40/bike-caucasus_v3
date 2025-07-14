@@ -23,6 +23,8 @@ import IconAscent from '@/components/Icons/IconAscent';
 import Medal from '../Td/Medal';
 import Time from '../Td/Time';
 import styles from '../TableCommon.module.css';
+import Disqualification from '../Td/Disqualification';
+import { TCategoriesEntity } from '@/types/index.interface';
 
 const cx = cn.bind(styles);
 
@@ -30,6 +32,23 @@ type Props = {
   results: TRiderRaceResultDto[];
   docsOnPage?: number;
 };
+
+function positionCell(props: any, categoryEntity: TCategoriesEntity) {
+  const { _id, disqualification } = props.row.original;
+
+  if (disqualification) {
+    return <Disqualification disqualification={disqualification} resultId={_id} />;
+  } else {
+    return (
+      <div className={cx('box__value', 'box__value-position')}>
+        <Medal position={props.getValue()} />
+        <span className={styles.dimension}>
+          ({props.row.original.quantityRidersFinished[categoryEntity]})
+        </span>
+      </div>
+    );
+  }
+}
 
 const columns: ColumnDef<TRiderRaceResultDto & { index: number }>[] = [
   {
@@ -53,16 +72,7 @@ const columns: ColumnDef<TRiderRaceResultDto & { index: number }>[] = [
       />
     ),
     accessorKey: 'positions.category',
-    cell: (props: any) => {
-      return (
-        <div className={cx('box__value', 'box__value-position')}>
-          <Medal position={props.getValue()} />
-          <span className={styles.dimension}>
-            ({props.row.original.quantityRidersFinished.category})
-          </span>
-        </div>
-      );
-    },
+    cell: (props: any) => positionCell(props, 'category'),
   },
   {
     header: () => (
@@ -74,14 +84,7 @@ const columns: ColumnDef<TRiderRaceResultDto & { index: number }>[] = [
       />
     ),
     accessorKey: 'positions.absolute',
-    cell: (props: any) => (
-      <div className={cx('box__value', 'box__value-position')}>
-        <Medal position={props.getValue()} />
-        <span className={styles.dimension}>
-          ({props.row.original.quantityRidersFinished.absolute})
-        </span>
-      </div>
-    ),
+    cell: (props: any) => positionCell(props, 'absolute'),
   },
 
   {
