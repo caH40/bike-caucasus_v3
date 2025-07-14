@@ -23,6 +23,7 @@ import Medal from '../Td/Medal';
 import styles from '../TableCommon.module.css';
 
 import { TResultRaceDto } from '@/types/dto.types';
+import Disqualification from '../Td/Disqualification';
 
 export const protocolColumns: (ColumnDef<TResultRaceDto & { index: number }> & {
   uniqueName?: string;
@@ -37,7 +38,15 @@ export const protocolColumns: (ColumnDef<TResultRaceDto & { index: number }> & {
       <IconPodium tooltip={{ text: 'Занятое место в общем зачете', id: 'placeAbsolute' }} />
     ),
     accessorKey: 'positions.absolute',
-    cell: (props: any) => <Medal position={props.getValue()} />,
+    cell: (props: any) => {
+      const { _id, disqualification } = props.row.original;
+
+      if (disqualification) {
+        return <Disqualification disqualification={disqualification} resultId={_id} />;
+      } else {
+        return <Medal position={props.getValue()} />;
+      }
+    },
     uniqueName: 'Место в абсолюте',
   },
   {

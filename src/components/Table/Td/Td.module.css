@@ -25,6 +25,10 @@
   object-fit: cover;
   object-position: center;
 }
+.dsq {
+  cursor: help;
+  font-size: 0.9rem;
+}
 .rider__img__empty {
   display: flex;
   justify-content: center;
