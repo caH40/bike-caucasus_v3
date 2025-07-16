@@ -50,7 +50,7 @@ interface Props {
  */
 export default function MapWithElevation({ url }: Props) {
   const refChartLine = useRef<ChartJS<'line'>>(null);
-  const trackData = useParseGPX(url);
+  const trackData = useParseGPX(url, true);
 
   const elevationData = useElevation({ trackData });
 

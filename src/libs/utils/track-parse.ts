@@ -3,8 +3,13 @@ import { getGPSData } from '@/actions/gpx';
 // types
 import { LatLng, MetadataParsed, TrackData } from '@/types/index.interface';
 
-export async function parseGPXTrack(url: string): Promise<TrackData> {
-  const data = await getGPSData(url);
+/**
+ * Получение данных трека по url в формате trackData.
+ * isDetailed:true происходит интерполяция дополнительных точек на треке через равные интервалы для отображения плавных изменений профиля высоты трека.
+ */
+
+export async function parseGPXTrack(url: string, isDetailed?: boolean): Promise<TrackData> {
+  const data = await getGPSData(url, isDetailed);
 
   const positionsParsed: (LatLng & { ele: number })[] = data.gpx.trk[0].trkseg[0].trkpt.map(
     (point) => ({
