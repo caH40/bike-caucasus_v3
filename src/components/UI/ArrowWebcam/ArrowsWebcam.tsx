@@ -3,32 +3,30 @@ import { Dispatch, SetStateAction } from 'react';
 import ArrowSvg from './ArrowSvg';
 import styles from './ArrowsWebcam.module.css';
 
-// Номера камер на сайтеgw.cmo.sai.msu.ru
-const webcams = [1, 5, 6, 7];
-
 type Params = {
-  numberWebcam: number;
-  setNumberWebcam: Dispatch<SetStateAction<number>>;
+  webcamIndex: number;
+  setWebcamIndex: Dispatch<SetStateAction<number>>;
+  webcams: number[];
 };
 
 /**
  * Стрелки для переключения между вебкамерами.
  */
-export default function ArrowsWebcam({ numberWebcam, setNumberWebcam }: Params) {
+export default function ArrowsWebcam({ webcamIndex, setWebcamIndex, webcams }: Params) {
   const chooseNumber = (direction: 'left' | 'right') => {
     if (direction === 'left') {
-      if (webcams.indexOf(numberWebcam) === 0) {
-        setNumberWebcam(webcams[webcams.length - 1]);
+      if (webcamIndex === 0) {
+        setWebcamIndex(webcams.length - 1);
       } else {
-        setNumberWebcam((prev) => webcams[webcams.indexOf(prev) - 1]);
+        setWebcamIndex((prev) => prev - 1);
       }
     }
 
     if (direction === 'right') {
-      if (webcams.indexOf(numberWebcam) === webcams.length - 1) {
-        setNumberWebcam(webcams[0]);
+      if (webcamIndex === webcams.length - 1) {
+        setWebcamIndex(0);
       } else {
-        setNumberWebcam((prev) => webcams[webcams.indexOf(prev) + 1]);
+        setWebcamIndex((prev) => prev + 1);
       }
     }
   };
