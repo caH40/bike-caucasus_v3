@@ -6,18 +6,18 @@ export const fileTypes = [
     type: 'image',
     accept: '.jpg, .jpeg, .png, .webp',
     description: 'Файл изображения',
-    testString: 'image/',
+    testStrings: ['image/'],
   },
   {
     type: 'GPX',
     accept: '.gpx',
     description: 'Файл gpx-track формата GPX',
-    testString: 'application/octet-stream',
+    testStrings: ['application/octet-stream', 'application/gpx+xml'],
   },
   {
     type: 'pdf',
     accept: '.pdf',
     description: 'Файл pdf',
-    testString: 'application/pdf',
+    testStrings: ['application/pdf'],
   },
 ];

@@ -1,6 +1,6 @@
 import { Cloud } from './cloud';
-import { fileTypes } from '@/constants/files';
 import { generateFileName } from '@/libs/utils/filename';
+import { checkFileType } from '@/libs/utils/files';
 import type { TSaveFile } from '@/types/index.interface';
 
 /**
@@ -11,16 +11,10 @@ export async function saveFile({ file, type, suffix }: TSaveFile): Promise<strin
     throw new Error('Не получен файл для сохранения в Облаке!');
   }
 
-  const typeCurrent = fileTypes.find((elm) => elm.type === type);
-  if (!typeCurrent) {
-    throw new Error('Не получен или неправильно задан тип файла!');
-  }
+  // Проверка типа загружаемого файла на соответствие ожидаемого типа.
+  checkFileType({ file, type });
 
   let fileName = '';
-
-  if (!file.type.startsWith(typeCurrent.testString)) {
-    throw new Error(`Загружаемый файл ${file.name} не является ${typeCurrent.description}`);
-  }
 
   // Создание уникального имени благодаря timestamp с добавлением расширения файла.
   fileName = generateFileName(file, suffix);
