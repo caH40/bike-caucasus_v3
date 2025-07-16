@@ -18,6 +18,7 @@ export const ElevationProfileSchema = new Schema(
         type: {
           href: { type: String },
           text: { type: String },
+          _id: false,
         },
         default: null,
       },

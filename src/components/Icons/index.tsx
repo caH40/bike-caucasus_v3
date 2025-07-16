@@ -79,3 +79,4 @@ export { default as IconBriefcase } from './IconBriefcase';
 export { default as IconTransactionHistory } from './IconTransactionHistory';
 export { default as IconSiteServices } from './IconSiteServices';
 export { default as IconTickets } from './IconTickets';
+export { default as IconGPXFile } from './IconGPXFile';

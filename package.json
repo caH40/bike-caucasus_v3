@@ -15,6 +15,7 @@
     "@aws-sdk/client-s3": "^3.572.0",
     "@babel/core": "^7.26.10",
     "@tanstack/react-table": "^8.20.5",
+    "@turf/turf": "^7.2.0",
     "aws-sdk": "^2.1617.0",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
