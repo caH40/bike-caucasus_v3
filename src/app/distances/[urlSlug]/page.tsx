@@ -10,6 +10,7 @@ const MapWithElevation = dynamic(() => import('@/components/Map/MapWrapper'));
 import DistanceParams from '@/components/DistanceParams/DistanceParams';
 import Spacer from '@/components/Spacer/Spacer';
 import DistanceResultsTableContainer from '@/components/Table/Containers/DistanceResultsTableContainer/DistanceResultsTableContainer';
+import IconGPXFile from '@/components/Icons/IconGPXFile';
 import styles from './Distance.module.css';
 
 // Создание динамических meta данных.
@@ -67,6 +68,13 @@ export default async function DistancePage(props: Props) {
       {/* Профиль дистанции и высоты с треком на карте */}
       <Spacer margin="b-lg">
         <MapWithElevation url={d.trackGPX.url} key={d._id} />
+      </Spacer>
+
+      <Spacer margin="b-lg">
+        <a className={styles.box__link} target="_blank" href={d.trackGPX.url} rel="noreferrer">
+          <IconGPXFile />
+          <span className={styles.link}>Скачать GPX</span>
+        </a>
       </Spacer>
     </div>
   );
