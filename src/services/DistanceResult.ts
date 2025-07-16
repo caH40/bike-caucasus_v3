@@ -163,9 +163,16 @@ export class DistanceResultService {
       const raceIds = races.map(({ _id }) => _id);
 
       // Все результаты.
-      const raceResults = await ResultRaceModel.find({ race: { $in: raceIds } }).lean<
-        TResultRace[]
-      >();
+      const raceResults = await ResultRaceModel.find({
+        race: {
+          $in: raceIds,
+        },
+        $or: [
+          { disqualification: { $exists: false } },
+          { disqualification: { $eq: undefined } },
+          { disqualification: { $eq: null } },
+        ],
+      }).lean<TResultRace[]>();
 
       const distanceResults = this.prepareDistanceResultsForSave({
         raceResults,
