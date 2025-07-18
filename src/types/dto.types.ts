@@ -183,6 +183,7 @@ export type TDtoChampionship = Omit<
   updatedAt: string;
   races: TRaceForForm[];
   categoriesConfigs: (Omit<TCategories, '_id' | 'championship'> & { _id: string })[];
+  moderatorIds: string[];
 };
 
 /**

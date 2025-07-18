@@ -13,7 +13,7 @@ import { RaceModel } from '@/database/mongodb/Models/Race';
 import { saveFile } from './save-file';
 
 import { organizerSelect, parentChampionshipSelect } from '@/constants/populate';
-import { dtoChampionship, dtoChampionships, dtoToursAndSeries } from '@/dto/championship';
+import { dtoChampionship, dtoToursAndSeries } from '@/dto/championship';
 import { deserializeChampionship } from '@/libs/utils/deserialization/championship';
 import { getNextSequenceValue } from './sequence';
 import { Cloud } from './cloud';
@@ -100,7 +100,9 @@ export class ChampionshipService {
         throw new Error(`Не найден Чемпионат с urlSlug: ${urlSlug} в БД!`);
       }
 
-      const championship = dtoChampionship(championshipDB);
+      const moderatorIds = await this.getModeratorIds(championshipDB.organizer._id.toString());
+
+      const championship = dtoChampionship(championshipDB, moderatorIds);
 
       return { data: championship, ok: true, message: 'Данные запрашиваемого Чемпионата' };
     } catch (error) {
@@ -167,8 +169,8 @@ export class ChampionshipService {
       // Формирование данных для отображение Блока Этапов в карточке Чемпионата.
       const championshipsWithDesc = await this.buildStageDateDescriptions(championshipsDB);
 
-      // ДТО формирование данных для Клиента.
-      const championships = dtoChampionships(championshipsWithDesc);
+      // ДТО формирование данных для Клиента. Для запроса всех чемпионатов moderatorIds не нужны.
+      const championships = championshipsWithDesc.map((c) => dtoChampionship(c, []));
 
       // Сортировка 1 группа upcoming, ongoing сортируются по дате старта.
       // Далее сортировка 2 группы completed, canceled сортируются по дате финиша.
@@ -848,7 +850,8 @@ export class ChampionshipService {
   /**
    * Получение списка модераторов чемпионата.
    */
-  private async getModeratorIds(): Promise<string[]> {
-    return [];
+  private async getModeratorIds(organizerId: string): Promise<string[]> {
+    // В дальнейшем сделать логику добавления модераторов для чемпионата, которых назначил организатор.
+    return [organizerId];
   }
 }

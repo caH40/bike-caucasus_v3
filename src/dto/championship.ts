@@ -11,18 +11,12 @@ import { TGetToursAndSeriesFromMongo } from '@/types/mongo.types';
 import { racePointsTableDto } from './race-points-table';
 
 /**
- * ДТО массива Чемпионатов.
- */
-export function dtoChampionships(
-  championships: TChampionshipWithOrganizer[]
-): TDtoChampionship[] {
-  return championships.map((championship) => dtoChampionship(championship));
-}
-
-/**
  * ДТО Чемпионата.
  */
-export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoChampionship {
+export function dtoChampionship(
+  championship: TChampionshipWithOrganizer,
+  moderatorIds: string[]
+): TDtoChampionship {
   const organizer: TOrganizerForClient = {
     ...championship.organizer,
     _id: String(championship.organizer._id),
@@ -77,6 +71,7 @@ export function dtoChampionship(championship: TChampionshipWithOrganizer): TDtoC
     createdAt,
     updatedAt,
     stageDateDescription: championship.stageDateDescription,
+    moderatorIds,
   };
 }
 

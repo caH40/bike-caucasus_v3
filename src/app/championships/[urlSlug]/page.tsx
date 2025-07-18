@@ -22,6 +22,7 @@ import styles from './Championship.module.css';
 import { isChampionshipWithStages } from '@/libs/utils/championship/championship';
 import TableRacePointsTable from '@/components/Table/TableRacePointsTable/TableRacePointsTable';
 import { notFound } from 'next/navigation';
+import PermissionCheck from '@/hoc/permission-check';
 
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -29,6 +30,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 type Props = { params: Promise<{ urlSlug: string }> };
+
+// Роли для использования меню.
+const permission = 'moderation.championship.protocol';
 
 /**
  * Страница описания Чемпионата как отдельного, так и серии заездов.
@@ -80,12 +84,14 @@ export default async function ChampionshipPage(props: Props) {
           <div className={styles.block__header}>
             <div className={styles.ellipsis} id="popup-control-menu-championship">
               {/* popup меня управления чемпионатом */}
-              <ChampionshipMenuPopup
-                urlSlug={championship.urlSlug}
-                raceId={championship.races[0]?._id}
-                championshipId={championship._id}
-                hiddenItemNames={hiddenItemNames}
-              />
+              <PermissionCheck permission={permission} moderatorIds={championship.moderatorIds}>
+                <ChampionshipMenuPopup
+                  urlSlug={championship.urlSlug}
+                  raceId={championship.races[0]?._id}
+                  championshipId={championship._id}
+                  hiddenItemNames={hiddenItemNames}
+                />
+              </PermissionCheck>
             </div>
             <BlockChampionshipHeader championship={championship} />
           </div>

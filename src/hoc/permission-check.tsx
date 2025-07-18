@@ -33,7 +33,10 @@ export default function PermissionCheck({
   // Доступ согласно Permissions у пользователя.
   const hasPermissionAccess = checkPermissionAccess({ user: session.user, permission });
 
-  const hasModeratorAccess = !moderatorIds?.length || moderatorIds.includes(session.user.idDB);
+  const hasModeratorAccess =
+    session.user.role.name === 'admin' ||
+    !moderatorIds?.length ||
+    moderatorIds.includes(session.user.idDB);
 
   return hasPermissionAccess && hasModeratorAccess ? <>{children}</> : null;
 }
