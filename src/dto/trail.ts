@@ -20,6 +20,7 @@ export function dtoTrail(
     // likedBy: trail.likedBy?.map((like) => String(like)) || [],
     isLikedByUser: trail.isLikedByUser,
     blocks: trail.blocks?.map((block) => ({ ...block, _id: String(block._id) })) || [],
+    moderatorIds: [author._id],
   };
   return dto;
 }

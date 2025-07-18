@@ -126,6 +126,7 @@ export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 
   commentsCount: number;
   isLikedByUser: boolean;
   author: TAuthor;
+  moderatorIds: string[];
 };
 
 /**

@@ -1,5 +1,4 @@
-import { DefaultSession } from 'next-auth';
-import { TRoleModel } from './models.interface';
+import { TSessionUser } from './index.interface';
 
 declare module 'next-auth' {
   /**
@@ -8,13 +7,7 @@ declare module 'next-auth' {
 
   /* eslint-disable */
   interface Session {
-    user: {
-      /** The user's postal address. */
-      role: Omit<TRoleModel, '_id'>;
-      id: string; // порядковый числовой id, присваиваемый при регистрации
-      provider: string; // название провайдера с помощью которого произошла аутентификация
-      idDB: string; // id базы данных mongodb
-    } & DefaultSession['user'];
+    user: TSessionUser;
   }
 }
 

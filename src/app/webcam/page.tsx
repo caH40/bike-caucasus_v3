@@ -24,6 +24,7 @@ export default function WebcamPage() {
         />
         <div>
           <Webcam forFullScr={true} />
+
           <div className={styles.author}>
             <span>Изображения с сайта</span>
             <a href="https://cmo-env.sai.msu.ru/webcam/" className={styles.link} target="blank">

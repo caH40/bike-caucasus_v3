@@ -844,4 +844,11 @@ export class ChampionshipService {
 
     return [...currentSortedChamps, ...finishedSortedChamps];
   }
+
+  /**
+   * Получение списка модераторов чемпионата.
+   */
+  private async getModeratorIds(): Promise<string[]> {
+    return [];
+  }
 }

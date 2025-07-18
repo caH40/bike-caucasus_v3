@@ -32,6 +32,7 @@ import {
   TRacePointsTable,
   TRaceRegistration,
   TResultRace,
+  TRoleModel,
   TTrackGPXObj,
 } from './models.interface';
 import {
@@ -59,6 +60,7 @@ import {
   TRaceMetaFromMongo,
 } from './mongo.types';
 import { ICreatePayment } from '@a2seven/yoo-checkout';
+import { DefaultSession } from 'next-auth';
 
 export interface PropsBoxInputAuth {
   id: string;
@@ -89,6 +91,13 @@ export type PropsBoxInput = {
   hasError?: boolean; // Наличие ошибки валидации.
   maxLength?: number;
 };
+
+export type TSessionUser = {
+  role: Omit<TRoleModel, '_id'>;
+  id: string; // числовой id, присваиваемый при регистрации
+  provider: string; // название провайдера (например, 'google', 'credentials')
+  idDB: string; // строка MongoDB _id
+} & DefaultSession['user'];
 
 /**
  * Пропсы для Select использующего библиотеку react-hook-form.

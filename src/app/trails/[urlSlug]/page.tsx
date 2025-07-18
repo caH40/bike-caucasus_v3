@@ -42,6 +42,7 @@ type Props = {
 export default async function TrailPage(props: Props) {
   const params = await props.params;
   const session = await getServerSession(authOptions);
+
   const idUserDB = session?.user.idDB;
 
   const trail = await getTrail(params.urlSlug);
@@ -63,7 +64,7 @@ export default async function TrailPage(props: Props) {
   return (
     <>
       {/* popup меня управления новостью */}
-      <PermissionCheck permission={'moderation.trails'}>
+      <PermissionCheck permission={'moderation.trails'} moderatorIds={trail.moderatorIds}>
         <div className={styles.ellipsis} id="popup-control-menu-trail">
           <MenuEllipsisControl
             urlSlug={trail.urlSlug}
@@ -73,6 +74,7 @@ export default async function TrailPage(props: Props) {
           />
         </div>
       </PermissionCheck>
+
       <Wrapper
         title={`${trail.title} - велосипедный маршрут в регионе ${
           regions.find((region) => region.name === trail.region)?.translation || ''
