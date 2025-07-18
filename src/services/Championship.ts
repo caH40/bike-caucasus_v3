@@ -852,6 +852,17 @@ export class ChampionshipService {
    */
   private async getModeratorIds(organizerId: string): Promise<string[]> {
     // В дальнейшем сделать логику добавления модераторов для чемпионата, которых назначил организатор.
-    return [organizerId];
+
+    const userDB = await OrganizerModel.findById(organizerId, {
+      creator: true,
+      _id: false,
+    }).lean<{ creator: Types.ObjectId }>();
+
+    const moderators = [];
+    if (userDB) {
+      moderators.push(userDB.creator.toString());
+    }
+
+    return moderators;
   }
 }
