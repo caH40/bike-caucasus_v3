@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import MenuControl from './MenuControl';
 import styles from './MenuControl.module.css';
-import PermissionCheck from '@/hoc/permission-check';
+
 import IconEditOld from '@/components/Icons/IconEditOld';
 import { updateProtocolRace } from '@/actions/result-race';
 import IconRefresh from '@/components/Icons/IconRefresh';
@@ -16,15 +16,13 @@ const cx = cn.bind(styles);
 
 type Props = {
   raceInfo: { championshipId: string; championshipUrlSlug: string; raceId: string };
+  permission: string;
 };
-
-// Роли для использования меню.
-const permission = 'moderation.championship.protocol';
 
 /**
  * Popup меню управления протоколом заезда в таблице результатов.
  */
-export default function ProtocolMenuPopup({ raceInfo }: Props) {
+export default function ProtocolMenuPopup({ raceInfo, permission }: Props) {
   const router = useRouter();
 
   const handlerUpdateProtocolRace = async (championshipId: string, raceId: string) => {
@@ -66,17 +64,15 @@ export default function ProtocolMenuPopup({ raceInfo }: Props) {
   ];
 
   return (
-    <PermissionCheck permission={permission}>
-      <div className={styles.inner}>
-        <MenuControl buttons={buttons} />
-        <Tooltip
-          anchorSelect={'protocol-MenuPopupControlProtocol'}
-          place="top"
-          className={cx('tooltip')}
-        >
-          {'Обновить данные протокола: позиции, категории, отставания, ср.скорость'}
-        </Tooltip>
-      </div>
-    </PermissionCheck>
+    <div className={styles.inner}>
+      <MenuControl buttons={buttons} />
+      <Tooltip
+        anchorSelect={'protocol-MenuPopupControlProtocol'}
+        place="top"
+        className={cx('tooltip')}
+      >
+        {'Обновить данные протокола: позиции, категории, отставания, ср.скорость'}
+      </Tooltip>
+    </div>
   );
 }

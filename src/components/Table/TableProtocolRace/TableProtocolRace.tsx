@@ -16,6 +16,7 @@ import styles from '../TableCommon.module.css';
 
 import { TResultRaceDto } from '@/types/dto.types';
 import { TCategoriesEntity } from '@/types/index.interface';
+import PermissionCheck from '@/hoc/permission-check';
 
 const cx = cn.bind(styles);
 
@@ -27,7 +28,11 @@ type Props = {
   captionTitle: string; // Название таблицы.
   raceInfo: { championshipId: string; championshipUrlSlug: string; raceId: string };
   categoryEntity: TCategoriesEntity;
+  moderatorIds: string[];
 };
+
+// Роли для использования меню.
+const permission = 'moderation.championship.protocol';
 
 /**
  * Таблица финишных протоколов заездов.
@@ -40,6 +45,7 @@ export default function TableProtocolRace({
   captionTitle,
   raceInfo,
   categoryEntity,
+  moderatorIds,
 }: Props) {
   const data = useMemo(() => {
     return [...protocol].map((elm, index) => ({ ...elm, index: index + 1 }));
@@ -81,9 +87,11 @@ export default function TableProtocolRace({
               <span>{captionTitle}</span>
 
               {/* popup меня управления протоколом */}
-              <div className={styles.menu__control}>
-                <ProtocolMenuPopup raceInfo={raceInfo} />
-              </div>
+              <PermissionCheck permission={permission} moderatorIds={moderatorIds}>
+                <div className={styles.menu__control}>
+                  <ProtocolMenuPopup raceInfo={raceInfo} permission={permission} />
+                </div>
+              </PermissionCheck>
             </div>
           </caption>
           <thead>

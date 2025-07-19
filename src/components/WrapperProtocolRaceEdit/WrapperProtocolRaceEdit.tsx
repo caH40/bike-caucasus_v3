@@ -133,6 +133,7 @@ export default function WrapperProtocolRaceEdit({
         ]}
         captionTitle="Общий протокол"
         categoryEntity={'absolute'}
+        moderatorIds={championship.moderatorIds}
       />
 
       {categories.age.map((category) => (
@@ -145,6 +146,7 @@ export default function WrapperProtocolRaceEdit({
           hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
           categoryEntity={'category'}
+          moderatorIds={championship.moderatorIds}
         />
       ))}
 
@@ -156,6 +158,7 @@ export default function WrapperProtocolRaceEdit({
           hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
           captionTitle={`Категория ${replaceCategorySymbols(category)}`}
           categoryEntity={'category'}
+          moderatorIds={championship.moderatorIds}
         />
       ))}
     </div>

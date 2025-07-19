@@ -78,6 +78,7 @@ export default function RaceProtocolWrapper({ championship }: Props) {
         ]}
         captionTitle="Общий протокол"
         categoryEntity={'absolute'}
+        moderatorIds={championship.moderatorIds}
       />,
 
       <ContainerProtocolRace
@@ -95,6 +96,7 @@ export default function RaceProtocolWrapper({ championship }: Props) {
         ]}
         captionTitle="Общий женский протокол"
         categoryEntity={'absoluteGender'}
+        moderatorIds={championship.moderatorIds}
       />,
     ],
     1: categories.age.map((category) => (
@@ -107,6 +109,7 @@ export default function RaceProtocolWrapper({ championship }: Props) {
         hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
         captionTitle={`Категория ${replaceCategorySymbols(category)}`}
         categoryEntity={'category'}
+        moderatorIds={championship.moderatorIds}
       />
     )),
     2: categories.skillLevel.map((category) => (
@@ -117,6 +120,7 @@ export default function RaceProtocolWrapper({ championship }: Props) {
         hiddenColumnHeaders={hiddenColumnHeadersInCategoriesProtocol}
         captionTitle={`Категория ${replaceCategorySymbols(category)}`}
         categoryEntity={'category'}
+        moderatorIds={championship.moderatorIds}
       />
     )),
   };

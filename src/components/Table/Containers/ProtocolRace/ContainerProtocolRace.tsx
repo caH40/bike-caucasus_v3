@@ -11,6 +11,7 @@ type Props = {
   captionTitle: string; // Название таблицы.
   raceInfo: { championshipId: string; championshipUrlSlug: string; raceId: string };
   categoryEntity: TCategoriesEntity;
+  moderatorIds: string[];
 };
 
 /**
@@ -23,6 +24,7 @@ export default function ContainerProtocolRace({
   captionTitle,
   raceInfo,
   categoryEntity,
+  moderatorIds,
 }: Props) {
   return (
     <>
@@ -34,6 +36,7 @@ export default function ContainerProtocolRace({
         hiddenColumnHeaders={hiddenColumnHeaders}
         captionTitle={captionTitle}
         categoryEntity={categoryEntity}
+        moderatorIds={moderatorIds}
       />
     </>
   );
