@@ -240,7 +240,7 @@ export function getTitleChampionship({ champ }: { champ: TDtoChampionship }) {
         return messageNotForStage;
       }
 
-      return `Любительская велогонка ${champ.stageOrder} Этапа: "${champ.name}". ${
+      return `Любительская велогонка ${champ.stageOrder} Этап: "${champ.name}". ${
         championshipTypesMap.get(champ.parentChampionship.type)?.translation
       } "${champ.parentChampionship.name}"`;
     }
@@ -267,7 +267,7 @@ export function getDescriptionChampionship({ champ }: { champ: TDtoChampionship 
         return messageNotForStage;
       }
 
-      return `Примите участие в Чемпионате по велоспорту на ${champ.stageOrder} Этапа: "${
+      return `Примите участие в Чемпионате по велоспорту на Этапе ${champ.stageOrder}: "${
         champ.name
       }". ${championshipTypesMap.get(champ.parentChampionship.type)?.translation} "${
         champ.parentChampionship.name
