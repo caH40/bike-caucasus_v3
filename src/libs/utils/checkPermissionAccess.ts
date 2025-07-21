@@ -1,7 +1,7 @@
 import { TSessionUser } from '@/types/index.interface';
 
 type Params = {
-  permission: string | null;
+  permission: string;
   user: TSessionUser;
 };
 
@@ -11,11 +11,6 @@ type Params = {
  * @returns {boolean} - Возвращает true, если пользователь имеет доступ, иначе false.
  */
 export function checkPermissionAccess({ user, permission }: Params): boolean {
-  // Если нет permission, значит страница открыта для всех.
-  if (!permission) {
-    return true;
-  }
-
   if (!user.role) {
     return false;
   }

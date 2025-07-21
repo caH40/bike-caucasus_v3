@@ -25,6 +25,11 @@ export default function PermissionCheck({
 }: Props): JSX.Element | null {
   const { data: session, status } = useSession();
 
+  // Если нет permission, значит страница открыта для всех.
+  if (!permission) {
+    return <>{children}</>;
+  }
+
   // Если загрузка или юзер не авторизован.
   if (status === 'loading' || !session?.user) {
     return null;
