@@ -1,5 +1,5 @@
 import { TProfileForRegistration } from '@/types/index.interface';
-import { getDefaultValue } from '../UI/Forms/FormRaceRegistration/utils';
+import { getDefaultValue } from '../UI/Forms/FormRaceRegistration/account';
 import styles from './BlockProfileRegRace.module.css';
 import TitleAndLine from '../TitleAndLine/TitleAndLine';
 
@@ -25,14 +25,16 @@ export default function BlockProfileRegRace({ profile, category }: Props) {
         <dt className={styles.desc__title}>Отчество</dt>
         <dd className={styles.desc__detail}>{profile.patronymic}</dd>
 
+        <dt className={styles.desc__title}>Год рождения</dt>
+        <dd className={styles.desc__detail}>
+          {getDefaultValue(profile.yearBirthday, 'yearBirthday')}
+        </dd>
+
         <dt className={styles.desc__title}>
           {category.skillLevel ? 'Спецкатегория' : 'Возрастная категория'}
         </dt>
         <dd className={styles.desc__detail}>
-          {getDefaultValue(
-            category.skillLevel ? category.skillLevel : category.age,
-            'ageCategory'
-          )}
+          {category.skillLevel ? category.skillLevel : category.age}
         </dd>
 
         <dt className={styles.desc__title}>Пол</dt>

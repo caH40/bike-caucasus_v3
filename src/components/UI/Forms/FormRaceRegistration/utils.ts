@@ -1,30 +1,5 @@
 import { TFormRaceRegistration, TRaceForForm } from '@/types/index.interface';
 
-export function getDefaultValue(
-  value: string | null,
-  type: 'city' | 'firstName' | 'lastName' | 'gender' | 'ageCategory'
-): string {
-  switch (type) {
-    case 'firstName':
-      return value || 'Нет данных по имени, пожалуйста заполните данные в аккаунте!';
-
-    case 'lastName':
-      return value || 'Нет данных по фамилии, пожалуйста заполните данные в аккаунте!';
-
-    case 'city':
-      return value || 'Нет данных по городу, пожалуйста заполните данные в аккаунте!';
-
-    case 'gender':
-      return value === 'male' ? 'мужской' : 'женский';
-
-    case 'ageCategory':
-      return value || 'Нет данных по возрасту, пожалуйста заполните данные в аккаунте!';
-
-    default:
-      return 'нет данных';
-  }
-}
-
 /**
  * Проверка заполнения обязательных полей формы.
  */
