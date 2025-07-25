@@ -5,6 +5,11 @@
   gap: 8px 1rem;
   margin-bottom: 5px;
 }
+.desc__title {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--main-color-muted);
+}
 .desc__title::after {
   content: ':';
 }

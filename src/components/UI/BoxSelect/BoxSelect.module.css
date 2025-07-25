@@ -4,6 +4,7 @@
 .label {
   font-size: 0.9rem;
   font-weight: 400;
+  color: var(--main-color-muted);
   margin-bottom: 5px;
   display: flex;
   justify-content: space-between;

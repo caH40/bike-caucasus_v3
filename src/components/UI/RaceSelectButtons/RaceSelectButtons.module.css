@@ -39,6 +39,7 @@
   font-size: 0.9rem;
   font-weight: 400;
   margin-bottom: 5px;
+  color: var(--main-color-muted);
 }
 /* ====================================================================== */
 @media (max-width: 576px) {

@@ -6,6 +6,7 @@
   font-weight: 400;
   margin-bottom: 5px;
   display: flex;
+  color: var(--main-color-muted);
   justify-content: space-between;
   align-items: flex-end;
 }

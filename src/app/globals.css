@@ -1,6 +1,7 @@
 :root {
   --main-color: #fafafa;
-  --main-color-text: #cacaca;
+  --main-color-muted: #c0c0c0;
+  --main-color-text: #dfdfdf;
   --main-color-dark: #0f0f0f;
   --main-bg-color: linear-gradient(
     90.53deg,

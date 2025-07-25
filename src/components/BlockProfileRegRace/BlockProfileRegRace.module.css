@@ -17,6 +17,7 @@
   align-items: center;
 }
 .desc__title {
+  color: var(--main-color-muted);
   text-transform: uppercase;
   font-size: 0.85rem;
   font-weight: normal;
