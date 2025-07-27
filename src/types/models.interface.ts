@@ -1,5 +1,6 @@
 import mongoose, { Document, ObjectId, Types } from 'mongoose';
 import {
+  DebugMeta,
   TAwardedProtocols,
   TCategoryAge,
   TCategorySkillLevel,
@@ -200,6 +201,7 @@ export interface TLogsErrorModel {
   type?: string; // тип ошибки
   message: string; // краткое описание
   stack?: string; // стэк ошибки
+  debugMeta?: DebugMeta;
   createdAt: Date;
   updatedAt: Date;
 }

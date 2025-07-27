@@ -1,17 +1,21 @@
 'use server';
 
+import { getServerSession } from 'next-auth';
+
 import { parseError } from '@/errors/parse';
 import { errorHandlerClient } from './error-handler';
 import { UserService } from '@/services/user';
-import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
+import { handlerErrorDB } from '@/services/mongodb/error';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+
+// types
 import {
+  DebugMeta,
   ServerResponse,
   TProfileForRegistration,
   TUserModeratedData,
 } from '@/types/index.interface';
-import { handlerErrorDB } from '@/services/mongodb/error';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
 
 const userService = new UserService();
 
@@ -21,12 +25,18 @@ const userService = new UserService();
 export async function getProfile({
   userId,
   isPrivate,
+  debugMeta,
 }: {
   userId: number;
   isPrivate?: boolean;
+  debugMeta?: DebugMeta;
 }): Promise<ServerResponse<TUserDto | TUserDtoPublic | null>> {
   try {
-    const { data: profile } = await userService.getProfile({ id: userId, isPrivate });
+    const { data: profile } = await userService.getProfile({
+      id: userId,
+      isPrivate,
+      debugMeta,
+    });
 
     if (!profile) {
       throw new Error('Пользователь не найден!');

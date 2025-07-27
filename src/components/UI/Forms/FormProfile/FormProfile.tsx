@@ -28,7 +28,7 @@ import { genderOptions } from '@/constants/other';
 type Props = {
   formData: TUserDto;
   putProfile: (params: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line
-  idUser: string;
+  idUser: number;
 };
 
 /**
@@ -59,7 +59,7 @@ export default function FormProfile({ formData, putProfile, idUser }: Props) {
       dataToForm.set('image', file);
     }
     dataToForm.set('imageFromProvider', String(imageFromProvider));
-    dataToForm.set('id', idUser);
+    dataToForm.set('id', String(idUser));
     for (const key in dataForm) {
       if (dataForm.hasOwnProperty(key)) {
         dataToForm.set(key, dataForm[key]);

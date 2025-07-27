@@ -31,9 +31,18 @@ export default async function ProfilePage(props: TPageProps) {
   const { id } = params;
 
   const session = await getServerSession(authOptions);
+
   const userIdDbFromSession = session?.user.idDB;
 
-  const { data: profile } = await getProfile({ userId: +id });
+  const { data: profile } = await getProfile({
+    userId: +id,
+    debugMeta: {
+      caller: 'ProfilePage',
+      authUserId: session?.user.id,
+      rawParams: params,
+      path: `/profile/${id}`,
+    },
+  });
 
   // Если нет данных, то пользователь не найден.
   if (!profile) {
@@ -99,7 +108,7 @@ export default async function ProfilePage(props: TPageProps) {
 
         {/* меню профиля */}
         <div className={styles.menu}>
-          <MenuProfile profileId={id} />
+          <MenuProfile profileId={+id} />
         </div>
       </aside>
 

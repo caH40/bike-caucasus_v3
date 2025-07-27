@@ -10,7 +10,7 @@ import IconShare from '@/components/Icons/IconShare';
 import IconEllipsisHorCircle from '@/components/Icons/IconEllipsisHorCircle';
 
 type Params = {
-  profileId: string;
+  profileId: number;
 };
 
 /**

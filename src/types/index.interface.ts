@@ -94,7 +94,7 @@ export type PropsBoxInput = {
 
 export type TSessionUser = {
   role: Omit<TRoleModel, '_id'>;
-  id: string; // числовой id, присваиваемый при регистрации
+  id: number; // числовой id, присваиваемый при регистрации
   provider: string; // название провайдера (например, 'google', 'credentials')
   idDB: string; // строка MongoDB _id
 } & DefaultSession['user'];
@@ -1723,3 +1723,14 @@ export type TYooKassaPaymentStatus =
 
 // Действия над слотами для сервисов. Покупка, Использование, Отмена использования.
 export type TActionSlot = 'purchase' | 'consume' | 'refund';
+
+/**
+ * Дополнительная отладочная информация, передаваемая в сервисы для логирования и диагностики ошибок.
+ */
+export type DebugMeta = {
+  caller?: string; // Откуда вызван сервис (например, 'ProfilePage' или 'api/user/[id]').
+  path?: string; // Абсолютный путь страницы или API (например, '/profile/123').
+  authUserId?: number; // ID на сайте текущего авторизованного пользователя.
+  rawParams?: unknown; // Оригинальные route-параметры (например, props.params).
+  search?: unknown; // Query-параметры (например, props.searchParams).
+};

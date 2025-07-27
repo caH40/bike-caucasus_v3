@@ -23,7 +23,7 @@ import type {
 /**
  * Главное меню навигации сайта в мобильной версии.
  */
-export const getNavLinksMobile = (userId: string | undefined) => [
+export const getNavLinksMobile = (userId: number | undefined) => [
   { id: 0, name: 'Главная', href: '/', permission: null },
   { id: 1, name: 'Вебкамеры', href: '/webcam', permission: null },
   { id: 2, name: 'Маршруты', href: '/trails', permission: null },
@@ -45,7 +45,7 @@ export const getNavLinksMobile = (userId: string | undefined) => [
 /**
  * Меню навигации у Пользователя в Popup.
  */
-export const getNavLinksUserPopup = (userId: string | undefined): TMenuPopup[] => [
+export const getNavLinksUserPopup = (userId: number | undefined): TMenuPopup[] => [
   {
     id: 0,
     name: 'Профиль',

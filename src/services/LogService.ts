@@ -7,7 +7,7 @@ import { ModeratorActionLogModel } from '@/database/mongodb/Models/ModeratorActi
 
 // types
 import type { TGetErrorsDto, TGetModeratorActionLogDto } from '@/types/dto.types';
-import type { ServerResponse, TLogsErrorParsed } from '@/types/index.interface';
+import type { DebugMeta, ServerResponse, TLogsErrorParsed } from '@/types/index.interface';
 import type { TLogsErrorModel } from '@/types/models.interface';
 import { TGetAllModeratorActionLogsFromMongo } from '@/types/mongo.types';
 
@@ -17,9 +17,9 @@ import { TGetAllModeratorActionLogsFromMongo } from '@/types/mongo.types';
 export class LogService {
   constructor() {}
 
-  public async saveError(error: TLogsErrorParsed) {
+  public async saveError(error: TLogsErrorParsed, debugMeta?: DebugMeta) {
     try {
-      const response = await LogsError.create({ ...error });
+      const response = await LogsError.create({ ...error, debugMeta });
       if (!response) {
         throw new Error('Ошибка при сохранении лога в БД');
       }

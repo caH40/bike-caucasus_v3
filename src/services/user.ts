@@ -9,6 +9,7 @@ import { errorLogger } from '@/errors/error';
 import { TProfileSimpleDto, TUserDto, TUserDtoPublic } from '@/types/dto.types';
 import { dtoGetUser, dtoGetUserPublic, dtoGetUsersSimplePublic } from '@/dto/user';
 import type {
+  DebugMeta,
   ServerResponse,
   TFormAccount,
   TFormProfile,
@@ -22,6 +23,7 @@ type ParamsGetProfile = {
   id?: Number;
   isPrivate?: boolean;
   ageCategoryVersion?: string; // Название версии категоризации по возрасту
+  debugMeta?: DebugMeta;
 };
 
 /**
@@ -29,7 +31,7 @@ type ParamsGetProfile = {
  */
 export class UserService {
   // eslint-disable-next-line no-unused-vars
-  private errorLogger: (error: unknown) => Promise<void>;
+  private errorLogger: (error: unknown, debugMeta?: DebugMeta) => Promise<void>;
 
   constructor() {
     this.errorLogger = errorLogger;
@@ -39,6 +41,7 @@ export class UserService {
   async getProfile({
     idDB,
     id,
+    debugMeta,
     isPrivate = false,
     ageCategoryVersion = 'simple',
   }: ParamsGetProfile): Promise<ServerResponse<TUserDto | TUserDtoPublic | null>> {
@@ -92,7 +95,7 @@ export class UserService {
 
       return { data: profile, ok: true, message: 'Данные профиля пользователя' };
     } catch (error) {
-      this.errorLogger(error);
+      this.errorLogger(error, debugMeta);
       return handlerErrorDB(error);
     }
   }
