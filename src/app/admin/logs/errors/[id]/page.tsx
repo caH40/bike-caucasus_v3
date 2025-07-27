@@ -2,6 +2,7 @@ import { getTimerLocal } from '@/libs/utils/date-local';
 import { getLogError } from '@/actions/logs';
 import ShowServerError from '@/components/UI/ShowServerError/ShowServerError';
 import styles from './LogErrorDescription.module.css';
+import JSONBlock from '@/components/JSONBlock/JSONBlock';
 
 type Props = {
   params: Promise<{
@@ -36,6 +37,15 @@ export default async function LogErrorDescription(props: Props) {
               <>
                 <dt>Краткое описание</dt>
                 <dd className={styles.group}>{log.message}</dd>
+              </>
+            )}
+
+            {log.debugMeta && (
+              <>
+                <dt>Метаданные запроса</dt>
+                <dd className={styles.group}>
+                  <JSONBlock json={log.debugMeta} />
+                </dd>
               </>
             )}
 
