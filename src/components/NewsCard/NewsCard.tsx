@@ -24,21 +24,24 @@ export default function NewsCard({ newsOne }: Props) {
             sizes="(max-width: 992px) 100vw, 20vw"
             alt={`image ${newsOne.title}`}
             className={styles.img}
-            priority={true}
             placeholder="blur"
             blurDataURL={blurBase64}
           />
         </div>
       </Link>
+
       <div className={styles.wrapper__info}>
         <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
           <h3 className={styles.title}>{newsOne.title}</h3>
         </Link>
+
         <Link href={`/news/${newsOne.urlSlug}`} className={styles.link}>
           <p className={styles.subtitle}>{newsOne.subTitle}</p>
         </Link>
+
         <div className={styles.bottom}>
           <span>{getTimerLocal(newsOne.createdAt, 'DDMMYYHm')}</span>
+
           <InteractiveBlock
             likesCount={newsOne.likesCount}
             isLikedByUser={newsOne.isLikedByUser}
