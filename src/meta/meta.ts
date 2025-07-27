@@ -182,7 +182,14 @@ export async function generateMetadataProfile({
 
   const { id } = await params;
 
-  const { data: profile } = await userService.getProfile({ id: +id });
+  // Мета данные запроса для логирования ошибок.
+  const debugMeta = {
+    caller: 'generateMetadataProfile',
+    rawParams: params,
+    path: `/profile/${id}`,
+  };
+
+  const { data: profile } = await userService.getProfile({ id: +id, debugMeta });
   if (!profile) {
     return metadata404Page;
   }

@@ -38,10 +38,6 @@ export async function getProfile({
       debugMeta,
     });
 
-    if (!profile) {
-      throw new Error('Пользователь не найден!');
-    }
-
     return {
       data: profile,
       ok: true,

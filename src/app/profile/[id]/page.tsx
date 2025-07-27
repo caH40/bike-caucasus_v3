@@ -34,14 +34,17 @@ export default async function ProfilePage(props: TPageProps) {
 
   const userIdDbFromSession = session?.user.idDB;
 
+  // Мета данные запроса для логирования ошибок.
+  const debugMeta = {
+    caller: 'ProfilePage',
+    authUserId: session?.user.id,
+    rawParams: params,
+    path: `/profile/${id}`,
+  };
+
   const { data: profile } = await getProfile({
     userId: +id,
-    debugMeta: {
-      caller: 'ProfilePage',
-      authUserId: session?.user.id,
-      rawParams: params,
-      path: `/profile/${id}`,
-    },
+    debugMeta,
   });
 
   // Если нет данных, то пользователь не найден.
