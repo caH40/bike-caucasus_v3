@@ -38,7 +38,7 @@ import { chartAltitude } from './chart';
 import usePositionIndex from '@/hooks/usePositionIndex';
 import styles from './Map.module.css';
 import useElevation from '@/hooks/useElevation';
-import { distanceWithLaps } from '@/libs/utils/distanceWithLaps';
+import { useTrackDataWithLaps } from '@/hooks/useDistanceWithLaps';
 
 type Props = {
   url: string;
@@ -54,7 +54,7 @@ export default function MapWithElevation({ url, laps }: Props) {
   const refChartLine = useRef<ChartJS<'line'>>(null);
   const trackData = useParseGPX(url, true);
 
-  const trackDataWithLaps = distanceWithLaps({ trackData, laps });
+  const trackDataWithLaps = useTrackDataWithLaps(trackData, laps);
 
   const elevationData = useElevation({ trackData: trackDataWithLaps });
 
