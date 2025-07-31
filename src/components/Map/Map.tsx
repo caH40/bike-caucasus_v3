@@ -38,32 +38,39 @@ import { chartAltitude } from './chart';
 import usePositionIndex from '@/hooks/usePositionIndex';
 import styles from './Map.module.css';
 import useElevation from '@/hooks/useElevation';
+import { distanceWithLaps } from '@/libs/utils/distanceWithLaps';
 
-interface Props {
+type Props = {
   url: string;
-}
+  laps: number;
+};
 
 /**
  * Компонент для отображения карты с профилем высоты.
  * @param {Props} props - Свойства компонента.
  * @returns JSX.Element
  */
-export default function MapWithElevation({ url }: Props) {
+export default function MapWithElevation({ url, laps }: Props) {
   const refChartLine = useRef<ChartJS<'line'>>(null);
   const trackData = useParseGPX(url, true);
 
-  const elevationData = useElevation({ trackData });
+  const trackDataWithLaps = distanceWithLaps({ trackData, laps });
+
+  const elevationData = useElevation({ trackData: trackDataWithLaps });
 
   const { chartData, chartOptions } = chartAltitude(elevationData);
 
   const positionIndex = usePositionIndex({ refChartLine, elevationData });
 
-  if (!trackData || trackData.positions.length === 0) {
+  if (!trackDataWithLaps || trackDataWithLaps.positions.length === 0) {
     return <div>Loading...</div>;
   }
 
-  const start = L.latLng(trackData.positions[0].lat, trackData.positions[0].lng);
-  const bounds = trackData.positions.reduce((acc, cur) => {
+  const start = L.latLng(
+    trackDataWithLaps.positions[0].lat,
+    trackDataWithLaps.positions[0].lng
+  );
+  const bounds = trackDataWithLaps.positions.reduce((acc, cur) => {
     return acc.extend([cur.lat, cur.lng]);
   }, L.latLngBounds(start, start));
 
@@ -74,20 +81,23 @@ export default function MapWithElevation({ url }: Props) {
 
         <Polyline
           pathOptions={{ color: 'red' }}
-          positions={trackData.positions.map((pos) => [pos.lat, pos.lng])}
+          positions={trackDataWithLaps.positions.map((pos) => [pos.lat, pos.lng])}
         />
         <Marker
-          position={[trackData.positions[0].lat, trackData.positions[0].lng]}
+          position={[trackDataWithLaps.positions[0].lat, trackDataWithLaps.positions[0].lng]}
           icon={iconStart}
         />
         <Marker
-          position={[trackData.positions.at(-1)!.lat, trackData.positions.at(-1)!.lng]}
+          position={[
+            trackDataWithLaps.positions.at(-1)!.lat,
+            trackDataWithLaps.positions.at(-1)!.lng,
+          ]}
           icon={iconFinish}
         />
         <Marker
           position={[
-            trackData.positions[positionIndex].lat,
-            trackData.positions[positionIndex].lng,
+            trackDataWithLaps.positions[positionIndex].lat,
+            trackDataWithLaps.positions[positionIndex].lng,
           ]}
           icon={iconPosition}
         />

@@ -70,7 +70,9 @@ export default function BlockRaces({ races, registrationData }: Props) {
               />
             </div>
 
-            {race.trackGPX && <MapWithElevation url={race.trackGPX.url} key={race._id} />}
+            {race.trackGPX && (
+              <MapWithElevation url={race.trackGPX.url} laps={race.laps} key={race._id} />
+            )}
           </div>
         ))}
       </div>
