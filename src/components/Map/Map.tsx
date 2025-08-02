@@ -34,11 +34,12 @@ ChartJS.register(
 import { useParseGPX } from '@/hooks/useParseGPX';
 import LayerControlBtn from '../UI/LayerControlBtn/LayerControlBtn';
 import { iconFinish, iconStart, iconPosition } from './icons';
-import { chartAltitude } from './chart';
+
 import usePositionIndex from '@/hooks/usePositionIndex';
 import styles from './Map.module.css';
 import useElevation from '@/hooks/useElevation';
 import { useTrackDataWithLaps } from '@/hooks/useDistanceWithLaps';
+import { useChartAltitude } from '@/hooks/useChartAltitude';
 
 type Props = {
   url: string;
@@ -54,11 +55,14 @@ export default function MapWithElevation({ url, laps }: Props) {
   const refChartLine = useRef<ChartJS<'line'>>(null);
   const trackData = useParseGPX(url, true);
 
+  // Формирование точек трека в зависимости от количества кругов в заезде.
   const trackDataWithLaps = useTrackDataWithLaps(trackData, laps);
 
+  // Пользовательский хук для вычисления данных высоты на основе данных трека.
   const elevationData = useElevation({ trackData: trackDataWithLaps });
 
-  const { chartData, chartOptions } = chartAltitude(elevationData);
+  // Данные для построения Диаграммы профиля высоты маршрута.
+  const { chartData, chartOptions } = useChartAltitude(elevationData);
 
   const positionIndex = usePositionIndex({ refChartLine, elevationData });
 
