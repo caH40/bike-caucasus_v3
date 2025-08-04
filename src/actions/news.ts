@@ -7,10 +7,12 @@ import { News } from '@/services/news';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import { handlerErrorDB } from '@/services/mongodb/error';
 import { errorLogger } from '@/errors/error';
-import type { ServerResponse, TClientMeta } from '@/types/index.interface';
-import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 import { PermissionsService } from '@/services/Permissions';
 import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
+
+// types
+import type { DebugMeta, ServerResponse, TClientMeta } from '@/types/index.interface';
+import type { TNewsGetOneDto, TNewsInteractiveDto } from '@/types/dto.types';
 
 type ParamsNews = {
   idUserDB?: string;
@@ -25,12 +27,14 @@ type ParamsNews = {
 export async function getNewsOne({
   urlSlug,
   idUserDB,
+  debugMeta,
 }: {
   urlSlug: string;
   idUserDB?: string;
+  debugMeta?: DebugMeta;
 }): Promise<TNewsGetOneDto | null | undefined> {
   const news = new News();
-  const response = await news.getOne({ urlSlug, idUserDB });
+  const response = await news.getOne({ urlSlug, idUserDB, debugMeta });
 
   if (!response.ok) {
     return null;

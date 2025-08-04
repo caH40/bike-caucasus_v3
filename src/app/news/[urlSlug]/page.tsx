@@ -39,9 +39,19 @@ export default async function NewsPage(props: Props) {
   const session = await getServerSession(authOptions);
 
   const idUserDB = session?.user.idDB;
+
+  // Мета данные запроса для логирования ошибок.
+  const debugMeta = {
+    caller: 'ProfilePage',
+    authUserId: session?.user.id,
+    rawParams: params,
+    path: `/news/${params.urlSlug}`,
+  };
+
   const newsOne = await getNewsOne({
     urlSlug: params.urlSlug,
     idUserDB,
+    debugMeta,
   });
 
   // если нет Новости (или возникла ошибка на сервере) показывается страница 404.

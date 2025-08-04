@@ -21,6 +21,7 @@ import { ModeratorActionLogService } from './ModerationActionLog';
 // types
 import type { TNews } from '@/types/models.interface';
 import type {
+  DebugMeta,
   ServerResponse,
   TClientMeta,
   TNewsCreateFromClient,
@@ -34,7 +35,7 @@ import { TDeleteNewsServiceFromMongo } from '@/types/mongo.types';
  * Сервис работы с новостями (News) в БД
  */
 export class News {
-  private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
+  private errorLogger: (error: unknown, debugMeta?: DebugMeta) => Promise<void>;
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private entity: TServiceEntity;
 
@@ -385,9 +386,11 @@ export class News {
   public async getOne({
     urlSlug,
     idUserDB,
+    debugMeta,
   }: {
     urlSlug: string;
     idUserDB: string | undefined;
+    debugMeta?: DebugMeta;
   }): Promise<ServerResponse<null | TNewsGetOneDto>> {
     try {
       const newsDB = await NewsModel.findOne({ urlSlug })
@@ -439,7 +442,7 @@ export class News {
         message: `Запрашиваемая новости с адресом  ${urlSlug}`,
       };
     } catch (error) {
-      this.errorLogger(error); // логирование
+      this.errorLogger(error, debugMeta); // логирование
       return handlerErrorDB(error);
     }
   }
