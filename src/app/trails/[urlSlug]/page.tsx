@@ -50,7 +50,7 @@ export default async function TrailPage(props: Props) {
     caller: 'ProfilePage',
     authUserId: session?.user.id,
     rawParams: params,
-    path: `/news/${params.urlSlug}`,
+    path: `/trails/${params.urlSlug}`,
   };
 
   const trail = await getTrail({ urlSlug: params.urlSlug, debugMeta });
