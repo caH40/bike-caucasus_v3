@@ -13,6 +13,7 @@ import { ModeratorActionLogService } from './ModerationActionLog';
 // types
 import { TDistance, TTrackGPXObj } from '@/types/models.interface';
 import {
+  DebugMeta,
   ServerResponse,
   TPutDistanceServiceParams,
   TServiceEntity,
@@ -41,7 +42,13 @@ export class DistanceService {
   /**
    * Получение запрашиваемой дистанции.
    */
-  public async get(urlSlug: string): Promise<ServerResponse<TDistanceDto | null>> {
+  public async get({
+    urlSlug,
+    debugMeta,
+  }: {
+    urlSlug: string;
+    debugMeta?: DebugMeta;
+  }): Promise<ServerResponse<TDistanceDto | null>> {
     try {
       const distanceDB = await DistanceModel.findOne({ urlSlug }).lean<TDistance>();
 
@@ -55,7 +62,7 @@ export class DistanceService {
         message: 'Все дистанции для чемпионатов',
       };
     } catch (error) {
-      this.errorLogger(error);
+      this.errorLogger(error, debugMeta);
       return this.handlerErrorDB(error);
     }
   }

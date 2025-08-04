@@ -47,7 +47,7 @@ export default async function TrailPage(props: Props) {
 
   // Мета данные запроса для логирования ошибок.
   const debugMeta = {
-    caller: 'ProfilePage',
+    caller: 'TrailPage',
     authUserId: session?.user.id,
     rawParams: params,
     path: `/trails/${params.urlSlug}`,

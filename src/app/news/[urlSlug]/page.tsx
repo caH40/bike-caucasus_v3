@@ -42,7 +42,7 @@ export default async function NewsPage(props: Props) {
 
   // Мета данные запроса для логирования ошибок.
   const debugMeta = {
-    caller: 'ProfilePage',
+    caller: 'NewsPage',
     authUserId: session?.user.id,
     rawParams: params,
     path: `/news/${params.urlSlug}`,

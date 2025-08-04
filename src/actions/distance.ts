@@ -7,7 +7,7 @@ import { DistanceService } from '@/services/Distance';
 import { checkUserAccess } from '@/libs/utils/auth/checkUserPermission';
 
 // types
-import { ServerResponse } from '@/types/index.interface';
+import { DebugMeta, ServerResponse } from '@/types/index.interface';
 import { TDistanceDto } from '@/types/dto.types';
 import { revalidatePath } from 'next/cache';
 
@@ -57,12 +57,16 @@ export async function putDistance(serializedData: FormData): Promise<ServerRespo
 /**
  * Экшен получения дистанции.
  */
-export async function getDistance(
-  urlSlug: string
-): Promise<ServerResponse<TDistanceDto | null>> {
+export async function getDistance({
+  urlSlug,
+  debugMeta,
+}: {
+  urlSlug: string;
+  debugMeta?: DebugMeta;
+}): Promise<ServerResponse<TDistanceDto | null>> {
   try {
     const distanceService = new DistanceService();
-    const response = await distanceService.get(urlSlug);
+    const response = await distanceService.get({ urlSlug, debugMeta });
 
     return response;
   } catch (error) {

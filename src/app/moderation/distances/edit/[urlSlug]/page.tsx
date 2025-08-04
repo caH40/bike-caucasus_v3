@@ -1,4 +1,7 @@
+import { getServerSession } from 'next-auth';
+
 import { getDistance, putDistance } from '@/actions/distance';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import ContainerDistanceForms from '@/components/ClientContainers/ContainerDistanceForms/ContainerDistanceForms';
 import IconDistance from '@/components/Icons/IconDistance';
 import ServerErrorMessage from '@/components/ServerErrorMessage/ServerErrorMessage';
@@ -12,9 +15,18 @@ type Props = {
  * Страница редактирование параметров дистанции.
  */
 export default async function DistanceEditPage(props: Props) {
-  const { urlSlug } = await props.params;
+  const params = await props.params;
+  const session = await getServerSession(authOptions);
 
-  const distance = await getDistance(urlSlug);
+  // Мета данные запроса для логирования ошибок.
+  const debugMeta = {
+    caller: 'DistanceEditPage',
+    authUserId: session?.user.id,
+    rawParams: params,
+    path: `/distances/${params.urlSlug}`,
+  };
+
+  const distance = await getDistance({ urlSlug: params.urlSlug, debugMeta });
 
   if (!distance.data || !distance.message) {
     return <ServerErrorMessage message={distance.message} statusCode={distance.statusCode} />;

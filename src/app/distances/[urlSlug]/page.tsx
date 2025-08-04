@@ -1,3 +1,4 @@
+import { getServerSession } from 'next-auth';
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 
@@ -13,6 +14,8 @@ import DistanceResultsTableContainer from '@/components/Table/Containers/Distanc
 import IconGPXFile from '@/components/Icons/IconGPXFile';
 import styles from './Distance.module.css';
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
+
 // Создание динамических meta данных.
 export async function generateMetadata(props: Props): Promise<Metadata> {
   return await generateMetadataDistancesResults(props);
@@ -23,9 +26,23 @@ type Props = {
 };
 
 export default async function DistancePage(props: Props) {
-  const { urlSlug } = await props.params;
+  const params = await props.params;
+  const session = await getServerSession(authOptions);
 
-  const { data: d, message, statusCode } = await getDistance(urlSlug);
+  // Мета данные запроса для логирования ошибок.
+  const debugMeta = {
+    caller: 'DistancePage',
+    authUserId: session?.user.id,
+    rawParams: params,
+    path: `/distances/${params.urlSlug}`,
+  };
+
+  // Данные дистанции из БД.
+  const {
+    data: d,
+    message,
+    statusCode,
+  } = await getDistance({ urlSlug: params.urlSlug, debugMeta });
 
   if (!d || !message) {
     return <ServerErrorMessage message={message} statusCode={statusCode} />;

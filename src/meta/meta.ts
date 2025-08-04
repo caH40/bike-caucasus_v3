@@ -56,9 +56,15 @@ export const metadataHomePage = {
  * Метаданные для страницы Новость "/news/[urlSlug]".
  */
 export async function generateMetadataNews({ params }: TParamsProps): Promise<Metadata> {
-  const { urlSlug } = await params;
+  const p = await params;
 
-  const news = await getNewsOne({ urlSlug });
+  const debugMeta = {
+    caller: 'generateMetadataNews',
+    rawParams: p,
+    path: `/news/${p.urlSlug}`,
+  };
+
+  const news = await getNewsOne({ urlSlug: p.urlSlug, debugMeta });
   if (!news) {
     return metadata404Page;
   }
@@ -121,9 +127,15 @@ export async function generateMetadataTrails(): Promise<Metadata> {
  * Метаданные для страницы Маршрут "/trails/[urlSlug]".
  */
 export async function generateMetadataTrail({ params }: TParamsProps): Promise<Metadata> {
-  const { urlSlug } = await params;
+  const p = await params;
 
-  const trail = await getTrail({ urlSlug });
+  const debugMeta = {
+    caller: 'generateMetadataTrail',
+    rawParams: p,
+    path: `/trails/${p.urlSlug}`,
+  };
+
+  const trail = await getTrail({ urlSlug: p.urlSlug, debugMeta });
 
   if (!trail) {
     return metadata404Page;
@@ -415,8 +427,15 @@ export const metadataDistances: Metadata = {
 export async function generateMetadataDistancesResults({
   params,
 }: TParamsProps): Promise<Metadata> {
-  const { urlSlug } = await params;
-  const { data } = await getDistance(urlSlug);
+  const p = await params;
+
+  const debugMeta = {
+    caller: 'generateMetadataDistancesResults',
+    rawParams: p,
+    path: `/distances/${p.urlSlug}`,
+  };
+
+  const { data } = await getDistance({ urlSlug: p.urlSlug, debugMeta });
 
   if (!data) {
     return metadata404Page;
