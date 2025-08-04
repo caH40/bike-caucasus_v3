@@ -123,7 +123,7 @@ export async function generateMetadataTrails(): Promise<Metadata> {
 export async function generateMetadataTrail({ params }: TParamsProps): Promise<Metadata> {
   const { urlSlug } = await params;
 
-  const trail = await getTrail(urlSlug);
+  const trail = await getTrail({ urlSlug });
 
   if (!trail) {
     return metadata404Page;

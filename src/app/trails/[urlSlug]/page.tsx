@@ -45,7 +45,15 @@ export default async function TrailPage(props: Props) {
 
   const idUserDB = session?.user.idDB;
 
-  const trail = await getTrail(params.urlSlug);
+  // Мета данные запроса для логирования ошибок.
+  const debugMeta = {
+    caller: 'ProfilePage',
+    authUserId: session?.user.id,
+    rawParams: params,
+    path: `/news/${params.urlSlug}`,
+  };
+
+  const trail = await getTrail({ urlSlug: params.urlSlug, debugMeta });
 
   // если нет Маршрута (или возникла ошибка на сервере) показывается страница 404.
   if (!trail) {

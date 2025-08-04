@@ -24,9 +24,9 @@ export default async function TrailEditCurrentPage(props: Props) {
   }
 
   const { urlSlug } = params;
-  const trail: (TTrailDto & { posterOldUrl?: string }) | null | undefined = await getTrail(
-    urlSlug
-  );
+  const trail: (TTrailDto & { posterOldUrl?: string }) | null | undefined = await getTrail({
+    urlSlug,
+  });
 
   if (trail) {
     // posterOldUrl старого постера, необходим для удаления файла из облака,

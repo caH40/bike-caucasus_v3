@@ -11,6 +11,7 @@ import { saveFile } from './save-file';
 import { getHashtags } from '@/libs/utils/text';
 import { getNextSequenceValue } from './sequence';
 import type {
+  DebugMeta,
   ServerResponse,
   TClientMeta,
   TSaveFile,
@@ -32,7 +33,7 @@ import { ModeratorActionLogService } from './ModerationActionLog';
  * Сервисы работы с велосипедными маршрутами.
  */
 export class Trail {
-  private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
+  private errorLogger: (error: unknown, debugMeta?: DebugMeta) => Promise<void>;
   private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
   private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
   private entity: TServiceEntity;
@@ -50,10 +51,15 @@ export class Trail {
    * @param idDB - Идентификатор маршрута в базе данных.
    * @returns Объект с данными маршрута или сообщением об ошибке.
    */
-  public async getOne(
-    urlSlug: string,
-    idUserDB: string | undefined
-  ): Promise<ServerResponse<TTrailDto | null>> {
+  public async getOne({
+    urlSlug,
+    idUserDB,
+    debugMeta,
+  }: {
+    urlSlug: string;
+    idUserDB: string | undefined;
+    debugMeta?: DebugMeta;
+  }): Promise<ServerResponse<TTrailDto | null>> {
     try {
       // Получаем информацию о маршруте из БД.
       const trailDB = await TrailModel.findOne({
@@ -103,7 +109,7 @@ export class Trail {
       };
     } catch (error) {
       // Если произошла ошибка, логируем ее и возвращаем сообщение об ошибке.
-      this.errorLogger(error);
+      this.errorLogger(error, debugMeta);
       return this.handlerErrorDB(error);
     }
   }

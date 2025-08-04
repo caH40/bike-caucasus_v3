@@ -16,7 +16,7 @@ import { PermissionsService } from '@/services/Permissions';
 
 // types
 import type { TNewsInteractiveDto, TTrailDto } from '@/types/dto.types';
-import type { ServerResponse, TClientMeta } from '@/types/index.interface';
+import type { DebugMeta, ServerResponse, TClientMeta } from '@/types/index.interface';
 
 type TGetTrails = {
   bikeType: string | null;
@@ -46,14 +46,20 @@ export async function getTrails({ bikeType, region, difficultyLevel, search }: T
 /**
  * Получение данных маршрута с БД.
  */
-export async function getTrail(urlSlug: string): Promise<TTrailDto | null | undefined> {
+export async function getTrail({
+  urlSlug,
+  debugMeta,
+}: {
+  urlSlug: string;
+  debugMeta?: DebugMeta;
+}): Promise<TTrailDto | null | undefined> {
   'use server';
   const session = await getServerSession(authOptions);
 
   const idUserDB = session?.user.idDB;
 
   const trailsService = new Trail();
-  const response = await trailsService.getOne(urlSlug, idUserDB);
+  const response = await trailsService.getOne({ urlSlug, idUserDB, debugMeta });
 
   if (!response.ok) {
     return null;
