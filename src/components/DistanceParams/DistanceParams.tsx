@@ -25,14 +25,14 @@ type Props = {
 // отображение блока основных параметров Эвента
 export default function DistanceParams({
   distance: { distanceInMeter, ascentInMeter, avgGrade, lowestElev, highestElev, surfaceType },
-  laps,
+  laps = 1,
 }: Props) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.box}>
         <IconParamsDistance squareSize={24} />
         <div className={styles.description}>
-          <h4 className={styles.title}>{Math.round(distanceInMeter / 100) / 10} км</h4>
+          <h4 className={styles.title}>{(Math.round(distanceInMeter / 100) / 10) * laps} км</h4>
           <p className={styles.title__sub}>РАССТОЯНИЕ</p>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function DistanceParams({
         <div className={styles.box}>
           <IconParamsAscent squareSize={24} />
           <div className={styles.description}>
-            <h4 className={styles.title}>{ascentInMeter} м</h4>
+            <h4 className={styles.title}>{ascentInMeter * laps} м</h4>
             <p className={styles.title__sub}>НАБОР ВЫСОТЫ</p>
           </div>
         </div>

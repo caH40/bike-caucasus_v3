@@ -14,6 +14,7 @@ import type {
   TRegistrationRiderFromDB,
 } from '@/types/index.interface';
 import { TCategories } from '@/types/models.interface';
+import { distanceDto } from './distance';
 
 /**
  * ДТО Зарегистрированного райдера в Заезде.
@@ -134,12 +135,23 @@ export function formatTRaceToClient(race: TRacesWithTDistance): TRaceForForm {
   const _id = String(race._id);
   const trackGPX = race.trackDistance ? race.trackDistance.trackGPX : race.trackGPX;
 
+  const distanceObj = distanceDto(race.trackDistance);
+
   const trackDistance = race.trackDistance ? race.trackDistance._id.toString() : null;
   const categories = String(race.categories);
   const championship = String(race.championship);
   const registeredRiders = race.registeredRiders.map((rider) => String(rider));
 
-  return { ...race, registeredRiders, categories, _id, championship, trackDistance, trackGPX };
+  return {
+    ...race,
+    registeredRiders,
+    categories,
+    _id,
+    championship,
+    trackDistance,
+    trackGPX,
+    distanceObj,
+  };
 }
 
 /**
