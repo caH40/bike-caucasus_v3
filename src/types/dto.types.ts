@@ -4,6 +4,7 @@ import {
   TOrganizerForClient,
   TParentChampionshipForClient,
   TRaceForForm,
+  TrackStats,
   TResultRaceFromDB,
   TStageDateDescription,
 } from './index.interface';
@@ -127,6 +128,7 @@ export type TTrailDto = Omit<TTrail, '_id' | 'author' | 'comments' | 'blocks' | 
   isLikedByUser: boolean;
   author: TAuthor;
   moderatorIds: string[];
+  distanceStats?: TrackStats;
 };
 
 /**

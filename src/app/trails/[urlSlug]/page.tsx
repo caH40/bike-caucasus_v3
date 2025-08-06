@@ -25,6 +25,8 @@ import PermissionCheck from '@/hoc/permission-check';
 import MenuEllipsisControl from '@/components/UI/Menu/MenuControl/MenuEllipsisControl';
 import { getNavLinksTrailPopup } from '@/constants/navigation';
 import styles from './TrailPage.module.css';
+import DistanceParams from '@/components/DistanceParams/DistanceParams';
+import Spacer from '@/components/Spacer/Spacer';
 
 const cx = cn.bind(styles);
 
@@ -106,6 +108,21 @@ export default async function TrailPage(props: Props) {
               placeholder="blur"
             />
           </div>
+
+          {/* Параметры маршрута */}
+          <Spacer margin="b-md">
+            <DistanceParams
+              distance={
+                trail.distanceStats || {
+                  distanceInMeter: trail.distance * 1000,
+                  ascentInMeter: trail.ascent,
+                }
+              }
+              hideLaps={true}
+            />
+          </Spacer>
+
+          {/* Блоки описания с изображениями */}
           <div className={styles.content}>
             {trail.blocks.map(async (block) => (
               <article className={cx('wrapper__block')} key={block._id}>
@@ -162,6 +179,7 @@ export default async function TrailPage(props: Props) {
             />
           </div>
           <hr className={styles.line} />
+
           <BlockShare title={'Поделиться'} />
           <hr className={styles.line} />
 

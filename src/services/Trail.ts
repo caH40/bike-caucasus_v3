@@ -28,6 +28,8 @@ import { Comment as CommentModel } from '@/database/mongodb/Models/Comment';
 import { Cloud } from './cloud';
 import { fileNameFormUrl } from '@/constants/regex';
 import { ModeratorActionLogService } from './ModerationActionLog';
+import { getTrackStatsFromTrackData } from '@/libs/utils/track-data';
+import { parseGPXTrack } from '@/libs/utils/track-parse';
 
 /**
  * Сервисы работы с велосипедными маршрутами.
@@ -101,9 +103,16 @@ export class Trail {
       });
       trailDB.commentsCount = commentsDB.length;
 
+      // GPX трек из облака.
+      const trackData = await parseGPXTrack(trailDB.trackGPX);
+      // Расчетные данные по треку (расстояние, средний градиент и т.д.)
+      const distanceStats = getTrackStatsFromTrackData(trackData);
+
+      const trailAfterDto = dtoTrail(trailDB, distanceStats);
+
       // Возвращаем информацию о маршруте и успешный статус.
       return {
-        data: dtoTrail(trailDB),
+        data: trailAfterDto,
         ok: true,
         message: `Данные маршрута с urlSlug:${urlSlug}`,
       };

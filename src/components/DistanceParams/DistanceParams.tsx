@@ -20,12 +20,14 @@ type Props = {
     surfaceType?: TSurfaceType;
   };
   laps?: number;
+  hideLaps?: boolean;
 };
 
 // отображение блока основных параметров Эвента
 export default function DistanceParams({
   distance: { distanceInMeter, ascentInMeter, avgGrade, lowestElev, highestElev, surfaceType },
   laps = 1,
+  hideLaps,
 }: Props) {
   return (
     <div className={styles.wrapper}>
@@ -47,7 +49,7 @@ export default function DistanceParams({
         </div>
       )}
 
-      {laps && (
+      {!hideLaps && laps && (
         <div className={styles.box}>
           <IconParamsLap squareSize={24} />
           <div className={styles.description}>

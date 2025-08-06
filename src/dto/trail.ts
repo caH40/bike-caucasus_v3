@@ -1,4 +1,5 @@
 import type { TTrailDto } from '@/types/dto.types';
+import { TrackStats } from '@/types/index.interface';
 import type { TAuthorFromUser, TTrailDocument } from '@/types/models.interface';
 
 /**
@@ -8,7 +9,8 @@ export function dtoTrail(
   trail: Omit<TTrailDocument, 'author'> & { author: TAuthorFromUser } & {
     isLikedByUser: boolean;
     commentsCount: number;
-  }
+  },
+  distanceStats?: TrackStats
 ): TTrailDto {
   const author = { ...trail.author, _id: String(trail.author._id) };
 
@@ -21,7 +23,9 @@ export function dtoTrail(
     isLikedByUser: trail.isLikedByUser,
     blocks: trail.blocks?.map((block) => ({ ...block, _id: String(block._id) })) || [],
     moderatorIds: [author._id],
+    distanceStats,
   };
+
   return dto;
 }
 
