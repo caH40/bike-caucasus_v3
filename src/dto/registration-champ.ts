@@ -135,7 +135,7 @@ export function formatTRaceToClient(race: TRacesWithTDistance): TRaceForForm {
   const _id = String(race._id);
   const trackGPX = race.trackDistance ? race.trackDistance.trackGPX : race.trackGPX;
 
-  const distanceObj = distanceDto(race.trackDistance);
+  const distanceStats = race.trackDistance && distanceDto(race.trackDistance);
 
   const trackDistance = race.trackDistance ? race.trackDistance._id.toString() : null;
   const categories = String(race.categories);
@@ -150,7 +150,7 @@ export function formatTRaceToClient(race: TRacesWithTDistance): TRaceForForm {
     championship,
     trackDistance,
     trackGPX,
-    distanceObj,
+    distanceStats,
   };
 }
 

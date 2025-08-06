@@ -707,12 +707,12 @@ export type TRaceForForm = Omit<
   registeredRiders: string[];
   trackDistance: string | null;
   trackGPX?: TTrackGPXObj;
-  distanceObj: TDistanceDto;
+  distanceStats: TDistanceDto;
 };
 // FIXME: Разобраться с названиями TRaceForForm, TRaceForFormNew одна для запроса с клиента, другая для формы.
 export type TRaceForFormNew = Omit<
   TRaceForForm,
-  '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories' | 'distanceObj'
+  '_id' | 'championship' | 'trackGPX' | 'registeredRiders' | 'categories' | 'distanceStats'
 > & {
   _id?: string;
   categories?: string;

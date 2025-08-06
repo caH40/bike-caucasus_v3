@@ -64,7 +64,7 @@ export default function BlockRaces({ races, registrationData }: Props) {
             )}
 
             <div className={styles.wrapper__params}>
-              <DistanceParams distance={race.distanceObj} laps={race.laps} />
+              <DistanceParams distance={race.distanceStats} laps={race.laps} />
             </div>
 
             {race.trackGPX && (

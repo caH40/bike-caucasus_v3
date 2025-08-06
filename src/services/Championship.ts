@@ -163,7 +163,7 @@ export class ChampionshipService {
         })
         .populate('categoriesConfigs')
         .populate('racePointsTable')
-        .populate('races')
+        .populate({ path: 'races', populate: 'trackDistance' })
         .lean<TChampionshipWithOrganizer[]>();
 
       // Формирование данных для отображение Блока Этапов в карточке Чемпионата.
