@@ -58,6 +58,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    qualities: [50, 75, 100],
   },
   experimental: {
     serverActions: {

@@ -15,6 +15,7 @@ import {
 } from '@/actions/news';
 import { InteractiveBlockProps } from '@/types/index.interface';
 import styles from './InteractiveBlock.module.css';
+import { formatNumberShort } from '@/libs/utils/text';
 
 /**
  * Интерактивный блок, отображение количества лайков, просмотров, фиксация лайка.
@@ -94,17 +95,17 @@ export default function InteractiveBlock({
           isActive={interData.isLikedByUser}
           colors={{ default: 'currentColor', active: '#fafafa80', hover: 'orange' }}
         />
-        <span className={styles.icon__label}>{interData.likesCount}</span>
+        <span className={styles.icon__label}>{formatNumberShort(interData.likesCount)}</span>
       </div>
 
       <div className={styles.box__icon}>
         <IconChatBubble squareSize={20} />
-        <span className={styles.icon__label}>{interData.commentsCount}</span>
+        <span className={styles.icon__label}>{formatNumberShort(interData.commentsCount)}</span>
       </div>
 
       <div className={styles.box__icon}>
         <IconEye squareSize={20} />
-        <span className={styles.icon__label}>{interData.viewsCount}</span>
+        <span className={styles.icon__label}>{formatNumberShort(interData.viewsCount)}</span>
       </div>
     </div>
   );
