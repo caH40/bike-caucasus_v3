@@ -16,7 +16,9 @@ export async function parseGPX(input: string): Promise<GPX> {
       const res = await fetch(input);
 
       if (!res.ok) {
-        throw new Error('Ошибка fetch!');
+        throw new Error(
+          `Ошибка при получении GPX файла. status: ${res.status}. url: ${res.url}, statusText: ${res.statusText}`
+        );
       }
 
       data = await res.text();
