@@ -21,7 +21,7 @@ export class WeatherService {
   private timeoutForFetch: number;
 
   constructor() {
-    this.timeoutForFetch = 500; // Время отмены fetch запроса, если не получен ответ fetch.
+    this.timeoutForFetch = 1500; // Время отмены fetch запроса, если не получен ответ fetch.
     this.appId = process.env.API_KEY_OPENWEATHERMAP; // API key для сайта openweathermap.com
   }
 
@@ -46,6 +46,8 @@ export class WeatherService {
       }
 
       const agent = new HttpsProxyAgent(proxyServer);
+      console.log(agent);
+
       const response = await axios.get(url, {
         httpAgent: agent,
         httpsAgent: agent,
