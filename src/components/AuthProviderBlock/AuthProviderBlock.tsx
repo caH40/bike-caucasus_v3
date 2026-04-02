@@ -21,12 +21,12 @@ export default function AuthProviderBlock({ callbackUrl }: Props) {
           getClick={() => getAuth('yandex', callbackUrl)}
           size={20}
         />
-        <Button
+        {/* <Button
           name="vk"
           iconSrc="/images/icons/vk.svg"
           getClick={() => getAuth('vk', callbackUrl)}
           size={20}
-        />
+        /> */}
         {/* <Button
           iconSrc="/images/icons/gmail.svg"
           getClick={() => getAuth('google', callbackUrl)}
