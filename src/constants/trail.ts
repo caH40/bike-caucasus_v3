@@ -16,6 +16,7 @@ export const regions: TOptions[] = [
   { id: 9, translation: 'Краснодарский край', name: 'krasnodarKrai' },
   { id: 10, translation: 'Республика Адыгея', name: 'republicOfAdygea' },
   { id: 11, translation: 'Республика Ингушетия', name: 'republicOfIngushetia' },
+  { id: 12, translation: 'Абхазия', name: 'republicOfAbkhazia' },
 ];
 
 // Уровни сложности маршрута.
