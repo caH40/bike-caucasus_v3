@@ -4,7 +4,7 @@ import { getRelativePosition } from 'chart.js/helpers';
 import type { ElevationData } from '@/types/index.interface';
 
 type Props = {
-  refChartLine: RefObject<ChartJS<'line'>>;
+  refChartLine: RefObject<ChartJS<'line'> | null>;
   elevationData: ElevationData[];
 };
 

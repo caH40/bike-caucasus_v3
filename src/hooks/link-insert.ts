@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import type { TBlockInputInfo } from '@/types/index.interface';
 
 type Props = {
-  refTextArea: RefObject<HTMLTextAreaElement>;
+  refTextArea: RefObject<HTMLTextAreaElement | null>;
   // eslint-disable-next-line no-unused-vars
   handlerInput: (value: string) => void;
   block: TBlockInputInfo;

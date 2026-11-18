@@ -12,7 +12,7 @@ type Props = {
   text: string;
   setText: Dispatch<SetStateAction<string>>;
   isModeEdit: boolean; // Режим редактирования комментария.
-  textareaRef: RefObject<HTMLTextAreaElement>;
+  textareaRef: RefObject<HTMLTextAreaElement | null>;
 };
 
 export default function FormComment({
