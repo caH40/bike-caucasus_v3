@@ -8,7 +8,8 @@
     "open-browser": "start http://localhost:3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start8055": "next start -p 8055"
   },
   "dependencies": {
