@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type TMobileMenu = {
   isMenuOpen: boolean;
-  setMobileMenu: (value: boolean) => void; // eslint-disable-line
+  setMobileMenu: (value: boolean) => void;  
 };
 
 /**

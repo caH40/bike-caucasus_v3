@@ -8,7 +8,7 @@ const cx = cn.bind(styles);
 
 type Props = {
   name: string;
-  // eslint-disable-next-line no-unused-vars
+   
   getClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   iconSrc?: string;
   alt?: string;

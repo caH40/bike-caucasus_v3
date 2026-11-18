@@ -16,7 +16,7 @@ type Props = {
 // Номера камер на сайтеgw.cmo.sai.msu.ru
 const webcams = [1, 5, 6, 7, 8];
 
-// eslint-disable-next-line no-unused-vars
+ 
 export default function Webcam({ forFullScr }: Props) {
   const [webcamIndex, setWebcamIndex] = useState<number>(0);
 

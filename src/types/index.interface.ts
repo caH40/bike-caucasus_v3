@@ -172,7 +172,7 @@ export type TOptionsMap = Map<
  * Пропсы для BoxInputSimple
  */
 export type PropsBoxInputSimple<T> = Omit<PropsBoxInput, 'register' | 'setValue'> &
-  TDispatchInput & { handlerInput: (value: T) => void }; // eslint-disable-line no-unused-vars
+  TDispatchInput & { handlerInput: (value: T) => void };  
 
 export type PropsBoxInputSimpleNew = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;

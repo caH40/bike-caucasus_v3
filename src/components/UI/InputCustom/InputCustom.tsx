@@ -9,7 +9,7 @@ type Props = {
   label?: string;
   options: TOptions[];
   id: string;
-  // eslint-disable-next-line no-unused-vars
+   
   handlerSelect: (name: string) => void;
 };
 

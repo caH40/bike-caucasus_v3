@@ -24,7 +24,7 @@ export class OrganizerService {
   private handlerErrorDB;
   private entity: TServiceEntity;
 
-  private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private saveFile: (params: TSaveFile) => Promise<string>;  
   private suffixImagePoster: string;
   private suffixImageLogo: string;
 

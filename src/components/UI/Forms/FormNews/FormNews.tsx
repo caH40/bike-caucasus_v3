@@ -23,8 +23,8 @@ import BlockUploadFile from '../../BlockUploadFile/BlockUploadFile';
 import { useUserData } from '@/store/userdata';
 
 type Props = {
-  postNews?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
-  putNewsOne?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
+  postNews?: (formData: FormData) => Promise<ServerResponse<any>>;  
+  putNewsOne?: (formData: FormData) => Promise<ServerResponse<any>>;  
   newsForEdit?: TNewsGetOneDto & { posterOldUrl?: string | null };
 };
 

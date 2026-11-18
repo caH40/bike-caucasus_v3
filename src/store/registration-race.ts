@@ -4,7 +4,7 @@ import type { TRaceRegistrationDto } from '@/types/dto.types';
 
 type TRegistrationRace = {
   registeredRiders: TRaceRegistrationDto[];
-  // eslint-disable-next-line no-unused-vars
+   
   setRegisteredRiders: (registeredRiders: TRaceRegistrationDto[]) => void;
 };
 

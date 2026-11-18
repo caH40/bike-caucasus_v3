@@ -21,8 +21,6 @@ export default function ContainerTableRoles({ roles }: Props) {
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [rolesFiltered, setRolesFiltered] = useState(roles || []);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -38,19 +36,16 @@ export default function ContainerTableRoles({ roles }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  useMemo(() => {
-    if (!roles) {
-      return;
-    }
-    setRolesFiltered(
+  const rolesFiltered = useMemo(
+    () =>
       roles.filter((elm) => {
         const nameFiltered = elm.name.toLowerCase().includes(search.toLowerCase());
         const descFiltered = elm.description?.toLowerCase().includes(search.toLowerCase());
 
         return nameFiltered || descFiltered;
-      })
-    );
-  }, [search, roles]);
+      }),
+    [search, roles]
+  );
 
   return (
     <>

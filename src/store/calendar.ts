@@ -13,7 +13,7 @@ interface TCalendarStore {
   calendar: DateDay[];
   dateStr: string;
 
-  // eslint-disable-next-line no-unused-vars
+   
   getMonth: ({ target }: { target: 'next' | 'prev' }) => void;
   getCurrentMonth: () => void;
 }

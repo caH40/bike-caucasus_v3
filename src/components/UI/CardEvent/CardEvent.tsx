@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 import cn from 'classnames/bind';
 
 import styles from './CardEvent.module.css';

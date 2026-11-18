@@ -209,7 +209,7 @@ export const authOptions: AuthOptions = {
 
         return true;
       } catch (error) {
-        errorLogger(error); // eslint-disable-line
+        errorLogger(error);  
         if (error instanceof Error) {
           const encodedError = encodeURIComponent(error.message);
           return `/auth/login/access-denied?error=${encodedError}`;

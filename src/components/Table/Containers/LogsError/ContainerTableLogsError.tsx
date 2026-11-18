@@ -21,8 +21,6 @@ export default function ContainerTableLogsError({ logs }: Props) {
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [logsFiltered, setLogsFiltered] = useState(logs || []);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -38,16 +36,15 @@ export default function ContainerTableLogsError({ logs }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  useMemo(() => {
+  const logsFiltered = useMemo(() => {
     if (!logs) {
-      return;
+      return [];
     }
-    setLogsFiltered(
-      logs.filter(
-        (elm) =>
-          elm.message.toLowerCase().includes(search.toLowerCase()) ||
-          elm.stack?.toLowerCase().includes(search.toLowerCase())
-      )
+
+    return logs.filter(
+      (elm) =>
+        elm.message.toLowerCase().includes(search.toLowerCase()) ||
+        elm.stack?.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, logs]);
 

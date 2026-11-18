@@ -53,7 +53,7 @@ export default function BlockComments({
     try {
       await setLike(commentId);
       setTrigger(true);
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при установке лайка');
     }
   };
@@ -78,7 +78,7 @@ export default function BlockComments({
         setIdCommentForEdit(null);
         localStorage.removeItem(`${lcSuffixComment}${document.type}`);
       }
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при сохранении комментария');
     }
   };
@@ -102,7 +102,7 @@ export default function BlockComments({
       } else {
         toast.error(res.message);
       }
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при удалении комментария');
     }
   };

@@ -23,7 +23,7 @@ type Clouds = 'vk';
 export class Cloud {
   private config: S3ClientConfig;
   private s3: S3Client;
-  // eslint-disable-next-line no-unused-vars
+   
   private errorLogger: (error: unknown) => Promise<void>;
   private bucketName: string;
   private endpointDomain: string;

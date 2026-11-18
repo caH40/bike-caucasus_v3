@@ -4,7 +4,7 @@ import styles from './BlockInteractive.module.css';
 type Props = {
   icons: {
     id: number;
-    // eslint-disable-next-line no-unused-vars
+     
     icon: ({ isActive, squareSize, getClick }: TIconProps) => JSX.Element;
     getClick: () => void;
     tooltip: string;

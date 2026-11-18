@@ -21,7 +21,7 @@ type Props = {
   isLastPage: boolean;
   quantityPages: number;
   page: number;
-  // eslint-disable-next-line no-unused-vars
+   
   setPage: (updater: Updater<number>) => void;
 };
 

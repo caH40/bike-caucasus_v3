@@ -21,8 +21,6 @@ export default function ContainerTableNewsModeration({ news, idUserDB }: Props) 
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [newsFiltered, settNewsFiltered] = useState(news || []);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -38,16 +36,15 @@ export default function ContainerTableNewsModeration({ news, idUserDB }: Props) 
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  useMemo(() => {
+  const newsFiltered = useMemo(() => {
     if (!news) {
-      return;
+      return [];
     }
-    settNewsFiltered(
-      news.filter(
-        (elm) =>
-          elm.author.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-          elm.title.toLowerCase().includes(search.toLowerCase())
-      )
+
+    return news.filter(
+      (elm) =>
+        elm.author.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+        elm.title.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, news]);
 

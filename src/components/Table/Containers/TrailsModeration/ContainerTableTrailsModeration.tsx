@@ -21,8 +21,6 @@ export default function ContainerTableTrailsModeration({ trails, idUserDB }: Pro
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [trailsFiltered, settTailsFiltered] = useState(trails || []);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -38,16 +36,15 @@ export default function ContainerTableTrailsModeration({ trails, idUserDB }: Pro
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  useMemo(() => {
+  const trailsFiltered = useMemo(() => {
     if (!trails) {
-      return;
+      return [];
     }
-    settTailsFiltered(
-      trails.filter(
-        (elm) =>
-          elm.author.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-          elm.title.toLowerCase().includes(search.toLowerCase())
-      )
+
+    return trails.filter(
+      (elm) =>
+        elm.author.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+        elm.title.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, trails]);
 

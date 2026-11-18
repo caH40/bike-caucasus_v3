@@ -38,7 +38,7 @@ export function dtoResultRaceRider({
 
   if (categoriesConfig) {
     const categoriesId = categoriesConfig._id!.toString();
-    // eslint-disable-next-line no-unused-vars
+     
     const { championship, ...categoriesWithOutChamp } = categoriesConfig;
 
     resultDto.categoriesConfig = { ...categoriesWithOutChamp, _id: categoriesId };

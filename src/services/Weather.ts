@@ -46,7 +46,7 @@ export class WeatherService {
       }
 
       const agent = new HttpsProxyAgent(proxyServer);
-      console.log(agent);
+      // console.log(agent);
 
       const response = await axios.get(url, {
         httpAgent: agent,

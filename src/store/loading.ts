@@ -3,7 +3,7 @@ import { create } from 'zustand';
 // Определяем интерфейс для хранилища состояния загрузки
 interface TLoadingStore {
   isLoading: boolean;
-  setLoading: (value: boolean) => void; // eslint-disable-line
+  setLoading: (value: boolean) => void;  
 }
 
 /**

@@ -19,8 +19,6 @@ export default function ContainerTableUsers({ users }: Props) {
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [usersFiltered, setUsersFiltered] = useState(users || []);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -36,17 +34,16 @@ export default function ContainerTableUsers({ users }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  useMemo(() => {
+  const usersFiltered = useMemo(() => {
     if (!users) {
-      return;
+      return [];
     }
-    setUsersFiltered(
-      users.filter(
-        (elm) =>
-          elm.person.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-          elm.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-          !elm.person.firstName
-      )
+
+    return users.filter(
+      (elm) =>
+        elm.person.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+        elm.person.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+        !elm.person.firstName
     );
   }, [search, users]);
 

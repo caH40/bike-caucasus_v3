@@ -8,7 +8,7 @@ import PermissionCheck from '@/hoc/permission-check';
 import styles from './PopupMenu.module.css';
 
 type Props = {
-  // eslint-disable-next-line no-unused-vars
+   
   navLinks: (userId: number | undefined) => TMenuPopup[];
 };
 

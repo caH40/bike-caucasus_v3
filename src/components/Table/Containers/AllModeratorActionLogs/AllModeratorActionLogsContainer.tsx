@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { lcRecordsOnPage } from '@/constants/local-storage';
 import FilterBoxForTable from '../../../UI/FilterBoxForTable/FilterBoxForTable';
@@ -22,8 +22,6 @@ export default function AllModeratorActionLogsContainer({ logs }: Props) {
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [logsFiltered, setLogsFiltered] = useState(logs);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -39,14 +37,8 @@ export default function AllModeratorActionLogsContainer({ logs }: Props) {
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  // Создание поиска необходимых логов по search.
-  useMemo(() => {
-    if (logs.length === 0) {
-      return;
-    }
-    setLogsFiltered(logs);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, logs]);
+  // Поиск по логам модерации пока не реализован: search не участвует в выборке.
+  const logsFiltered = logs;
 
   return (
     <>

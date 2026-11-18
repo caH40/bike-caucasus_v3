@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 // global.d.ts
 interface Window {
   yaContextCb: any[];

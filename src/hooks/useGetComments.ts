@@ -27,7 +27,7 @@ export const useGetComments = ({ comments, document, idUserDB }: Props) => {
       try {
         const data = await getComments({ document, idUserDB });
         setCommentsCurrent(data);
-      } catch (error) {
+      } catch {
         toast.error('Ошибка при получении комментариев');
       } finally {
         setTrigger(false);

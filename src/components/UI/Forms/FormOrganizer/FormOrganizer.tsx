@@ -19,11 +19,11 @@ import type { TDtoOrganizer } from '@/types/dto.types';
 import styles from '../Form.module.css';
 
 type Props = {
-  fetchOrganizerCreated?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
+  fetchOrganizerCreated?: (formData: FormData) => Promise<ServerResponse<any>>;  
   fetchOrganizerEdited?: ({
-    // eslint-disable-next-line no-unused-vars
+     
     dataSerialized,
-    // eslint-disable-next-line no-unused-vars
+     
     organizerId,
   }: {
     dataSerialized: FormData;

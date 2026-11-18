@@ -28,7 +28,7 @@ export default function ContainerModerationRacePointsTables({
   organizerId,
 }: Props) {
   const [racePointsTable, setRacePointsTable] = useState<RacePointsTableState | null>(null);
-  // eslint-disable-next-line no-unused-vars
+   
   const [isFormDirty, setIsFormDirty] = useState(false);
 
   // Очистка контейнера при изменении входных данных (в частности после удаления таблицы).

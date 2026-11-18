@@ -36,7 +36,7 @@ import { TDeleteNewsServiceFromMongo } from '@/types/mongo.types';
  */
 export class News {
   private errorLogger: (error: unknown, debugMeta?: DebugMeta) => Promise<void>;
-  private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private saveFile: (params: TSaveFile) => Promise<string>;  
   private entity: TServiceEntity;
 
   constructor() {
@@ -248,7 +248,7 @@ export class News {
       const hashtags = getHashtags(news.hashtags);
 
       // Удаление filePdf из данных, пришедших с клиента.
-      const { filePdf: _, ...newsWithOutFilePfd } = news; // eslint-disable-line no-unused-vars
+      const { filePdf: _, ...newsWithOutFilePfd } = news;  
 
       const updateData: Omit<TNewsCreateFromClient, 'hashtags' | 'poster' | 'filePdf'> & {
         poster: File | null | string;

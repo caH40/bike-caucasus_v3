@@ -1,26 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 import { TDeviceInfo } from '@/types/index.interface';
+
+const EMPTY_DEVICE_INFO: TDeviceInfo = {
+  userAgent: null,
+  language: null,
+  screenResolution: null,
+};
+
+// Значения не меняются за время жизни страницы — кэшируем, чтобы getSnapshot
+// возвращал стабильную ссылку (иначе React зациклит рендер).
+let cached: TDeviceInfo | null = null;
+
+function getSnapshot(): TDeviceInfo {
+  if (!cached) {
+    cached = {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      screenResolution: `${window.screen.width}x${window.screen.height}`,
+    };
+  }
+
+  return cached;
+}
+
+const getServerSnapshot = (): TDeviceInfo => EMPTY_DEVICE_INFO;
+const subscribe = () => () => {};
 
 /**
  * Хук для получения информации об устройстве пользователя.
  */
 export function useDeviceInfo(): TDeviceInfo {
-  // Состояние для хранения информации об устройстве.
-  const [deviceInfo, setDeviceInfo] = useState<TDeviceInfo>({
-    userAgent: null,
-    language: null,
-    screenResolution: null,
-  });
-
-  useEffect(() => {
-    // Обновление информации об устройстве один раз при монтировании компонента
-    setDeviceInfo({
-      userAgent: navigator.userAgent, // Информация о браузере и ОС/
-      language: navigator.language, // Язык браузера/
-      screenResolution: `${window.screen.width}x${window.screen.height}`, // Разрешение экрана/
-    });
-  }, []); // Пустой массив зависимостей, хук сработает только один раз
-
-  return deviceInfo;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

@@ -31,8 +31,6 @@ export default function ContainerTablePermissions({
   const [docsOnPage, setDocsOnPage] = useState(5);
   const isMounting = useRef(true);
 
-  const [permissionsFiltered, setPermissionsFiltered] = useState(permissions || []);
-
   useEffect(() => {
     const initialDocsOnPage = parseInt(localStorage.getItem(lcRecordsOnPage) || '5', 10);
     setDocsOnPage(initialDocsOnPage);
@@ -48,21 +46,20 @@ export default function ContainerTablePermissions({
     localStorage.setItem(lcRecordsOnPage, String(docsOnPage));
   }, [docsOnPage]);
 
-  useMemo(() => {
+  const permissionsFiltered = useMemo(() => {
     if (!permissions) {
-      return;
+      return [];
     }
-    setPermissionsFiltered(
-      permissions.filter((elm) => {
-        const nameFiltered = elm.name.toLowerCase().includes(search.toLowerCase());
-        const descFiltered = elm.description.toLowerCase().includes(search.toLowerCase());
 
-        // Удаление Разрешения, которое было добавлено в форме создания Роли.
-        const permissionsAddedFiltered = !permissionsAdded.includes(elm.name);
+    return permissions.filter((elm) => {
+      const nameFiltered = elm.name.toLowerCase().includes(search.toLowerCase());
+      const descFiltered = elm.description.toLowerCase().includes(search.toLowerCase());
 
-        return (nameFiltered || descFiltered) && permissionsAddedFiltered;
-      })
-    );
+      // Удаление Разрешения, которое было добавлено в форме создания Роли.
+      const permissionsAddedFiltered = !permissionsAdded.includes(elm.name);
+
+      return (nameFiltered || descFiltered) && permissionsAddedFiltered;
+    });
   }, [search, permissions, permissionsAdded]);
 
   return (

@@ -17,8 +17,8 @@ import { Document } from 'mongoose';
  * Класс работы с разрешениями (доступами) к ресурсам сайта.
  */
 export class PermissionsService {
-  private errorLogger: (error: unknown) => Promise<void>; // eslint-disable-line no-unused-vars
-  private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
+  private errorLogger: (error: unknown) => Promise<void>;  
+  private handlerErrorDB: (error: unknown) => ServerResponse<null>;  
 
   constructor() {
     this.errorLogger = errorLogger;

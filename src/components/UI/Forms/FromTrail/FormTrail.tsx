@@ -28,8 +28,8 @@ import styles from '../Form.module.css';
 import { useUserData } from '@/store/userdata';
 
 type Props = {
-  postTrail?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
-  putTrail?: (formData: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line no-unused-vars
+  postTrail?: (formData: FormData) => Promise<ServerResponse<any>>;  
+  putTrail?: (formData: FormData) => Promise<ServerResponse<any>>;  
   trailForEdit?: TTrailDto & { posterOldUrl?: string | null };
 };
 

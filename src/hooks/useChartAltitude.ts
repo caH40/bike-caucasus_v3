@@ -86,7 +86,7 @@ export function useChartAltitude(elevationData: ElevationData[]): {
 
 // Расширение типов Chart.js для поддержки crosshair плагина.
 declare module 'chart.js' {
-  // eslint-disable-next-line no-unused-vars
+   
   interface PluginOptionsByType<TType extends ChartType> {
     crosshair?: {
       line?: {
@@ -106,9 +106,9 @@ declare module 'chart.js' {
         zoomButtonClass?: string;
       };
       callbacks?: {
-        // eslint-disable-next-line no-unused-vars
+         
         beforeZoom?: (start: number, end: number) => boolean;
-        // eslint-disable-next-line no-unused-vars
+         
         afterZoom?: (start: number, end: number) => void;
       };
     };

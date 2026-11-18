@@ -27,7 +27,7 @@ import { genderOptions } from '@/constants/other';
 
 type Props = {
   formData: TUserDto;
-  putProfile: (params: FormData) => Promise<ServerResponse<any>>; // eslint-disable-line
+  putProfile: (params: FormData) => Promise<ServerResponse<any>>;  
   idUser: number;
 };
 

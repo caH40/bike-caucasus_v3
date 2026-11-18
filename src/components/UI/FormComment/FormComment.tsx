@@ -6,7 +6,7 @@ import { type Dispatch, type SetStateAction, useEffect, RefObject } from 'react'
 import { lcSuffixComment } from '@/constants/local-storage';
 
 type Props = {
-  // eslint-disable-next-line no-unused-vars
+   
   handlerSubmit: () => void;
   type: 'news' | 'trail';
   text: string;

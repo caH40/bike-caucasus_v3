@@ -13,7 +13,7 @@ type Props = {
   name: string;
   multiple?: boolean;
   accept: string;
-  getChange: (e: ChangeEvent<HTMLInputElement>) => void; //eslint-disable-line
+  getChange: (e: ChangeEvent<HTMLInputElement>) => void;  
   loading?: boolean;
   disabled?: boolean;
 };

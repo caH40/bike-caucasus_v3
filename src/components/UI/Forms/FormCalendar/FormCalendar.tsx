@@ -16,7 +16,7 @@ import { serializationCalendarCreate } from '@/libs/utils/serialization/calendar
 import { bikeTypes as optionsBikeTypes } from '@/constants/trail';
 
 type Props = {
-  // eslint-disable-next-line no-unused-vars
+   
   fetchTrailCreated: (formData: FormData) => Promise<ServerResponse<null>>;
   news:
     | {

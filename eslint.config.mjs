@@ -5,12 +5,16 @@ import unusedImports from 'eslint-plugin-unused-imports';
 export default [
   ...nextCoreWebVitals,
 
+  // Замена удалённого .eslintignore.
+  { ignores: ['src/documents/**'] },
+
   {
     plugins: {
       'unused-imports': unusedImports,
     },
     rules: {
       'unused-imports/no-unused-imports': 'error',
+      'react-hooks/set-state-in-effect': 'warn', // долг миграции на React Compiler
       'no-console': 'warn',
       'prefer-const': 'error',
       'no-template-curly-in-string': 'error',
@@ -22,7 +26,15 @@ export default [
   {
     files: ['**/*.{js,jsx,mjs}'],
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 
@@ -32,7 +44,15 @@ export default [
     files: ['**/*.{ts,tsx}'],
     rules: {
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 ];

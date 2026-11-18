@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 type Params = {
   role?: TRoleDto;
   permissions: TPermissionDto[];
-  // eslint-disable-next-line no-unused-vars
+   
   putRole?: ({ roleEdited }: { roleEdited: TFormRole }) => Promise<ServerResponse<null>>;
 };
 

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type PopupUserStore = {
   isVisible: boolean;
-  setMenu: (value: boolean) => void; // eslint-disable-line
+  setMenu: (value: boolean) => void;  
 };
 
 /**

@@ -15,7 +15,7 @@ import TitleAndLine from '@/components/TitleAndLine/TitleAndLine';
 
 type Props = {
   profile: TUserDto; // данные профиля из БД
-  putAccount: (dataForm: TFormAccount) => Promise<ServerResponse<any>>; // eslint-disable-line
+  putAccount: (dataForm: TFormAccount) => Promise<ServerResponse<any>>;  
 };
 
 /**

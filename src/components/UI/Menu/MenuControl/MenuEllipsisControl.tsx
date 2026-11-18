@@ -22,7 +22,7 @@ type Props = {
     urlSlug: string;
     client: TClientMeta;
     hiddenItemNames: string[];
-  }) => TMenuOnPage[]; // eslint-disable-line no-unused-vars
+  }) => TMenuOnPage[];  
   id: string; // id элемента для подсказки tooltip, #уникальное_название.
   messageTooltip: string;
   hiddenItemNames?: string[];

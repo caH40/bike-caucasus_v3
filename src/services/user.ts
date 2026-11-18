@@ -30,7 +30,7 @@ type ParamsGetProfile = {
  * Запросы связанные с моделью User
  */
 export class UserService {
-  // eslint-disable-next-line no-unused-vars
+   
   private errorLogger: (error: unknown, debugMeta?: DebugMeta) => Promise<void>;
 
   constructor() {

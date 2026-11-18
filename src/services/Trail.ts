@@ -36,8 +36,8 @@ import { parseGPXTrack } from '@/libs/utils/track-parse';
  */
 export class Trail {
   private errorLogger: (error: unknown, debugMeta?: DebugMeta) => Promise<void>;
-  private handlerErrorDB: (error: unknown) => ServerResponse<null>; // eslint-disable-line no-unused-vars
-  private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private handlerErrorDB: (error: unknown) => ServerResponse<null>;  
+  private saveFile: (params: TSaveFile) => Promise<string>;  
   private entity: TServiceEntity;
 
   constructor() {

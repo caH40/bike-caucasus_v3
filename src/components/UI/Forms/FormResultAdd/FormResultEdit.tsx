@@ -29,7 +29,7 @@ import {
 type Props = {
   result: TRiderRaceResultDto;
   putResultRaceRider: ({
-    // eslint-disable-next-line no-unused-vars
+     
     result,
   }: {
     result: FormData;

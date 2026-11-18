@@ -3,10 +3,10 @@ import { create } from 'zustand';
 // Определяем интерфейс для хранилища состояния загрузки
 type TPermission = {
   permissions: string[];
-  addPermission: (name: string) => void; // eslint-disable-line
-  removePermission: (name: string) => void; // eslint-disable-line
-  resetPermissions: () => void; // eslint-disable-line
-  initPermission: (permissions: string[]) => void; // eslint-disable-line
+  addPermission: (name: string) => void;  
+  removePermission: (name: string) => void;  
+  resetPermissions: () => void;  
+  initPermission: (permissions: string[]) => void;  
 };
 
 /**

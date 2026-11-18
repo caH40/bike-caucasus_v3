@@ -17,13 +17,13 @@ const cx = cn.bind(styles);
 
 type Props = {
   getTrails: ({
-    // eslint-disable-next-line no-unused-vars
+     
     bikeType,
-    // eslint-disable-next-line no-unused-vars
+     
     region,
-    // eslint-disable-next-line no-unused-vars
+     
     difficultyLevel,
-    // eslint-disable-next-line no-unused-vars
+     
     search,
   }: {
     bikeType: string;

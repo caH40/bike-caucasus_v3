@@ -55,7 +55,7 @@ import { SiteServiceSlotService } from './SiteServiceSlotService';
 export class ChampionshipService {
   private errorLogger;
   private handlerErrorDB;
-  private saveFile: (params: TSaveFile) => Promise<string>; // eslint-disable-line no-unused-vars
+  private saveFile: (params: TSaveFile) => Promise<string>;  
   private suffixImagePoster: string;
   private getCurrentStatus: (props: {
     status: TChampionshipStatus;
