@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import { PasswordReset } from '@/database/mongodb/Models/Password-reset';
 import { User } from '@/database/mongodb/Models/User';

@@ -2,7 +2,7 @@ import { type AuthOptions } from 'next-auth';
 import { type ObjectId } from 'mongoose';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import Yandex from 'next-auth/providers/yandex';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 // import Google from 'next-auth/providers/google';
 import VK from 'next-auth/providers/vk';
 
@@ -209,7 +209,7 @@ export const authOptions: AuthOptions = {
 
         return true;
       } catch (error) {
-        errorLogger(error);  
+        errorLogger(error);
         if (error instanceof Error) {
           const encodedError = encodeURIComponent(error.message);
           return `/auth/login/access-denied?error=${encodedError}`;

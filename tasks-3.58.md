@@ -461,14 +461,9 @@ v3.79.7 +bodySizeLimit установлен 50мб;
 v3.79.8 +тестовый коммит;  
 v3.80.1 +обновление реакт до версии 19;  
 v3.80.2 +chore(lint): migrate to ESLint 9 flat config;  
-v3.80.3 +fix(table): убрать setState из useMemo в контейнерах таблиц" -m "Правило
-react-hooks/set-state-in-render: setState вызывался в фазе рендера через useMemo (лишний проход
-рендера и риск Too many re-renders)." -m "Отфильтрованные списки в 7 контейнерах стали
-производными значениями: Users, Roles, Permissions, LogsError, NewsModeration, TrailsModeration,
-AllModeratorActionLogs. Удалено 7 вызовов useState, поведение фильтров сохранено (Permissions
-по-прежнему исключает уже добавленные разрешения)." -m "Заодно: подавлен no-unused-vars для
-PluginOptionsByType в useChartAltitude (TS2428 не даёт переименовать параметр типа)." -m
-"Проверки: tsc --noEmit — 0 ошибок, eslint — 0 errors / 47 warnings, next build — успешно.
+v3.80.3 +fix(table): убрать setState из useMemo в контейнерах таблиц;  
+v3.80.4 +chore(deps): bcrypt -> bcryptjs, удалён aws-sdk, закрыты install-скрипты
+(allowScripts);
 
 -в новость добавить дату актуальности новости, после которой новость не отображать в рассылках и
 выставить соответсвующий хэштег в тэгах страницы.  
