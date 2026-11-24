@@ -63,9 +63,11 @@ export default function BlockRaces({ races, registrationData }: Props) {
               </Spacer>
             )}
 
-            <div className={styles.wrapper__params}>
-              <DistanceParams distance={race.distanceStats} laps={race.laps} />
-            </div>
+            {race.distanceStats && (
+              <div className={styles.wrapper__params}>
+                <DistanceParams distance={race.distanceStats} laps={race.laps} />
+              </div>
+            )}
 
             {race.trackGPX && (
               <MapWithElevation url={race.trackGPX.url} laps={race.laps} key={race._id} />

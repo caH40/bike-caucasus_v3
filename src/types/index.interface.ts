@@ -172,7 +172,7 @@ export type TOptionsMap = Map<
  * Пропсы для BoxInputSimple
  */
 export type PropsBoxInputSimple<T> = Omit<PropsBoxInput, 'register' | 'setValue'> &
-  TDispatchInput & { handlerInput: (value: T) => void };  
+  TDispatchInput & { handlerInput: (value: T) => void };
 
 export type PropsBoxInputSimpleNew = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -707,7 +707,7 @@ export type TRaceForForm = Omit<
   registeredRiders: string[];
   trackDistance: string | null;
   trackGPX?: TTrackGPXObj;
-  distanceStats: TDistanceDto;
+  distanceStats?: TDistanceDto;
 };
 // FIXME: Разобраться с названиями TRaceForForm, TRaceForFormNew одна для запроса с клиента, другая для формы.
 export type TRaceForFormNew = Omit<

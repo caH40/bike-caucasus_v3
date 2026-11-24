@@ -10,7 +10,7 @@ import { IconArrowTrendingUp } from '../Icons';
 import { SURFACE_TYPE_TRANSLATIONS } from '@/constants/translations';
 
 type Props = {
-  distance: {
+  distance?: {
     distanceInMeter: number;
     ascentInMeter?: number;
     laps?: number;
@@ -24,11 +24,13 @@ type Props = {
 };
 
 // отображение блока основных параметров Эвента
-export default function DistanceParams({
-  distance: { distanceInMeter, ascentInMeter, avgGrade, lowestElev, highestElev, surfaceType },
-  laps = 1,
-  hideLaps,
-}: Props) {
+export default function DistanceParams({ distance, laps = 1, hideLaps }: Props) {
+  if (!distance) {
+    return null;
+  }
+
+  const { distanceInMeter, ascentInMeter, avgGrade, lowestElev, highestElev, surfaceType } =
+    distance;
   return (
     <div className={styles.wrapper}>
       <div className={styles.box}>

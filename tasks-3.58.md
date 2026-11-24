@@ -466,7 +466,8 @@ v3.80.4 +chore(deps): bcrypt -> bcryptjs, удалён aws-sdk, закрыты i
 (allowScripts);  
 v3.80.5 +fix(audit): uuid ^11.1.1, nodemailer ^10.6.1, sharp ^0.35.5, overrides;  
 v3.80.6 +добавлен ecosystem.config.js;  
-v3.80.7 +улучено подключение к бд;
+v3.80.7 +улучено подключение к бд;  
+v3.80.8 +fix(races): не падать на заезде без привязанной дистанции;
 
 -в новость добавить дату актуальности новости, после которой новость не отображать в рассылках и
 выставить соответсвующий хэштег в тэгах страницы.  
@@ -587,10 +588,10 @@ full_url = f"{base_url}{file_name}"
 =================================================================================================
 Важные правила для ecosystem-файла:
 
-Правки args/script/cwd применяются только через pm2 delete bikecaucasus && pm2 start
-ecosystem.config.js. Просто pm2 restart возьмёт старое. Правки env — через pm2 restart
+-Правки args/script/cwd применяются только через pm2 delete bikecaucasus && pm2 start
+-ecosystem.config.js. Просто pm2 restart возьмёт старое. Правки env — через pm2 restart
 ecosystem.config.js --update-env, иначе старое окружение останется. pm2 save после любого
-пересоздания, иначе после ребута resurrect вернёт предыдущее состояние. Если в файле несколько
-apps, pm2 start ecosystem.config.js поднимет все; точечно — pm2 start ecosystem.config.js --only
-bikecaucasus. cwd в файле должен быть абсолютным (/home/www/bikecaucasus) — относительный pm2
-считает от места запуска.
+-пересоздания, иначе после ребута resurrect вернёт предыдущее состояние. Если в файле несколько
+-apps, pm2 start ecosystem.config.js поднимет все; точечно — pm2 start ecosystem.config.js
+--only bikecaucasus. cwd в файле должен быть абсолютным (/home/www/bikecaucasus) — относительный
+pm2 считает от места запуска.

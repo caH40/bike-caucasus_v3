@@ -135,7 +135,7 @@ export function formatTRaceToClient(race: TRacesWithTDistance): TRaceForForm {
   const _id = String(race._id);
   const trackGPX = race.trackDistance ? race.trackDistance.trackGPX : race.trackGPX;
 
-  const distanceStats = race.trackDistance && distanceDto(race.trackDistance);
+  const distanceStats = race.trackDistance ? distanceDto(race.trackDistance) : undefined;
 
   const trackDistance = race.trackDistance ? race.trackDistance._id.toString() : null;
   const categories = String(race.categories);
