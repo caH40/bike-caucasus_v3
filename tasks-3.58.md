@@ -465,7 +465,8 @@ v3.80.3 +fix(table): убрать setState из useMemo в контейнера�
 v3.80.4 +chore(deps): bcrypt -> bcryptjs, удалён aws-sdk, закрыты install-скрипты
 (allowScripts);  
 v3.80.5 +fix(audit): uuid ^11.1.1, nodemailer ^10.6.1, sharp ^0.35.5, overrides;  
-v3.80.6 +добавлен ecosystem.config.js;
+v3.80.6 +добавлен ecosystem.config.js;  
+v3.80.7 +улучено подключение к бд;
 
 -в новость добавить дату актуальности новости, после которой новость не отображать в рассылках и
 выставить соответсвующий хэштег в тэгах страницы.  
